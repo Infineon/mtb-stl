@@ -1,0 +1,257 @@
+/*******************************************************************************
+* File Name: SelfTest_UART_slave_message.h
+* Version 1.0.0
+*
+*
+* Description:
+*  This file provides the source code to the API for the UART slave
+*  packet protocol for CAT2(PSoC4), CAT1A, CAT1C devices.
+*
+* Note:
+*  Protocol description
+*  Master(A) slave(B) communication:
+*    |---|    --- Request send --->    |---|
+*    | A |    {Wait for respond}       | B |
+*    |---|    <--- Respond send ---    |--
+*  Packet format:
+*  <STX><ADDR><DL><[Data bytes length equal DL]><CRCH><CRCL>
+*  STX        - 0x02 begin packet marker. Unique byte of start packet
+*  ADDR    - device address
+*  DL        - data length in bytes [1..255]
+*  CRCH    - MSB of CRC-16 that calculated from ADDR to last data byte
+*  CRCL    - LSB of CRC-16    that calculated from ADDR to last data byte
+*  If there is a byte <ADDR> <DL> <[Data]> or <[CRC]> that equals STX
+*  then it's exchanged with two byte sequence <ESC><STX+1>
+*  If there is a byte <ADDR> <DL> <[Data]> or <[CRC]> that equals ESC
+*  then it's exchanged with two byte sequence <ESC><ESC+1>
+*
+* Hardware Dependency:
+*  PSoC 4100S Max Device
+*  PSoC 4500S Device
+*  CY8C624ABZI-S2D44
+*  CY8C6245LQI-S3D72
+*  XMC7200D-E272K8384
+********************************************************************************
+* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
+*
+* This software, including source code, documentation and related
+* materials ("Software") is owned by Cypress Semiconductor Corporation
+* or one of its affiliates ("Cypress") and is protected by and subject to
+* worldwide patent protection (United States and foreign),
+* United States copyright laws and international treaty provisions.
+* Therefore, you may use this Software only as provided in the license
+* agreement accompanying the software package from which you
+* obtained this Software ("EULA").
+* If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
+* non-transferable license to copy, modify, and compile the Software
+* source code solely for use in connection with Cypress's
+* integrated circuit products.  Any reproduction, modification, translation,
+* compilation, or representation of this Software except as specified
+* above is prohibited without the express written permission of Cypress.
+*
+* Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
+* EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
+* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
+* reserves the right to make changes to the Software without notice. Cypress
+* does not assume any liability arising out of the application or use of the
+* Software or any product or circuit described in the Software. Cypress does
+* not authorize its products for use in any products where a malfunction or
+* failure of the Cypress product may reasonably be expected to result in
+* significant property damage, injury or death ("High Risk Product"). By
+* including Cypress's product in a High Risk Product, the manufacturer
+* of such system or application assumes all risk of such use and in doing
+* so agrees to indemnify Cypress against all liability.
+********************************************************************************/
+/**
+* \addtogroup group_uart_data_tsf
+* \{
+*
+* The UART SCB Components are used to physically generate the signals. 
+* The software CRC-16 calculation is applied to every sent/received byte (except STX and the CRC itself). To detect an unsuccessful packet transaction, the timer is used.
+*
+* Three interrupts implemented in this project provide a fully interrupt-driven background process: <br>
+*  1) The transmit interrupt in the UART is configured for a FIFO not full event to take the new data from the RAM and place 
+      it into the TX buffer, and for a transmit complete event to start or stop the CRC calculation. <br>
+*  2) The receive interrupt in the UART is configured for a FIFO not empty event to analyze the received data, calculate the
+      CRC, and store the received data into RAM. <br>
+*  3) The timer interrupt is used to detect the end of an unsuccessful transmission.
+*
+* \section group_uart_data_tsf_more_information More Information
+*
+// \verbatim
+  Protocol description
+  Master(A) slave(B) communication:
+     |---|    --- Request send --->    |---|
+     | A |    {Wait for respond}       | B |
+     |---|    <--- Respond send ---    |---|
+  Packet format:
+  -> <STX><ADDR><DL><[Data bytes length equal DL]><CRCH><CRCL>
+	  STX        - 0x02 begin packet marker. Unique byte of start packet
+	  ADDR       - device address
+	  DL         - data length in bytes [1..255]
+	  CRCH       - MSB of CRC-16 that calculated from ADDR to last data byte
+	  CRCL       - LSB of CRC-16    that calculated from ADDR to last data byte
+	  
+  -> If there is a byte <ADDR> <DL> <[Data]> or <[CRC]> that equals STX
+     then it's exchanged with two byte sequence <ESC><STX+1>
+  
+  -> If there is a byte <ADDR> <DL> <[Data]> or <[CRC]> that equals ESC
+     then it's exchanged with two byte sequence <ESC><ESC+1>
+\endverbatim  
+*
+* \section group_uart_data_tsf_profile_changelog Changelog
+* <table class="doxtable">
+*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
+*   <tr>
+*     <td>1.00</td>
+*     <td>Initial Version.</td>
+*     <td>Initial Version.</td>
+*   </tr>
+* </table>
+*
+* \defgroup group_uart_data_tsf_macros Macros
+* \defgroup group_uart_data_tsf_functions_master Master
+* \defgroup group_uart_data_tsf_functions_slave Slave
+*/
+
+#if !defined(UART_slave_message_H)
+    #define UART_slave_message_H
+
+
+/*******************************************************************************
+* Function Prototypes
+*******************************************************************************/
+/**
+* \addtogroup group_uart_data_tsf_functions_slave
+* \{
+*/
+
+/*******************************************************************************
+* Function Name: UartMesSlave_Init
+****************************************************************************//**
+*
+* Initialize UART slave protocol unit. This function starts needed components and
+* initialize control status structure.
+*
+*
+* \param uart_base 
+* The pointer to the slave UART SCB instance. <br>
+* \param address 
+* slave bus address
+*
+* \return
+*  NONE
+*
+*******************************************************************************/
+void UartMesSlave_Init(CySCB_Type* uart_base, uint8_t address);
+
+/*******************************************************************************
+* Function Name: UartMesSlave_Respond
+****************************************************************************//**
+*
+* Start background sending of the respond
+*
+*
+* \param txd 
+*  Pointer to sent data <br>
+* \param tlen 
+*  Size of sent data in bytes
+*
+*
+* \return
+*  0 - If the unit begins a response process
+*  1 - If not (cause IDLE or RESPOND state)
+*
+* \note 
+*  Use UartMesSlave_State() to check this condition
+*******************************************************************************/
+uint8_t UartMesSlave_Respond(uint8_t * txd, uint8_t tlen);
+
+/*******************************************************************************
+* Function Name: UartMesSlave_State
+****************************************************************************//**
+*
+* Returns state of the current slave unit
+*
+*
+*
+*
+* \return
+*  UM_IDLE             - unit wait for packet from master
+*  UM_PACKREADY        - unit receive the packet. Respond will be send
+*  UM_RESPOND          - unit send respond
+*
+*
+*******************************************************************************/
+uint8_t UartMesSlave_State(void);
+
+/*******************************************************************************
+* Function Name: UartMesSlave_GetDataSize
+****************************************************************************//**
+*
+* Returns received data size
+*
+*
+*
+*
+* \return
+*  Size of the Received data in buffer
+*
+* \note 
+*  result valid only if unit state is UM_PACKREADY
+*  use UartMesSlave_State() to check this condition
+*******************************************************************************/
+uint8_t UartMesSlave_GetDataSize(void);
+
+/*******************************************************************************
+* Function Name: UartMesSlave_GetDataPtr
+****************************************************************************//**
+*
+* Returns pointer to received data buffer
+*
+*
+*
+*
+* \return
+*  Pointer to received data buffer
+*
+*
+*******************************************************************************/
+volatile uint8_t * UartMesSlave_GetDataPtr(void);
+
+/*******************************************************************************
+* Function Name: UartMesSlave_Msg_ISR
+****************************************************************************//**
+*
+* Interrupt handler for UART to receive/transmit.
+*
+* \return
+*  None
+*
+*******************************************************************************/
+void UartMesSlave_Msg_ISR(void);
+
+/** \} group_uart_data_tsf_functions_slave */
+
+
+/** \cond INTERNAL */
+/*******************************************************************************
+* Enumerated Types and Parameters
+*******************************************************************************/
+
+#define RX_TEST_SIZE        (10u)
+#define RX_BUFF_SIZE        (16u)
+
+#define UM_IDLE             (0u)
+#define UM_PACKREADY        (1u)
+#define UM_RESPOND          (2u)
+
+/** \endcond */
+
+/** \} group_uart_data_tsf */
+
+#endif /* End __UART_slave_message_H */
+
+
+/* [] END OF FILE */

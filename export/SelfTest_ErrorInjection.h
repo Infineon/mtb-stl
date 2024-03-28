@@ -1,10 +1,10 @@
 /*******************************************************************************
 * File Name: SelfTest_ErrorInjection.h
-* Version 0.1
+* Version 1.0.0
 *
 * Description:
 *  This file provides defines to force artificial errors and to
-*  provoke detection of defects by self tests for PSoC4.
+*  provoke detection of defects by self tests for CAT2(PSoC4), CAT1A, CAT1C devices.
 *
 * Related Document:
 *  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
@@ -12,7 +12,7 @@
 *
 *
 *******************************************************************************
-* Copyright 2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -52,15 +52,20 @@
 #define ERROR_IN_COMPARATOR                                 0u
 #define ERROR_IN_CLOCK                                      0u
 #define ERROR_IN_PROGRAM_COUNTER                            0u
+#define ERROR_IN_PROGRAM_FLOW                               0u
 #define ERROR_IN_FLASH                                      0u
 #define ERROR_IN_INTERRUPT_HANDLING                         0u
 #define ERROR_IN_DIGITAL_IO                                 0u
-#define ERROR_IN_STACK                                      0u
+#define ERROR_IN_STACK_OVERFLOW                             0u
+#define ERROR_IN_STACK_UNDERFLOW                            0u
 #define ERROR_IN_STARTUP_CONF_REG                           0u
 #define ERROR_IN_SPI_SCB                                    0u
 #define ERROR_IN_UART_SCB                                   0u
 #define ERROR_IN_I2C_SCB                                    0u
 #define ERROR_IN_WDT                                        0u
 #define ERROR_IN_PROTOCOL                                   0u
-
+#define ERROR_IN_IPC                                        0u
+#define ERROR_IN_UART_DATA_XFER                             0u
+#define ERROR_IN_WWDT_LOWER_LIMIT                           0u
+#define ERROR_IN_WWDT_INTR                                  0u
 #endif /* SELFTESTERRORINJECTION_H */

@@ -1,10 +1,10 @@
 /*******************************************************************************
 * File Name: SelfTest_Config.h
-* Version 0.1
+* Version 1.0.0
 *
 * Description:
 *  This file provides defines to force artificial errors and to
-*  provoke detection of defects by self tests for PSoC4.
+*  provoke detection of defects by self tests for CAT2(PSoC4), CAT1A, CAT1C devices.
 *
 * Related Document:
 *  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
@@ -12,7 +12,7 @@
 *
 *
 *******************************************************************************
-* Copyright 2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -55,20 +55,55 @@
     #define SELFTEST_CONFIG_DEBUG  0UL
 #endif
 
+
+#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#if !defined(CYBSP_CLOCK_TEST_TIMER_HW)
+    #define CYBSP_CLOCK_TEST_TIMER_HW  TCPWM0
+#endif
+#else
 #if !defined(CYBSP_CLOCK_TEST_TIMER_HW)
     #define CYBSP_CLOCK_TEST_TIMER_HW  TCPWM
 #endif
+#endif
 
+#if CY_CPU_CORTEX_M4
+#if !defined(CYBSP_CLOCK_TEST_TIMER_NUM)
+    #define CYBSP_CLOCK_TEST_TIMER_NUM 0UL
+#endif
+#elif CY_CPU_CORTEX_M7
+#if !defined(CYBSP_CLOCK_TEST_TIMER_NUM)
+    #define CYBSP_CLOCK_TEST_TIMER_NUM 513UL
+#endif
+#else
 #if !defined(CYBSP_CLOCK_TEST_TIMER_NUM)
     #define CYBSP_CLOCK_TEST_TIMER_NUM 1UL
 #endif
+#endif
 
+
+#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#if !defined(CYBSP_TIMER_HW)
+    #define CYBSP_TIMER_HW TCPWM0
+#endif
+#else
 #if !defined(CYBSP_TIMER_HW)
     #define CYBSP_TIMER_HW TCPWM
 #endif
+#endif
 
+
+#if CY_CPU_CORTEX_M4
+#if !defined(CYBSP_TIMER_NUM)
+    #define CYBSP_TIMER_NUM 1UL
+#endif
+#elif CY_CPU_CORTEX_M7
+#if !defined(CYBSP_TIMER_NUM)
+    #define CYBSP_TIMER_NUM 512UL
+#endif
+#else
 #if !defined(CYBSP_TIMER_NUM)
     #define CYBSP_TIMER_NUM 0UL
+#endif
 #endif
 
 #endif /* SELFTEST_CONFIG_H */
