@@ -190,7 +190,12 @@ uint8_t SelfTest_PROGRAM_FLOW(void);
 #define SELF_TEST_B_2               0x5CF1u
 /** Unique value written to a variable CPU_SelfTestC by SelfTest_PCAAAA function if PC is working correctly. */
 #define SELF_TEST_C_2               0x72F6C4B5u
-
+/** Section where the function SelfTest_PC5555 must be stored at addresses in flash that most closely match
+ *  the 0x5555... pattern. This section needs to be defined in linker script.*/
+#define SELF_TEST_SECTION_PC5555    "PC5555"
+/** Section where the function SelfTest_PCAAAA must be stored at addresses in flash that most closely match
+ *  the 0xAAAA... pattern.. This section needs to be defined in linker script.*/
+#define SELF_TEST_SECTION_PCAAAA    "PCAAAA"
 /** \} group_cpu_macros */
 
 /** \} group_cpu */

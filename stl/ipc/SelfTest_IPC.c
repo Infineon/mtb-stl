@@ -51,7 +51,6 @@
 #if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
 
 
-
 /*******************************************************************************
 * Global Variables
 *******************************************************************************/
@@ -69,7 +68,11 @@ uint8_t free_intr_end = 7;
 volatile uint8_t ch_rx[16];
 
 /* Channels write message */
+#if (CY_IP_MXTCPWM_VERSION == 1)
+uint32_t writeMesg0 = 0x100U;
+#else
 uint32_t writeMesg0[2] = {0x0,0x100};
+#endif
 
 /* Channels read message */
 #if CY_CPU_CORTEX_M7
@@ -78,14 +81,26 @@ uint32_t readMesg5[2];
 uint32_t readMesg6[2];
 uint32_t readMesg7[2];
 #elif CY_CPU_CORTEX_M4
-uint32_t readMesg8[2];
-uint32_t readMesg9[2];
-uint32_t readMesg10[2];
-uint32_t readMesg11[2];
-uint32_t readMesg12[2];
-uint32_t readMesg13[2];
-uint32_t readMesg14[2];
-uint32_t readMesg15[2];
+    
+    #if (CY_IP_MXTCPWM_VERSION == 1)
+    uint32_t readMesg8;
+    uint32_t readMesg9;
+    uint32_t readMesg10;
+    uint32_t readMesg11;
+    uint32_t readMesg12;
+    uint32_t readMesg13;
+    uint32_t readMesg14;
+    uint32_t readMesg15;
+    #else
+    uint32_t readMesg8[2];
+    uint32_t readMesg9[2];
+    uint32_t readMesg10[2];
+    uint32_t readMesg11[2];
+    uint32_t readMesg12[2];
+    uint32_t readMesg13[2];
+    uint32_t readMesg14[2];
+    uint32_t readMesg15[2];
+    #endif
 #endif
 
 
@@ -145,7 +160,11 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_8);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
+                #if (CY_IP_MXTCPWM_VERSION == 1)
+                readMesg8 = Cy_IPC_Drv_ReadDataValue (ipcPtr);
+                #else
                 Cy_IPC_Drv_ReadDDataValue (ipcPtr, readMesg8);
+                #endif
                 ch_rx[8] = 1;
             }
         }
@@ -154,7 +173,11 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_9);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
+                #if (CY_IP_MXTCPWM_VERSION == 1)
+                readMesg9 = Cy_IPC_Drv_ReadDataValue (ipcPtr);
+                #else
                 Cy_IPC_Drv_ReadDDataValue (ipcPtr, readMesg9);
+                #endif
                 ch_rx[9] = 1;
             }
         }
@@ -164,7 +187,11 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_10);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
+                #if (CY_IP_MXTCPWM_VERSION == 1)
+                readMesg10 = Cy_IPC_Drv_ReadDataValue (ipcPtr);
+                #else
                 Cy_IPC_Drv_ReadDDataValue (ipcPtr, readMesg10);
+                #endif
                 ch_rx[10] = 1;
             }
         }
@@ -174,7 +201,11 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_11);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
+                #if (CY_IP_MXTCPWM_VERSION == 1)
+                readMesg11 = Cy_IPC_Drv_ReadDataValue (ipcPtr);
+                #else
                 Cy_IPC_Drv_ReadDDataValue (ipcPtr, readMesg11);
+                #endif
                 ch_rx[11] = 1;
             }
         }
@@ -184,7 +215,11 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_12);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
-                Cy_IPC_Drv_ReadDDataValue (ipcPtr, readMesg9);
+                #if (CY_IP_MXTCPWM_VERSION == 1)
+                readMesg12 = Cy_IPC_Drv_ReadDataValue (ipcPtr);
+                #else
+                Cy_IPC_Drv_ReadDDataValue (ipcPtr, readMesg12);
+                #endif
                 ch_rx[12] = 1;
             }
         }
@@ -194,7 +229,11 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_13);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
+                #if (CY_IP_MXTCPWM_VERSION == 1)
+                readMesg13 = Cy_IPC_Drv_ReadDataValue (ipcPtr);
+                #else
                 Cy_IPC_Drv_ReadDDataValue (ipcPtr, readMesg13);
+                #endif
                 ch_rx[13] = 1;
             }
         }
@@ -204,7 +243,11 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_14);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
+                #if (CY_IP_MXTCPWM_VERSION == 1)
+                readMesg14 = Cy_IPC_Drv_ReadDataValue (ipcPtr);
+                #else
                 Cy_IPC_Drv_ReadDDataValue (ipcPtr, readMesg14);
+                #endif
                 ch_rx[14] = 1;
             }
         }
@@ -214,7 +257,11 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_15);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
+                #if (CY_IP_MXTCPWM_VERSION == 1)
+                readMesg15 = Cy_IPC_Drv_ReadDataValue (ipcPtr);
+                #else
                 Cy_IPC_Drv_ReadDDataValue (ipcPtr, readMesg15);
+                #endif
                 ch_rx[15] = 1;
             }
         }
@@ -648,7 +695,11 @@ uint8_t SelfTest_IPC(void)
             {
                 return ERROR_STATUS;
             }
+            #if (CY_IP_MXTCPWM_VERSION == 1)
+            Cy_IPC_Drv_WriteDataValue(Cy_IPC_Drv_GetIpcBaseAddress(channel), writeMesg0);
+            #else
             Cy_IPC_Drv_WriteDDataValue(Cy_IPC_Drv_GetIpcBaseAddress(channel), (uint32_t *)writeMesg0);
+            #endif
             Cy_IPC_Drv_AcquireNotify(Cy_IPC_Drv_GetIpcBaseAddress(channel), IPC_INT_NOTIFY_MASK(intrr));
 
             uint32_t locStatus = 0;
@@ -685,8 +736,13 @@ uint8_t SelfTest_IPC(void)
             {
                 return ERROR_STATUS; 
             }
+            #if (CY_IP_MXTCPWM_VERSION == 1)
+            writeMesg0++;
+            #else
             writeMesg0[0]++;
             writeMesg0[1]++;
+            #endif
+            
         }
     }
     return ret;

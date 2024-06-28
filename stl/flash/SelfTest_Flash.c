@@ -75,126 +75,27 @@
 /* Map reset vector to point to flash */
 #define REG_MEM_MAP_VECTOR           ((uint32_t)1u << 27u)
 
-
-/***************************************
-* Variables declaration
-***************************************/
-
-/* Allocate last 8 bytes in Flash for flash checksum for PSoC4 */
-/* Section "CheckSum" is set to the last 8 bytes of flash  in the
- *  corresponding linker file */
-
-#if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
-
-#if defined(__GNUC__)
-#if defined(CY_DEVICE_SERIES_PSOC_4500S)
-static volatile const uint64_t flash_StoredCheckSum __attribute__((used,
-                                                                   section(".flash_checksum"))) =
-    0x14A502BAFFC46F87ULL;
-#elif defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS) && (CY_FLASH_SIZE == 0x00040000UL)
-static volatile const uint64_t flash_StoredCheckSum __attribute__((used,
-                                                                   section(".flash_checksum"))) =
-    0x83AE47F204F5B429ULL;
-#elif defined(CY_DEVICE_SERIES_PSOC_4100S_MAX)
-static volatile const uint64_t flash_StoredCheckSum __attribute__((used,
-                                                                   section(".flash_checksum"))) =
-    0x3CE096AF49788FA6ULL;
-#elif defined(CY_DEVICE_SERIES_PSOC_4100S)
-static volatile const uint64_t flash_StoredCheckSum __attribute__((used,
-                                                                   section(".flash_checksum"))) =
-    0x2038B30785663D01ULL;
-#endif /* defined(CY_DEVICE_SERIES_PSOC_4100S) */
-
-#elif defined(__ICCARM__)
-#pragma location = ((uint32_t)(CY_FLASH_BASE + CY_FLASH_SIZE - 8u))
-#if defined(CY_DEVICE_SERIES_PSOC_4500S)
-static const uint64_t flash_StoredCheckSum = 0x2E6D6F9226371C46ULL;
-#elif defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS) && (CY_FLASH_SIZE == 0x00040000UL)
-static const uint64_t flash_StoredCheckSum = 0x193C402DBBBF8402ULL;
-#elif defined(CY_DEVICE_SERIES_PSOC_4100S_MAX)
-static const uint64_t flash_StoredCheckSum = 0x575A9BA07913B816ULL;
-#elif defined(CY_DEVICE_SERIES_PSOC_4100S)
-static const uint64_t flash_StoredCheckSum = 0xF2D87739F59E8C8FULL;
-#endif /* defined(CY_DEVICE_SERIES_PSOC_4100S) */
-
-#endif /* defined(__ICCARM__) */
-
-#endif /* FLASH_TEST_MODE == FLASH_TEST_FLETCHER64 */
-
-#if (FLASH_TEST_MODE == FLASH_TEST_CRC32)
-#if defined(__GNUC__)
-#if defined(CY_DEVICE_SERIES_PSOC_4500S)
-static volatile const uint32_t flash_StoredCheckSum __attribute__((used,
-                                                                   section(".flash_checksum"))) =
-    0x739C15A0UL;
-#elif defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS) && (CY_FLASH_SIZE == 0x00040000UL)
-static volatile const uint32_t flash_StoredCheckSum __attribute__((used,
-                                                                   section(".flash_checksum"))) =
-    0x8479B240UL;
-#elif defined(CY_DEVICE_SERIES_PSOC_4100S_MAX)
-static volatile const uint32_t flash_StoredCheckSum __attribute__((used,
-                                                                   section(".flash_checksum"))) =
-    0x30640B00UL;
-#elif defined(CY_DEVICE_SERIES_PSOC_4100S)
-static volatile const uint32_t flash_StoredCheckSum __attribute__((used,
-                                                                   section(".flash_checksum"))) =
-    0x75B9D600UL;
-#endif /* defined(CY_DEVICE_SERIES_PSOC_4100S) */
-
-#elif defined(__ICCARM__)
-    #pragma location = ((uint32_t)(CY_FLASH_BASE + CY_FLASH_SIZE - 8u))
-#if defined(CY_DEVICE_SERIES_PSOC_4500S)
-static const uint32_t flash_StoredCheckSum = 0x6E244F40UL;
-#elif defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS) && (CY_FLASH_SIZE == 0x00040000UL)
-static const uint32_t flash_StoredCheckSum = 0x6198E140UL;
-#elif defined(CY_DEVICE_SERIES_PSOC_4100S_MAX)
-static const uint32_t flash_StoredCheckSum = 0x781FA400UL;
-#elif defined(CY_DEVICE_SERIES_PSOC_4100S)
-static const uint32_t flash_StoredCheckSum = 0xA113C000UL;
-#endif /* defined(CY_DEVICE_SERIES_PSOC_4100S) */
-
-#endif // if defined(__GNUC__)
-
-#endif /* FLASH_TEST_MODE == FLASH_TEST_CRC */
-/* Pointer to currently calculating flash addr*/
-static uint32_t* flash_Pointer_FourBytes = (uint32_t*)CY_FLASH_BASE;
-
-
-#elif CY_CPU_CORTEX_M4
-#if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
-static volatile const uint64_t flash_StoredCheckSum __attribute__((used,
-                                                                   section(".flash_checksum"))) =
-    0x4906f7e9e52c99deULL;
-#elif (FLASH_TEST_MODE == FLASH_TEST_CRC32)
-static volatile const uint32_t flash_StoredCheckSum __attribute__((used,
-                                                                   section(".flash_checksum"))) =
-    0x2998440UL;
-#endif
-/* Pointer to currently calculating flash addr*/
-static uint32_t* flash_Pointer_FourBytes = (uint32_t*)(CY_FLASH_BASE + 0x2000);
-
-
-
-#elif CY_CPU_CORTEX_M7
-#if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
-static volatile const uint64_t flash_StoredCheckSum __attribute__((used,
-                                                                   section(".flash_checksum"))) =
-    0x1f9a378d292d2ca4ULL;
-#elif (FLASH_TEST_MODE == FLASH_TEST_CRC32)
-static volatile const uint32_t flash_StoredCheckSum __attribute__((used,
-                                                                   section(".flash_checksum"))) =
-    0x2998440UL;
-#endif
-/* Pointer to currently calculating flash addr*/
-static uint32_t* flash_Pointer_FourBytes = (uint32_t*)(CY_FLASH_BASE);
 #endif
 
+/* Check whether the init function was called or not*/
+static bool init_fxn_called = false;
+
+/* Pointer to currently calculating flash addr*/
+static uint32_t* flash_Pointer_FourBytes;
+
+/* Flash start addr*/
+static uint32_t flash_start_address;
+
+/* Flash end addr*/
+static uint32_t flash_end_address;
 
 #if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
 /* Variable that stores the running checksum of the FLASH */
 uint64_t flash_CheckSum = CHECKSUM_INIT_VALUE;
 static uint64_t sumA = CHECKSUM_INIT_VALUE;
 static uint32_t IterationCounter = ITER_COUNT_INIT_VALUE;
+/* Expected checksum*/
+static uint64_t expected_flash_shecksum = 0ULL;
 
 /***************************************
 * Local Function Prototypes
@@ -204,8 +105,46 @@ static void SelfTest_Fletcher64_CheckSum_Formula(uint32_t endAdress);
 #elif (FLASH_TEST_MODE == FLASH_TEST_CRC32)
 /* Variable that store the running CRC checksum of the FLASH */
 uint32_t flash_CheckSum = CRC32_INIT_VALUE;
-
+/* Expected checksum*/
+static uint32_t expected_flash_shecksum = 0ULL;
 #endif /* FLASH_TEST_MODE == FLASH_TEST_CRC */
+
+
+
+/*******************************************************************************
+ * Function Name: SelfTest_Flash_init()
+ *******************************************************************************
+*
+*  This function checks the checksum of the flash for the given range of flash with
+* the expected/reference checksum passed along with this API.
+*
+*
+* \param StartAddressOfFlash 
+* Start address of the flash from where the checksum needs to be calculated.<br>
+* \param EndAddressOfFlash 
+* End address of the flash till where the checksum needs to be calculated. <br>
+* \param flash_ExpectedCheckSum 
+* Expected checksum. Must be stored outside the range of check. <br>
+*
+* \note
+* This function needs to be called prior to \ref SelfTest_FlashCheckSum else the test will fail.
+*
+ ******************************************************************************/
+
+void SelfTest_Flash_init(uint32_t StartAddressOfFlash,uint32_t EndAddressOfFlash, uint64_t flash_ExpectedCheckSum)
+{
+    flash_start_address = StartAddressOfFlash;
+    /* Set pointer to access Flash memory to start address */
+    flash_Pointer_FourBytes = (uint32_t*)flash_start_address;
+    flash_end_address = EndAddressOfFlash;
+    #if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
+        expected_flash_shecksum = flash_ExpectedCheckSum;
+    #elif (FLASH_TEST_MODE == FLASH_TEST_CRC32)
+        expected_flash_shecksum = (uint32_t)flash_ExpectedCheckSum;
+    #endif
+    init_fxn_called = true;
+}
+
 
 
 /*******************************************************************************
@@ -228,6 +167,10 @@ uint32_t flash_CheckSum = CRC32_INIT_VALUE;
 
 uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
 {
+    if (init_fxn_called == false)
+    {
+        return ERROR_STATUS;
+    }
 
 #if CY_CPU_CORTEX_M0P
     /* Variable to save CPUSS_CONFIG or CM0P_VTOR and CPUSS_SYSREQ registers */
@@ -241,22 +184,17 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
     /* Function result */
     uint8_t ret = PASS_STILL_TESTING_STATUS;
 
+#if CY_CPU_CORTEX_M0P
     /* Enable global interrupts */
     __enable_irq();
+#endif
 
     /* Check if we are in the last permitted byte of Flash */
-    if ((uint32_t)flash_Pointer_FourBytes == FLASH_END_ADDR)
+    if ((uint32_t)flash_Pointer_FourBytes == flash_end_address)
     {
-        #if CY_CPU_CORTEX_M4
-        /* Set pointer to access Flash memory to base address */
-        flash_Pointer_FourBytes = (uint32_t*)(CY_FLASH_BASE+0x2000);
-        #elif CY_CPU_CORTEX_M0P
-        /* Set pointer to access Flash memory to base address */
-        flash_Pointer_FourBytes = (uint32_t *)CY_FLASH_BASE;
-        #elif CY_CPU_CORTEX_M7
-        /* Set pointer to access Flash memory to base address */
-        flash_Pointer_FourBytes = (uint32_t *)CY_FLASH_BASE;
-        #endif
+        /* Set pointer to access Flash memory to start address */
+        flash_Pointer_FourBytes = (uint32_t*)flash_start_address;
+
 
         #if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
         /* Set init values for Iteration Counter in Fletcher64 Checksum algorithm */
@@ -276,15 +214,15 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
         (uint32_t)((uint32_t)flash_Pointer_FourBytes + (DoubleWordsToTest * sizeof(uint32_t)));
 
     /* Check if Flash byte address is in Flash range */
-    if (endAdressOfTest > FLASH_END_ADDR)
+    if (endAdressOfTest > flash_end_address)
     {
-        endAdressOfTest = FLASH_END_ADDR;
+        endAdressOfTest = flash_end_address;
     }
 
+#if CY_CPU_CORTEX_M0P
     /* Disable global interrupts */
     __disable_irq();
 
-#if CY_CPU_CORTEX_M0P
     /* Save CPU registers */
     regCPUSS_VECTORTABLE = REG_CPUSS_VTOR;
 
@@ -311,22 +249,22 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
     REG_CPUSS_VTOR = regCPUSS_VECTORTABLE;
 
     CPUSS_SYSREQ = regCPUSS_SYSREQ;
-#endif
 
     /* Enable global interrupts */
     __enable_irq();
+#endif
 
     /* Check if we are in the last permitted byte of Flash */
-    if ((uint32_t)flash_Pointer_FourBytes == FLASH_END_ADDR)
+    if ((uint32_t)flash_Pointer_FourBytes == flash_end_address)
     {
         #if (ERROR_IN_FLASH == 1)
 
         /* Compare the stored check sum and calculated check sum */
-        if (flash_CheckSum == (flash_StoredCheckSum + 1))
+        if (flash_CheckSum == (expected_flash_shecksum + 1))
         #else
 
         /* Compare the stored check sum and calculated check sum */
-        if (flash_CheckSum == flash_StoredCheckSum)
+        if (flash_CheckSum == expected_flash_shecksum)
         #endif /* End ERROR_IN_FLASH */
         {
             /* Test passed */
@@ -417,7 +355,7 @@ static void SelfTest_Fletcher64_CheckSum_Formula(uint32_t endAdress)
     }
 
     /* If end of Flash summarize Checksum */
-    if ((uint32_t)flash_Pointer_FourBytes == FLASH_END_ADDR)
+    if ((uint32_t)flash_Pointer_FourBytes == flash_end_address)
     {
         /* Second reduction step to 32 bits */
         sumA = (sumA & 0xFFFFFFFFu) + (sumA >> 32);

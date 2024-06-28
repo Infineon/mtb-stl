@@ -65,8 +65,8 @@ static bool Program_flow_test;
  */
 
 #if defined(__GNUC__)
-static uint8_t SelfTest_PC5555(void) __attribute__((noinline, section("PC5555")));
-static uint8_t SelfTest_PCAAAA(void) __attribute__((noinline, section("PCAAAA")));
+static uint8_t SelfTest_PC5555(void) __attribute__((noinline, section(SELF_TEST_SECTION_PC5555)));
+static uint8_t SelfTest_PCAAAA(void) __attribute__((noinline, section(SELF_TEST_SECTION_PCAAAA)));
 #elif defined(__ICCARM__)
 /* Place the functions in required location in flash using linker file. (IAR compilers) */
 #pragma default_function_attributes  = @ "PC5555"

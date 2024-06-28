@@ -50,8 +50,6 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 
-.include "SelfTest_RAM_Config_GCC.inc"
-
 .data   
 
 Test_Stack_Addr:
@@ -67,11 +65,72 @@ Test_SRAM_Addr:
 .text
 .thumb
 
-/* Enable this define to do intentional error during SRAM March test */
-.equ ERROR_IN_SRAM_MARCH,  0x00
+#if COMPONENT_CAT1
+#if COMPONENT_CAT1A
 
-/* Enable this define to do intentional error during STACK March test */
-.equ ERROR_IN_STACK_MARCH, 0x00
+    #if TARGET_CY8CPROTO_062_4343W || TARGET_APP_CY8CPROTO_062_4343W
+        .equ CY_SRAM_BASE,          0x08002000
+        .equ CY_STACK_SIZE,         0x00001000
+        .equ CY_SRAM_SIZE,          0x000FD800
+    #elif TARGET_CY8CPROTO_062S3_4343W  || TARGET_APP_CY8CPROTO_062S3_4343W
+        .equ CY_SRAM_BASE,          0x08002000
+        .equ CY_STACK_SIZE,         0x00001000
+        .equ CY_SRAM_SIZE,          0x0003D800
+    #elif TARGET_CY8CKIT_062S4 || TARGET_APP_CY8CKIT_062S4
+        .equ CY_SRAM_BASE,          0x08002000
+        .equ CY_STACK_SIZE,         0x00001000
+        .equ CY_SRAM_SIZE,          0x0001D800
+    #elif TARGET_CY8CKIT_062_WIFI_BT || TARGET_APP_CY8CKIT_062_WIFI_BT
+        .equ CY_SRAM_BASE,          0x08002000
+        .equ CY_STACK_SIZE,         0x00001000
+        .equ CY_SRAM_SIZE,          0x00045800
+    #else
+        /* Update these macros as per the device being tested */
+        .equ CY_SRAM_BASE,          0x08002000
+        .equ CY_STACK_SIZE,         0x00001000
+        .equ CY_SRAM_SIZE,          0x00045800
+    #endif
+#endif
+
+#if COMPONENT_CAT1C
+    #if TARGET_KIT_XMC71_EVK_LITE_V1 || TARGET_APP_KIT_XMC71_EVK_LITE_V1
+        .equ CY_SRAM_BASE,          0x28004000
+        .equ CY_STACK_SIZE,         0x00001000
+        .equ CY_SRAM_SIZE,          0x000BC000
+    #elif TARGET_KIT_XMC72_EVK || TARGET_APP_KIT_XMC72_EVK
+        .equ CY_SRAM_BASE,          0x28004000
+        .equ CY_STACK_SIZE,         0x00001000
+        .equ CY_SRAM_SIZE,          0x000FC000
+    #else
+       /* Update these macros as per the device being tested */
+        .equ CY_SRAM_BASE,          0x28004000
+        .equ CY_STACK_SIZE,         0x00001000
+        .equ CY_SRAM_SIZE,          0x000FC000
+    #endif
+#endif
+
+#endif
+
+#if COMPONENT_CAT2
+
+    #if TARGET_CY8CKIT_041S_MAX || TARGET_APP_CY8CKIT_041S_MAX
+        .equ CY_SRAM_BASE,          0x20000000
+        .equ CY_STACK_SIZE,         0x00000400
+        .equ CY_SRAM_SIZE,          0x00008000
+    
+    #else
+       /* Update these macros as per the device being tested */
+        .equ CY_SRAM_BASE,          0x20000000
+        .equ CY_STACK_SIZE,         0x00000400
+        .equ CY_SRAM_SIZE,          0x00002000
+    #endif
+#endif
+
+/* Enable this define to do intentional error during SRAM MARCH or GALPAT test */
+.equ ERROR_IN_SRAM_MARCH_GALPAT,  0x00
+
+/* Enable this define to do intentional error during STACK MARCH or GALPAT test */
+.equ ERROR_IN_STACK_MARCH_GALPAT, 0x00
 
 /* Set Test Block size for SRAM test */
 .equ TEST_BLOCK_SRAM_SIZE,  0x00000100
@@ -88,12 +147,12 @@ Test_SRAM_Addr:
 .endif
 
 
-.equ MARCH_SRAM_BASE,           (CY_SRAM_BASE)
-.equ MARCH_STACK_BASE,          (CY_SRAM_BASE + CY_SRAM_SIZE - CY_STACK_SIZE)
-.equ MARCH_STACK_END,           (CY_SRAM_BASE + CY_SRAM_SIZE)
-.equ MARCH_BUFF_ADDR_START,     (MARCH_STACK_BASE - TEST_BLOCK_SIZE)    
-.equ MARCH_BUFF_ADDR_END,       (MARCH_BUFF_ADDR_START + TEST_BLOCK_SRAM_SIZE)
-.equ MARCH_BUFF_ADDR_STACK_END, (MARCH_BUFF_ADDR_START + TEST_BLOCK_STACK_SIZE)
+.equ MARCH_GALPAT_SRAM_BASE,           (CY_SRAM_BASE)
+.equ MARCH_GALPAT_STACK_BASE,          (CY_SRAM_BASE + CY_SRAM_SIZE - CY_STACK_SIZE)
+.equ MARCH_GALPAT_STACK_END,           (CY_SRAM_BASE + CY_SRAM_SIZE)
+.equ MARCH_GALPAT_BUFF_ADDR_START,     (MARCH_GALPAT_STACK_BASE - TEST_BLOCK_SIZE)    
+.equ MARCH_GALPAT_BUFF_ADDR_END,       (MARCH_GALPAT_BUFF_ADDR_START + TEST_BLOCK_SRAM_SIZE)
+.equ MARCH_GALPAT_BUFF_ADDR_STACK_END, (MARCH_GALPAT_BUFF_ADDR_START + TEST_BLOCK_STACK_SIZE)
 
 
 /* Status flags to return function results */
@@ -101,6 +160,230 @@ Test_SRAM_Addr:
 .equ ERROR_STATUS,              0x01
 .equ PASS_STILL_TESTING_STATUS, 0x02 
 .equ PASS_COMPLETE_STATUS,      0x03 
+
+
+/*----------------------------------------------------------------------------------*/
+/* GALPAT_Test_Block                                                                 */
+/*----------------------------------------------------------------------------------*/
+/*                                                                                  */
+/* Summary:                                                                         */
+/*   This function perform block of RAM self test using GALPAT method.               */
+/*                                                                                  */
+/* Parameters:                                                                      */
+/*   r0 - used to set address of first block byte.                                  */
+/*   r1 - used to set address of last block byte.                                   */
+/*                                                                                  */
+/* Return:                                                                          */
+/*   r7 - Result of test:  "0" - pass test; "1" - fail test.                        */
+/*                                                                                  */
+/* Destroys:                                                                        */
+/*   r3, r4, r5, r10                                                                */
+/*----------------------------------------------------------------------------------*/
+/* uint8 GALPAT_Test_Block(void); */
+.global GALPAT_Test_Block
+.func GALPAT_Test_Block, GALPAT_Test_Block
+.type GALPAT_Test_Block, %function
+.thumb_func
+GALPAT_Test_Block:
+
+    mov r10, LR
+
+    /* Save r0 */
+    mov r4, r0
+    
+    /* keep track of inverted byte */
+    mov r5, r0
+
+    /* Write 0x00 to all block of SRAM */
+    bl MARCH_GALPAT_Test_Write_0
+    mov r0, r4
+    
+    /* Invert the r5^th byte */
+    Repeate_procedure_1:
+        /* Read byte, compare with 0x00 and also compare the inverted byte every time  */
+        bl GALPAT_Test_Read0_by_Inverting_1byte
+        cmp r7, #0
+        bne End1
+        movs r3, #0x00
+        STRB r3, [r5]
+        adds r5, r5, #1
+        mov r0, r4
+        cmp r5, r1
+    
+    blt Repeate_procedure_1 
+
+    /* Write 0xFF to all block of SRAM */
+    bl MARCH_GALPAT_Test_Write_1
+    mov r0, r4    
+    /* keep track of inverted byte */
+    mov r5, r4
+
+    Repeate_procedure_2:
+        /* Read byte, compare with 0x00 and write 0xFF to all block of SRAM  */
+        bl GALPAT_Test_Read1_by_Inverting_1byte
+        cmp r7, #0
+        bne End1
+        movs r3, #0xFF
+        STRB r3, [r5]
+        adds r5, r5, #1
+        mov r0, r4
+        cmp r5, r1
+    
+    blt Repeate_procedure_2
+
+
+    End1: 
+
+    mov LR, r10
+    
+    BX lr
+    
+.endfunc
+
+
+/*----------------------------------------------------------------------------------*/
+/* GALPAT_Test_Read0_by_Inverting_1byte                                             */
+/*----------------------------------------------------------------------------------*/
+/*                                                                                  */
+/* Summary:                                                                         */
+/*   Invert the r5^th byte, Check block of SRAM with 0x00 except r5th byte.         */
+/*   r5^th byte is checked with 0xFF after every byte read andcompared with 0x00.   */
+/*   Address of memory increneted.                                                  */
+/*                                                                                  */
+/* Parameters:                                                                      */
+/*   r0 - register used to set address of first test byte                           */
+/*   r1 - register used to set address of last test byte                            */
+/*   r5 - register used to set address of inverted test byte                        */
+/* Return:                                                                          */
+/*   r7 - Result of test:  "0" - pass test; "1" - fail test.                        */
+/*                                                                                  */
+/* Destroys:                                                                        */
+/*   r0, r3, r7                                                                     */
+/*----------------------------------------------------------------------------------*/
+/* uint8 GALPAT_Test_Read0_by_Inverting_1byte(void); */
+
+.global GALPAT_Test_Read0_by_Inverting_1byte
+.func GALPAT_Test_Read0_by_Inverting_1byte, GALPAT_Test_Read0_by_Inverting_1byte
+.type GALPAT_Test_Read0_by_Inverting_1byte, %function
+.thumb_func
+GALPAT_Test_Read0_by_Inverting_1byte:
+
+    IRAM_chk_galpat:
+        
+        movs r3, #0xFF
+        STRB r3, [r5]
+
+        cmp r0, r5
+        beq Check_inverted_byte
+
+        /* Write byte of SRAM to r3 */
+        LDRB r3, [r0]
+        
+        /* Compare content of byte in SRAM with 0x00 */
+        cmp r3, #0 
+        
+        beq Check_inverted_byte
+        
+            /* return ERROR_STATUS */
+            movs r7, #ERROR_STATUS    
+
+            BX lr 
+
+        Check_inverted_byte:
+        LDRB r3, [r5]
+        cmp r3, #0xFF
+        beq Incr_byte
+        
+            /* return ERROR_STATUS */
+            movs r7, #ERROR_STATUS    
+
+            BX lr
+
+
+        /* Write 0xFF to byte in SRAM */
+        Incr_byte: 
+        /* Increnemt SRAM pointer register */
+        adds r0, r0, #1
+
+        /* Check if it is not end of SRAM block */
+        cmp r0, r1
+    
+        blt IRAM_chk_galpat
+
+    BX lr
+ 
+.endfunc   
+
+/*----------------------------------------------------------------------------------*/
+/* GALPAT_Test_Read1_by_Inverting_1byte                                             */
+/*----------------------------------------------------------------------------------*/
+/*                                                                                  */
+/* Summary:                                                                         */
+/*   Invert the r5^th byte, Check block of SRAM with 0xFF except r5th byte.         */
+/*   r5^th byte is checked with 0x00 after every byte read and compared with 0xFF.  */
+/*   Address of memory increneted.                                                  */
+/*                                                                                  */
+/* Parameters:                                                                      */
+/*   r0 - register used to set address of first test byte                           */
+/*   r1 - register used to set address of last test byte                            */
+/*   r5 - register used to set address of inverted test byte                        */
+/* Return:                                                                          */
+/*   r7 - Result of test:  "0" - pass test; "1" - fail test.                        */
+/*                                                                                  */
+/* Destroys:                                                                        */
+/*   r0, r3, r7                                                                     */
+/*----------------------------------------------------------------------------------*/
+/* uint8 GALPAT_Test_Read1_by_Inverting_1byte(void); */
+
+.global GALPAT_Test_Read1_by_Inverting_1byte
+.func GALPAT_Test_Read1_by_Inverting_1byte, GALPAT_Test_Read1_by_Inverting_1byte
+.type GALPAT_Test_Read1_by_Inverting_1byte, %function
+.thumb_func
+GALPAT_Test_Read1_by_Inverting_1byte:
+
+    IRAM_chk_galpat_1:
+        
+        movs r3, #0x00
+        STRB r3, [r5]
+
+        cmp r0, r5
+        beq Check_inverted_byte_1
+
+        /* Write byte of SRAM to r3 */
+        LDRB r3, [r0]
+        
+        /* Compare content of byte in SRAM with 0xFF */
+        cmp r3, #0xFF 
+        
+        beq Check_inverted_byte_1
+        
+            /* return ERROR_STATUS */
+            movs r7, #ERROR_STATUS    
+
+            BX lr 
+
+        Check_inverted_byte_1:
+        LDRB r3, [r5]
+        cmp r3, #0x00
+        beq Incr_byte_1
+        
+            /* return ERROR_STATUS */
+            movs r7, #ERROR_STATUS    
+
+            BX lr
+
+        Incr_byte_1: 
+        /* Increnemt SRAM pointer register */
+        adds r0, r0, #1
+
+        /* Check if it is not end of SRAM block */
+        cmp r0, r1
+    
+        blt IRAM_chk_galpat_1
+
+    BX lr
+ 
+.endfunc   
 
 
 /*----------------------------------------------------------------------------------*/
@@ -133,7 +416,7 @@ March_Test_Block:
     mov r4, r0
     
     /* Write 0x00 to all block of SRAM */
-    bl March_Test_Write_0
+    bl MARCH_GALPAT_Test_Write_0
     mov r0, r4
     
     /* Read byte, compare with 0x00 and write 0xFF to all block of SRAM  */
@@ -288,7 +571,7 @@ Copy_Block_From_Buffer:
     
 
 /*----------------------------------------------------------------------------------*/
-/* March_Test_Write_0                                                               */
+/* MARCH_GALPAT_Test_Write_0                                                               */
 /*----------------------------------------------------------------------------------*/
 /*                                                                                  */
 /* Summary:                                                                         */
@@ -304,13 +587,13 @@ Copy_Block_From_Buffer:
 /* Destroys:                                                                        */
 /*   r0, r3                                                                         */
 /*----------------------------------------------------------------------------------*/
-/* void March_Test_Write_0(void); */
-.global March_Test_Write_0
-.func March_Test_Write_0, March_Test_Write_0
-.type March_Test_Write_0, %function
+/* void MARCH_GALPAT_Test_Write_0(void); */
+.global MARCH_GALPAT_Test_Write_0
+.func MARCH_GALPAT_Test_Write_0, MARCH_GALPAT_Test_Write_0
+.type MARCH_GALPAT_Test_Write_0, %function
 .thumb_func
     
-March_Test_Write_0:
+MARCH_GALPAT_Test_Write_0:
         
     movs r3, #0x00
                   
@@ -326,7 +609,7 @@ March_Test_Write_0:
         blt IRAM_chk0
         
     /* Check if intentional error should be made for testing */
-    .if (ERROR_IN_SRAM_MARCH | ERROR_IN_STACK_MARCH)
+    .if (ERROR_IN_SRAM_MARCH_GALPAT | ERROR_IN_STACK_MARCH_GALPAT)
         
         /* Set 0x01 for writing to RAM */
         movs r3, #0x01     
@@ -349,7 +632,7 @@ March_Test_Write_0:
 
  
 /*----------------------------------------------------------------------------------*/
-/* March_Test_Write_1                                                               */
+/* MARCH_GALPAT_Test_Write_1                                                               */
 /*----------------------------------------------------------------------------------*/
 /*                                                                                  */
 /* Summary:                                                                         */
@@ -365,12 +648,12 @@ March_Test_Write_0:
 /* Destroys:                                                                        */
 /*   r0, r3                                                                         */
 /*----------------------------------------------------------------------------------*/
-/* void March_Test_Write_1(void); */
-.global March_Test_Write_1
-.func March_Test_Write_1, March_Test_Write_1
-.type March_Test_Write_1, %function
+/* void MARCH_GALPAT_Test_Write_1(void); */
+.global MARCH_GALPAT_Test_Write_1
+.func MARCH_GALPAT_Test_Write_1, MARCH_GALPAT_Test_Write_1
+.type MARCH_GALPAT_Test_Write_1, %function
 .thumb_func
-March_Test_Write_1:
+MARCH_GALPAT_Test_Write_1:
 
     movs r3, #0xFF
     IRAM_chk1:
@@ -697,7 +980,7 @@ March_Test_Read_0:
 /*                                                                                  */
 /* Parameters:                                                                      */
 /*   Function set to variable "Test_SRAM_Addr" address of first SRAM byte for test. */
-/*   "Test_SRAM_Addr" = MARCH_SRAM_BASE + R0. R0 uses to set shift of first         */
+/*   "Test_SRAM_Addr" = MARCH_GALPAT_SRAM_BASE + R0. R0 uses to set shift of first         */
 /*   byte for test.                                                                 */
 /*                                                                                  */
 /* Return:                                                                          */
@@ -716,7 +999,7 @@ March_Test_Init:
     PUSH  {R1, R2}
 
     /* Set base address for March checkerboard test */
-    LDR r1, =MARCH_SRAM_BASE
+    LDR r1, =MARCH_GALPAT_SRAM_BASE
     
     /* Set shift of start test address */ 
     ADD r1, r1, r0
@@ -769,15 +1052,15 @@ March_Test_SRAM:
     /*-----------------------------  Test reserved block  ------------------------------*/
     /* Set parameters to test reserved buffer in RAM. */
     /* Write start address of RAM reserved buffer to r0 */
-    LDR r0, =MARCH_BUFF_ADDR_START
+    LDR r0, =MARCH_GALPAT_BUFF_ADDR_START
  
     /* Write end address of RAM reserved buffer to r1 */
-    LDR r1, =MARCH_BUFF_ADDR_END
+    LDR r1, =MARCH_GALPAT_BUFF_ADDR_END
 
-/* Disable SRAM March test, if ERROR_IN_STACK_MARCH enabled */
+/* Disable SRAM March test, if ERROR_IN_STACK_MARCH_GALPAT enabled */
 /* We need it because in both tests used function "March_Test_Block" where error reproduces */
 /* If not disconnect this test error reproduced here, but not in the right place */
-.if (!ERROR_IN_STACK_MARCH | ERROR_IN_SRAM_MARCH)
+.if (!ERROR_IN_STACK_MARCH_GALPAT | ERROR_IN_SRAM_MARCH_GALPAT)
 
     /* Run Test of reserved RAM area. */
     bl March_Test_Block
@@ -802,7 +1085,7 @@ March_Test_SRAM:
     ADD r1, r1, r0
     
     /* Set address of buffer first byte */
-    LDR r2, =MARCH_BUFF_ADDR_START
+    LDR r2, =MARCH_GALPAT_BUFF_ADDR_START
     
     /* Check if not end of RAM */
     CMP r2, r1
@@ -825,10 +1108,10 @@ Not_end_ram:
     /* Set address of first byte in testing block */  
     mov r0, r5
 
-/* Disable SRAM March test, if ERROR_IN_STACK_MARCH enabled */
+/* Disable SRAM March test, if ERROR_IN_STACK_MARCH_GALPAT enabled */
 /* We need it because in both tests used function "March_Test_Block" where error reproduces */
 /* If not disconnect this test error reproduced here, but not in the right place */
-.if (!ERROR_IN_STACK_MARCH | ERROR_IN_SRAM_MARCH)
+.if (!ERROR_IN_STACK_MARCH_GALPAT | ERROR_IN_SRAM_MARCH_GALPAT)
 
     /* Test Block of RAM */
     bl March_Test_Block
@@ -837,7 +1120,7 @@ Not_end_ram:
     
     /*-----------------------------  Restore block  -----------------------------------*/
     /* Set address of buffer first byte */
-    LDR r2, =MARCH_BUFF_ADDR_START    
+    LDR r2, =MARCH_GALPAT_BUFF_ADDR_START    
    
     /* Copy block of SRAM from Reserved SRAM area */
     bl Copy_Block_From_Buffer      
@@ -852,7 +1135,7 @@ Not_end_ram:
     /*-------------------------  Check boundaries  ----------------------------------*/
     
     /* Set address of buffer first byte (this is second last byte for test ) */
-    LDR r2, =MARCH_BUFF_ADDR_START    
+    LDR r2, =MARCH_GALPAT_BUFF_ADDR_START    
         
     /* Check if not end of SRAM */
     cmp r2, r1             
@@ -889,7 +1172,7 @@ ret_result:
 /*                                                                                           */
 /* Parameters:                                                                               */
 /*   Function set to variable "Test_Stack_Addr" address of first STACK byte for test.        */         
-/*   "Test_Stack_Addr" = MARCH_STACK_BASE + R0. R0 uses to set shift of first byte for test. */
+/*   "Test_Stack_Addr" = MARCH_GALPAT_STACK_BASE + R0. R0 uses to set shift of first byte for test. */
 /*                                                                                           */
 /* Return:                                                                                   */
 /*   void.                                                                                   */
@@ -907,7 +1190,7 @@ March_Test_Stack_Init:
     PUSH  {R1, R2}
 
     /* Set base address for March checkerboard test */
-    LDR r1, =MARCH_STACK_BASE    
+    LDR r1, =MARCH_GALPAT_STACK_BASE    
     
     /* Set shift of start test address */ 
     ADD r1, r1, r0
@@ -957,15 +1240,15 @@ March_Test_Stack:
     /*-----------------------------  Test reserved block  ------------------------------*/
     /* Set parameters to test reserved buffer in RAM. */
     /* Write start address of RAM reserved buffer to r0 */
-    LDR r0, =MARCH_BUFF_ADDR_START    
+    LDR r0, =MARCH_GALPAT_BUFF_ADDR_START    
  
     /* Write end address of RAM reserved buffer to r1 */
-    LDR r1, =MARCH_BUFF_ADDR_STACK_END
+    LDR r1, =MARCH_GALPAT_BUFF_ADDR_STACK_END
 
-/* Disable STACK March test, if ERROR_IN_SRAM_MARCH enabled */
+/* Disable STACK March test, if ERROR_IN_SRAM_MARCH_GALPAT enabled */
 /* We need it because in both tests used function "March_Test_Block" where error reproduces */
 /* If not disconnect this test error reproduced here, but not in the right place */
-.if (!ERROR_IN_SRAM_MARCH | ERROR_IN_STACK_MARCH)
+.if (!ERROR_IN_SRAM_MARCH_GALPAT | ERROR_IN_STACK_MARCH_GALPAT)
 
     /* Test reserved RAM area. */
      bl March_Test_Block
@@ -990,7 +1273,7 @@ March_Test_Stack:
     ADD r1, r1, r0
     
     /* Set address of buffer first byte */
-    LDR r2, =MARCH_STACK_END    
+    LDR r2, =MARCH_GALPAT_STACK_END    
     
     /* Check if not end of RAM */
     CMP r2, r1    
@@ -1002,7 +1285,7 @@ March_Test_Stack:
 Not_end_stack:
         
     /* Set parameters in r2 to copy tested block of RAM to reserved area */
-    LDR r2, =MARCH_BUFF_ADDR_START    
+    LDR r2, =MARCH_GALPAT_BUFF_ADDR_START    
               
     /* Save r0 */
     MOV r5, r0
@@ -1016,10 +1299,10 @@ Not_end_stack:
     /* Set address of first byte in testing block */
     mov r0, r5
 
-/* Disable STACK March test, if ERROR_IN_SRAM_MARCH enabled */
+/* Disable STACK March test, if ERROR_IN_SRAM_MARCH_GALPAT enabled */
 /* We need it because in both tests used function "March_Test_Block" where error reproduces */
 /* If not disconnect this test error reproduced here, but not in the right place */
-.if (!ERROR_IN_SRAM_MARCH | ERROR_IN_STACK_MARCH)
+.if (!ERROR_IN_SRAM_MARCH_GALPAT | ERROR_IN_STACK_MARCH_GALPAT)
 
     /* Test block of stack RAM */
     bl March_Test_Block
@@ -1028,7 +1311,7 @@ Not_end_stack:
     
     /*-------------------------  Restore block  ------------------------------------*/
     /* Write to R0 and R1 parameters for function "Copy_Block_To_Buffer" */
-    LDR r2, =MARCH_BUFF_ADDR_START    
+    LDR r2, =MARCH_GALPAT_BUFF_ADDR_START    
     
     /* Copy block of SRAM from Reserved SRAM area */
     bl Copy_Block_From_Buffer              
@@ -1041,7 +1324,7 @@ Not_end_stack:
             
     /*-------------------------  Check boundaries  ----------------------------------*/
     /* Set address of  second last byte of STACK */
-    LDR r2, =MARCH_STACK_END
+    LDR r2, =MARCH_GALPAT_STACK_END
     
     /* Check if not end of SRAM    */
     CMP r2, r1
@@ -1060,6 +1343,389 @@ Not_end_of_Stack:
     movs r7, #PASS_STILL_TESTING_STATUS
     
 Error_detected_1:
+
+    /* Return result */
+    mov r0, r7 
+    mov r0, r0
+    
+    POP   {R1-R7, PC}
+    
+.endfunc
+
+
+
+/*----------------------------------------------------------------------------------*/
+/* GALPAT_Test_Init                                                                 */
+/*----------------------------------------------------------------------------------*/
+/*                                                                                  */
+/* Summary:                                                                         */
+/*   This function initializes the SRAM base address.                               */
+/*                                                                                  */
+/* Parameters:                                                                      */
+/*   Function set to variable "Test_SRAM_Addr" address of first SRAM byte for test. */
+/*   "Test_SRAM_Addr" = MARCH_GALPAT_SRAM_BASE + R0. R0 uses to set shift of first         */
+/*   byte for test.                                                                 */
+/*                                                                                  */
+/* Return:                                                                          */
+/*   void.                                                                          */
+/*                                                                                  */
+/* Destroys:                                                                        */
+/*   none.                                                                          */
+/*----------------------------------------------------------------------------------*/
+/* void GALPAT_Test_Init(uint8_t shift); */
+.global GALPAT_Test_Init
+.func GALPAT_Test_Init, GALPAT_Test_Init
+.type GALPAT_Test_Init, %function
+.thumb_func
+GALPAT_Test_Init:
+
+    PUSH  {R1, R2}
+
+    /* Set base address for Galpat checkerboard test */
+    LDR r1, =MARCH_GALPAT_SRAM_BASE
+    
+    /* Set shift of start test address */ 
+    ADD r1, r1, r0
+    
+     LDR r2, =Test_SRAM_Addr
+    STR r1, [r2, #0]
+    
+    POP  {R1, R2}    
+    
+    BX lr
+    
+.endfunc    
+
+
+/*----------------------------------------------------------------------------------*/
+/* GALPAT_Test_SRAM                                                                  */
+/*----------------------------------------------------------------------------------*/
+/*                                                                                  */
+/* Summary:                                                                         */
+/*  This function perform block of RAM self test using GALPAT method. This function  */
+/*  first duplicates data in the area to be tested as this test is destructive.     */
+/*  At the end of this test the original data is restored to its correct location   */
+/*  in memory.                                                                      */
+/*                                                                                  */
+/* Parameters:                                                                      */    
+/*   Function uses variable "Test_SRAM_Addr" to set start address of tested block   */
+/*                                                                                  */
+/* Return:                                                                          */
+/*   Result of test:  "1" - fail test;                                              */
+/*                    "2" - pass, but still testing status                          */
+/*                    "3" - pass and complete status                                */
+/*                                                                                  */
+/* Destroys:                                                                        */
+/*   r0                                                                             */
+/*----------------------------------------------------------------------------------*/
+/* uint8 GALPAT_Test_SRAM(void); */
+.global GALPAT_Test_SRAM
+.func GALPAT_Test_SRAM, GALPAT_Test_SRAM
+.type GALPAT_Test_SRAM, %function
+.thumb_func
+GALPAT_Test_SRAM:
+
+    PUSH  {R1-R7, LR}
+
+
+    /* Clear test status register */
+    movs r7, #0 
+
+        
+    /*-----------------------------  Test reserved block  ------------------------------*/
+    /* Set parameters to test reserved buffer in RAM. */
+    /* Write start address of RAM reserved buffer to r0 */
+    LDR r0, =MARCH_GALPAT_BUFF_ADDR_START
+ 
+    /* Write end address of RAM reserved buffer to r1 */
+    LDR r1, =MARCH_GALPAT_BUFF_ADDR_END
+
+/* Disable SRAM GALPAT test, if ERROR_IN_STACK_MARCH_GALPAT enabled */
+/* We need it because in both tests used function "GALPAT_Test_Block" where error reproduces */
+/* If not disconnect this test error reproduced here, but not in the right place */
+.if (!ERROR_IN_STACK_MARCH_GALPAT | ERROR_IN_SRAM_MARCH_GALPAT)
+
+    /* Run Test of reserved RAM area. */
+    bl GALPAT_Test_Block
+.endif  
+
+    /* Check result of reserved RAM testing */ 
+    cmp r7, #0
+        bne ret_result_galpat     
+    /*----------------------------------------------------------------------------------*/
+
+
+    /*-----------------------------  Copy RAM block  -----------------------------------*/    
+    
+    /* Set parameters to copy tested block of RAM to reserved area */ 
+    
+    /* Set address of first byte in testing block */  
+    LDR r0, =Test_SRAM_Addr
+    LDR r0, [r0]  
+    
+    /* Set address of last byte in testing block */  
+    LDR r1, =TEST_BLOCK_SRAM_SIZE
+    ADD r1, r1, r0
+    
+    /* Set address of buffer first byte */
+    LDR r2, =MARCH_GALPAT_BUFF_ADDR_START
+    
+    /* Check if not end of RAM */
+    CMP r2, r1
+    BPL Not_end_ram_galpat
+    
+        /* If 'yes' - Set address of last byte in testing block equal to last byte in RAM */
+        MOV r1, r2
+        
+Not_end_ram_galpat:
+                
+    /* Save r0 */
+    MOV r5, r0
+    
+    /* Copy block of SRAM to Reserved buffer SRAM area */
+    bl Copy_Block_To_Buffer        
+    /*-----------------------------------------------------------------------------------*/
+   
+   
+    /*-----------------------------  Test block of RAM  ---------------------------------*/
+    /* Set address of first byte in testing block */  
+    mov r0, r5
+
+/* Disable SRAM GALPAT test, if ERROR_IN_STACK_MARCH_GALPAT enabled */
+/* We need it because in both tests used function "GALPAT_Test_Block" where error reproduces */
+/* If not disconnect this test error reproduced here, but not in the right place */
+.if (!ERROR_IN_STACK_MARCH_GALPAT | ERROR_IN_SRAM_MARCH_GALPAT)
+
+    /* Test Block of RAM */
+    bl GALPAT_Test_Block
+    /*-----------------------------------------------------------------------------------*/  
+.endif    
+    
+    /*-----------------------------  Restore block  -----------------------------------*/
+    /* Set address of buffer first byte */
+    LDR r2, =MARCH_GALPAT_BUFF_ADDR_START    
+   
+    /* Copy block of SRAM from Reserved SRAM area */
+    bl Copy_Block_From_Buffer      
+    /*-----------------------------------------------------------------------------------*/
+
+
+    /* Check result of RAM block testing */
+    cmp r7, #0
+        bne ret_result_galpat 
+
+
+    /*-------------------------  Check boundaries  ----------------------------------*/
+    
+    /* Set address of buffer first byte (this is second last byte for test ) */
+    LDR r2, =MARCH_GALPAT_BUFF_ADDR_START    
+        
+    /* Check if not end of SRAM */
+    cmp r2, r1             
+        bne Not_end_of_ram_galpat
+
+
+    /*----------------------------  Check results  -------------------------------------*/
+        movs r7, #PASS_COMPLETE_STATUS 
+        bl ret_result_galpat
+    
+Not_end_of_ram_galpat:
+    
+    /* Calculate and save address of first byte for next RAM block */
+     LDR r3, =Test_SRAM_Addr
+    STR r1, [r3, #0]
+    movs r7, #PASS_STILL_TESTING_STATUS
+    
+ret_result_galpat:
+    
+    /* Return result */
+    mov r0, r7     
+    
+    POP   {R1-R7, PC}
+
+.endfunc
+
+
+/*-------------------------------------------------------------------------------------------*/
+/* GALPAT_Test_Stack_Init                                                                     */
+/*-------------------------------------------------------------------------------------------*/
+/*                                                                                           */
+/* Summary:                                                                                  */
+/*   This function initializes the test STACK base address.                                  */
+/*                                                                                           */
+/* Parameters:                                                                               */
+/*   Function set to variable "Test_Stack_Addr" address of first STACK byte for test.        */         
+/*   "Test_Stack_Addr" = MARCH_GALPAT_STACK_BASE + R0. R0 uses to set shift of first byte for test. */
+/*                                                                                           */
+/* Return:                                                                                   */
+/*   void.                                                                                   */
+/*                                                                                           */
+/* Destroys:                                                                                 */
+/*   none.                                                                                   */
+/*-------------------------------------------------------------------------------------------*/
+/* void GALPAT_Test_Stack_Init(uint8_t shift); */
+.global GALPAT_Test_Stack_Init
+.func GALPAT_Test_Stack_Init, GALPAT_Test_Stack_Init
+.type GALPAT_Test_Stack_Init, %function
+.thumb_func
+GALPAT_Test_Stack_Init:
+
+    PUSH  {R1, R2}
+
+    /* Set base address for Galpat checkerboard test */
+    LDR r1, =MARCH_GALPAT_STACK_BASE    
+    
+    /* Set shift of start test address */ 
+    ADD r1, r1, r0
+    
+     LDR r2, =Test_Stack_Addr
+    STR r1, [r2, #0]
+    
+    POP  {R1, R2}
+    
+    BX lr
+    
+.endfunc
+    
+
+/*----------------------------------------------------------------------------------*/
+/* GALPAT_Test_Stack                                                                 */
+/*----------------------------------------------------------------------------------*/
+/*                                                                                  */
+/* Summary:                                                                         */
+/*  This function perform Stack RAM self test using GALPAT method. This function     */
+/*  first duplicates data in the area to be tested as this test is destructive.     */
+/*  At the end of this test the original data is restored to its correct location   */
+/*  in memory.                                                                      */
+/*                                                                                  */
+/* Parameters:                                                                      */
+/*                                                                                  */
+/* Return:                                                                          */
+/*   Result of test:  "1" - fail test;                                              */
+/*                    "2" - pass, but still testing status                          */
+/*                    "3" - pass and complete status                                */
+/* Destroys:                                                                        */
+/*   r0                                                                             */
+/*----------------------------------------------------------------------------------*/
+/* uint8 GALPAT_Test_Stack(void); */
+.global GALPAT_Test_Stack
+.func GALPAT_Test_Stack, GALPAT_Test_Stack
+.type GALPAT_Test_Stack, %function
+.thumb_func
+GALPAT_Test_Stack:
+
+    PUSH  {R1-R7, LR}
+
+    /* Clear test status register */
+    movs r7, #0 
+    
+    
+    /*-----------------------------  Test reserved block  ------------------------------*/
+    /* Set parameters to test reserved buffer in RAM. */
+    /* Write start address of RAM reserved buffer to r0 */
+    LDR r0, =MARCH_GALPAT_BUFF_ADDR_START    
+ 
+    /* Write end address of RAM reserved buffer to r1 */
+    LDR r1, =MARCH_GALPAT_BUFF_ADDR_STACK_END
+
+/* Disable STACK Galpat test, if ERROR_IN_SRAM_MARCH_GALPAT enabled */
+/* We need it because in both tests used function "GALPAT_Test_Block" where error reproduces */
+/* If not disconnect this test error reproduced here, but not in the right place */
+.if (!ERROR_IN_SRAM_MARCH_GALPAT | ERROR_IN_STACK_MARCH_GALPAT)
+
+    /* Test reserved RAM area. */
+     bl GALPAT_Test_Block
+.endif    
+    
+    /* Check result of reserved RAM testing */
+     cmp r7, #0
+        bne Error_detected_galpat     
+    /*----------------------------------------------------------------------------------*/
+    
+    
+    /*-------------------------  Copy block  ----------------------------------------*/
+    
+    /* Set parameters to copy tested block of RAM to reserved area */
+    
+    /* Set address of first byte in testing block */  
+    LDR r0, =Test_Stack_Addr
+    LDR r0, [r0]
+    
+    /* Set address of last byte in testing block */  
+    LDR r1, =TEST_BLOCK_STACK_SIZE    
+    ADD r1, r1, r0
+    
+    /* Set address of buffer first byte */
+    LDR r2, =MARCH_GALPAT_STACK_END    
+    
+    /* Check if not end of RAM */
+    CMP r2, r1    
+    BPL Not_end_stack_galpat
+    
+        /* If 'yes' - Set address of last byte in testing block equal to last byte in RAM */
+        MOV r1, r2
+        
+Not_end_stack_galpat:
+        
+    /* Set parameters in r2 to copy tested block of RAM to reserved area */
+    LDR r2, =MARCH_GALPAT_BUFF_ADDR_START    
+              
+    /* Save r0 */
+    MOV r5, r0
+    
+    /* Copy block of stack RAM to Reserved buffer SRAM area */
+    bl Copy_Block_To_Buffer        
+    /*------------------------------------------------------------------------------*/
+        
+   
+    /*-------------------------  Test block  ---------------------------------------*/
+    /* Set address of first byte in testing block */
+    mov r0, r5
+
+/* Disable STACK Galpat test, if ERROR_IN_SRAM_MARCH_GALPAT enabled */
+/* We need it because in both tests used function "GALPAT_Test_Block" where error reproduces */
+/* If not disconnect this test error reproduced here, but not in the right place */
+.if (!ERROR_IN_SRAM_MARCH_GALPAT | ERROR_IN_STACK_MARCH_GALPAT)
+
+    /* Test block of stack RAM */
+    bl GALPAT_Test_Block
+    /*-------------------------------------------------------------------------------*/
+.endif    
+    
+    /*-------------------------  Restore block  ------------------------------------*/
+    /* Write to R0 and R1 parameters for function "Copy_Block_To_Buffer" */
+    LDR r2, =MARCH_GALPAT_BUFF_ADDR_START    
+    
+    /* Copy block of SRAM from Reserved SRAM area */
+    bl Copy_Block_From_Buffer              
+    /*-------------------------------------------------------------------------------*/
+
+    /* Return error */
+    cmp r7, #0
+        bne Error_detected_galpat     
+            
+            
+    /*-------------------------  Check boundaries  ----------------------------------*/
+    /* Set address of  second last byte of STACK */
+    LDR r2, =MARCH_GALPAT_STACK_END
+    
+    /* Check if not end of SRAM    */
+    CMP r2, r1
+    BNE Not_end_of_Stack_galpat
+        
+        
+    /*----------------------------  Check results  -----------------------------------*/    
+        movs r7, #PASS_COMPLETE_STATUS    
+        bl Error_detected_galpat
+        
+Not_end_of_Stack_galpat:
+    
+    /* Calculate and save address of first byte for next RAM block */
+     LDR r3, =Test_Stack_Addr
+    STR r1, [r3, #0]    
+    movs r7, #PASS_STILL_TESTING_STATUS
+    
+Error_detected_galpat:
 
     /* Return result */
     mov r0, r7 

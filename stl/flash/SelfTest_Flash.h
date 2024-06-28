@@ -125,6 +125,27 @@
 *******************************************************************************/
 uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest);
 
+
+/*******************************************************************************
+* Function Name: SelfTest_Flash_init
+****************************************************************************//**
+*
+*  This function checks the checksum of the flash for the given range of flash with
+* the expected/reference checksum passed along with this API.
+*
+*
+* \param StartAddressOfFlash 
+* Start address of the flash from where the checksum needs to be calculated.<br>
+* \param EndAddressOfFlash 
+* End address of the flash till where the checksum needs to be calculated. <br>
+* \param flash_ExpectedCheckSum 
+* Expected checksum. Must be stored outside the range of check. <br>
+*
+* \note
+* This function needs to be called prior to \ref SelfTest_FlashCheckSum else the test will fail.
+*
+*******************************************************************************/
+void SelfTest_Flash_init(uint32_t StartAddressOfFlash,uint32_t EndAddressOfFlash, uint64_t flash_ExpectedCheckSum);
 /** \} group_flash_functions */
 
 
@@ -162,8 +183,14 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest);
 /** \cond INTERNAL */
 
 #elif CY_CPU_CORTEX_M7
+#if  defined(CY_DEVICE_SERIES_XMC7200)
 #define CY_FLASH_BASE      0x10080000UL
 #define CY_FLASH_SIZE      0x007B0000UL
+#else
+#define CY_FLASH_BASE      0x10080000UL
+#define CY_FLASH_SIZE      0x00390000UL
+#endif
+
 #define FLASH_END_ADDR                \
     (uint32_t)(CY_FLASH_BASE + CY_FLASH_SIZE - FLASH_RESERVED_CHECKSUM_SIZE)
 #endif

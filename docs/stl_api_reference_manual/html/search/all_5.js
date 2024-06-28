@@ -1,4 +1,10 @@
 var searchData=
 [
-  ['largest_5fnum_5fof_5fsums_0',['LARGEST_NUM_OF_SUMS',['../group__group__flash__macros.html#ga739ff6e13d879eb6027321f92523880f',1,'SelfTest_Flash.h']]]
+  ['galpat_0',['GALPAT',['../group__group__galpat__functions.html',1,'']]],
+  ['galpat_5ftest_5finit_1',['GALPAT_Test_Init',['../group__group__galpat__functions.html#gadd2c102068545d66c8050ac487481fa9',1,'SelfTest_RAM.h']]],
+  ['galpat_5ftest_5fsram_2',['GALPAT_Test_SRAM',['../group__group__galpat__functions.html#ga19b2cf378225dd21ffe5f1631dcc699a',1,'SelfTest_RAM.h']]],
+  ['galpat_5ftest_5fstack_3',['GALPAT_Test_Stack',['../group__group__galpat__functions.html#ga05d22eb11b53b53d79947d0812d37664',1,'SelfTest_RAM.h']]],
+  ['galpat_5ftest_5fstack_5finit_4',['GALPAT_Test_Stack_Init',['../group__group__galpat__functions.html#ga2f186296aad0bbc907966e7c278c1d1d',1,'SelfTest_RAM.h']]],
+  ['getting_20started_5',['Getting Started',['../page_getting_started.html',1,'']]],
+  ['gpio_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_28gpio_20stl_20module_29_6',['GPIO                      (GPIO STL module)',['../group__group__io.html',1,'']]]
 ];

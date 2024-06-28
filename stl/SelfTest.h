@@ -65,19 +65,22 @@
 #include "SelfTest_UART_master_message.h"
 #include "SelfTest_UART_slave_message.h"
 
-#if CY_CPU_CORTEX_M4
+#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
 #include "SelfTest_FPU_Regs.h"
 #include "SelfTest_DMAC.h"
 #include "SelfTest_DMA_DW.h"
 #include "SelfTest_IPC.h"
+#include "SelfTest_Timer_Counter.h"
+#include "SelfTest_PWM_GateKill.h"
+#include "SelfTest_PWM.h"
+#endif
 
-#elif CY_CPU_CORTEX_M7
-#include "SelfTest_FPU_Regs.h"
-#include "SelfTest_DMAC.h"
-#include "SelfTest_DMA_DW.h"
-#include "SelfTest_IPC.h"
+#if CY_CPU_CORTEX_M7
 #include "SelfTest_WWDT.h"
+#endif
 
+#if CY_CPU_CORTEX_M7 || (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K))
+#include "SelfTest_CANFD.h"
 #endif
 
 /* TO DO: Remove UART_Debug.h in scope of MIDDLEWARE-11507 */

@@ -62,7 +62,7 @@ volatile uint32_t test_SRAM_Addr;
 #endif
 
 /*******************************************************************************
- * Function Name: SelfTests_Init_SRAM_Test
+ * Function Name: SelfTests_Init_March_SRAM_Test
  ********************************************************************************
  *
  * Summary:
@@ -79,6 +79,26 @@ void SelfTests_Init_March_SRAM_Test(uint8_t shift)
 {
     /* Set base address for March RAM test */
     March_Test_Init(shift);
+}
+
+/*******************************************************************************
+ * Function Name: SelfTests_Init_GALPAT_SRAM_Test
+ ********************************************************************************
+ *
+ * Summary:
+ *  This function initializes the SRAM base address.
+ *
+ * Parameters:
+ *  uint8_t shift - set shift from start address for GALPAT RAM test
+ *
+ * Return:
+ *  None.
+ *
+ **********************************************************************************/
+void SelfTests_Init_GALPAT_SRAM_Test(uint8_t shift)
+{
+    /* Set base address for March RAM test */
+    GALPAT_Test_Init(shift);
 }
 
 
@@ -112,9 +132,39 @@ uint8_t SelfTests_SRAM_March(void)
     return test_Status;
 }
 
+/*******************************************************************************
+ * Function Name: SelfTests_SRAM_GALPAT
+ ********************************************************************************
+ *
+ * Summary:
+ *  This function perform SRAM self test using GALPAT method.
+ *
+ * Parameters:
+ *  None.
+ *
+ * Return:
+ *  Result of test:  "1" - fail test; "2" - still testing; "3" - Test complete OK
+ *
+ **********************************************************************************/
+uint8_t SelfTests_SRAM_GALPAT(void)
+{
+    uint8_t test_Status;
+
+    /* Disable global interrupts */
+    __disable_irq();
+
+    /* Perform GALPAT test */
+    test_Status = GALPAT_Test_SRAM();
+
+    /* Enable global interrupts */
+    __enable_irq();
+
+    return test_Status;
+}
+
 
 /*******************************************************************************
- * Function Name: SelfTests_Init_SRAM_Test
+ * Function Name: SelfTests_Init_March_Stack_Test
  ********************************************************************************
  *
  * Summary:
@@ -131,6 +181,26 @@ void SelfTests_Init_March_Stack_Test(uint8_t shift)
 {
     /* Set base address for March Stack test */
     March_Test_Stack_Init(shift);
+}
+
+/*******************************************************************************
+ * Function Name: SelfTests_Init_GALPAT_Stack_Test
+ ********************************************************************************
+ *
+ * Summary:
+ *  This function initializes the SRAM base address.
+ *
+ * Parameters:
+ *  uint8_t shift - set shift from start address for March Stack test
+ *
+ * Return:
+ *  None.
+ *
+ **********************************************************************************/
+void SelfTests_Init_GALPAT_Stack_Test(uint8_t shift)
+{
+    /* Set base address for March Stack test */
+    GALPAT_Test_Stack_Init(shift);
 }
 
 
@@ -164,5 +234,33 @@ uint8_t SelfTests_Stack_March(void)
     return test_Status;
 }
 
+/*******************************************************************************
+ * Function Name: SelfTests_Stack_GALPAT
+ ********************************************************************************
+ *
+ * Summary:
+ *  This function perform Stack RAM self test using GALPAT method.
+ *
+ * Parameters:
+ *  None.
+ *
+ * Return:
+ *  Result of test:  "1" - fail test; "2" - still testing; "3" - Test complete OK
+ *
+ **********************************************************************************/
+uint8_t SelfTests_Stack_GALPAT(void)
+{
+    uint8_t test_Status;
 
+    /* Disable global interrupts */
+    __disable_irq();
+
+    /* Perform GALPAT test */
+    test_Status = GALPAT_Test_Stack();
+
+    /* Enable global interrupts */
+    __enable_irq();
+
+    return test_Status;
+}
 /* [] END OF FILE */

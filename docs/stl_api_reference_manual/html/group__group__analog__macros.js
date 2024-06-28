@@ -1,0 +1,26 @@
+var group__group__analog__macros =
+[
+    [ "ANALOG_TEST_VREF", "group__group__analog__macros.html#ga18eafbcb19eaa0da392210d6fce1739f", null ],
+    [ "ANALOG_TEST_VREF_EXTERNAL", "group__group__analog__macros.html#gabad4a4c5709f95254138bc6ade028423", null ],
+    [ "ANALOG_TEST_VREF_DUAL_MSC", "group__group__analog__macros.html#gae260f83ec5281ddb452c59a31ad1d3c7", null ],
+    [ "ANALOG_TEST_VREF_CSD_IDAC", "group__group__analog__macros.html#ga342aaeb62cc9122ad13bf795519f4e5c", null ],
+    [ "ADC_TEST_ACC", "group__group__analog__macros.html#ga16e2bdff106b46d5ac34cedbedd8e72f", null ],
+    [ "OPAMP_TEST_ACURACCY", "group__group__analog__macros.html#gaeb61f053452cc3463e7e83b04c596a69", null ],
+    [ "CLASSB_SELF_TEST_ADC", "group__group__analog__macros.html#gad3468bf381dbe29b04fb9718ddb5d25b", null ],
+    [ "CLASSB_SELF_TEST_OPAMP", "group__group__analog__macros.html#gafc74cef9691d757a50c4fc7bc81ccda3", null ],
+    [ "CLASSB_SELF_TEST_COMP", "group__group__analog__macros.html#gaf67672077383cc9ca2fd1043c5516504", null ],
+    [ "EXTERNAL_VREF1_MV", "group__group__analog__macros.html#ga01104b7a564e0d25270603856ead73b0", null ],
+    [ "EXTERNAL_VREF2_MV", "group__group__analog__macros.html#ga77f20d47888570fb4e1278546fd71fd4", null ],
+    [ "ANALOG_TEST_VREF1_MV", "group__group__analog__macros.html#ga1d172a515c241b63fee75d0ed92a2902", null ],
+    [ "ANALOG_TEST_VREF2_MV", "group__group__analog__macros.html#gaa206f5844c93ee6913fea26f322355c2", null ],
+    [ "ANALOG_ADC_CHNL_OPAMP", "group__group__analog__macros.html#ga300920c59594e6fc2805c0d2b8605fed", null ],
+    [ "ANALOG_OPAMP_ACURACCY", "group__group__analog__macros.html#ga97fb09c2e420fc69e1c92ec21a7ffd2d", null ],
+    [ "ANALOG_OPAMP_SAR_RESULT1", "group__group__analog__macros.html#ga6665944e582f7f42f13b0df3152342b0", null ],
+    [ "ANALOG_OPAMP_SAR_RESULT2", "group__group__analog__macros.html#ga7ccfce219e3eefa34cbab26e1d784ee2", null ],
+    [ "ANALOG_ADC_ACURACCY", "group__group__analog__macros.html#ga3447c295fca53f70a50fdd0602ea7183", null ],
+    [ "ANALOG_ADC_SAR_RESULT1", "group__group__analog__macros.html#ga468908e63532ae9c69e42542debdb11b", null ],
+    [ "ANALOG_ADC_SAR_RESULT2", "group__group__analog__macros.html#ga3347a11ed6fd2222e02cf765e20ddceb", null ],
+    [ "ADC_TEST_CON_TIME_uS", "group__group__analog__macros.html#ga59e0bbd70bf5450a516945ee682c7432", null ],
+    [ "ANALOG_COMP_RESULT1", "group__group__analog__macros.html#ga0597ef983520beca3d1209a51cc1305e", null ],
+    [ "ANALOG_COMP_RESULT2", "group__group__analog__macros.html#ga1db4cb2b30e107bf735de53b5c16788c", null ]
+];

@@ -96,13 +96,15 @@ This library fills a block of memory above and below the stack with a fixed patt
 * This function initializes the upper and Lower stack area with 0xAA and 0x55 pattern.
 *
 *
+* \param stack_pattern_blk_size
+* No of bytes to be used to fill the pattern. Must be 2^n where n=1 to n=8. 
+* (Recommended value for n = 3)
 *
 * \return
 *  None.
 *
 *******************************************************************************/
-void SelfTests_Init_Stack_Test(void);
-
+void SelfTests_Init_Stack_Test(uint8_t stack_pattern_blk_size);
 /*******************************************************************************
 * Function Name: SelfTests_Stack_Check
 ****************************************************************************//**
@@ -118,6 +120,47 @@ void SelfTests_Init_Stack_Test(void);
 *
 *******************************************************************************/
 uint8_t SelfTests_Stack_Check(void);
+/*******************************************************************************
+ * Function Name: SelfTests_Init_Stack_Range
+ *****************************************************************************//**
+ *
+ * Summary:
+ *  This function initializes the upper stack area with 0xAA and 0x55 pattern.
+ *
+ * Parameters:
+ * \param stack_address
+ * The pointer to the stack.
+ * \param stack_length
+ * The length of the stack.
+ * \param stack_pattern_blk_size
+ * No of bytes to be used to fill the pattern. Must be 2^n where n=1 to n=8. 
+ * (Recommended value for n = 3)
+ *
+ * Return:
+ *  None.
+ *
+ *******************************************************************************/
+
+void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length, uint8_t stack_pattern_blk_size);
+/*******************************************************************************
+ * Function Name: SelfTests_Stack_Check_Range
+ *****************************************************************************//**
+ *
+ * Summary:
+ *  This function performs stack self test. It checks upper stack area for 0xAA
+ *  and 0x55 pattern.
+ *
+ * Parameters:
+ * \param stack_address
+ * The pointer to the stack.
+ * \param stack_length
+ * The length of the stack.
+ *
+ * Return:
+ *  Result of test:  "0" - pass test; "1" - fail test.
+ *
+ **********************************************************************************/
+uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_length);
 
 /** \} group_stack_functions */
 
@@ -132,16 +175,6 @@ uint8_t SelfTests_Stack_Check(void);
 
 /** Stack test pattern */
 #define STACK_TEST_PATTERN        0x55AAu
-
-/* Block size to be tested. Should be EVEN*/
-
-// Below 2 lines can be used to make the code take the block size from linker script.
-// extern uint32_t __STACK_BLOCK_SIZE;
-// #define STACK_TEST_BLOCK_SIZE     ((uint32_t)&__STACK_BLOCK_SIZE)
-
-/** Block size to be tested. Should be EVEN. Pattern is Filled in this block size */
-#define STACK_TEST_BLOCK_SIZE     (8u)   //Block size for pattern fixed to 8
-
 
 #if CY_CPU_CORTEX_M0P
     // //accessing the linker script symbol.
@@ -169,19 +202,31 @@ uint8_t SelfTests_Stack_Check(void);
         #define DEVICE_SRAM_SIZE       (0xFD800)
     #endif
 
+    #if defined(CY_DEVICE_PSOC6A256K)
+        #define DEVICE_SRAM_SIZE       (0x1D800)
+    #endif
+
+    #if defined(CY_DEVICE_PSOC6ABLE2) 
+        #define DEVICE_SRAM_SIZE       (0x45800)
+    #endif
+
     #define DEVICE_STACK_SIZE          (0x1000)
 
 #elif CY_CPU_CORTEX_M7
 
     #define DEVICE_SRAM_BASE       (0x28004000)
-    #define DEVICE_SRAM_SIZE       (0x000FC000)
-    #define DEVICE_STACK_SIZE        (STACK_SIZE)
-
+    #define DEVICE_STACK_SIZE      (STACK_SIZE)
+    #if defined(CY_DEVICE_SERIES_XMC7100)
+      #define DEVICE_SRAM_SIZE       (0x000BC000)
+    #else 
+      #define DEVICE_SRAM_SIZE       (0x000FC000)
+    #endif
+     
 #endif
 
 
 /** Start of Stack address excluding the block size to store pattern */
-#define DEVICE_STACK_BASE           (DEVICE_SRAM_BASE + DEVICE_SRAM_SIZE - STACK_TEST_BLOCK_SIZE)
+#define DEVICE_STACK_BASE           (DEVICE_SRAM_BASE + DEVICE_SRAM_SIZE)
 
 /** End of Stack address excluding the block size to store pattern */
 #define DEVICE_STACK_END            (uint32_t)(DEVICE_STACK_BASE - DEVICE_STACK_SIZE + STACK_TEST_BLOCK_SIZE)

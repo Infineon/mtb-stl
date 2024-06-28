@@ -137,10 +137,16 @@ The DMA blocks are tested using the following procedure.
 
 #if CY_CPU_CORTEX_M4
 
+    #if defined(CY_DEVICE_PSOC6ABLE2) 
+        uint8_t SelfTest_DMA_DW(DW_Type * base, uint32_t channel, cy_stc_dma_descriptor_t * descriptor0, cy_stc_dma_descriptor_t * descriptor1,
+                                const cy_stc_dma_descriptor_config_t * des0_config,const cy_stc_dma_descriptor_config_t * des1_config,
+                                cy_stc_dma_channel_config_t const * channelConfig, en_trig_input_grp0_t trigLine);
+    #else
+        uint8_t SelfTest_DMA_DW(DW_Type * base, uint32_t channel, cy_stc_dma_descriptor_t * descriptor0, cy_stc_dma_descriptor_t * descriptor1,
+                                const cy_stc_dma_descriptor_config_t * des0_config,const cy_stc_dma_descriptor_config_t * des1_config,
+                                cy_stc_dma_channel_config_t const * channelConfig, en_trig_output_pdma0_tr_t trigLine);
+    #endif
 
-uint8_t SelfTest_DMA_DW(DW_Type * base, uint32_t channel, cy_stc_dma_descriptor_t * descriptor0, cy_stc_dma_descriptor_t * descriptor1,
-                        const cy_stc_dma_descriptor_config_t * des0_config,const cy_stc_dma_descriptor_config_t * des1_config,
-                        cy_stc_dma_channel_config_t const * channelConfig, en_trig_output_pdma0_tr_t trigLine);
 
 
 
@@ -164,6 +170,5 @@ uint8_t SelfTest_DMA_DW(DW_Type * base, uint32_t channel, cy_stc_dma_descriptor_
 #endif 
 
 /** \} group_dma */
-
 #endif
 /* [] END OF FILE */

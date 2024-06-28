@@ -85,7 +85,6 @@ For XMC Dual CM7 device channels and interrupts are checked:
 #include "SelfTest_common.h"
 
 #if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
-
 #if !defined(SELFTEST_IPC_H)
 #define SELFTEST_IPC_H
 
@@ -227,6 +226,5 @@ uint8_t SelfTest_IPC(void);
 
 /** \endcond */
 /** \} group_ipc */
-
 #endif /* End SELFTEST_IPC_H */
 /* [] END OF FILE */

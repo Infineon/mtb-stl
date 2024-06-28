@@ -77,6 +77,7 @@ The DMAC blocks are tested using the following procedure.
 #include "SelfTest_common.h"
 
 #if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#if (CY_IP_M4CPUSS_DMAC || CY_IP_M7CPUSS_DMAC) || defined (CY_DOXYGEN)
 #if !defined(SELFTEST_DMAC_H)
     #define SELFTEST_DMAC_H
 
@@ -133,12 +134,11 @@ The DMAC blocks are tested using the following procedure.
 uint8_t SelfTest_DMAC(DMAC_Type * base, uint32_t channel, cy_stc_dmac_descriptor_t * descriptor0, cy_stc_dmac_descriptor_t * descriptor1,
                         const cy_stc_dmac_descriptor_config_t * des0_config,const cy_stc_dmac_descriptor_config_t * des1_config,
                         cy_stc_dmac_channel_config_t const * channelConfig, en_trig_output_mdma_t trigLine);
-
 /** \} group_dmac_functions */
 
 #endif
+#endif
 
 /** \} group_dmac */
-
 #endif
 /* [] END OF FILE */

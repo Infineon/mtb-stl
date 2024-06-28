@@ -56,9 +56,9 @@
 void WdtInterruptHandler(void);
 
 
-volatile uint32_t count;
-volatile uint32_t intr_occured;
-volatile bool reset_occured;
+static volatile uint32_t wwdt_count;
+static volatile uint32_t wwdt_intr_occured;
+static volatile bool wwdt_reset_occured;
 
 /* WDT interrupt configuration structure */
 const cy_stc_sysint_t WDT_IRQ_cfg = {
@@ -68,14 +68,14 @@ const cy_stc_sysint_t WDT_IRQ_cfg = {
 
 uint8_t SelfTest_Windowed_WDT(void)
 {
-    intr_occured = 0;
-    reset_occured = false;
+    wwdt_intr_occured = 0;
+    wwdt_intr_occured = false;
     /* Initialize WDT */
     /* Check the reason for device restart */
     if(CY_SYSLIB_RESET_HWWDT == Cy_SysLib_GetResetReason())
     {
         Cy_SysLib_ClearResetReason();
-        reset_occured = true;
+        wwdt_intr_occured = true;
     }
     else
     {
@@ -94,7 +94,6 @@ uint8_t SelfTest_Windowed_WDT(void)
 
     /* Step 4- Clear match event interrupt, if any */
     Cy_WDT_ClearInterrupt();
-    
     /* Step 5 - Enable interrupt */
     Cy_SysInt_Init(&WDT_IRQ_cfg, WdtInterruptHandler);
     NVIC_EnableIRQ((IRQn_Type) NvicMux3_IRQn);
@@ -103,14 +102,16 @@ uint8_t SelfTest_Windowed_WDT(void)
     /* Step 6- Enable WDT */
     Cy_WDT_Enable();
 
-    if(true == reset_occured)
+    Cy_SysLib_Delay(3000);
+
+    if(true == wwdt_intr_occured)
     {
         do
         {
-            count = Cy_WDT_GetCount();
-        } while (count < WDT_UPPER_LIMIT);
+            wwdt_count = Cy_WDT_GetCount();
+        } while (wwdt_count < WDT_UPPER_LIMIT);
 
-        if (1 == intr_occured)
+        if (1 == wwdt_intr_occured)
         {
             Cy_WDT_Disable();
             Cy_WDT_Lock();
@@ -121,14 +122,14 @@ uint8_t SelfTest_Windowed_WDT(void)
     {
         do
         {
-            count = Cy_WDT_GetCount();
+            wwdt_count = Cy_WDT_GetCount();
 #if (!ERROR_IN_WWDT_LOWER_LIMIT)
-            if (count >= 3000)
+            if (wwdt_count >= 3000)
             {
                 Cy_WDT_SetService();
             }
 #endif
-        } while (count <= WDT_LOWER_LIMIT);
+        } while (wwdt_count <= WDT_LOWER_LIMIT);
     }
     
     Cy_WDT_Disable();
@@ -152,9 +153,9 @@ void WdtInterruptHandler(void)
     if(Wdt_IsWdtInterrutpSet())
     {
 #if ERROR_IN_WWDT_INTR
-        intr_occured+=2;
+        wwdt_intr_occured+=2;
 #else
-        intr_occured++;
+        wwdt_intr_occured++;
 #endif
         /* Clear WDT Interrupt */
         Cy_WDT_ClearInterrupt();

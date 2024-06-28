@@ -1,5 +1,7 @@
 var modules =
 [
+    [ "Analog                    (Analog STL module)", "group__group__analog.html", "group__group__analog" ],
+    [ "CAN-FD                    (CAN-FD STL module)", "group__group__canfd.html", "group__group__canfd" ],
     [ "Clock                     (Clock STL module)", "group__group__clock.html", "group__group__clock" ],
     [ "CPU                       (CPU STL module)", "group__group__cpu.html", "group__group__cpu" ],
     [ "CRC                       (CRC STL module)", "group__group__crc.html", "group__group__crc" ],
@@ -10,6 +12,8 @@ var modules =
     [ "INTR                      (INTR STL module)", "group__group__intr.html", "group__group__intr" ],
     [ "GPIO                      (GPIO STL module)", "group__group__io.html", "group__group__io" ],
     [ "IPC                       (IPC STL module)", "group__group__ipc.html", "group__group__ipc" ],
+    [ "PWM                       (PWM STL module)", "group__group__pwm.html", "group__group__pwm" ],
+    [ "PWM GateKill              (PWM GAteKill STL module)", "group__group__pwm__gatekill.html", "group__group__pwm__gatekill" ],
     [ "Ram                       (RAM STL module)", "group__group__ram.html", "group__group__ram" ],
     [ "Startup Register          (Startup Register STL module)", "group__group__regs.html", "group__group__regs" ],
     [ "i2c                       (i2c STL module)", "group__group__i2c.html", "group__group__i2c" ],
@@ -17,6 +21,7 @@ var modules =
     [ "UART                      (UART STL module)", "group__group__uart.html", "group__group__uart" ],
     [ "UART_Data_Transfer        (UART_Data_Transfer STL module)", "group__group__uart__data__tsf.html", "group__group__uart__data__tsf" ],
     [ "Stack                     (Stack STL module)", "group__group__stack.html", "group__group__stack" ],
+    [ "Timer/Counter             (Timer/Counter STL module)", "group__group__timer__counter.html", "group__group__timer__counter" ],
     [ "WDT                       (WDT STL module)", "group__group__wdt.html", "group__group__wdt" ],
     [ "WWDT                      (WWDT STL module)", "group__group__wwdt.html", "group__group__wwdt" ]
 ];

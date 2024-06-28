@@ -55,6 +55,7 @@
 #include "SelfTest_ConfigRegisters.h"
 #include "SelfTest_Config.h"
 #include "stdio.h"
+#include "SelfTest_Flash.h"
 
 #if CY_CPU_CORTEX_M0P
 
@@ -392,6 +393,17 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
 {
     /* Fill flash row with "0" */
     (void)memset(flashRowData, 0x00, sizeof(flashRowData));
+    
+    #if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
+    uint32_t *flash_checksum_ptr = (uint32_t*)FLASH_END_ADDR;
+    uint8_t no_of_data_to_copy = (FLASH_RESERVED_CHECKSUM_SIZE/sizeof(flashRowData[0]));
+    #endif
+    
+    #if defined(CY_DEVICE_PSOC6ABLE2)
+     /* Setting Regs which are affected by Flash delay for 1M device*/
+    SRSS_CLK_OUTPUT_SLOW = _VAL2FLD(SRSS_CLK_OUTPUT_SLOW_SLOW_SEL0, 6);
+    SRSS_CLK_CAL_CNT1 = _VAL2FLD(SRSS_CLK_CAL_CNT1_CAL_COUNTER1, 0);
+    #endif
 
     /* Store 32Bit registers */
     for (uint32_t i = 0u; i < (sizeof(regs32_ToTest) / sizeof(regs32_ToTest[0u])); i++)
@@ -400,6 +412,10 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
     }
 
 #if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
+    for(uint32_t i = 0;i <no_of_data_to_copy;i++)
+    {
+        flashRowData[(CY_FLASH_SIZEOF_ROW/(sizeof(uint32_t))) - no_of_data_to_copy + i] = *(flash_checksum_ptr+i);
+    }
     return Cy_Flash_WriteRow(CONF_REG_FIRST_ROW_ADDR, flashRowData);
 #elif CY_CPU_CORTEX_M7
     uint16_t guardCnt = 0u;

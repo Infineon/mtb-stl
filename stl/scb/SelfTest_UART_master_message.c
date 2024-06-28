@@ -521,7 +521,11 @@ static void UART_MessageRxInt(uint32_t IntMask)
 #if CY_CPU_CORTEX_M7                        
                         Cy_TCPWM_TriggerStopOrKill_Single(Counter_Struct.counter_base, Counter_Struct.cntNum);
 #else
-                        Cy_TCPWM_TriggerStopOrKill(Counter_Struct.counter_base, Counter_Struct.cntMsk);                        
+   #if (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K))
+                        Cy_TCPWM_TriggerStopOrKill_Single(Counter_Struct.counter_base, Counter_Struct.cntMsk);
+   #else
+                        Cy_TCPWM_TriggerStopOrKill(Counter_Struct.counter_base, Counter_Struct.cntMsk);
+   #endif
 #endif                        
                         UART_Master_Struct.rstatus = UM_RECEIVE_COMPLETE;
                         UART_Master_Struct.gstatus = UM_COMPLETE;
@@ -610,7 +614,12 @@ void UartMesMaster_Timeout_ISR(void)
 #if CY_CPU_CORTEX_M7
     Cy_TCPWM_TriggerStopOrKill_Single(Counter_Struct.counter_base, Counter_Struct.cntNum);
 #else
+    #if (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K))
+	Cy_TCPWM_TriggerStopOrKill_Single(Counter_Struct.counter_base, Counter_Struct.cntMsk);
+    #else
     Cy_TCPWM_TriggerStopOrKill(Counter_Struct.counter_base, Counter_Struct.cntMsk);
+    #endif
+
 #endif
     Cy_TCPWM_SetInterruptMask(Counter_Struct.counter_base, Counter_Struct.cntNum, 0);
     Cy_TCPWM_ClearInterrupt(Counter_Struct.counter_base, Counter_Struct.cntNum, counterStatus);
@@ -711,7 +720,11 @@ uint8_t UartMesMaster_DataProc(uint8_t address, uint8_t *txd, uint8_t tlen, uint
 #if CY_CPU_CORTEX_M7
         Cy_TCPWM_TriggerStart_Single(Counter_Struct.counter_base, Counter_Struct.cntNum);
 #else
+    #if (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K))
+        Cy_TCPWM_TriggerStart_Single(Counter_Struct.counter_base, Counter_Struct.cntMsk);
+    #else
         Cy_TCPWM_TriggerStart(Counter_Struct.counter_base, Counter_Struct.cntMsk);
+    #endif
 #endif
         Cy_SCB_SetTxInterruptMask(UART_Master_Struct.scb_base, CY_SCB_TX_INTR_NOT_FULL | CY_SCB_TX_INTR_UART_DONE);
         Cy_SCB_SetRxInterruptMask(UART_Master_Struct.scb_base, CY_SCB_RX_INTR_NOT_EMPTY);

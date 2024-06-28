@@ -54,6 +54,8 @@
 #include "SelfTest_ErrorInjection.h"
 #include "SelfTest_Config.h"
 
+
+static uint8_t cy_stack_pattern_block_size = 0;
 /*******************************************************************************
  * Function Name: SelfTests_Init_Stack_Test
  ********************************************************************************
@@ -68,37 +70,9 @@
  *  None.
  *
  **********************************************************************************/
-void SelfTests_Init_Stack_Test(void)
+void SelfTests_Init_Stack_Test(uint8_t stack_pattern_blk_size)
 {
-    uint8_t i;
-
-    /* Pointer to the last word in the stack*/
-    uint16_t* stack = (uint16_t*)DEVICE_STACK_END;
-
-    /* Fill test stack block with predefined pattern */
-    for (i = 0u; i < (STACK_TEST_BLOCK_SIZE / sizeof(uint16_t)); i++)
-    {
-        #if (ERROR_IN_STACK_OVERFLOW)
-        *stack = STACK_TEST_PATTERN + 1u;
-        stack++;
-        #else
-        *stack = STACK_TEST_PATTERN;
-        stack++;
-        #endif /* End (ERROR_IN_STACK) */
-    }
-
-    stack = (uint16_t*)DEVICE_STACK_BASE;
-    /* Fill test stack block with predefined pattern */
-    for (i = 0u; i < (STACK_TEST_BLOCK_SIZE / sizeof(uint16_t)); i++)
-    {
-    #if (ERROR_IN_STACK_UNDERFLOW)
-        *stack = STACK_TEST_PATTERN + 1u;
-        stack++;
-    #else
-        *stack = STACK_TEST_PATTERN;
-        stack++;
-    #endif /* End (ERROR_IN_STACK) */
-    }
+    SelfTests_Init_Stack_Range((uint16_t*)DEVICE_STACK_BASE, DEVICE_STACK_SIZE, stack_pattern_blk_size);
 }
 
 
@@ -119,14 +93,95 @@ void SelfTests_Init_Stack_Test(void)
  **********************************************************************************/
 uint8_t SelfTests_Stack_Check(void)
 {
+   uint8_t ret = OK_STATUS;
+   ret = SelfTests_Stack_Check_Range((uint16_t*)DEVICE_STACK_BASE, DEVICE_STACK_SIZE);
+   return ret; 
+}
+
+/*******************************************************************************
+ * Function Name: SelfTests_Init_Stack_Range
+ ********************************************************************************
+ *
+ * Summary:
+ *  This function initializes the upper stack area with 0xAA and 0x55 pattern.
+ *
+ * Parameters:
+ * \param stack_address
+ * The pointer to the stack.
+ * \param stack_address
+ * The length of the stack.
+ *
+ * Return:
+ *  None.
+ *
+ **********************************************************************************/
+
+void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length, uint8_t stack_pattern_blk_size)
+{
+    uint8_t i;
+    cy_stack_pattern_block_size = stack_pattern_blk_size;
+    /* Pointer to the last word in the stack*/
+   uint16_t* stack = (stack_address - (stack_length/sizeof(uint16_t)));
+   
+    /* Fill test stack block with predefined pattern */
+    for (i = 0u; i < (cy_stack_pattern_block_size / sizeof(uint16_t)); i++)
+    {
+        #if (ERROR_IN_STACK_OVERFLOW)
+            *stack = STACK_TEST_PATTERN + 1u;
+             stack++;
+        #else
+            *stack = STACK_TEST_PATTERN;
+             stack++;
+        #endif /* End (ERROR_IN_STACK) */
+        
+    }
+    
+    /* Pointer to the first word in the stack*/
+    stack = (stack_address - (cy_stack_pattern_block_size / sizeof(uint16_t))); 
+    /* Fill test stack block with predefined pattern */
+    for (i = 0u; i < (cy_stack_pattern_block_size / sizeof(uint16_t)); i++)
+    {
+        #if (ERROR_IN_STACK_UNDERFLOW)
+            *stack = STACK_TEST_PATTERN + 1u;
+             stack++;
+        #else
+            
+            *stack = STACK_TEST_PATTERN;
+             stack++; 
+        #endif /* End (ERROR_IN_STACK) */
+    }
+}
+
+
+/*******************************************************************************
+ * Function Name: SelfTests_Stack_Check_Range
+ ********************************************************************************
+ *
+ * Summary:
+ *  This function performs stack self test. It checks upper stack area for 0xAA
+ *  and 0x55 pattern.
+ *
+ * Parameters:
+ * \param stack_address
+ * The pointer to the stack.
+ * \param stack_address
+ * The length of the stack.
+ *
+ * Return:
+ *  Result of test:  "0" - pass test; "1" - fail test.
+ *
+ **********************************************************************************/
+
+uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_length)
+{
     uint8_t i;
     uint8_t ret = OK_STATUS;
 
     /* Pointer to the last word in the stack */
-    uint16_t* stack = (uint16_t*)DEVICE_STACK_END;
+   uint16_t* stack = (stack_address - (stack_length/sizeof(uint16_t)));
 
     /* Check test stack block for pattern and return error if no pattern found */
-    for (i = 0u; i < (STACK_TEST_BLOCK_SIZE / sizeof(uint16_t)); i++)
+    for (i = 0u; i < (cy_stack_pattern_block_size / sizeof(uint16_t)); i++)
     {
         if (*stack != STACK_TEST_PATTERN)
         {
@@ -136,8 +191,9 @@ uint8_t SelfTests_Stack_Check(void)
         }
     }
 
-    stack = (uint16_t*)DEVICE_STACK_BASE;
-    for (i = 0u; i < (STACK_TEST_BLOCK_SIZE / sizeof(uint16_t)); i++)
+    stack = (stack_address - (cy_stack_pattern_block_size / sizeof(uint16_t)));
+
+    for (i = 0u; i < (cy_stack_pattern_block_size / sizeof(uint16_t)); i++)
     {
         if (*stack != STACK_TEST_PATTERN)
         {
@@ -148,6 +204,6 @@ uint8_t SelfTests_Stack_Check(void)
     }
     return ret;
 }
-
-
 /* [] END OF FILE */
+
+

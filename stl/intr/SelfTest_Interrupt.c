@@ -102,17 +102,12 @@ uint8_t SelfTest_Interrupt(TCPWM_Type* base, uint32_t cntNum)
     cntNum1 = cntNum;
     uint8_t ret = OK_STATUS;
 
-#if(CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
-    uint32_t counter_mask = (1UL << cntNum);
-#endif
-
-#if(CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
     /* Stop and reset timer */
-    Cy_TCPWM_TriggerStopOrKill(base, counter_mask);
-#else
-    /* Stop and reset timer */
-    Cy_TCPWM_TriggerStopOrKill_Single(base, cntNum);
-#endif
+    #if CY_CPU_CORTEX_M0P
+        Cy_TCPWM_TriggerStopOrKill(base, 1<<cntNum);
+    #else
+        Cy_TCPWM_TriggerStopOrKill_Single(base, cntNum);
+    #endif
     /* Reset interrupt counter */
     selfTest_interrupt_counter = 0u;
 
@@ -123,23 +118,21 @@ uint8_t SelfTest_Interrupt(TCPWM_Type* base, uint32_t cntNum)
 
     #endif /* End ERROR_IN_INTERRUPT_HANDLING */
 
-#if(CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
-    Cy_TCPWM_TriggerStart(base, counter_mask);
-#else
-    Cy_TCPWM_TriggerStart_Single(base, cntNum);
-#endif
+    #if CY_CPU_CORTEX_M0P
+        Cy_TCPWM_TriggerStart(base, 1<<cntNum);
+    #else
+        Cy_TCPWM_TriggerStart_Single(base, cntNum);
+    #endif
 
     /* wait 1000uS */
     Cy_SysLib_DelayUs(INTERRUPT_TEST_TIME);
 
-#if(CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
     /* Stop and reset timer */
-    Cy_TCPWM_TriggerStopOrKill(base, counter_mask);
-#else
-    /* Stop and reset timer */
-    Cy_TCPWM_TriggerStopOrKill_Single(base, cntNum);
-#endif
-
+    #if CY_CPU_CORTEX_M0P
+        Cy_TCPWM_TriggerStopOrKill(base, 1<<cntNum);        
+    #else
+        Cy_TCPWM_TriggerStopOrKill_Single(base, cntNum);
+    #endif
     /* If less than NUMBER_OF_TIMER_TICKS_LO ticks or greater than NUMBER_OF_TIMER_TICKS_HI - error
        in test */
     if ((selfTest_interrupt_counter < NUMBER_OF_TIMER_TICKS_LO) ||

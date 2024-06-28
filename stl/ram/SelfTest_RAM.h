@@ -53,10 +53,35 @@
 * \addtogroup group_ram
 * \{
 *
-* To meet Class B requirement, SRAM test must be checked for “DC fault”. A simple checkerboard method is used to 
-* implement this SRAM. This test can be implemented at startup procedure to test entire SRAM area.
-* This test first duplicates data in the area to be tested as this test is destructive. At the end of this test the
-* original data is restored to its correct location.
+* To meet Class B requirement, SRAM test must be checked for “DC fault”. Either 
+* of the 2 methods can be used:
+// \verbatim
+  1) March/Checkerboard : This test first duplicates data in the area to be tested
+                          as this test is destructive. Then the RAM area is written
+                          with  alternate “0” and “1” to memory, and verifies if the
+                          writen data is right by reading back. At the end of this test
+                          the original data is restored to its correct location.
+                    
+  2) GALPAT             : This test first duplicates data in the area to be tested
+                          as this test is destructive.This test initilizes the chosen 
+                          range of memory uniformly (i.e. all 0 s or all 1 s). The first
+                          memory cell to be tested is then inverted and all the remaining 
+                          cells are inspected to ensure that their contents are correct. 
+                          After every read access to one of the remaining cells, the inverted
+                          cell is also checked. This procedure is repeated for each cell 
+                          in the chosen memory range. A second run is carried out with the
+                          opposite initialisation. Any difference produces a failure message.
+                          It can detect stuck-at faults and direct coupling faults. At the 
+                          end of this test the original data is restored to its correct 
+                          location in memory. 
+\endverbatim
+*
+*\note Update CY_SRAM_BASE, CY_SRAM_SIZE, CY_STACK_SIZE according to the device being
+* tested.
+* 
+* \note GALPAT test is time consuming.This tests can be implemented at startup procedure
+* to test entire SRAM area.
+* 
 *
 *
 * \section group_ram_profile_changelog Changelog
@@ -70,7 +95,8 @@
 * </table>
 *
 * \defgroup group_ram_macros Macros
-* \defgroup group_ram_functions Functions
+* \defgroup group_march_functions MARCH
+* \defgroup group_galpat_functions GALPAT
 */
 
 #include "SelfTest_common.h"
@@ -83,7 +109,7 @@
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_ram_functions
+* \addtogroup group_march_functions
 * \{
 */
 
@@ -96,7 +122,7 @@
 *
 * \param shift 
 * Function set to variable "Test_Stack_Addr" address of first STACK byte for test. 
-* "Test_Stack_Addr" = MARCH_STACK_BASE + R0. R0 uses to set shift of first byte for test.
+* "Test_Stack_Addr" = MARCH_GALPAT_STACK_BASE + R0. R0 uses to set shift of first byte for test.
 *
 *
 * \return
@@ -104,6 +130,7 @@
 *
 *******************************************************************************/
 extern void March_Test_Stack_Init(uint8_t shift);
+
 
 /*******************************************************************************
 * Function Name: March_Test_Stack
@@ -136,7 +163,7 @@ extern uint8_t March_Test_Stack(void);
 *
 * \param shift
 *   Function set to variable "Test_SRAM_Addr" address of first SRAM byte for test. 
-*   "Test_SRAM_Addr" = MARCH_SRAM_BASE + R0. R0 uses to set shift of first         
+*   "Test_SRAM_Addr" = MARCH_GAPAT_SRAM_BASE + R0. R0 uses to set shift of first         
 *   byte for test.
 *
 * \return
@@ -144,6 +171,7 @@ extern uint8_t March_Test_Stack(void);
 *
 *******************************************************************************/
 extern void March_Test_Init(uint8_t shift);
+
 
 /*******************************************************************************
 * Function Name: March_Test_SRAM
@@ -167,7 +195,6 @@ extern void March_Test_Init(uint8_t shift);
 *******************************************************************************/
 extern uint8_t March_Test_SRAM(void);
 
-
 /*******************************************************************************
 * Function Name: SelfTests_Init_March_SRAM_Test
 ****************************************************************************//**
@@ -187,7 +214,7 @@ void SelfTests_Init_March_SRAM_Test(uint8_t shift);
 
 
 /*******************************************************************************
-* Function Name: March_Test_SRAM
+* Function Name: SelfTests_SRAM_March
 ****************************************************************************//**
 *
 *  This function perform block of RAM self test using March method. This function calls
@@ -238,7 +265,173 @@ void SelfTests_Init_March_Stack_Test(uint8_t shift);
 *******************************************************************************/
 uint8_t SelfTests_Stack_March(void);
 
-/** \} group_ram_functions */
+/** \} group_march_functions */
+
+
+/***************************************
+* Function Prototypes
+***************************************/
+/**
+* \addtogroup group_galpat_functions
+* \{
+*/
+/*******************************************************************************
+* Function Name: GALPAT_Test_Stack_Init
+****************************************************************************//**
+*
+* This function initializes the test STACK base address. 
+*
+*
+* \param shift 
+* Function set to variable "Test_Stack_Addr" address of first STACK byte for test. 
+* "Test_Stack_Addr" = MARCH_GALPAT_STACK_BASE + R0. R0 uses to set shift of first byte for test.
+*
+*
+* \return
+*  Void
+*
+*******************************************************************************/
+extern void GALPAT_Test_Stack_Init(uint8_t shift);
+
+/*******************************************************************************
+* Function Name: GALPAT_Test_Stack
+****************************************************************************//**
+*
+*  This function perform Stack RAM self test using GALPAT method. This function
+*  initilizes the chosen range of memory uniformly (i.e. all 0 s or all 1 s). 
+*  The first memory cell to be tested is then inverted and all the remaining 
+*  cells are inspected to ensure that their contents are correct. After every 
+*  read access to one of the remaining cells, the inverted cell is also checked.
+*  This procedure is repeated for each cell in the chosen memory range. A second
+*  run is carried out with the opposite initialisation. Any difference produces a
+*  failure message.
+*  It can detect stuck-at faults and direct coupling faults.    
+*  At the end of this test the original data is restored to its correct location
+*  in memory.  
+*
+*
+*
+*
+* \return
+*   "1" - Test Failed                                          
+*   "2" - Pass, but still testing status                        
+*   "3" - pass and complete status 
+*
+*******************************************************************************/
+extern uint8_t GALPAT_Test_Stack(void);
+
+
+
+/*******************************************************************************
+* Function Name: GALPAT_Test_Init
+****************************************************************************//**
+*
+* This function initializes the SRAM base address. 
+*
+* \param shift
+*   Function set to variable "Test_SRAM_Addr" address of first SRAM byte for test. 
+*   "Test_SRAM_Addr" = MARCH_GAPAT_SRAM_BASE + R0. R0 uses to set shift of first         
+*   byte for test.
+*
+* \return
+* Void 
+*
+*******************************************************************************/
+extern void GALPAT_Test_Init(uint8_t shift);
+
+
+
+/*******************************************************************************
+* Function Name: GALPAT_Test_SRAM
+****************************************************************************//**
+*
+*  This function perform block of RAM self test using GALPAT method. This function
+*  first duplicates data in the area to be tested as this test is destructive.
+*  This API tests Stack area with Checkerboard arithmetic which writes alternate
+*  “0” and “1” to memory, and verifies if the writen data is right by reading back.
+*  It can detect stuck-at faults and direct coupling faults.      
+*  At the end of this test the original data is restored to its correct location
+*  in memory. 
+*
+*
+*
+* \return
+*   "1" - Test Failed                                        
+*   "2" - Pass, but still testing status                          
+*   "3" - pass and complete status  
+*
+*******************************************************************************/
+extern uint8_t GALPAT_Test_SRAM(void);
+
+/*******************************************************************************
+* Function Name: SelfTests_Init_GALPAT_SRAM_Test
+****************************************************************************//**
+*
+*  This function calls GALPAT_Test_Init
+*
+* \param shift
+*   Function set to variable "Test_SRAM_Addr" address of first SRAM byte for test. 
+*   "Test_SRAM_Addr" = GALPAT_SRAM_BASE + R0. R0 uses to set shift of first         
+*   byte for test.
+*
+* \return
+*  Void 
+*
+*******************************************************************************/
+void SelfTests_Init_GALPAT_SRAM_Test(uint8_t shift);
+
+/*******************************************************************************
+* Function Name: SelfTests_SRAM_GALPAT
+****************************************************************************//**
+*
+*  This function perform block of RAM self test using GALPAT method. This function calls
+*  GALPAT_Test_SRAM.
+*
+*
+*
+* \return
+*   "1" - Test Failed                                         
+*   "2" - Pass, but still testing status                          
+*   "3" - pass and complete status  
+*
+*******************************************************************************/
+uint8_t SelfTests_SRAM_GALPAT(void);
+
+/*******************************************************************************
+* Function Name: SelfTests_Init_GALPAT_Stack_Test
+****************************************************************************//**
+*
+*  This function calls GALPAT_Test_Stack_Init
+*
+* \param shift
+* Function set to variable "Test_Stack_Addr" address of first STACK byte for test. 
+* "Test_Stack_Addr" = GALPAT_STACK_BASE + R0. R0 uses to set shift of first byte for test.
+*
+* \return
+*  Void 
+*
+*******************************************************************************/
+void SelfTests_Init_GALPAT_Stack_Test(uint8_t shift);
+
+/*******************************************************************************
+* Function Name: SelfTests_Stack_GALPAT
+****************************************************************************//**
+*
+*  This function perform Stack RAM self test using GALPAT method. This function
+*  calls GALPAT_Test_Stack.
+*
+*
+*
+* \return
+*   "1" - Test Failed                                         
+*   "2" - Pass, but still testing status                       
+*   "3" - pass and complete status 
+*
+*******************************************************************************/
+uint8_t SelfTests_Stack_GALPAT(void);
+
+/** \} group_galpat_functions */
+
 
 /** \cond INTERNAL */
 /***************************************

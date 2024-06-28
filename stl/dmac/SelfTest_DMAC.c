@@ -43,7 +43,10 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 #include "cy_pdl.h"
+
 #if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+
+#if (CY_IP_M4CPUSS_DMAC || CY_IP_M7CPUSS_DMAC)
 
 #include "SelfTest_DMAC.h"
 #include "SelfTest_ErrorInjection.h"
@@ -145,5 +148,6 @@ uint8_t SelfTest_DMAC(DMAC_Type * base, uint32_t channel, cy_stc_dmac_descriptor
     return ret;
 }
 
+#endif
 #endif
 /* [] END OF FILE */

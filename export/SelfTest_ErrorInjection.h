@@ -68,4 +68,8 @@
 #define ERROR_IN_UART_DATA_XFER                             0u
 #define ERROR_IN_WWDT_LOWER_LIMIT                           0u
 #define ERROR_IN_WWDT_INTR                                  0u
+#define ERROR_IN_TIMER_COUNTER                              0u
+#define ERROR_IN_PWM                                        0u
+#define ERROR_IN_CANFD                                      0u
+#define ERROR_IN_PWM_GATEKILL                               0u
 #endif /* SELFTESTERRORINJECTION_H */

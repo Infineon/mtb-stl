@@ -95,6 +95,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gafc0e88f293d650bf48f4d4c6ac680821"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__flash__functions.html#gafc0e88f293d650bf48f4d4c6ac680821">SelfTest_FlashCheckSum</a> (uint32_t DoubleWordsToTest)</td></tr>
 <tr class="memdesc:gafc0e88f293d650bf48f4d4c6ac680821"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function checks for data corruption in flash memory using a checksum calculation.  <a href="group__group__flash__functions.html#gafc0e88f293d650bf48f4d4c6ac680821">More...</a><br /></td></tr>
 <tr class="separator:gafc0e88f293d650bf48f4d4c6ac680821"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae3b711352066f67fd0a6d679d105799f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__flash__functions.html#gae3b711352066f67fd0a6d679d105799f">SelfTest_Flash_init</a> (uint32_t StartAddressOfFlash, uint32_t EndAddressOfFlash, uint64_t flash_ExpectedCheckSum)</td></tr>
+<tr class="memdesc:gae3b711352066f67fd0a6d679d105799f"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function checks the checksum of the flash for the given range of flash with the expected/reference checksum passed along with this API.  <a href="group__group__flash__functions.html#gae3b711352066f67fd0a6d679d105799f">More...</a><br /></td></tr>
+<tr class="separator:gae3b711352066f67fd0a6d679d105799f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="gafc0e88f293d650bf48f4d4c6ac680821" name="gafc0e88f293d650bf48f4d4c6ac680821"></a>
@@ -124,6 +127,54 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>1 - Test failed <br  />
  2 - Test in progress <br  />
  3 - Test completed </dd></dl>
+
+</div>
+</div>
+<a id="gae3b711352066f67fd0a6d679d105799f" name="gae3b711352066f67fd0a6d679d105799f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae3b711352066f67fd0a6d679d105799f">&#9670;&nbsp;</a></span>SelfTest_Flash_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SelfTest_Flash_init </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>StartAddressOfFlash</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>EndAddressOfFlash</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>flash_ExpectedCheckSum</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This function checks the checksum of the flash for the given range of flash with the expected/reference checksum passed along with this API. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">StartAddressOfFlash</td><td>Start address of the flash from where the checksum needs to be calculated.<br  />
+ </td></tr>
+    <tr><td class="paramname">EndAddressOfFlash</td><td>End address of the flash till where the checksum needs to be calculated. <br  />
+ </td></tr>
+    <tr><td class="paramname">flash_ExpectedCheckSum</td><td>Expected checksum. Must be stored outside the range of check. <br  />
+</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>This function needs to be called prior to <a class="el" href="group__group__flash__functions.html#gafc0e88f293d650bf48f4d4c6ac680821">SelfTest_FlashCheckSum</a> else the test will fail. </dd></dl>
 
 </div>
 </div>

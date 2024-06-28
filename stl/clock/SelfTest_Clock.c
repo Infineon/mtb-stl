@@ -145,13 +145,14 @@ uint8_t SelfTest_Clock(TCPWM_Type* base, uint32_t cntNum)
 
         /* Read WDT timer initial value */
         counter_0 = Cy_WDT_GetCount();
-        #if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M0P)
+
         /* refresh and start counter */
-        Cy_TCPWM_TriggerReloadOrIndex(base, 1uL << cntNum);
+        #if (CY_CPU_CORTEX_M0P)
+            Cy_TCPWM_TriggerReloadOrIndex(base, 1uL << cntNum);
         #else
-        /* refresh and start counter */
-        Cy_TCPWM_TriggerReloadOrIndex_Single(base, cntNum);
+            Cy_TCPWM_TriggerReloadOrIndex_Single(base, cntNum);
         #endif
+
         ret = PASS_STILL_TESTING_STATUS;
     }
     else if (clock_test_isr_count == 0u)

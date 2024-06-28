@@ -96,9 +96,6 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>STACK_TEST_PATTERN</b>&#160;&#160;&#160;0x55AAu</td></tr>
 <tr class="memdesc:gac4765e04674393e0aee95a9a704a27cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stack test pattern. <br /></td></tr>
 <tr class="separator:gac4765e04674393e0aee95a9a704a27cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6afd30b0fd403a85cb93fcde04a81b41"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__stack__macros.html#ga6afd30b0fd403a85cb93fcde04a81b41">STACK_TEST_BLOCK_SIZE</a>&#160;&#160;&#160;(8u)</td></tr>
-<tr class="memdesc:ga6afd30b0fd403a85cb93fcde04a81b41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Block size to be tested.  <a href="group__group__stack__macros.html#ga6afd30b0fd403a85cb93fcde04a81b41">More...</a><br /></td></tr>
-<tr class="separator:ga6afd30b0fd403a85cb93fcde04a81b41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga31f2643044ae297a88b0000c102ae3ca"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__stack__macros.html#ga31f2643044ae297a88b0000c102ae3ca">DEVICE_SRAM_BASE</a>&#160;&#160;&#160;(CY_SRAM_BASE)</td></tr>
 <tr class="memdesc:ga31f2643044ae297a88b0000c102ae3ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base address of SRAM.  <a href="group__group__stack__macros.html#ga31f2643044ae297a88b0000c102ae3ca">More...</a><br /></td></tr>
 <tr class="separator:ga31f2643044ae297a88b0000c102ae3ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,32 +106,15 @@ Macros</h2></td></tr>
 <tr class="memdesc:ga0dd2ac677e94aa8f16b9802b70a72c76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of Stack.  <a href="group__group__stack__macros.html#ga0dd2ac677e94aa8f16b9802b70a72c76">More...</a><br /></td></tr>
 <tr class="separator:ga0dd2ac677e94aa8f16b9802b70a72c76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga87d9230cf7a8a52d713f8171d25d8e57"><td class="memItemLeft" align="right" valign="top"><a id="ga87d9230cf7a8a52d713f8171d25d8e57" name="ga87d9230cf7a8a52d713f8171d25d8e57"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>DEVICE_STACK_BASE</b>&#160;&#160;&#160;(<a class="el" href="group__group__stack__macros.html#ga31f2643044ae297a88b0000c102ae3ca">DEVICE_SRAM_BASE</a> + <a class="el" href="group__group__stack__macros.html#gae0704e20aa328e4431a0eb5de0d8dbdb">DEVICE_SRAM_SIZE</a> - <a class="el" href="group__group__stack__macros.html#ga6afd30b0fd403a85cb93fcde04a81b41">STACK_TEST_BLOCK_SIZE</a>)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>DEVICE_STACK_BASE</b>&#160;&#160;&#160;(<a class="el" href="group__group__stack__macros.html#ga31f2643044ae297a88b0000c102ae3ca">DEVICE_SRAM_BASE</a> + <a class="el" href="group__group__stack__macros.html#gae0704e20aa328e4431a0eb5de0d8dbdb">DEVICE_SRAM_SIZE</a>)</td></tr>
 <tr class="memdesc:ga87d9230cf7a8a52d713f8171d25d8e57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start of Stack address excluding the block size to store pattern. <br /></td></tr>
 <tr class="separator:ga87d9230cf7a8a52d713f8171d25d8e57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabebf47e60ed71e71a56d7d1ec8f57199"><td class="memItemLeft" align="right" valign="top"><a id="gabebf47e60ed71e71a56d7d1ec8f57199" name="gabebf47e60ed71e71a56d7d1ec8f57199"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>DEVICE_STACK_END</b>&#160;&#160;&#160;(uint32_t)(<a class="el" href="group__group__stack__macros.html#ga87d9230cf7a8a52d713f8171d25d8e57">DEVICE_STACK_BASE</a> - <a class="el" href="group__group__stack__macros.html#ga0dd2ac677e94aa8f16b9802b70a72c76">DEVICE_STACK_SIZE</a> + <a class="el" href="group__group__stack__macros.html#ga6afd30b0fd403a85cb93fcde04a81b41">STACK_TEST_BLOCK_SIZE</a>)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>DEVICE_STACK_END</b>&#160;&#160;&#160;(uint32_t)(<a class="el" href="group__group__stack__macros.html#ga87d9230cf7a8a52d713f8171d25d8e57">DEVICE_STACK_BASE</a> - <a class="el" href="group__group__stack__macros.html#ga0dd2ac677e94aa8f16b9802b70a72c76">DEVICE_STACK_SIZE</a> + STACK_TEST_BLOCK_SIZE)</td></tr>
 <tr class="memdesc:gabebf47e60ed71e71a56d7d1ec8f57199"><td class="mdescLeft">&#160;</td><td class="mdescRight">End of Stack address excluding the block size to store pattern. <br /></td></tr>
 <tr class="separator:gabebf47e60ed71e71a56d7d1ec8f57199"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ga6afd30b0fd403a85cb93fcde04a81b41" name="ga6afd30b0fd403a85cb93fcde04a81b41"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga6afd30b0fd403a85cb93fcde04a81b41">&#9670;&nbsp;</a></span>STACK_TEST_BLOCK_SIZE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define STACK_TEST_BLOCK_SIZE&#160;&#160;&#160;(8u)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Block size to be tested. </p>
-<p >Should be EVEN. Pattern is Filled in this block size </p>
-
-</div>
-</div>
 <a id="ga31f2643044ae297a88b0000c102ae3ca" name="ga31f2643044ae297a88b0000c102ae3ca"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga31f2643044ae297a88b0000c102ae3ca">&#9670;&nbsp;</a></span>DEVICE_SRAM_BASE</h2>
 
