@@ -3,21 +3,10 @@
  * Version 1.0.0
  *
  * Description:
- *  This file provides the source code for the interrupt self test for CAT2(PSoC4),
- *  CAT1A, CAT1C devices.
+ *  This file provides the source code for the interrupt self test.
  *  The interrupt handler implementation uses the base address and counter
  *  number definitions from the Device Configurator generated code.
  *
- * Related Document:
- *  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
- *  for ModusToolbox
- *
- * Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
  *******************************************************************************
  * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -52,10 +41,8 @@
  *******************************************************************************/
 
 #include "cy_pdl.h"
-#include "cybsp.h"
 #include "SelfTest_Interrupt.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
 
 /* This variable is used in isr_1 interrupt handler */
 static volatile uint16_t selfTest_interrupt_counter = 0;
@@ -104,7 +91,8 @@ uint8_t SelfTest_Interrupt(TCPWM_Type* base, uint32_t cntNum)
 
     /* Stop and reset timer */
     #if CY_CPU_CORTEX_M0P
-        Cy_TCPWM_TriggerStopOrKill(base, 1<<cntNum);
+        uint32_t shiftedValue = (uint32_t)1U << cntNum;
+        Cy_TCPWM_TriggerStopOrKill(base, shiftedValue);
     #else
         Cy_TCPWM_TriggerStopOrKill_Single(base, cntNum);
     #endif
@@ -119,7 +107,8 @@ uint8_t SelfTest_Interrupt(TCPWM_Type* base, uint32_t cntNum)
     #endif /* End ERROR_IN_INTERRUPT_HANDLING */
 
     #if CY_CPU_CORTEX_M0P
-        Cy_TCPWM_TriggerStart(base, 1<<cntNum);
+        shiftedValue = (uint32_t)1U << cntNum;
+        Cy_TCPWM_TriggerStart(base, shiftedValue);
     #else
         Cy_TCPWM_TriggerStart_Single(base, cntNum);
     #endif
@@ -129,14 +118,17 @@ uint8_t SelfTest_Interrupt(TCPWM_Type* base, uint32_t cntNum)
 
     /* Stop and reset timer */
     #if CY_CPU_CORTEX_M0P
-        Cy_TCPWM_TriggerStopOrKill(base, 1<<cntNum);        
+        shiftedValue = (uint32_t)1U << cntNum;
+        Cy_TCPWM_TriggerStopOrKill(base, shiftedValue);        
     #else
         Cy_TCPWM_TriggerStopOrKill_Single(base, cntNum);
     #endif
     /* If less than NUMBER_OF_TIMER_TICKS_LO ticks or greater than NUMBER_OF_TIMER_TICKS_HI - error
        in test */
-    if ((selfTest_interrupt_counter < NUMBER_OF_TIMER_TICKS_LO) ||
-        (selfTest_interrupt_counter > NUMBER_OF_TIMER_TICKS_HI))
+    const uint32_t selfTest_interrupt_counter_val = selfTest_interrupt_counter;
+
+    if ((selfTest_interrupt_counter_val < NUMBER_OF_TIMER_TICKS_LO) ||
+        (selfTest_interrupt_counter_val > NUMBER_OF_TIMER_TICKS_HI))
     {
         ret = ERROR_STATUS;
     }

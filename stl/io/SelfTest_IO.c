@@ -3,19 +3,8 @@
 * Version 1.0.0
 *
 * Description:
-*  This file provides the source code for I/O self tests for CAT2(PSoC4), CAT1A, 
-*  CAT1C devices.
+*  This file provides the source code for I/O self tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -52,7 +41,6 @@
 
 #include "SelfTest_IO.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
 
 /* This variable used to return number of pin, which cause error in test */
 static uint8_t errorPinNum = 0u;
@@ -208,7 +196,7 @@ static const uint8_t PinToTest[] =
         0x00u, /* PORT2 mask */
         0x00u, /* PORT3 mask */
         0x00u, /* PORT4 mask */
-        0x10u, /* PORT5 mask */
+        0x00u, /* PORT5 mask */
         0x00u, /* PORT6 mask */
         0x00u, /* PORT7 mask */
         0x00u, /* PORT8 mask */
@@ -274,6 +262,36 @@ static GPIO_PRT_Type *PORT_Regs[] =
         GPIO_PRT30,
         GPIO_PRT31,
         GPIO_PRT32,
+};
+#elif CY_CPU_CORTEX_M33
+static const uint8_t PinToTest[] =
+    {
+        /* Below mask is based on the project setting and CY8CKIT-45S MAX kit hardware */
+        0x00u, /* PORT0 mask */
+        0x00u, /* PORT1 mask */
+        0x00u, /* PORT2 mask */
+        0x08u, /* PORT3 mask */
+        0x00u, /* PORT4 mask */
+        0x00u, /* PORT5 mask */
+        0x00u, /* PORT6 mask */
+        0x00u, /* PORT7 mask */
+        0x00u, /* PORT8 mask */
+        0x00u, /* PORT9 mask */
+};
+
+/* IO ports register addresses */
+static GPIO_PRT_Type *PORT_Regs[] =
+    {
+        GPIO_PRT0,
+        GPIO_PRT1,
+        GPIO_PRT2,
+        GPIO_PRT3,
+        GPIO_PRT4,
+        GPIO_PRT5,
+        GPIO_PRT6,
+        GPIO_PRT7,
+        GPIO_PRT8,
+        GPIO_PRT9,
 };
 
 #endif
@@ -354,18 +372,20 @@ uint8_t SelfTest_IO(void)
     __disable_irq();
 
     /* Run through all ports */
-    for (portNum = 0u; ((portNum < IO_PORTS) && (ret == OK_STATUS)); portNum++)
+    portNum = 0u;
+    while ((portNum < IO_PORTS) && (ret == OK_STATUS))
     {
         /* Save PORT state */
 #if CY_CPU_CORTEX_M0P
         savePortDR = (GPIO_PRT_DR(PORT_Regs[portNum]));
         savePortPC = (GPIO_PRT_PC(PORT_Regs[portNum]));
-#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7 || CY_CPU_CORTEX_M33)
         savePortDR = (GPIO_PRT_OUT(PORT_Regs[portNum]));
         savePortPC = (GPIO_PRT_CFG(PORT_Regs[portNum]));
 #endif
         /* Run through all pins of current port */
-        for (pinNum = 0u; ((pinNum < IO_PINS) && (ret == OK_STATUS)); pinNum++)
+        pinNum = 0u;
+        while ((pinNum < IO_PINS) && (ret == OK_STATUS))
         {
             /* If pin should be tested */
             if ((PinToTest[portNum] & (uint8_t)(1u << pinNum)) != 0u)
@@ -391,6 +411,7 @@ uint8_t SelfTest_IO(void)
                     /* Test fail */
                     ret = SHORT_TO_GND;
                     errorPinNum = (portNum * 8u) + pinNum;
+                    continue;
                 }
 
                 /* Set pin mode to resistive pull-down */
@@ -412,17 +433,18 @@ uint8_t SelfTest_IO(void)
                     break;
                 }
             }
+            pinNum++;
         }
 
         /* Restore PORT state */
 #if CY_CPU_CORTEX_M0P
         GPIO_PRT_DR(PORT_Regs[portNum]) = savePortDR;
         GPIO_PRT_PC(PORT_Regs[portNum]) = savePortPC;
-#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7 || CY_CPU_CORTEX_M33)
         GPIO_PRT_OUT(PORT_Regs[portNum]) = savePortDR;
         GPIO_PRT_CFG(PORT_Regs[portNum]) = savePortPC;
 #endif
-
+    portNum++;
     }
 
     /* Enable global interrupts */

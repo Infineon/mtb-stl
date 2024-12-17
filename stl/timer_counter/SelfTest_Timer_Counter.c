@@ -3,17 +3,8 @@
 * Version 1.1.0
 *
 * Description: This file provides the source code for the APIs to perform
-* Timer counter source testing according to the Class B library for 
-* CAT1A, CAT1C devices.
+* Timer counter source testing according to the Class B library.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -50,9 +41,8 @@
 #include "cy_pdl.h"
 #include "SelfTest_Timer_Counter.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
 
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
 /*******************************************************************************
 * Global Variables
 *******************************************************************************/
@@ -105,28 +95,29 @@ void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum, cy_stc_tcpwm
     #if CY_CPU_CORTEX_M7 
     const cy_stc_sysint_t intrCfg =
     {
-        .intrSrc = ((NvicMux3_IRQn << 16) | intsrc), /* Bit 0-15 of intrSrc is used to store system interrupt value and bit 16-31 to store CPU IRQ value */
+        .intrSrc = (((uint32_t)NvicMux3_IRQn << 16U) | ((uint32_t)intsrc)), /* Bit 0-15 of intrSrc is used to store system interrupt value and bit 16-31 to store CPU IRQ value */
         .intrPriority = 3UL
     };
-    #elif CY_CPU_CORTEX_M4
+    #elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
     cy_stc_sysint_t intrCfg =
     {
        /*.intrSrc =*/ intsrc, /* Interrupt source is Timer interrupt */
        /*.intrPriority =*/ 3UL   /* Interrupt priority is 3 */
     };
     #endif
-    Cy_TCPWM_Counter_Init(base, cntNum, config);
-    result = Cy_SysInt_Init(&intrCfg, SelfTest_TIMER_COUNTER_ISR);
+    cy_en_tcpwm_status_t tcpwm_init_status = Cy_TCPWM_Counter_Init(base, cntNum, config);
+    (void)tcpwm_init_status;
+    result = (cy_rslt_t)Cy_SysInt_Init(&intrCfg, SelfTest_TIMER_COUNTER_ISR);
 
-    if(result != CY_SYSINT_SUCCESS)
+    if(result != (cy_rslt_t)CY_SYSINT_SUCCESS)
     {
-        CY_ASSERT(0);
+        CY_ASSERT(result == CY_SYSINT_SUCCESS);
     }
 
     /* Enable Interrupt */
     #if CY_CPU_CORTEX_M7 
     NVIC_EnableIRQ((IRQn_Type) NvicMux3_IRQn);
-    #elif CY_CPU_CORTEX_M4
+    #elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
     NVIC_EnableIRQ(intrCfg.intrSrc);
     #endif
 
@@ -152,7 +143,7 @@ void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum, cy_stc_tcpwm
 *
 *
 *****************************************************************************/
-uint8_t SelfTest_Counter_Timer()
+uint8_t SelfTest_Counter_Timer(void)
 {
     int_occur = 0;
     count1 = 0;
@@ -172,14 +163,15 @@ uint8_t SelfTest_Counter_Timer()
         count1 = Cy_TCPWM_Counter_GetCounter(base1, cntNum1);
         Cy_SysLib_DelayUs(1);
         delay_cnt++;
-    } while ((int_occur == 0) && (delay_cnt < 600));
+    } while ((int_occur == 0U) && (delay_cnt < 600U));
 
-    if(delay_cnt >=600)
+    if(delay_cnt >=600U)
     {
         return ERROR_STATUS;
     }
 
-    if((count1 < TIMER_COUNTER_COUNT_LOW) || (count1 > TIMER_COUNTER_COUNT_HIGH))
+    const uint32_t count1_val = count1;
+    if((count1_val < TIMER_COUNTER_COUNT_LOW) || (count1_val > TIMER_COUNTER_COUNT_HIGH))
     {
         ret = ERROR_STATUS;
     }

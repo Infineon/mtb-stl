@@ -4,19 +4,8 @@
 *
 * Description:
 *  This file provides the function prototypes, constants, and parameter values used
-*  for the SPI self tests according to the Class B library for CAT2(PSoC4), CAT1A,
-*  CAT1C devices.
+*  for the SPI self tests according to the Class B library.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -73,12 +62,11 @@
 * \defgroup group_spi_macros Macros
 * \defgroup group_spi_functions Functions
 */
-#include "SelfTest_common.h"
-
 
 #if !defined(SELFTEST_SPI_SCB_H)
     #define SELFTEST_SPI_SCB_H
 
+#include "SelfTest_common.h"
 
 /***************************************
 * Function Prototypes

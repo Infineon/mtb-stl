@@ -3,19 +3,8 @@
 * Version 1.0.0
 *
 * Description:
-*  This file provides the source code to the API for runtime Stack self tests for
-*  CAT2(PSoC4), CAT1A, CAT1C devices.
+*  This file provides the source code to the API for runtime Stack self tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -52,51 +41,12 @@
 #include "cy_pdl.h"
 #include "SelfTest_Stack.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
 
 
 static uint8_t cy_stack_pattern_block_size = 0;
-/*******************************************************************************
- * Function Name: SelfTests_Init_Stack_Test
- ********************************************************************************
- *
- * Summary:
- *  This function initializes the upper stack area with 0xAA and 0x55 pattern.
- *
- * Parameters:
- *  None.
- *
- * Return:
- *  None.
- *
- **********************************************************************************/
-void SelfTests_Init_Stack_Test(uint8_t stack_pattern_blk_size)
-{
-    SelfTests_Init_Stack_Range((uint16_t*)DEVICE_STACK_BASE, DEVICE_STACK_SIZE, stack_pattern_blk_size);
-}
 
-
-/*******************************************************************************
- * Function Name: SelfTests_Stack_Check
- ********************************************************************************
- *
- * Summary:
- *  This function performs stack self test. It checks upper stack area for 0xAA
- *  and 0x55 pattern.
- *
- * Parameters:
- *  None.
- *
- * Return:
- *  Result of test:  "0" - pass test; "1" - fail test.
- *
- **********************************************************************************/
-uint8_t SelfTests_Stack_Check(void)
-{
-   uint8_t ret = OK_STATUS;
-   ret = SelfTests_Stack_Check_Range((uint16_t*)DEVICE_STACK_BASE, DEVICE_STACK_SIZE);
-   return ret; 
-}
+CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 18.4', 4, \
+'Using arithmetic on pointer.')
 
 /*******************************************************************************
  * Function Name: SelfTests_Init_Stack_Range
@@ -186,7 +136,7 @@ uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_leng
         if (*stack != STACK_TEST_PATTERN)
         {
             stack++;
-            ret |= (1 << 0);
+            ret |= (uint8_t)(1U << 0);
             break;
         }
     }
@@ -198,12 +148,13 @@ uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_leng
         if (*stack != STACK_TEST_PATTERN)
         {
             stack++;
-            ret |= (1 << 1);
+            ret |= (uint8_t)(1U << 1);
             break;
         }
     }
     return ret;
 }
+CY_MISRA_BLOCK_END('MISRA C-2012 Rule 18.4')
 /* [] END OF FILE */
 
 

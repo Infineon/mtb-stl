@@ -4,16 +4,6 @@
 *
 * This file combines all return status codes of mtb-stl middleware.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -46,6 +36,10 @@
 * of such system or application assumes all risk of such use and in doing
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
+
+
+#ifndef SELFTEST_COMMON_H
+#define SELFTEST_COMMON_H
 
 /* Common return status codes */
 #define OK_STATUS                       (0u)
@@ -84,5 +78,7 @@
    I2C, UART, SPI (TO DO: Remove these codes in mtb-stl-v0.5) */
 #define PASS_STILL_TESTING_STATUS       (2u)
 #define PASS_COMPLETE_STATUS            (3u)
+
+#endif /* SELFTEST_COMMON_H */
 
 /* [] END OF FILE */

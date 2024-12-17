@@ -31,6 +31,7 @@ var NAVTREE =
       [ "ModusToolbox™ Software", "^https://github.com/Infineon/modustoolbox-software", null ],
       [ "CMSIS Documentation", "^https://www.keil.com/pack/doc/CMSIS/General/html/index.html", null ]
     ] ],
+    [ "MISRA-C:2012 Compliance", "page_misra.html", null ],
     [ "Additional Resources", "page_cypress_resources.html", null ]
   ] ]
 ];

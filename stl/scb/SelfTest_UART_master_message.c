@@ -5,7 +5,7 @@
 *
 * Description:
 *  This file provides the source code to the API for the UART master
-*  packet protocol for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  packet protocol.
 *
 * Note:
 *  Protocol description
@@ -24,13 +24,6 @@
 *  then it's exchanged with two byte sequence <ESC><STX+1>
 *  If there is a byte <ADDR> <DL> <[Data]> or <[CRC]> that equals ESC
 *  then it's exchanged with two byte sequence <ESC><ESC+1>
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *
 ********************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
@@ -194,7 +187,8 @@ static void UART_MessageTxInt(uint32_t IntMask)
         }
         else
         {
-            if((UART_Master_Struct.address == STX) || (UART_Master_Struct.address == ESC))
+            const uint32_t uart_master_struct_addr = UART_Master_Struct.address;
+            if((uart_master_struct_addr == STX) || (uart_master_struct_addr == ESC))
             {
                 
                 /* need change procedure */
@@ -229,7 +223,8 @@ static void UART_MessageTxInt(uint32_t IntMask)
         }
         else
         {
-            if((UART_Master_Struct.txcnt == STX) || (UART_Master_Struct.txcnt == ESC))
+            const uint32_t uart_master_struct_txcnt = UART_Master_Struct.txcnt;
+            if((uart_master_struct_txcnt == STX) || (uart_master_struct_txcnt == ESC))
             {
                 
                 /* need change procedure */
@@ -265,7 +260,8 @@ static void UART_MessageTxInt(uint32_t IntMask)
         }
         else
         {
-            if(( * UART_Master_Struct.txptr == STX) || ( * UART_Master_Struct.txptr == ESC))
+            const uint8_t uart_master_struct_txptr = *UART_Master_Struct.txptr; 
+            if((uart_master_struct_txptr == STX) || (uart_master_struct_txptr == ESC))
             {
                 
                 /* need change procedure */
@@ -309,7 +305,8 @@ static void UART_MessageTxInt(uint32_t IntMask)
         }
         else
         {
-            if(((uint8_t)(UART_Master_Struct.tcrc >> 8u) == STX)||((uint8_t)(UART_Master_Struct.tcrc >> 8u) == ESC))
+            uint8_t uart_master_struct_tcrc = (uint8_t)(UART_Master_Struct.tcrc >> 8u);
+            if(((uart_master_struct_tcrc) == STX)||((uart_master_struct_tcrc) == ESC))
             {
                 
                 /* need change procedure */
@@ -339,7 +336,8 @@ static void UART_MessageTxInt(uint32_t IntMask)
         }
         else
         {
-            if(((uint8_t)UART_Master_Struct.tcrc == STX) || ((uint8_t)UART_Master_Struct.tcrc == ESC))
+            uint8_t uart_master_struct_tcrc = (uint8_t)(UART_Master_Struct.tcrc);
+            if((uart_master_struct_tcrc == STX) || (uart_master_struct_tcrc == ESC))
             {
             
                 /* need change procedure */
@@ -413,9 +411,9 @@ static void UART_MessageRxInt(uint32_t IntMask)
         }
         else
         {
-        
+            const uint8_t uart_master_struct_rstatus = UART_Master_Struct.rstatus;
             /* Update CRC */
-            if ((UART_Master_Struct.rstatus != UM_RECEIVE_CRC_H) && (UART_Master_Struct.rstatus != UM_RECEIVE_CRC_L))
+            if ((uart_master_struct_rstatus != UM_RECEIVE_CRC_H) && (uart_master_struct_rstatus != UM_RECEIVE_CRC_L))
             {
                 #if (ERROR_IN_PROTOCOL == 1)
                     UART_Master_Struct.rcrc = SelfTests_CRC16_CCITT_Byte(UART_Master_Struct.rcrc, bt + 1);
@@ -518,10 +516,10 @@ static void UART_MessageRxInt(uint32_t IntMask)
                         Cy_SCB_SetRxInterruptMask(UART_Master_Struct.scb_base, 0UL);
                         
                         Cy_TCPWM_SetInterruptMask(Counter_Struct.counter_base, Counter_Struct.cntNum, 0);
-#if CY_CPU_CORTEX_M7                        
+#if ((defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
                         Cy_TCPWM_TriggerStopOrKill_Single(Counter_Struct.counter_base, Counter_Struct.cntNum);
 #else
-   #if (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K))
+   #if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) && defined (CY_DEVICE_PSOC6A256K))
                         Cy_TCPWM_TriggerStopOrKill_Single(Counter_Struct.counter_base, Counter_Struct.cntMsk);
    #else
                         Cy_TCPWM_TriggerStopOrKill(Counter_Struct.counter_base, Counter_Struct.cntMsk);
@@ -611,10 +609,10 @@ void UartMesMaster_Timeout_ISR(void)
     counterStatus = Cy_TCPWM_GetInterruptStatus(Counter_Struct.counter_base, Counter_Struct.cntNum);
 
     UART_Master_Struct.gstatus = UM_ERROR;
-#if CY_CPU_CORTEX_M7
+#if ((defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
     Cy_TCPWM_TriggerStopOrKill_Single(Counter_Struct.counter_base, Counter_Struct.cntNum);
 #else
-    #if (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K))
+    #if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) && defined (CY_DEVICE_PSOC6A256K))
 	Cy_TCPWM_TriggerStopOrKill_Single(Counter_Struct.counter_base, Counter_Struct.cntMsk);
     #else
     Cy_TCPWM_TriggerStopOrKill(Counter_Struct.counter_base, Counter_Struct.cntMsk);
@@ -689,9 +687,9 @@ void UartMesMaster_Init(CySCB_Type* uart_base, TCPWM_Type* counter_base,  uint32
 uint8_t UartMesMaster_DataProc(uint8_t address, uint8_t *txd, uint8_t tlen, uint8_t * rxd, uint8_t rlen)
 {
     uint8_t ret = 0u;
-    
+    const uint8_t uart_master_struct_gstatus = UART_Master_Struct.gstatus; 
     /* is it possible to start request ? */
-    if((tlen == 0u) || (UART_Master_Struct.gstatus == UM_BUSY))
+    if((tlen == 0u) || (uart_master_struct_gstatus == UM_BUSY))
     {
         ret = 1u;
     }
@@ -717,10 +715,10 @@ uint8_t UartMesMaster_DataProc(uint8_t address, uint8_t *txd, uint8_t tlen, uint
         Cy_SCB_UART_ClearTxFifo(UART_Master_Struct.scb_base);
         
         Cy_TCPWM_Counter_SetCounter(Counter_Struct.counter_base, Counter_Struct.cntNum, UM_TIMEOUT);
-#if CY_CPU_CORTEX_M7
+#if ((defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
         Cy_TCPWM_TriggerStart_Single(Counter_Struct.counter_base, Counter_Struct.cntNum);
 #else
-    #if (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K))
+    #if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) && (defined(CY_DEVICE_PSOC6A256K)))
         Cy_TCPWM_TriggerStart_Single(Counter_Struct.counter_base, Counter_Struct.cntMsk);
     #else
         Cy_TCPWM_TriggerStart(Counter_Struct.counter_base, Counter_Struct.cntMsk);

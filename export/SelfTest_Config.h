@@ -4,7 +4,8 @@
 *
 * Description:
 *  This file provides defines to force artificial errors and to
-*  provoke detection of defects by self tests for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  provoke detection of defects by self tests for CAT2(PSoC4), CAT1A,
+*  CAT1B(PSoC C3), CAT1C devices.
 *
 * Related Document:
 *  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
@@ -56,7 +57,7 @@
 #endif
 
 
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
 #if !defined(CYBSP_CLOCK_TEST_TIMER_HW)
     #define CYBSP_CLOCK_TEST_TIMER_HW  TCPWM0
 #endif
@@ -66,11 +67,11 @@
 #endif
 #endif
 
-#if CY_CPU_CORTEX_M4
+#if (defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
 #if !defined(CYBSP_CLOCK_TEST_TIMER_NUM)
     #define CYBSP_CLOCK_TEST_TIMER_NUM 0UL
 #endif
-#elif CY_CPU_CORTEX_M7
+#elif (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
 #if !defined(CYBSP_CLOCK_TEST_TIMER_NUM)
     #define CYBSP_CLOCK_TEST_TIMER_NUM 513UL
 #endif
@@ -81,7 +82,7 @@
 #endif
 
 
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
 #if !defined(CYBSP_TIMER_HW)
     #define CYBSP_TIMER_HW TCPWM0
 #endif
@@ -92,11 +93,11 @@
 #endif
 
 
-#if CY_CPU_CORTEX_M4
+#if (defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
 #if !defined(CYBSP_TIMER_NUM)
-    #define CYBSP_TIMER_NUM 1UL
+    #define CYBSP_TIMER_NUM 1UL 
 #endif
-#elif CY_CPU_CORTEX_M7
+#elif (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
 #if !defined(CYBSP_TIMER_NUM)
     #define CYBSP_TIMER_NUM 512UL
 #endif

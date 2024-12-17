@@ -4,15 +4,7 @@
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
-*  used for UART debug output for CAT2(PSoC4) devices.
-*
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
+*  used for UART debug output.
 *
 *******************************************************************************
 * Copyright 2020-2023, Cypress Semiconductor Corporation (an Infineon company) or

@@ -4,16 +4,8 @@
 *
 * Description:
 *  This file provides the function prototypes, constants and parameter values used
-*  for the clock self tests according to Class B library for CAT1A, CAT1C devices.
+*  for the clock self tests according to Class B library.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -68,14 +60,13 @@
 * \defgroup group_timer_counter_functions Functions
 */
 
-#include "SelfTest_common.h"
-
 
 #if !defined(SELFTEST_TIMER_COUNTER_H)
     #define SELFTEST_TIMER_COUNTER_H
 #include "cybsp.h"
+#include "SelfTest_common.h"
 
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
 /***************************************
 * Function Prototypes
 ***************************************/
@@ -120,7 +111,7 @@ void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum, cy_stc_tcpwm
 *
 *
 *****************************************************************************/
-uint8_t SelfTest_Counter_Timer();
+uint8_t SelfTest_Counter_Timer(void);
 
 /** \} group_timer_counter_functions */
 

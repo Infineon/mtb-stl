@@ -4,18 +4,8 @@
 *
 * Description:
 *  This file provides the source code for the watchdog timer
-*  Class B support tests for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  Class B support tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -52,7 +42,9 @@
 #include "cy_pdl.h"
 #include "SelfTest_WDT.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
+
+CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 8.6', 1, \
+'Only one defination will be used during compilation.')
 #if CY_CPU_CORTEX_M0P
 
 /*****************************************************************************
@@ -148,7 +140,7 @@ uint8_t SelfTest_WDT(void)
     return ret;
 }
 
-#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7 ||CY_CPU_CORTEX_M33 )
 
 uint8_t SelfTest_WDT(void)
 {
@@ -180,6 +172,11 @@ uint8_t SelfTest_WDT(void)
 #elif CY_CPU_CORTEX_M7
         Cy_WDT_SetUpperLimit(WDT_PERIOD); // Reset after 3 seconds
         Cy_WDT_SetUpperAction(CY_WDT_LOW_UPPER_LIMIT_ACTION_RESET);
+#elif CY_CPU_CORTEX_M33
+        /* Step 2- Write the match bits - operate with only 14 bits */
+        Cy_WDT_SetMatchBits(MATCH_BITS);
+        /* Step 3- Write match value */
+        Cy_WDT_SetMatch(WDT_PERIOD);
 #endif
 
         /* Step 4- Clear match event interrupt, if any */
@@ -206,5 +203,6 @@ uint8_t SelfTest_WDT(void)
 }
 
 #endif
+CY_MISRA_BLOCK_END('MISRA C-2012 Rule 8.6')
 
 /* [] END OF FILE */

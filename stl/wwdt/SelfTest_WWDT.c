@@ -4,14 +4,7 @@
 *
 * Description:
 *  This file provides the source code for the windowed watchdog timer
-*  Class B support tests for CAT1C devices.
-*
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  XMC7200D-E272K8384
+*  Class B support tests.
 *
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
@@ -49,16 +42,14 @@
 #include "cy_pdl.h"
 #include "SelfTest_WWDT.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
 
-#if CY_CPU_CORTEX_M7
+#if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
 
 void WdtInterruptHandler(void);
 
 
 static volatile uint32_t wwdt_count;
 static volatile uint32_t wwdt_intr_occured;
-static volatile bool wwdt_reset_occured;
 
 /* WDT interrupt configuration structure */
 const cy_stc_sysint_t WDT_IRQ_cfg = {
@@ -68,14 +59,13 @@ const cy_stc_sysint_t WDT_IRQ_cfg = {
 
 uint8_t SelfTest_Windowed_WDT(void)
 {
-    wwdt_intr_occured = 0;
-    wwdt_intr_occured = false;
+        wwdt_intr_occured = 0U;
     /* Initialize WDT */
     /* Check the reason for device restart */
     if(CY_SYSLIB_RESET_HWWDT == Cy_SysLib_GetResetReason())
     {
         Cy_SysLib_ClearResetReason();
-        wwdt_intr_occured = true;
+        wwdt_intr_occured = 1U;
     }
     else
     {
@@ -95,7 +85,8 @@ uint8_t SelfTest_Windowed_WDT(void)
     /* Step 4- Clear match event interrupt, if any */
     Cy_WDT_ClearInterrupt();
     /* Step 5 - Enable interrupt */
-    Cy_SysInt_Init(&WDT_IRQ_cfg, WdtInterruptHandler);
+    cy_en_sysint_status_t sysint_status = Cy_SysInt_Init(&WDT_IRQ_cfg, WdtInterruptHandler);
+    (void)sysint_status;
     NVIC_EnableIRQ((IRQn_Type) NvicMux3_IRQn);
     Cy_WDT_UnmaskInterrupt();
 
@@ -104,14 +95,14 @@ uint8_t SelfTest_Windowed_WDT(void)
 
     Cy_SysLib_Delay(3000);
 
-    if(true == wwdt_intr_occured)
+    if(1U== wwdt_intr_occured)
     {
         do
         {
             wwdt_count = Cy_WDT_GetCount();
         } while (wwdt_count < WDT_UPPER_LIMIT);
 
-        if (1 == wwdt_intr_occured)
+        if (1U == wwdt_intr_occured)
         {
             Cy_WDT_Disable();
             Cy_WDT_Lock();
@@ -124,7 +115,7 @@ uint8_t SelfTest_Windowed_WDT(void)
         {
             wwdt_count = Cy_WDT_GetCount();
 #if (!ERROR_IN_WWDT_LOWER_LIMIT)
-            if (wwdt_count >= 3000)
+            if (wwdt_count >= 3000U)
             {
                 Cy_WDT_SetService();
             }
@@ -150,7 +141,7 @@ uint32_t Wdt_IsWdtInterrutpSet(void)
 void WdtInterruptHandler(void)
 {
     /* Check if the interrupt is from WDT */
-    if(Wdt_IsWdtInterrutpSet())
+    if(Wdt_IsWdtInterrutpSet() != 0UL)
     {
 #if ERROR_IN_WWDT_INTR
         wwdt_intr_occured+=2;

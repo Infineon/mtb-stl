@@ -3,19 +3,8 @@
 * Version 1.0.0
 *
 * Description: This file provides the source code for the APIs to perform
-* clock source testing according to the Class B library for CAT2(PSoC4), 
-* CAT1A, CAT1C devices.
+* clock source testing according to the Class B library.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -52,7 +41,7 @@
 #include "cy_pdl.h"
 #include "SelfTest_Clock.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
+
 /*******************************************************************************
 * Global Variables
 *******************************************************************************/
@@ -74,7 +63,7 @@ void SelfTest_Clock_ISR_TIMER(void)
     /* Read WDT timer final value */
     wdt_counter_1 = Cy_WDT_GetCount();
 
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
 
     Cy_TCPWM_Counter_Disable(base1, cntNum1);
     uint32_t interrupts = Cy_TCPWM_GetInterruptStatusMasked(base1, cntNum1);
@@ -121,8 +110,11 @@ uint8_t SelfTest_Clock(TCPWM_Type* base, uint32_t cntNum)
     volatile uint32_t counter_1;
     uint8_t ret;
     static uint8_t test_in_progress = 0;
-    #if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
-        uint32_t CLOCK_TEST_TIME_TIMER_PERIOD = ((Cy_SysClk_ClkPeriGetFrequency() / 1000000) * (CLOCK_TEST_TIME));
+    #if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)))
+        uint32_t CLOCK_TEST_TIME_TIMER_PERIOD = ((Cy_SysClk_ClkPeriGetFrequency() / 1000000U) * (CLOCK_TEST_TIME));
+    #endif
+    #if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
+        uint32_t CLOCK_TEST_TIME_TIMER_PERIOD = ((uint32_t)(((uint64_t)Cy_SysClk_ClkHfGetFrequency(3) / 1000000U) * CLOCK_TEST_TIME));
     #endif
     if (test_in_progress == 0u)
     {
@@ -130,13 +122,13 @@ uint8_t SelfTest_Clock(TCPWM_Type* base, uint32_t cntNum)
         clock_test_isr_count = 0u;
 
         #if (ERROR_IN_CLOCK == 1)
-        #if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+        #if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
             Cy_TCPWM_Counter_Enable(base, cntNum);
         #endif
             /* wait 250uS */
             Cy_TCPWM_Counter_SetPeriod(base, cntNum, CLOCK_TEST_TIME_TIMER_PERIOD/4);
         #else
-        #if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+        #if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
             Cy_TCPWM_Counter_Enable(base, cntNum);
         #endif
         /* wait 1000uS */
@@ -176,8 +168,9 @@ uint8_t SelfTest_Clock(TCPWM_Type* base, uint32_t cntNum)
             counter_0 = (counter_1 + 0xFFFFu) - counter_0;
         }
 
+        const uint32_t counter_0_val = counter_0;
         /* If less than CLOCK_TICKS_LO ticks or more than CLOCK_TICKS_HI - error in test */
-        if ((counter_0 < CLOCK_TICKS_LO) || (counter_0 > CLOCK_TICKS_HI))
+        if ((counter_0_val < CLOCK_TICKS_LO) || (counter_0_val > CLOCK_TICKS_HI))
         {
             ret = ERROR_STATUS;
         }

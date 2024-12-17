@@ -4,18 +4,8 @@
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
-*  used for watchdog timer self tests for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  used for watchdog timer self tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -71,13 +61,11 @@
 * \defgroup group_wdt_functions Functions
 */
 
-#include "SelfTest_common.h"
-
 #if !defined(SELFTEST_WDT_H)
     #define SELFTEST_WDT_H
 
 #include "cy_pdl.h"
-
+#include "SelfTest_common.h"
 
 /** \addtogroup group_wdt_macros
 * \{
@@ -93,21 +81,21 @@
 /** To set the period of WDT. <br>
 For CAT1A, and CAT2 WDT gets reset when this Limit is hit 3rd time. <br>
 For CAT1C device, the Upper Limit is set to this value and will get reset it WDT is not served before Upper Limit. <br>
-Note : This value differ for CAT1A, CAT1C and CAT2 devices. */ 
+Note : This value differ for CAT1A, CAT1B(PSoC C3), CAT1C and CAT2 devices. */
 #define WDT_PERIOD                     (900u)
 
 /** Set the desired number of ignore bits. To make WDT counter (32/16 - IGNORE_BITS) bits up counter. */
 #define IGNORE_BITS                    (3U)
 
 /** WDT guard interval <br>
-Note : This value differ for CAT1A, CAT1C and CAT2 devices. */
+Note : This value differ for CAT1A, CAT1B(PSoC C3), CAT1C and CAT2 devices. */
 #define WDT_DATA_TIME                  (3000u)
 
 /** Waiting time, in milliseconds, for proper start-up of ILO */
 #define ILO_START_UP_TIME              (2U)
 
 
-#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7 || CY_CPU_CORTEX_M33 )
 
 #define WDT_PERIOD                     (32000u)
 
@@ -121,6 +109,10 @@ Note : This value differ for CAT1A, CAT1C and CAT2 devices. */
 #elif CY_CPU_CORTEX_M7
 /* WDT guard interval */
 #define WDT_DATA_TIME                  (2u)
+#elif CY_CPU_CORTEX_M33
+/* WDT guard interval */
+#define WDT_DATA_TIME                  (8u)
+#define MATCH_BITS                     (14U)
 #endif
 
 #endif

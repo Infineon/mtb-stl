@@ -4,12 +4,8 @@
 *
 * Description:
 * Description: This file provides the constants and parameter values for the PWM 
-* Gatekill self tests for CAT1A, CAT1C devices.
+* Gatekill self tests.
 *
-*
-*
-* Hardware Dependency:
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -76,10 +72,10 @@ The test is carried out as mentioned below.
 * \defgroup group_pwm_gatekill_functions Functions
 */
 
-#include "SelfTest_common.h"
-
 #if !defined(SELFTEST_PWM_GATEKILL_H)
     #define SELFTEST_PWM_GATEKILL_H
+    
+#include "SelfTest_common.h"
 
 /***************************************
 * Function Prototypes

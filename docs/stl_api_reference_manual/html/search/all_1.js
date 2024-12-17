@@ -20,9 +20,14 @@ var searchData=
   ['conf_5freg_5fflash_5fsmall_5fsector_5faddr_5fbase_17',['CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE',['../group__group__regs__macros.html#gaa6d33702609240116fce9e20a54002ae',1,'SelfTest_ConfigRegisters.h']]],
   ['conf_5freg_5fflash_5fsmall_5fsector_5fsize_18',['CONF_REG_FLASH_SMALL_SECTOR_SIZE',['../group__group__regs__macros.html#gaaa72499c5d7f30bb4cc89e62ecd2c800',1,'SelfTest_ConfigRegisters.h']]],
   ['conf_5freg_5fnumber_5fof_5frows_19',['CONF_REG_NUMBER_OF_ROWS',['../group__group__regs__macros.html#ga01ec103757ed71d1250121f4221c1299',1,'SelfTest_ConfigRegisters.h']]],
-  ['cpu_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_28cpu_20stl_20module_29_20',['CPU                       (CPU STL module)',['../group__group__cpu.html',1,'']]],
-  ['crc_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_28crc_20stl_20module_29_21',['CRC                       (CRC STL module)',['../group__group__crc.html',1,'']]],
-  ['crc16_5fccitt_5finit_5fvalue_22',['CRC16_CCITT_INIT_VALUE',['../group__group__crc__macros.html#ga29b8bee5fe44a916600ae2ead4f36531',1,'SelfTest_CRC_calc.h']]],
-  ['crc32_5finit_5fvalue_23',['CRC32_INIT_VALUE',['../group__group__crc__macros.html#ga5ff91b2ac1daaff702f87e2d302e7b42',1,'SelfTest_CRC_calc.h']]],
-  ['crc_5fmask_24',['CRC_MASK',['../group__group__crc__macros.html#gac21f2d275f975b7357d95a49567856c8',1,'SelfTest_CRC_calc.h']]]
+  ['cordic_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_28cordic_20stl_20module_29_20',['CORDIC                    (CORDIC STL module)',['../group__group__cordic.html',1,'']]],
+  ['cpu_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_28cpu_20stl_20module_29_21',['CPU                       (CPU STL module)',['../group__group__cpu.html',1,'']]],
+  ['crc_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_28crc_20stl_20module_29_22',['CRC                       (CRC STL module)',['../group__group__crc.html',1,'']]],
+  ['crc16_5fccitt_5finit_5fvalue_23',['CRC16_CCITT_INIT_VALUE',['../group__group__crc__macros.html#ga29b8bee5fe44a916600ae2ead4f36531',1,'SelfTest_CRC_calc.h']]],
+  ['crc32_5finit_5fvalue_24',['CRC32_INIT_VALUE',['../group__group__crc__macros.html#ga5ff91b2ac1daaff702f87e2d302e7b42',1,'SelfTest_CRC_calc.h']]],
+  ['crc_5fmask_25',['CRC_MASK',['../group__group__crc__macros.html#gac21f2d275f975b7357d95a49567856c8',1,'SelfTest_CRC_calc.h']]],
+  ['cy_5fecc_5fc_5ferror_26',['CY_ECC_C_ERROR',['../group__group__ecc__enums.html#gga110785fcd11cb40d50cc90ef773f054daf918b1f9d3a8d821ccc7e90a4e28e65c',1,'SelfTest_ECC.h']]],
+  ['cy_5fecc_5fnc_5ferror_27',['CY_ECC_NC_ERROR',['../group__group__ecc__enums.html#gga110785fcd11cb40d50cc90ef773f054da1a6e60e013ac26460d61768446115c17',1,'SelfTest_ECC.h']]],
+  ['cy_5fecc_5fno_5ferror_28',['CY_ECC_NO_ERROR',['../group__group__ecc__enums.html#gga110785fcd11cb40d50cc90ef773f054da349a017ec7aeae5e73497577c48fddbd',1,'SelfTest_ECC.h']]],
+  ['cy_5fen_5fecc_5ferror_5fmode_5ft_29',['cy_en_ecc_error_mode_t',['../group__group__ecc__enums.html#ga110785fcd11cb40d50cc90ef773f054d',1,'SelfTest_ECC.h']]]
 ];

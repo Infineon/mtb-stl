@@ -5,7 +5,7 @@
 *
 * Description:
 *  This file provides the source code to the API for the UART slave
-*  packet protocol for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  packet protocol.
 *
 * Note:
 *  Protocol description
@@ -25,12 +25,6 @@
 *  If there is a byte <ADDR> <DL> <[Data]> or <[CRC]> that equals ESC
 *  then it's exchanged with two byte sequence <ESC><ESC+1>
 *
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 ********************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.

@@ -4,7 +4,7 @@
 *
 * Description:
 * This file provides constants and parameter values used for FPU register self
-* tests for CAT1A and CAT1C devices.
+* tests.
 *
 *
 * Hardware Dependency:
@@ -72,14 +72,13 @@
 * \defgroup group_fpu_functions Functions
 */
 
-#include "SelfTest_common.h"
-
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
-
-#if !defined(SELFTEST_FPU_ASM_H)
-#define SELFTEST_FPU_ASM_H
+#if !defined(SELFTEST_FPU_REGS_H)
+#define SELFTEST_FPU_REGS_H
 
 #include "cy_pdl.h"
+#include "SelfTest_common.h"
+
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
 
 /** \cond INTERNAL */
 /***************************************
@@ -89,8 +88,8 @@
 uint8_t SelfTest_FPU_Regs_GCC(void);
 #elif defined(__ICCARM__)
 uint8_t SelfTest_FPU_Regs_IAR(void);
-#elif defined(__CC_ARM)
-uint8_t SelfTest_FPU_Regs_MDK(void);
+#elif defined(__ARMCC_VERSION)
+uint8_t SelfTest_FPU_Regs_ARM(void);
 #endif /* End (__GNUC__) ||  (__CC_ARM) */
 /** \endcond */
 
@@ -106,7 +105,7 @@ uint8_t SelfTest_FPU_Regs_MDK(void);
 *
 * This function performs checkerboard test for all FPU registers (S0-S31).
 * \note
-* Only applicable for CAT1A and CAT1C devices.
+* Only applicable for CAT1A, CAT1B(PSoC C3) and CAT1C devices.
 *
 * \return
 *  0 - Test passed <br>

@@ -2,14 +2,8 @@
 * File Name: SelfTest_IPC.c
 * Version 1.0.0
 *
-* Description: This file provides the source code for the IPC self tests
-* for CAT1A and CAT1C devices.
+* Description: This file provides the source code for the IPC self tests.
 *
-*
-* Hardware Dependency:
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -46,24 +40,31 @@
 #include "cy_pdl.h"
 #include "SelfTest_IPC.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
 
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 8.6', 7, \
+'Only one defination will be used during compilation.')
+
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
 
 
 /*******************************************************************************
 * Global Variables
 *******************************************************************************/
 #if CY_CPU_CORTEX_M4
-uint8_t free_channel_start = 8;
-uint8_t free_channel_end   = 15;
-uint8_t free_intr_start = 7;
-uint8_t free_intr_end = 15;
+uint32_t free_channel_start = 8;
+uint32_t free_channel_end   = 15;
+uint32_t free_intr_start = 7;
+uint32_t free_intr_end = 15;
 #elif CY_CPU_CORTEX_M7
-uint8_t free_channel_start = 4;
-uint8_t free_channel_end   = 7;
-uint8_t free_intr_start = 1;
-uint8_t free_intr_end = 7;
+uint32_t free_channel_start = 4;
+uint32_t free_channel_end   = 7;
+uint32_t free_intr_start = 1;
+uint32_t free_intr_end = 7;
+#elif CY_CPU_CORTEX_M33
+uint32_t free_channel_start = 0;
+uint32_t free_channel_end   = 1;
+uint32_t free_intr_start = 0;
+uint32_t free_intr_end = 1;
 #endif
 volatile uint8_t ch_rx[16];
 
@@ -80,6 +81,9 @@ uint32_t readMesg4[2];
 uint32_t readMesg5[2];
 uint32_t readMesg6[2];
 uint32_t readMesg7[2];
+#elif CY_CPU_CORTEX_M33
+uint32_t readMesg0[2];
+uint32_t readMesg1[2];
 #elif CY_CPU_CORTEX_M4
     
     #if (CY_IP_MXTCPWM_VERSION == 1)
@@ -111,12 +115,12 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
 {
     IPC_STRUCT_Type *ipcPtr;
     /* Check to make sure the interrupt was a notify interrupt */
-    if (0ul != notifyMask)
+    if (0UL != notifyMask)
     {
         /* Clear the notify interrupt. */
         Cy_IPC_Drv_ClearInterrupt(ipcIntrPtr, CY_IPC_NO_NOTIFICATION, notifyMask);
 #if CY_CPU_CORTEX_M7
-        if (notifyMask & GET_IPC_CH_NOTIFY_MASK(4))
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(4))) != 0UL)
         {
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_4);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
@@ -125,7 +129,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
                 ch_rx[4] = 1;
             }
         }
-        if (notifyMask & GET_IPC_CH_NOTIFY_MASK(5))
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(5))) != 0UL)
         {
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_5);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
@@ -135,7 +139,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             }
         }
 
-        if (notifyMask & GET_IPC_CH_NOTIFY_MASK(6))
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(6))) != 0UL)
         {
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_6);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
@@ -145,7 +149,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             }
         }
 
-        if (notifyMask & GET_IPC_CH_NOTIFY_MASK(7))
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(7))) != 0UL)
         {
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_7);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
@@ -154,8 +158,29 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
                 ch_rx[7] = 1;
             }
         }
+#elif CY_CPU_CORTEX_M33
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(0))) != 0UL)
+        {
+            ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_0);
+            if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
+            {
+
+                Cy_IPC_Drv_ReadDDataValue (ipcPtr, readMesg0);
+                ch_rx[0] = 1;
+            }
+        }
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(1))) != 0UL)
+        {
+            ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_1);
+            if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
+            {
+
+                Cy_IPC_Drv_ReadDDataValue (ipcPtr, readMesg1);
+                ch_rx[1] = 1;
+            }
+        }
 #elif CY_CPU_CORTEX_M4
-        if (notifyMask & GET_IPC_CH_NOTIFY_MASK(8))
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(8U))) != 0UL)
         {
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_8);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
@@ -168,7 +193,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
                 ch_rx[8] = 1;
             }
         }
-        if (notifyMask & GET_IPC_CH_NOTIFY_MASK(9))
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(9U))) != 0UL)
         {
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_9);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
@@ -182,7 +207,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             }
         }
 
-        if (notifyMask & GET_IPC_CH_NOTIFY_MASK(10))
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(10))) != 0UL)
         {
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_10);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
@@ -196,7 +221,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             }
         }
 
-        if (notifyMask & GET_IPC_CH_NOTIFY_MASK(11))
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(11))) != 0UL)
         {
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_11);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
@@ -210,7 +235,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             }
         }
 
-        if (notifyMask & GET_IPC_CH_NOTIFY_MASK(12))
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(12))) != 0UL)
         {
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_12);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
@@ -224,7 +249,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             }
         }
 
-        if (notifyMask & GET_IPC_CH_NOTIFY_MASK(13))
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(13))) != 0UL)
         {
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_13);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
@@ -238,7 +263,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             }
         }
 
-        if (notifyMask & GET_IPC_CH_NOTIFY_MASK(14))
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(14))) != 0UL)
         {
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_14);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
@@ -252,7 +277,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
             }
         }
 
-        if (notifyMask & GET_IPC_CH_NOTIFY_MASK(15))
+        if (((notifyMask) & (GET_IPC_CH_NOTIFY_MASK(15))) != 0UL)
         {
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress (IPC_CH_15);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
@@ -269,7 +294,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type *ipcIntrPtr, uint32 notifyMas
     }
 
     /* Check to make sure the interrupt was a release interrupt */
-    if (0ul != relMask)  /* Check for a Release interrupt */
+    if (0UL != relMask)  /* Check for a Release interrupt */
     {
         /* Clear the release interrupt  */
         Cy_IPC_Drv_ClearInterrupt(ipcIntrPtr, relMask, CY_IPC_NO_NOTIFICATION);
@@ -376,6 +401,16 @@ const cy_stc_sysint_t ipcIntConfig14 =
 const cy_stc_sysint_t ipcIntConfig15 =
     {
         /*.intrSrc =*/IPC15_INTERRUPT,
+        /*.intrPriority =*/IPC_PRIORITY};
+#elif CY_CPU_CORTEX_M33
+const cy_stc_sysint_t ipcIntConfig1 =
+    {
+        /*.intrSrc =*/IPC1_INTERRUPT,
+        /*.intrPriority =*/IPC_PRIORITY};
+
+const cy_stc_sysint_t ipcIntConfig2 =
+    {
+        /*.intrSrc =*/IPC2_INTERRUPT,
         /*.intrPriority =*/IPC_PRIORITY};
 #endif
 
@@ -495,6 +530,7 @@ void IPC_Interrupt_User_7(void)
     relMask = Cy_IPC_Drv_ExtractReleaseMask(shadowIntr);
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
+CY_MISRA_BLOCK_END('MISRA C-2012 Rule 8.6')
 
 //ISR for IPC Interrupt Number 8
 void IPC_Interrupt_User_8(void)
@@ -607,6 +643,34 @@ void IPC_Interrupt_User_15(void)
     relMask = Cy_IPC_Drv_ExtractReleaseMask(shadowIntr);
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
+#elif CY_CPU_CORTEX_M33
+//ISR for IPC Interrupt Number 1
+void IPC_Interrupt_User_1(void)
+{
+    uint32_t shadowIntr;
+    IPC_INTR_STRUCT_Type *ipcIntrPtr;
+    uint32 notifyMask;
+    uint32 relMask;
+    ipcIntrPtr = Cy_IPC_Drv_GetIntrBaseAddr(IPC_INT_0);
+    shadowIntr = Cy_IPC_Drv_GetInterruptStatusMasked(ipcIntrPtr);
+    notifyMask = Cy_IPC_Drv_ExtractAcquireMask(shadowIntr);
+    relMask = Cy_IPC_Drv_ExtractReleaseMask(shadowIntr);
+    common_fxn(ipcIntrPtr, notifyMask, relMask);
+}
+
+//ISR for IPC Interrupt Number 2
+void IPC_Interrupt_User_2(void)
+{
+    uint32_t shadowIntr;
+    IPC_INTR_STRUCT_Type *ipcIntrPtr;
+    uint32 notifyMask;
+    uint32 relMask;
+    ipcIntrPtr = Cy_IPC_Drv_GetIntrBaseAddr(IPC_INT_1);
+    shadowIntr = Cy_IPC_Drv_GetInterruptStatusMasked(ipcIntrPtr);
+    notifyMask = Cy_IPC_Drv_ExtractAcquireMask(shadowIntr);
+    relMask = Cy_IPC_Drv_ExtractReleaseMask(shadowIntr);
+    common_fxn(ipcIntrPtr, notifyMask, relMask);
+}
 #endif
 
 /*******************************************************************************
@@ -629,36 +693,40 @@ uint8_t SelfTest_IPC(void)
     uint8_t ret = OK_STATUS;
     uint32_t IPC_CH_REL_MASK = 0, IPC_CH_NOTIFY_MASK = 0;
     cy_en_ipcdrv_status_t ipcStatus;
-
+    cy_en_sysint_status_t sysint_init_status;
  
-    for(int i = free_channel_start; i<=free_channel_end; i++)
+    for(uint32_t i = free_channel_start; i<=free_channel_end; i++)
     {
-        IPC_CH_REL_MASK |= GET_IPC_CH_REL_MASK(i);
+        IPC_CH_REL_MASK |= (uint32_t)(GET_IPC_CH_REL_MASK((i)));
     }
-    for (int i = free_channel_start; i <= free_channel_end; i++)
+    for (uint32_t i = free_channel_start; i <= free_channel_end; i++)
     {
-        IPC_CH_NOTIFY_MASK |= GET_IPC_CH_NOTIFY_MASK(i);
+        IPC_CH_NOTIFY_MASK |= (uint32_t)(GET_IPC_CH_NOTIFY_MASK((i)));
     }
 
 #if CY_CPU_CORTEX_M7
-    Cy_SysInt_Init(&ipcIntConfig1, IPC_Interrupt_User_1);
-    Cy_SysInt_Init(&ipcIntConfig2, IPC_Interrupt_User_2);
-    Cy_SysInt_Init(&ipcIntConfig3, IPC_Interrupt_User_3);
-    Cy_SysInt_Init(&ipcIntConfig4, IPC_Interrupt_User_4);
-    Cy_SysInt_Init(&ipcIntConfig5, IPC_Interrupt_User_5);
-    Cy_SysInt_Init(&ipcIntConfig6, IPC_Interrupt_User_6);
-    Cy_SysInt_Init(&ipcIntConfig7, IPC_Interrupt_User_7);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig1, IPC_Interrupt_User_1);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig2, IPC_Interrupt_User_2);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig3, IPC_Interrupt_User_3);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig4, IPC_Interrupt_User_4);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig5, IPC_Interrupt_User_5);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig6, IPC_Interrupt_User_6);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig7, IPC_Interrupt_User_7);
 #elif CY_CPU_CORTEX_M4
-    Cy_SysInt_Init(&ipcIntConfig7, IPC_Interrupt_User_7);
-    Cy_SysInt_Init(&ipcIntConfig8, IPC_Interrupt_User_8);
-    Cy_SysInt_Init(&ipcIntConfig9, IPC_Interrupt_User_9);
-    Cy_SysInt_Init(&ipcIntConfig10, IPC_Interrupt_User_10);
-    Cy_SysInt_Init(&ipcIntConfig11, IPC_Interrupt_User_11);
-    Cy_SysInt_Init(&ipcIntConfig12, IPC_Interrupt_User_12);
-    Cy_SysInt_Init(&ipcIntConfig13, IPC_Interrupt_User_13);
-    Cy_SysInt_Init(&ipcIntConfig14, IPC_Interrupt_User_14);
-    Cy_SysInt_Init(&ipcIntConfig15, IPC_Interrupt_User_15);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig7, IPC_Interrupt_User_7);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig8, IPC_Interrupt_User_8);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig9, IPC_Interrupt_User_9);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig10, IPC_Interrupt_User_10);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig11, IPC_Interrupt_User_11);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig12, IPC_Interrupt_User_12);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig13, IPC_Interrupt_User_13);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig14, IPC_Interrupt_User_14);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig15, IPC_Interrupt_User_15);
+#elif CY_CPU_CORTEX_M33
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig1, IPC_Interrupt_User_1);
+    sysint_init_status = Cy_SysInt_Init(&ipcIntConfig2, IPC_Interrupt_User_2);
 #endif
+(void)sysint_init_status;
 
 #if CY_CPU_CORTEX_M7
     NVIC_EnableIRQ(NvicMux0_IRQn);
@@ -678,29 +746,33 @@ uint8_t SelfTest_IPC(void)
     NVIC_EnableIRQ(IPC13_INTERRUPT);
     NVIC_EnableIRQ(IPC14_INTERRUPT);
     NVIC_EnableIRQ(IPC15_INTERRUPT);
+#elif CY_CPU_CORTEX_M33
+    NVIC_EnableIRQ(IPC1_INTERRUPT);
+    NVIC_EnableIRQ(IPC2_INTERRUPT);
 #endif
 
     /* Set IPC Interrupt mask */
-    for (int i = free_intr_start; i <= free_intr_end; i++)
+    for (uint32_t i = free_intr_start; i <= free_intr_end; i++)
     {
-        Cy_IPC_Drv_SetInterruptMask(Cy_IPC_Drv_GetIntrBaseAddr(i),IPC_CH_REL_MASK, IPC_CH_NOTIFY_MASK);
+        Cy_IPC_Drv_SetInterruptMask(Cy_IPC_Drv_GetIntrBaseAddr((uint32_t)i),IPC_CH_REL_MASK, IPC_CH_NOTIFY_MASK);
     }
 
-    for (int channel = free_channel_start; channel <= free_channel_end; channel++)
+    for (uint32_t channel = free_channel_start; channel <= free_channel_end; channel++)
     {
-        for (int intrr = free_intr_start; intrr <= free_intr_end; intrr++)
+        for (uint32_t intrr = free_intr_start; intrr <= free_intr_end; intrr++)
         {
             ipcStatus = Cy_IPC_Drv_LockAcquire(Cy_IPC_Drv_GetIpcBaseAddress(channel));
-            if (ipcStatus)
+            if (ipcStatus != CY_IPC_DRV_SUCCESS)
             {
                 return ERROR_STATUS;
             }
             #if (CY_IP_MXTCPWM_VERSION == 1)
-            Cy_IPC_Drv_WriteDataValue(Cy_IPC_Drv_GetIpcBaseAddress(channel), writeMesg0);
+            Cy_IPC_Drv_WriteDataValue(Cy_IPC_Drv_GetIpcBaseAddress((uint32_t)channel), writeMesg0);
             #else
-            Cy_IPC_Drv_WriteDDataValue(Cy_IPC_Drv_GetIpcBaseAddress(channel), (uint32_t *)writeMesg0);
+            Cy_IPC_Drv_WriteDDataValue(Cy_IPC_Drv_GetIpcBaseAddress((uint32_t)channel), (uint32_t *)writeMesg0);
             #endif
-            Cy_IPC_Drv_AcquireNotify(Cy_IPC_Drv_GetIpcBaseAddress(channel), IPC_INT_NOTIFY_MASK(intrr));
+
+            Cy_IPC_Drv_AcquireNotify(Cy_IPC_Drv_GetIpcBaseAddress((uint32_t)channel), (uint32_t)(IPC_INT_NOTIFY_MASK((intrr))));
 
             uint32_t locStatus = 0;
             uint32_t timeout = 1000000;
@@ -720,19 +792,19 @@ uint8_t SelfTest_IPC(void)
 
                         if (0UL == timeout)
                         {
-                            locStatus |= (1ul<<16);
+                            locStatus |= (1UL<<16UL);
                         }
                     }
             } while (0UL == locStatus);
 
-            if(0 != (locStatus & 0x10000))
+            if(0U != (uint32_t)(locStatus & 0x10000UL))
             {
                 return ERROR_STATUS;
             }
 
             ch_rx[channel] = 0;
-            ipcStatus = Cy_IPC_Drv_LockRelease(Cy_IPC_Drv_GetIpcBaseAddress(channel), IPC_INT_REL_MASK(intrr));
-            if (ipcStatus)
+            ipcStatus = Cy_IPC_Drv_LockRelease(Cy_IPC_Drv_GetIpcBaseAddress((uint32_t)channel), (uint32_t)(IPC_INT_REL_MASK((intrr))));
+            if (ipcStatus != CY_IPC_DRV_SUCCESS)
             {
                 return ERROR_STATUS; 
             }

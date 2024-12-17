@@ -3,15 +3,8 @@
 * Version 1.0.0
 *
 * Description: This file provides the source code for the APIs to perform
-* clock source testing according to the Class B library for CAT2(PSoC4), 
-* CAT1A, CAT1C devices.
+* clock source testing according to the Class B library.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -49,9 +42,8 @@
 #include "cy_canfd.h"
 #include "SelfTest_CANFD.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
 
-#if CY_CPU_CORTEX_M7 || (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K))
+#if ((defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) ||  (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))  || ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) && defined (CY_DEVICE_PSOC6A256K)) || ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) && defined (CY_DEVICE_PSOC6A512K)))
 /*******************************************************************************
 * Global Variables
 *******************************************************************************/
@@ -73,11 +65,11 @@ static cy_stc_canfd_t0_t SelfTest_CANFD_T0RegisterBuffer_0 =
 };
 static cy_stc_canfd_t1_t SelfTest_CANFD_T1RegisterBuffer_0 = 
 {
-    .dlc = 15U,
-    .brs = true,
+    .dlc = (uint32_t)15U,
+    .brs = (bool)true,
     .fdf = CY_CANFD_FDF_CAN_FD_FRAME,
-    .efc = false,
-    .mm = 0U,
+    .efc = (bool)false,
+    .mm =  (uint32_t)0U,
 };
 static uint32_t SelfTest_CANFD_dataBuffer_0[] = 
 {
@@ -117,14 +109,14 @@ void SelfTest_CAN_RxMsgCallback(bool bRxFifoMsg, uint8_t u8MsgBufOrRxFifoNum,
 {
     (void)u8MsgBufOrRxFifoNum;
     bool data_error = false;
-	if((true == bRxFifoMsg) && ((pstcCanFDmsg->r0_f->id >= 0x50) && (pstcCanFDmsg->r0_f->id <= 0x55))) /* Should receive data in RX-FIFO */
+	if((true == bRxFifoMsg) && ((pstcCanFDmsg->r0_f->id >= 0x50U) && (pstcCanFDmsg->r0_f->id <= 0x55U))) /* Should receive data in RX-FIFO */
 	{
         #if ERROR_IN_CANFD
             SelfTest_CANFD_dataBuffer_0[1] = 0x0;
         #endif
         for(int i = 0; i<15; i++)
         {
-                    if(SelfTest_CANFD_dataBuffer_0[i] != *(pstcCanFDmsg->data_area_f + i))
+                    if(SelfTest_CANFD_dataBuffer_0[i] != pstcCanFDmsg->data_area_f[i])
                     {
                         data_error = true;
                         break;
@@ -190,17 +182,18 @@ uint32_t TransmitMessage(cy_stc_canfd_tx_buffer_t *txBuffer, uint8_t index)
 uint8_t SelfTest_CANFD(CANFD_Type *base, uint32_t chan,
                                    const cy_stc_canfd_config_t *config,
                                    cy_stc_canfd_context_t *context,
-                                   stl_canfd_test_mode_t test_mode)
+                                   cy_stc_canfd_test_mode_t test_mode)
 {
     uint32_t status;
+    cy_en_canfd_status_t canfd_status = CY_CANFD_ERROR_TIMEOUT;
     bool global_config_changed = false;
     SelfTest_base = base;
     SelfTest_chan = chan;
     SelfTest_config = config;
     SelfTest_context = context;
-
+  
     /* Enables the configuration changes to set Test mode */
-    Cy_CANFD_ConfigChangesEnable(base, chan);
+    canfd_status = Cy_CANFD_ConfigChangesEnable(base, chan);
 
     /* Change the global setting to not receive all frames in RXFIFO_0 */
     if(CY_CANFD_REJECT_NON_MATCHING != SelfTest_config->globalFilterConfig->nonMatchingFramesStandard)
@@ -215,19 +208,19 @@ uint8_t SelfTest_CANFD(CANFD_Type *base, uint32_t chan,
     }
 
     /* Sets the Test mode configuration */
-    Cy_CANFD_TestModeConfig(base, chan, (cy_stc_canfd_test_mode_t)test_mode);
+    Cy_CANFD_TestModeConfig(base, chan, test_mode);
 
     /* Change the rx function callback*/
     SelfTest_context->canFDInterruptHandling.canFDRxInterruptFunction = rx_call_fxn;
 
     /* Disables the configuration changes */
-    Cy_CANFD_ConfigChangesDisable(base, chan);
+    canfd_status = Cy_CANFD_ConfigChangesDisable(base, chan);
 
 	can_data_received_counter = 0;
 
     SelfTest_CANFD_T0RegisterBuffer_0.id = 0x60;
 	status = TransmitMessage(&SelfTest_CANFD_txBuffer_0, 0);
-    if(CY_CANFD_SUCCESS != status)
+    if((uint32_t)CY_CANFD_SUCCESS != status)
     {
         return ERROR_STATUS;
     }
@@ -235,13 +228,13 @@ uint8_t SelfTest_CANFD(CANFD_Type *base, uint32_t chan,
 
 	SelfTest_CANFD_T0RegisterBuffer_0.id = 0x52;
 	status = TransmitMessage(&SelfTest_CANFD_txBuffer_0, 0);
-    if(CY_CANFD_SUCCESS != status)
+    if((uint32_t)CY_CANFD_SUCCESS != status)
     {
         return ERROR_STATUS;
     }
 	Cy_SysLib_Delay(1000u);
 
-    Cy_CANFD_ConfigChangesEnable(base, chan);
+    canfd_status = Cy_CANFD_ConfigChangesEnable(base, chan);
     
     /*Restore the original callback fxn*/
     SelfTest_context->canFDInterruptHandling.canFDRxInterruptFunction = SelfTest_config->rxCallback;
@@ -261,9 +254,10 @@ uint8_t SelfTest_CANFD(CANFD_Type *base, uint32_t chan,
     Cy_CANFD_TestModeConfig(base, chan, CY_CANFD_TEST_MODE_DISABLE);
     
     /* Disables the configuration changes */
-    Cy_CANFD_ConfigChangesDisable(base, chan);
-
-	if (1 == can_data_received_counter)
+    canfd_status = Cy_CANFD_ConfigChangesDisable(base, chan);
+    (void)(canfd_status);
+    
+	if ((uint8_t)1U == can_data_received_counter)
 	{
 		return OK_STATUS;
 	}

@@ -4,18 +4,8 @@
 *
 * Description:
 *  This file provides constants and parameter values used for I/O self
-*  tests for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -81,11 +71,9 @@
 * \defgroup group_gpio_functions Functions
 */
 
-#include "SelfTest_common.h"
-
-
 #if !defined(SELFTEST_IO_H)
     #define SELFTEST_IO_H
+#include "SelfTest_common.h"
 
 /***************************************
 * Function Prototypes
@@ -154,7 +142,7 @@ uint8_t SelfTest_IO_GetPortError(void);
 /** \addtogroup group_gpio_macros
 * \{
 */
-/** Number of IO ports. This may differ depending on the device used(CAT1A, CAT1C, CAT2). */
+/** Number of IO ports. This may differ depending on the device used(CAT1A, CAT1B(PSoC C3), CAT1C, CAT2). */
 /* Number of IO ports: PORT0 - PORT12 */
 #define IO_PORTS                        (12u)
 /** \} group_gpio_macros */
@@ -178,6 +166,9 @@ uint8_t SelfTest_IO_GetPortError(void);
 #elif CY_CPU_CORTEX_M7
 /* Number of IO ports: PORT0 - PORT14 */
 #define IO_PORTS                        (33u)
+#elif CY_CPU_CORTEX_M33
+/* Number of IO ports: PORT0 - PORT9 */
+#define IO_PORTS                        (10u)
 #endif
 
 /** \endcond */
@@ -191,15 +182,19 @@ uint8_t SelfTest_IO_GetPortError(void);
 /** Pins bit mask */
 #define IO_PINS_MASK                    (IO_PINS - 1u)
 
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M0P)
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M0P) && (CY_CPU_CORTEX_M0P)))
 /** Optimal delay cycle value needed to setup the GPIO drive mode
- *  in Release configuration. This may differ depending on the device used(CAT1A, CAT1C, CAT2).*/
+ *  in Release configuration. This may differ depending on the device used(CAT1A, CAT1B(PSoC C3), CAT1C, CAT2).*/
 #define DELAY_DRIVE_MODE_SETUP          (10u)
 /** \} group_gpio_macros */
 
 /** \cond INTERNAL */
 
 #elif CY_CPU_CORTEX_M7
+/* Optimal delay cycle value needed for setup the GPIO drive mode
+ * in Release configuration */
+#define DELAY_DRIVE_MODE_SETUP          (500u)
+#elif CY_CPU_CORTEX_M33
 /* Optimal delay cycle value needed for setup the GPIO drive mode
  * in Release configuration */
 #define DELAY_DRIVE_MODE_SETUP          (500u)

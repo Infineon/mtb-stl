@@ -4,18 +4,12 @@
 *
 * Description:
 *  This file provides the source code to do the UART self tests
-*  according to Class B library for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  according to Class B library.
 *
 * Related Document:
 *  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
 *  for ModusToolbox
 *
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -52,7 +46,6 @@
 #include "cy_pdl.h"
 #include "SelfTest_UART_SCB.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
 
 static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte);
 
@@ -104,7 +97,6 @@ static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
     #endif /* End (ERROR_IN_UART_SCB == 1u) */
 
     /* Wait while byte will be sent */
-    /* Use guard interval > (spi_bitrate * spi_data_bits * spi_tx_buf_size) */
     do
     {
         guardCnt++;
@@ -166,8 +158,7 @@ static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
 *  3 - Test completed OK
 *  4 - Error, TX not empty
 *  5 - Error, RX not empty
-*  6 - Error, TX not enabled
-*  7 - Error, RX not enabled
+*  6 - Error, UART is not enabled.
 *
 * Note:
 *  During call, function transmits and receives bytes from 0x01 to 0xFF.
@@ -210,7 +201,6 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base)
         else
         {
             /* Wait for end of user transmitting and don't test if the buffer contains data */
-            /* Use guard interval > (spi_bitrate * spi_data_bits * spi_tx_buf_size) */
             do
             {
                 guardCnt++;

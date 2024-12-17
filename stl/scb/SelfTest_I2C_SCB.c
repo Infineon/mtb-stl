@@ -4,18 +4,8 @@
 *
 * Description:
 *  This file provides the source code to do the I2C self tests
-*  according to Class B library for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  according to Class B library.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -52,7 +42,6 @@
 #include "cy_pdl.h"
 #include "SelfTest_I2C_SCB.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
 
 static uint8_t SelfTest_I2C_SCB_Write(CySCB_Type* master_base,
                                       cy_stc_scb_i2c_context_t* master_context,

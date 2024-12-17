@@ -5,7 +5,7 @@
 *
 * Description:
 *  This file provides the source code to the API for the UART slave
-*  packet protocol for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  packet protocol.
 *
 * Note:
 *  Protocol description
@@ -25,12 +25,6 @@
 *  If there is a byte <ADDR> <DL> <[Data]> or <[CRC]> that equals ESC
 *  then it's exchanged with two byte sequence <ESC><ESC+1>
 *
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 ********************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -70,7 +64,6 @@
 
 #include "cy_pdl.h"
 #include "SelfTest_CRC_calc.h"
-#include "SelfTest_ErrorInjection.h"
 #include "SelfTest_UART_slave_message.h"
 
 /*******************************************************************************
@@ -190,7 +183,8 @@ static void UART_MessageTxSlaveInt(uint32_t IntMask)
         }
         else
         {
-            if((UART_Slave_Struct.address == STX) || (UART_Slave_Struct.address == ESC))
+            const uint8_t uart_slave_struct_address = UART_Slave_Struct.address;
+            if((uart_slave_struct_address == STX) || (uart_slave_struct_address == ESC))
             {
             
                 /* need change procedure */
@@ -226,7 +220,8 @@ static void UART_MessageTxSlaveInt(uint32_t IntMask)
         }
         else
         {
-            if((UART_Slave_Struct.txcnt == STX) || (UART_Slave_Struct.txcnt == ESC))
+            const uint8_t uart_slave_struct_txcnt = UART_Slave_Struct.txcnt;
+            if((uart_slave_struct_txcnt == STX) || (uart_slave_struct_txcnt == ESC))
             {
             
                 /* need change procedure */
@@ -262,7 +257,8 @@ static void UART_MessageTxSlaveInt(uint32_t IntMask)
         }
         else
         {
-            if((*UART_Slave_Struct.txptr == STX) || ( * UART_Slave_Struct.txptr == ESC))
+            const uint8_t uart_slave_struct_txptr = *UART_Slave_Struct.txptr;
+            if((uart_slave_struct_txptr == STX) || (uart_slave_struct_txptr == ESC))
             {
             
                 /* need change procedure */
@@ -306,7 +302,8 @@ static void UART_MessageTxSlaveInt(uint32_t IntMask)
         }
         else
         {
-            if(((uint8_t)(UART_Slave_Struct.tcrc >> 8u) == STX) || ((uint8_t)(UART_Slave_Struct.tcrc >> 8u) == ESC))
+            uint8_t uart_slave_struct_tcrc = (uint8_t)(UART_Slave_Struct.tcrc >> 8u);
+            if((uart_slave_struct_tcrc == STX) || (uart_slave_struct_tcrc == ESC))
             {
             
                 /* need change procedure */
@@ -336,7 +333,8 @@ static void UART_MessageTxSlaveInt(uint32_t IntMask)
         }
         else
         {
-            if(((uint8_t)UART_Slave_Struct.tcrc == STX) || ((uint8_t)UART_Slave_Struct.tcrc == ESC))
+             uint8_t uart_slave_struct_tcrc = (uint8_t)(UART_Slave_Struct.tcrc);
+            if((uart_slave_struct_tcrc == STX) || (uart_slave_struct_tcrc == ESC))
             {
             
                 /* need change procedure */
@@ -403,7 +401,8 @@ static void UART_MessageRxSlaveInt(uint32_t IntMask)
         bt = (uint8_t)Cy_SCB_UART_Get(UART_Slave_Struct.scb_base);
         Cy_SCB_ClearRxInterrupt(UART_Slave_Struct.scb_base, IntMask);
         
-        if ((bt == STX) && (UART_Slave_Struct.gstatus != UM_PACKREADY))
+        const uint8_t uart_slave_struct_gstatus = UART_Slave_Struct.gstatus; 
+        if ((bt == STX) && (uart_slave_struct_gstatus != UM_PACKREADY))
         {
         
             /* STX received, start packet analyses */
@@ -412,9 +411,9 @@ static void UART_MessageRxSlaveInt(uint32_t IntMask)
         }
         else
         {
-            
+            const uint8_t uart_slave_struct_rstatus = UART_Slave_Struct.rstatus;
             /* Update CRC */
-            if ((UART_Slave_Struct.rstatus != UMS_RECEIVE_CRC_H) && (UART_Slave_Struct.rstatus != UMS_RECEIVE_CRC_L))
+            if ((uart_slave_struct_rstatus != UMS_RECEIVE_CRC_H) && (uart_slave_struct_rstatus != UMS_RECEIVE_CRC_L))
             {
                 UART_Slave_Struct.rcrc = SelfTests_CRC16_CCITT_Byte(UART_Slave_Struct.rcrc, bt);
             }
@@ -676,8 +675,9 @@ uint8_t UartMesSlave_Respond(uint8_t * txd, uint8_t tlen)
 {
     uint8_t ret = 0u;
     
+    const uint8_t uart_slave_struct_gstatus = UART_Slave_Struct.gstatus;
     /* is it possible to start responding ? */
-    if((tlen == 0u) || (UART_Slave_Struct.gstatus == UM_IDLE))
+    if((tlen == 0u) || (uart_slave_struct_gstatus == UM_IDLE))
     {
         ret = 1u;
     }

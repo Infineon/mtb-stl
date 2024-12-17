@@ -4,18 +4,8 @@
 *
 * Description:
 *  This file provides the source code to the APIs for configuration register self
-*  tests for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 and PSoC6 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -53,8 +43,6 @@
 #include "SelfTest_CRC_calc.h"
 #include "SelfTest_ErrorInjection.h"
 #include "SelfTest_ConfigRegisters.h"
-#include "SelfTest_Config.h"
-#include "stdio.h"
 #include "SelfTest_Flash.h"
 
 #if CY_CPU_CORTEX_M0P
@@ -348,6 +336,98 @@ static volatile uint32_t* regs32_ToTest[] =
     &(GPIO_PRT13->CFG),
 };
 
+#elif CY_CPU_CORTEX_M33
+static volatile uint32_t* regs32_ToTest[] =
+{
+    //SRSS_CLK_PATH_SELECT
+    &(SRSS->CLK_PATH_SELECT[0]),
+    &(SRSS->CLK_PATH_SELECT[1]),
+    &(SRSS->CLK_PATH_SELECT[2]),
+    &(SRSS->CLK_PATH_SELECT[3]),
+    &(SRSS->CLK_PATH_SELECT[4]),
+    &(SRSS->CLK_PATH_SELECT[5]),
+    &(SRSS->CLK_PATH_SELECT[6]),
+    &(SRSS->CLK_PATH_SELECT[7]),
+    &(SRSS->CLK_PATH_SELECT[8]),
+    &(SRSS->CLK_PATH_SELECT[9]),
+    &(SRSS->CLK_PATH_SELECT[10]),
+    &(SRSS->CLK_PATH_SELECT[11]),
+    &(SRSS->CLK_PATH_SELECT[12]),
+    &(SRSS->CLK_PATH_SELECT[13]),
+    &(SRSS->CLK_PATH_SELECT[14]),
+    &(SRSS->CLK_PATH_SELECT[15]),
+     //SRSS_CLK_ROOT_SELECT
+    &(SRSS->CLK_ROOT_SELECT[0]),
+    &(SRSS->CLK_ROOT_SELECT[1]),
+    &(SRSS->CLK_ROOT_SELECT[2]),
+    &(SRSS->CLK_ROOT_SELECT[3]),
+    &(SRSS->CLK_ROOT_SELECT[4]),
+    &(SRSS->CLK_ROOT_SELECT[5]),
+    &(SRSS->CLK_ROOT_SELECT[6]),
+    &(SRSS->CLK_ROOT_SELECT[7]),
+    &(SRSS->CLK_ROOT_SELECT[8]),
+    &(SRSS->CLK_ROOT_SELECT[9]),
+    &(SRSS->CLK_ROOT_SELECT[10]),
+    &(SRSS->CLK_ROOT_SELECT[11]),
+    &(SRSS->CLK_ROOT_SELECT[12]),
+    &(SRSS->CLK_ROOT_SELECT[13]),
+    &(SRSS->CLK_ROOT_SELECT[14]),
+    &(SRSS->CLK_ROOT_SELECT[15]),
+    &(SRSS->CLK_SELECT),
+    &(SRSS->CLK_OUTPUT_SLOW),
+    &(SRSS->CLK_OUTPUT_FAST),
+    &(SRSS->CLK_ECO_CONFIG),
+    &(SRSS->CLK_PILO_CONFIG),
+    &(SRSS->CLK_FLL_CONFIG),
+    &(SRSS->CLK_FLL_CONFIG2),
+    &(SRSS->CLK_FLL_CONFIG3),
+     //SRSS_CLK_PLL_CONFIG
+    &(SRSS->CLK_PLL_CONFIG[0]),
+    &(SRSS->CLK_PLL_CONFIG[1]),
+    &(SRSS->CLK_PLL_CONFIG[2]),
+    &(SRSS->CLK_PLL_CONFIG[3]),
+    &(SRSS->CLK_PLL_CONFIG[4]),
+    &(SRSS->CLK_PLL_CONFIG[5]),
+    &(SRSS->CLK_PLL_CONFIG[6]),
+    &(SRSS->CLK_PLL_CONFIG[7]),
+    &(SRSS->CLK_PLL_CONFIG[8]),
+    &(SRSS->CLK_PLL_CONFIG[9]),
+
+    /* HSIOM registers */
+    &(HSIOM_PRT0->PORT_SEL0),
+    &(HSIOM_PRT0->PORT_SEL1),
+    &(HSIOM_PRT1->PORT_SEL0),
+    &(HSIOM_PRT1->PORT_SEL1),
+    &(HSIOM_PRT2->PORT_SEL0),
+    &(HSIOM_PRT2->PORT_SEL1),
+    &(HSIOM_PRT3->PORT_SEL0),
+    &(HSIOM_PRT3->PORT_SEL1),
+    &(HSIOM_PRT4->PORT_SEL0),
+    &(HSIOM_PRT4->PORT_SEL1),
+    &(HSIOM_PRT5->PORT_SEL0),
+    &(HSIOM_PRT5->PORT_SEL1),
+    &(HSIOM_PRT6->PORT_SEL0),
+    &(HSIOM_PRT6->PORT_SEL1),
+    &(HSIOM_PRT7->PORT_SEL0),
+    &(HSIOM_PRT7->PORT_SEL1),
+    &(HSIOM_PRT8->PORT_SEL0),
+    &(HSIOM_PRT8->PORT_SEL1),
+    &(HSIOM_PRT9->PORT_SEL0),
+    &(HSIOM_PRT9->PORT_SEL1),
+
+    /* IO Pin registers */
+    &(GPIO_PRT0->CFG),
+    &(GPIO_PRT1->CFG),
+    &(GPIO_PRT2->CFG),
+    &(GPIO_PRT3->CFG),
+    &(GPIO_PRT4->CFG),
+    &(GPIO_PRT5->CFG),
+    &(GPIO_PRT6->CFG),
+    &(GPIO_PRT7->CFG),
+    &(GPIO_PRT8->CFG),
+    &(GPIO_PRT9->CFG),
+};
+
 #endif /*  PSoC6  */
 
 /* Buffer to store Flash row */
@@ -357,10 +437,11 @@ static uint32_t flashRowData[CY_FLASH_SIZEOF_ROW/(sizeof(uint32_t))];
 static uint32_t flashRowData[(2*CY_FLASH_SIZEOF_ROW)/(sizeof(uint32_t))];
 #endif
 
-#if CY_CPU_CORTEX_M4
+#if (defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4))
 void SelfTests_Init_StartUp_ConfigReg(void)
 {
-    regs32_ToTest[0] = (uint32_t *)(&PASS_AREF_AREF_CTRL);
+   volatile uint32_t* pass_aref = &PASS_AREF_AREF_CTRL;
+   regs32_ToTest[0] = pass_aref;
 }
 #endif
 
@@ -394,9 +475,9 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
     /* Fill flash row with "0" */
     (void)memset(flashRowData, 0x00, sizeof(flashRowData));
     
-    #if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
+    #if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
     uint32_t *flash_checksum_ptr = (uint32_t*)FLASH_END_ADDR;
-    uint8_t no_of_data_to_copy = (FLASH_RESERVED_CHECKSUM_SIZE/sizeof(flashRowData[0]));
+    uint32_t no_of_data_to_copy = (FLASH_RESERVED_CHECKSUM_SIZE/sizeof(flashRowData[0]));
     #endif
     
     #if defined(CY_DEVICE_PSOC6ABLE2)
@@ -411,10 +492,10 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
         flashRowData[i] = CY_GET_REG32(regs32_ToTest[i]);
     }
 
-#if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
+#if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
     for(uint32_t i = 0;i <no_of_data_to_copy;i++)
     {
-        flashRowData[(CY_FLASH_SIZEOF_ROW/(sizeof(uint32_t))) - no_of_data_to_copy + i] = *(flash_checksum_ptr+i);
+        flashRowData[(CY_FLASH_SIZEOF_ROW/(sizeof(uint32_t))) - no_of_data_to_copy + i] = flash_checksum_ptr[i];
     }
     return Cy_Flash_WriteRow(CONF_REG_FIRST_ROW_ADDR, flashRowData);
 #elif CY_CPU_CORTEX_M7
@@ -422,28 +503,29 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
     cy_en_flashdrv_status_t ret;
     Cy_Flashc_MainWriteEnable();
     ret = Cy_Flash_EraseSector(CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE);
-    while ((Cy_Flash_IsOperationComplete() != CY_FLASH_DRV_SUCCESS) && (guardCnt < 1000))
+    while ((Cy_Flash_IsOperationComplete() != CY_FLASH_DRV_SUCCESS) && (guardCnt < 1000U))
     {
         guardCnt++;
         Cy_SysLib_DelayUs(1u);
     }
-    if (guardCnt >= 1000)
+    if (guardCnt >= 1000U)
     {
         return ret;
     }
-    if (sizeof(regs32_ToTest) > 512)
+    if (sizeof(regs32_ToTest) > 512U)
     {
         uint32_t addr_to_write = (uint32_t)(CONF_REG_FIRST_ROW_ADDR);
         uint32_t *data_to_write = flashRowData;
-        for (int i = 0; i<2; i++)
+        for (uint32_t i = 0; i<2U; i++)
         {
             ret = Cy_Flash_ProgramRow(addr_to_write, data_to_write);
             if(ret != CY_FLASH_DRV_SUCCESS)
             {
                 return ret;
             }
-            addr_to_write = addr_to_write + 0x200;
-            data_to_write = data_to_write + 128;
+            addr_to_write = addr_to_write + 0x200U;
+            data_to_write = &flashRowData[(i+1U)*128U];
+            
         }
     }
     else
@@ -587,8 +669,8 @@ uint8_t SelfTests_StartUp_ConfigReg(void)
     cfgRegPointer = (uint32_t*)(CONF_REG_FIRST_ROW_ADDR);
 
     /* Compare register values with saved values */
-    for (uint32_t i = 0u;
-         ((i < (sizeof(regs32_ToTest) / sizeof(regs32_ToTest[0u]))) && (ret == OK_STATUS)); i++)
+    uint32_t i = 0u;
+    while(((i < (sizeof(regs32_ToTest) / sizeof(regs32_ToTest[0u]))) && (ret == OK_STATUS)))
     {
         tmp = cfgRegPointer[i];
 
@@ -603,6 +685,7 @@ uint8_t SelfTests_StartUp_ConfigReg(void)
         {
             ret = ERROR_STATUS;
         }
+    i++;    
     }
 
     /* Return OK status if no error detected */

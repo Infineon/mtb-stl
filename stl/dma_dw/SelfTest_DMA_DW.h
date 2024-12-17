@@ -4,13 +4,7 @@
 *
 * Description:
 * This file provides constants and parameter values used for DMA_DW self
-* tests for CAT1A and CAT1C devices.
-*
-*
-* Hardware Dependency:
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
+* tests.
 *
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
@@ -75,13 +69,12 @@ The DMA blocks are tested using the following procedure.
 * \defgroup group_dma_functions Functions
 */
 
-#include "SelfTest_common.h"
-
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
 #if !defined(SELFTEST_DMA_DW_H)
     #define SELFTEST_DMA_DW_H
 
-
+#include "SelfTest_common.h"
+#include <string.h>
+#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7 || CY_CPU_CORTEX_M33)
 /***************************************
 * Function Prototypes
 ***************************************/
@@ -125,7 +118,7 @@ The DMA blocks are tested using the following procedure.
 *
 *
 * \note
-* Only applicable for CAT1A and CAT1C devices.
+* Only applicable for CAT1A, CAT1B(PSoC C3) and CAT1C devices.
 *
 *
 * \return
@@ -135,7 +128,7 @@ The DMA blocks are tested using the following procedure.
 *******************************************************************************/
 
 
-#if CY_CPU_CORTEX_M4
+#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
 
     #if defined(CY_DEVICE_PSOC6ABLE2) 
         uint8_t SelfTest_DMA_DW(DW_Type * base, uint32_t channel, cy_stc_dma_descriptor_t * descriptor0, cy_stc_dma_descriptor_t * descriptor1,

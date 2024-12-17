@@ -95,9 +95,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gaa75c9b5fed959145e2e8a62ab486db94"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pwm__functions.html#gaa75c9b5fed959145e2e8a62ab486db94">SelfTest_PWM</a> (GPIO_PRT_Type *pinbase, uint32_t pinNum)</td></tr>
 <tr class="memdesc:gaa75c9b5fed959145e2e8a62ab486db94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs PWM test and verify that the duty cycle set is actually achieved in output.  <a href="group__group__pwm__functions.html#gaa75c9b5fed959145e2e8a62ab486db94">More...</a><br /></td></tr>
 <tr class="separator:gaa75c9b5fed959145e2e8a62ab486db94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gace3c47a9c9596ec53e97ba014fd66845"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pwm__functions.html#gace3c47a9c9596ec53e97ba014fd66845">SelfTest_PWM_init</a> (TCPWM_Type *base, uint32_t cntNum, cy_stc_tcpwm_pwm_config_t const *config, IRQn_Type int_src)</td></tr>
-<tr class="memdesc:gace3c47a9c9596ec53e97ba014fd66845"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize Timer interrupt for the Self test.  <a href="group__group__pwm__functions.html#gace3c47a9c9596ec53e97ba014fd66845">More...</a><br /></td></tr>
-<tr class="separator:gace3c47a9c9596ec53e97ba014fd66845"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2272e56875fe5dce88cd2de954f37e0b"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pwm__functions.html#ga2272e56875fe5dce88cd2de954f37e0b">SelfTest_PWM_init</a> (TCPWM_Type *base, uint32_t cntNum, cy_stc_tcpwm_pwm_config_t const *config, IRQn_Type intr_src)</td></tr>
+<tr class="memdesc:ga2272e56875fe5dce88cd2de954f37e0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize Timer interrupt for the Self test.  <a href="group__group__pwm__functions.html#ga2272e56875fe5dce88cd2de954f37e0b">More...</a><br /></td></tr>
+<tr class="separator:ga2272e56875fe5dce88cd2de954f37e0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="gaa75c9b5fed959145e2e8a62ab486db94" name="gaa75c9b5fed959145e2e8a62ab486db94"></a>
@@ -140,8 +140,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="gace3c47a9c9596ec53e97ba014fd66845" name="gace3c47a9c9596ec53e97ba014fd66845"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gace3c47a9c9596ec53e97ba014fd66845">&#9670;&nbsp;</a></span>SelfTest_PWM_init()</h2>
+<a id="ga2272e56875fe5dce88cd2de954f37e0b" name="ga2272e56875fe5dce88cd2de954f37e0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2272e56875fe5dce88cd2de954f37e0b">&#9670;&nbsp;</a></span>SelfTest_PWM_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -168,7 +168,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">IRQn_Type&#160;</td>
-          <td class="paramname"><em>int_src</em>&#160;</td>
+          <td class="paramname"><em>intr_src</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -184,7 +184,7 @@ Functions</h2></td></tr>
     <tr><td class="paramname">base</td><td>The pointer to a TCPWM instance.</td></tr>
     <tr><td class="paramname">cntNum</td><td>The Counter instance number in the selected TCPWM.</td></tr>
     <tr><td class="paramname">config</td><td>The pointer to configuration structure.</td></tr>
-    <tr><td class="paramname">int_src</td><td>Interrupt source </td></tr>
+    <tr><td class="paramname">intr_src</td><td>Interrupt source </td></tr>
   </table>
   </dd>
 </dl>

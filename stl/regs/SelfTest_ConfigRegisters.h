@@ -4,18 +4,8 @@
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values used
-*  for Startup Configuration Register self tests for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  for Startup Configuration Register self tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -85,11 +75,11 @@ Two test modes are implemented in the functions:
 * \defgroup group_regs_macros Macros
 * \defgroup group_regs_functions Functions
 */
-#include "SelfTest_common.h"
 
 #if !defined(SELFTEST_CONFIGREGISTERS_H)
     #define SELFTEST_CONFIGREGISTERS_H
-
+#include "SelfTest_common.h"
+#include <string.h>
 /***************************************
 * Initial Parameter Constants
 ***************************************/
@@ -138,7 +128,7 @@ Two test modes are implemented in the functions:
 #else // if (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE)
 
 
-#if CY_CPU_CORTEX_M7
+#if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
 /** Base address of Code flash only for XMC */
     #define CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE      CY_FLASH_SM_SBM_BASE
 /** Size of Code flash only for XMC */
@@ -150,7 +140,7 @@ Two test modes are implemented in the functions:
     ((CONF_REG_FLASH_SMALL_SECTOR_SIZE / CY_FLASH_SIZEOF_ROW) - CONF_REG_NUMBER_OF_ROWS)
 /** Starting address of row to store config register */
     #define CONF_REG_FIRST_ROW_ADDR     (CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE + (CONF_REG_FIRST_ROW * CY_FLASH_SIZEOF_ROW))
-#elif (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
+#elif (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
 /** Number of flash rows to save configuration registers */
     #define CONF_REG_NUMBER_OF_ROWS     0x01u
 /** Row number to store config register */
@@ -191,7 +181,7 @@ Two test modes are implemented in the functions:
 *******************************************************************************/
 uint8_t SelfTests_StartUp_ConfigReg(void);
 
-#if CY_CPU_CORTEX_M4
+#if (defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4))
 
 /*******************************************************************************
 * Function Name: SelfTests_Init_StartUp_ConfigReg

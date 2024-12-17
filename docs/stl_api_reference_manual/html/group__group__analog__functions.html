@@ -95,12 +95,15 @@ Functions</h2></td></tr>
 <tr class="memitem:ga4b667d77b973335906304f6a2fff7efd"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#ga4b667d77b973335906304f6a2fff7efd">SelfTests_Opamp</a> (SAR_Type *sar_base, int16_t expected_res, int16_t accuracy, uint32_t opamp_in_channel, bool count_to_mV)</td></tr>
 <tr class="memdesc:ga4b667d77b973335906304f6a2fff7efd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs OPAMP test and verify measured voltage is in accuracy range.  <a href="group__group__analog__functions.html#ga4b667d77b973335906304f6a2fff7efd">More...</a><br /></td></tr>
 <tr class="separator:ga4b667d77b973335906304f6a2fff7efd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga88ba1f30de856858cfe5f5320e97f04a"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#ga88ba1f30de856858cfe5f5320e97f04a">SelfTests_ADC</a> (void *base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV)</td></tr>
-<tr class="memdesc:ga88ba1f30de856858cfe5f5320e97f04a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs ADC test and verify measured voltage is in accuracy range.  <a href="group__group__analog__functions.html#ga88ba1f30de856858cfe5f5320e97f04a">More...</a><br /></td></tr>
-<tr class="separator:ga88ba1f30de856858cfe5f5320e97f04a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac4e7d0584933af065af68efc7158793e"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#gac4e7d0584933af065af68efc7158793e">SelfTests_ADC</a> (SAR_Type *base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV)</td></tr>
+<tr class="memdesc:gac4e7d0584933af065af68efc7158793e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs ADC test and verify measured voltage is in accuracy range.  <a href="group__group__analog__functions.html#gac4e7d0584933af065af68efc7158793e">More...</a><br /></td></tr>
+<tr class="separator:gac4e7d0584933af065af68efc7158793e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa62cee36638154714e8ff58dbe0bd7db"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#gaa62cee36638154714e8ff58dbe0bd7db">SelfTests_Comparator</a> (LPCOMP_Type const *lpcomp_base, cy_en_lpcomp_channel_t lpcomp_channel, uint8_t expected_res)</td></tr>
 <tr class="memdesc:gaa62cee36638154714e8ff58dbe0bd7db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs Comparator test and verify that the higher voltage on +ve terminal compared to -ve terminal generates high output and vice verse.  <a href="group__group__analog__functions.html#gaa62cee36638154714e8ff58dbe0bd7db">More...</a><br /></td></tr>
 <tr class="separator:gaa62cee36638154714e8ff58dbe0bd7db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga017cdc43bcf6ac462143e5c2c02e4b41"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#ga017cdc43bcf6ac462143e5c2c02e4b41">SelfTests_DAC</a> (CTDAC_Type *dacBase, SAR_Type *adcBase, uint32_t adcChannel)</td></tr>
+<tr class="memdesc:ga017cdc43bcf6ac462143e5c2c02e4b41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs DAC test and verifies that input of DAC and output from ADC are same.  <a href="group__group__analog__functions.html#ga017cdc43bcf6ac462143e5c2c02e4b41">More...</a><br /></td></tr>
+<tr class="separator:ga017cdc43bcf6ac462143e5c2c02e4b41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ga4b667d77b973335906304f6a2fff7efd" name="ga4b667d77b973335906304f6a2fff7efd"></a>
@@ -163,8 +166,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga88ba1f30de856858cfe5f5320e97f04a" name="ga88ba1f30de856858cfe5f5320e97f04a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga88ba1f30de856858cfe5f5320e97f04a">&#9670;&nbsp;</a></span>SelfTests_ADC()</h2>
+<a id="gac4e7d0584933af065af68efc7158793e" name="gac4e7d0584933af065af68efc7158793e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac4e7d0584933af065af68efc7158793e">&#9670;&nbsp;</a></span>SelfTests_ADC()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -172,7 +175,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">uint8_t SelfTests_ADC </td>
           <td>(</td>
-          <td class="paramtype">void *&#160;</td>
+          <td class="paramtype">SAR_Type *&#160;</td>
           <td class="paramname"><em>base</em>, </td>
         </tr>
         <tr>
@@ -216,12 +219,12 @@ Functions</h2></td></tr>
 <p>Performs ADC test and verify measured voltage is in accuracy range. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">base</td><td>The pointer to a SAR ADC instance </td></tr>
+    <tr><td class="paramname">base</td><td>The pointer to a SAR ADC instance. For CAT1B, base is the group instance. </td></tr>
     <tr><td class="paramname">channel</td><td>channel no. where the input voltage needs to be read </td></tr>
     <tr><td class="paramname">expected_res</td><td>if count_to_mV = 1 =&gt; Expected result in mV, else Expected result in counts. </td></tr>
     <tr><td class="paramname">accuracy</td><td>Accuracy in count ANALOG_ADC_ACURACCY </td></tr>
     <tr><td class="paramname">vbg_channel</td><td>Channel no. where the VBG voltage is connected. Only for CAT1C device. </td></tr>
-    <tr><td class="paramname">count_to_mV</td><td>1 = convert the count to mV.(take more time)</td></tr>
+    <tr><td class="paramname">count_to_mV</td><td>1 = convert the count to mV.(take more time). Not applicable for CAT1B device</td></tr>
   </table>
   </dd>
 </dl>
@@ -268,6 +271,53 @@ Functions</h2></td></tr>
     <tr><td class="paramname">lpcomp_base</td><td>The pointer to a Comparator instance </td></tr>
     <tr><td class="paramname">lpcomp_channel</td><td>Configured channel number </td></tr>
     <tr><td class="paramname">expected_res</td><td>Expected result (1 or 0)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test Passed <br  />
+ 1 - Test Failed </dd></dl>
+
+</div>
+</div>
+<a id="ga017cdc43bcf6ac462143e5c2c02e4b41" name="ga017cdc43bcf6ac462143e5c2c02e4b41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga017cdc43bcf6ac462143e5c2c02e4b41">&#9670;&nbsp;</a></span>SelfTests_DAC()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTests_DAC </td>
+          <td>(</td>
+          <td class="paramtype">CTDAC_Type *&#160;</td>
+          <td class="paramname"><em>dacBase</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">SAR_Type *&#160;</td>
+          <td class="paramname"><em>adcBase</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>adcChannel</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Performs DAC test and verifies that input of DAC and output from ADC are same. </p>
+<p >The digital input value to DAC maps to 1.5V</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dacBase</td><td>The pointer to a DAC instance </td></tr>
+    <tr><td class="paramname">adcBase</td><td>The pointer to a SAR ADC instance </td></tr>
+    <tr><td class="paramname">adcChannel</td><td>channel number of SAR ADC instance</td></tr>
   </table>
   </dd>
 </dl>

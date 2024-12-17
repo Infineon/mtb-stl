@@ -4,19 +4,8 @@
 *
 * Description:
 *  This file provides the function prototypes, constants and parameter values used
-*  for the clock self tests according to Class B library for CAT2(PSoC4), CAT1A, 
-*  CAT1C devices.
+*  for the clock self tests according to Class B library.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -81,12 +70,10 @@
 * \defgroup group_clock_functions Functions
 */
 
-#include "SelfTest_common.h"
-
-
 #if !defined(SELFTEST_CLOCK_H)
     #define SELFTEST_CLOCK_H
 #include "cybsp.h"
+#include "SelfTest_common.h"
 
 /***************************************
 * Function Prototypes
@@ -152,7 +139,7 @@ void SelfTest_Clock_ISR_TIMER(void);
 #define CLOCK_TEST_TIME                     (1000u)
 
 /** Number of IMO clock cycles equivalent to CLOCK_TEST_TIME (Only for CAT2 devices). */
-/** For CAT1A and CAT1C this value is calculated during runtime depending on the Pheripheral clock and it's divider. */
+/** For CAT1A, CAT1B(PSoC C3) and CAT1C this value is calculated during runtime depending on the Pheripheral clock and it's divider. */
 #define CLOCK_TEST_TIME_TIMER_PERIOD        \
     (((CY_CFG_SYSCLK_IMO_FREQ_HZ/(1000000uL)) * (CLOCK_TEST_TIME)) / CLOCK_TEST_TIMER_CLK_DIV)
 	
@@ -169,7 +156,7 @@ void SelfTest_Clock_ISR_TIMER(void);
 /* Set the desired number of ignore bits */
 #define IGNORE_BITS_CLK_TEST                (0U)
 
-#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7 || CY_CPU_CORTEX_M33)
 
 /***************************************
 * Initial Parameter Constants

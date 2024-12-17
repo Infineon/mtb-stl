@@ -4,18 +4,8 @@
  *
  * Description:
  *  This file provides function prototypes, constants, and parameter values
- *  used for interrupt self test for CAT2(PSoC4), CAT1A, CAT1C devices.
+ *  used for interrupt self test.
  *
- * Related Document:
- *  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
- *  for ModusToolbox
- *
- * Hardware Dependency:
- *  PSoC 4100S Max Device
- *  PSoC 4500S Device
- *  CY8C624ABZI-S2D44
- *  CY8C6245LQI-S3D72
- *  XMC7200D-E272K8384
  *******************************************************************************
  * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -78,11 +68,12 @@
 * \defgroup group_intr_macros Macros
 * \defgroup group_intr_functions Functions
 */
-#include "SelfTest_common.h"
+
 #if !defined(SELFTEST_INTERRUPT_H)
     #define SELFTEST_INTERRUPT_H
 
 #include "cy_pdl.h"
+#include "SelfTest_common.h"
 
 
 /***************************************
@@ -132,13 +123,13 @@ void SelfTest_Interrupt_ISR_TIMER(void);
 * \{
 */
 #if CY_CPU_CORTEX_M0P
-/** Lower possible interrupt count. This value may differ depending on the device used (CAT1A, CAT1C, or CAT2). */
+/** Lower possible interrupt count. This value may differ depending on the device used (CAT1A, CAT1B(PSoC C3), CAT1C, or CAT2). */
 #define NUMBER_OF_TIMER_TICKS_LO          (9u)
 
-/** Higher possible interrupt count. This value may differ depending on the device used (CAT1A, CAT1C, or CAT2).  */
+/** Higher possible interrupt count. This value may differ depending on the device used (CAT1A, CAT1B(PSoC C3), CAT1C, or CAT2).  */
 #define NUMBER_OF_TIMER_TICKS_HI          (15u)
 
-#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7 || CY_CPU_CORTEX_M33)
 /* If the input clock is of 25MHz*/
 /* lower possible int count */
 #define NUMBER_OF_TIMER_TICKS_LO          (22u)

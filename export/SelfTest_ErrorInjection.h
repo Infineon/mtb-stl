@@ -4,7 +4,8 @@
 *
 * Description:
 *  This file provides defines to force artificial errors and to
-*  provoke detection of defects by self tests for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  provoke detection of defects by self tests for CAT2(PSoC4), CAT1A,
+*  CAT1B(PSoC C3), CAT1C devices.
 *
 * Related Document:
 *  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
@@ -72,4 +73,12 @@
 #define ERROR_IN_PWM                                        0u
 #define ERROR_IN_CANFD                                      0u
 #define ERROR_IN_PWM_GATEKILL                               0u
+#define ERROR_IN_DMA_DW                                     0u
+#define ERROR_IN_DMAC                                       0u
+#define ERROR_IN_DAC                                        0u
+#define ERROR_IN_SRAM_MARCH                                 0u
+#define ERROR_IN_SRAM_GALPAT                                0u
+#define ERROR_IN_MOTIF                                      0u
+#define ERROR_IN_CORDIC                                     0u
+#define ERROR_IN_ECC                                        0u
 #endif /* SELFTESTERRORINJECTION_H */

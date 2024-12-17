@@ -2,14 +2,8 @@
 * File Name: SelfTest_FPU_Regs.c
 * Version 1.0.0
 *
-* Description: This file provides the source code for the FPU register self tests
-* for CAT1A and CAT1C devices.
+* Description: This file provides the source code for the FPU register self tests.
 *
-*
-* Hardware Dependency:
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -45,9 +39,11 @@
 
 #include "cy_pdl.h"
 #include "SelfTest_FPU_Regs.h"
-#include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+
+CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 8.6', 1, \
+'Only one defination will be used during compilation.')
+
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
 
 /*******************************************************************************
  * Function Name: SelfTest_FPU_REG
@@ -70,9 +66,11 @@ uint8_t SelfTest_FPU_Registers(void)
     /* Enable global interrupts */
     __disable_irq();
     #if defined(__GNUC__)
-    ret = SelfTest_FPU_Regs_GCC();
-    // #elif defined(__ICCARM__)
-    // ret = SelfTest_FPU_Regs_IAR();
+        ret = SelfTest_FPU_Regs_GCC();
+    #elif defined(__ICCARM__)
+        ret = SelfTest_FPU_Regs_IAR();
+    #elif defined (__ARMCC_VERSION)
+        ret = SelfTest_FPU_Regs_ARM();
     #else
     ret = ERROR_STATUS;
     #endif
@@ -81,5 +79,6 @@ uint8_t SelfTest_FPU_Registers(void)
 
     return ret;
 }
+CY_MISRA_BLOCK_END('MISRA C-2012 Rule 8.6')
 
 #endif

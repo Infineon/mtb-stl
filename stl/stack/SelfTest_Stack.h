@@ -4,18 +4,8 @@
 *
 * Description:
 *  This file provides constants and parameter values used for Stack
-*  self tests for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  self tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -74,11 +64,10 @@ This library fills a block of memory above and below the stack with a fixed patt
 * \defgroup group_stack_functions Functions
 */
 
-#include "SelfTest_common.h"
-
-
 #if !defined(SELFTEST_STACK_H)
     #define SELFTEST_STACK_H
+
+#include "SelfTest_common.h"
 
 /***************************************
 * Function Prototypes
@@ -89,37 +78,6 @@ This library fills a block of memory above and below the stack with a fixed patt
 * \{
 */
 
-/*******************************************************************************
-* Function Name: SelfTests_Init_Stack_Test
-****************************************************************************//**
-*
-* This function initializes the upper and Lower stack area with 0xAA and 0x55 pattern.
-*
-*
-* \param stack_pattern_blk_size
-* No of bytes to be used to fill the pattern. Must be 2^n where n=1 to n=8. 
-* (Recommended value for n = 3)
-*
-* \return
-*  None.
-*
-*******************************************************************************/
-void SelfTests_Init_Stack_Test(uint8_t stack_pattern_blk_size);
-/*******************************************************************************
-* Function Name: SelfTests_Stack_Check
-****************************************************************************//**
-*
-*  This function performs stack self test. It checks upper and Lower stack area for 0xAA
-*  and 0x55 pattern.
-*
-*
-*
-* \return
-*  0 - Test passed <br>
-*  1 - Test failed.
-*
-*******************************************************************************/
-uint8_t SelfTests_Stack_Check(void);
 /*******************************************************************************
  * Function Name: SelfTests_Init_Stack_Range
  *****************************************************************************//**
@@ -175,62 +133,6 @@ uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_leng
 
 /** Stack test pattern */
 #define STACK_TEST_PATTERN        0x55AAu
-
-#if CY_CPU_CORTEX_M0P
-    // //accessing the linker script symbol.
-    // extern uint32_t __STACK_SIZE;
-    // #define PSOC_STACK_SIZE           ((uint32_t)&__STACK_SIZE)
-	
-/** Base address of SRAM. May vary with the device used. */
-    #define DEVICE_SRAM_BASE           (CY_SRAM_BASE)
-/** Size of SRAM. May vary with the device used. */
-    #define DEVICE_SRAM_SIZE           (CY_SRAM_SIZE)
-/** Size of Stack. May vary with the device used. */
-    #define DEVICE_STACK_SIZE          (0x00000400)    
-
-#elif CY_CPU_CORTEX_M4
-    // //accessing the linker script symbol.
-    // extern uint32_t __STACK_SIZE;
-    // #define PSOC_STACK_SIZE    ((uint32_t)&__STACK_SIZE)
-    #define DEVICE_SRAM_BASE           (0x08002000)
-    
-    #if defined(CY_DEVICE_PSOC6A512K)
-        #define DEVICE_SRAM_SIZE       (0x3D800)
-    #endif
-
-    #if defined(CY_DEVICE_PSOC6A2M)
-        #define DEVICE_SRAM_SIZE       (0xFD800)
-    #endif
-
-    #if defined(CY_DEVICE_PSOC6A256K)
-        #define DEVICE_SRAM_SIZE       (0x1D800)
-    #endif
-
-    #if defined(CY_DEVICE_PSOC6ABLE2) 
-        #define DEVICE_SRAM_SIZE       (0x45800)
-    #endif
-
-    #define DEVICE_STACK_SIZE          (0x1000)
-
-#elif CY_CPU_CORTEX_M7
-
-    #define DEVICE_SRAM_BASE       (0x28004000)
-    #define DEVICE_STACK_SIZE      (STACK_SIZE)
-    #if defined(CY_DEVICE_SERIES_XMC7100)
-      #define DEVICE_SRAM_SIZE       (0x000BC000)
-    #else 
-      #define DEVICE_SRAM_SIZE       (0x000FC000)
-    #endif
-     
-#endif
-
-
-/** Start of Stack address excluding the block size to store pattern */
-#define DEVICE_STACK_BASE           (DEVICE_SRAM_BASE + DEVICE_SRAM_SIZE)
-
-/** End of Stack address excluding the block size to store pattern */
-#define DEVICE_STACK_END            (uint32_t)(DEVICE_STACK_BASE - DEVICE_STACK_SIZE + STACK_TEST_BLOCK_SIZE)
-
 
 /** \} group_stack_macros */
 

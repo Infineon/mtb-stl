@@ -4,13 +4,8 @@
 *
 * Description:
 * This file provides constants and parameter values used for DMAC self
-* tests for CAT1A and CAT1C devices.
+* tests.
 *
-*
-* Hardware Dependency:
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -74,12 +69,13 @@ The DMAC blocks are tested using the following procedure.
 * \defgroup group_dmac_functions Functions
 */
 
-#include "SelfTest_common.h"
-
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
-#if (CY_IP_M4CPUSS_DMAC || CY_IP_M7CPUSS_DMAC) || defined (CY_DOXYGEN)
 #if !defined(SELFTEST_DMAC_H)
     #define SELFTEST_DMAC_H
+
+#include "SelfTest_common.h"
+
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)))
+#if (((defined(CY_IP_M4CPUSS_DMAC) && (CY_IP_M4CPUSS_DMAC))) || ((defined(CY_IP_M7CPUSS_DMAC) && (CY_IP_M7CPUSS_DMAC))) || defined (CY_DOXYGEN))
 
 /***************************************
 * Function Prototypes

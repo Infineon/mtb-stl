@@ -4,7 +4,7 @@
 *
 * Description:
 * This file provides constants and parameter values used for IPC self
-* tests for CAT1A and CAT1C devices.
+* tests.
 *
 *
 * Hardware Dependency:
@@ -82,13 +82,15 @@ For XMC Dual CM7 device channels and interrupts are checked:
 * \defgroup group_ipc_macros Macros
 * \defgroup group_ipc_functions Functions
 */
-#include "SelfTest_common.h"
 
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+
 #if !defined(SELFTEST_IPC_H)
 #define SELFTEST_IPC_H
 
 #include "cy_pdl.h"
+#include "SelfTest_common.h"
+
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
 /***************************************
 * Function Prototypes
 ***************************************/
@@ -194,17 +196,22 @@ uint8_t SelfTest_IPC(void);
 #define IPC_INT_15              INT15_INDEX
 
 
-#define IPC_INT_NOTIFY_MASK(i)   (0x1u << i)
+#define IPC_INT_NOTIFY_MASK(i)   ((uint32_t)0x1U << (uint32_t)i)
 
-#define IPC_INT_REL_MASK(i)      (0x1u << i)
+#define IPC_INT_REL_MASK(i)      ((uint32_t)0x1U << (uint32_t)i)
 
-#define GET_IPC_CH_REL_MASK(i)   (0x1u << i) 
+#define GET_IPC_CH_REL_MASK(i)   ((uint32_t)0x1U << (uint32_t)i) 
 
-#define GET_IPC_CH_NOTIFY_MASK(i)         (0x1u << i) 
+#define GET_IPC_CH_NOTIFY_MASK(i)         ((uint32_t)0x1U << (uint32_t)(i))
+
 
 
 #define IPC_PRIORITY           (1u)      /* IPC1 interrupt priority */
 
+#if CY_CPU_CORTEX_M33
+#define IPC1_INTERRUPT          cpuss_interrupts_ipc_dpslp_0_IRQn
+#define IPC2_INTERRUPT          cpuss_interrupts_ipc_dpslp_1_IRQn
+#else
 #define IPC1_INTERRUPT          cpuss_interrupts_ipc_1_IRQn 
 #define IPC2_INTERRUPT          cpuss_interrupts_ipc_2_IRQn
 #define IPC3_INTERRUPT          cpuss_interrupts_ipc_3_IRQn
@@ -220,6 +227,7 @@ uint8_t SelfTest_IPC(void);
 #define IPC13_INTERRUPT         cpuss_interrupts_ipc_13_IRQn
 #define IPC14_INTERRUPT         cpuss_interrupts_ipc_14_IRQn
 #define IPC15_INTERRUPT         cpuss_interrupts_ipc_15_IRQn
+#endif
 
 
 #endif

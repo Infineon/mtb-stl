@@ -4,16 +4,6 @@
 *
 * Include this file in all of your source files that access mtb-stl middleware.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -75,11 +65,22 @@
 #include "SelfTest_PWM.h"
 #endif
 
-#if CY_CPU_CORTEX_M7
-#include "SelfTest_WWDT.h"
+#if CY_CPU_CORTEX_M33
+#include "SelfTest_Motif.h"
+#include "SelfTest_FPU_Regs.h"
+#include "SelfTest_DMA_DW.h"
+#include "SelfTest_IPC.h"
+#include "SelfTest_Timer_Counter.h"
+#include "SelfTest_PWM_GateKill.h"
+#include "SelfTest_PWM.h"
 #endif
 
-#if CY_CPU_CORTEX_M7 || (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K))
+#if CY_CPU_CORTEX_M7
+#include "SelfTest_WWDT.h"
+#include "SelfTest_ECC.h"
+#endif
+
+#if CY_CPU_CORTEX_M7 || (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K)) || (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A512K))
 #include "SelfTest_CANFD.h"
 #endif
 

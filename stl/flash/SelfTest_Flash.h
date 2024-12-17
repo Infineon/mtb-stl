@@ -4,18 +4,8 @@
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
-*  used for FLASH self tests for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  used for FLASH self tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -78,13 +68,12 @@
 * \defgroup group_flash_functions Functions
 */
 
-#include "SelfTest_common.h"
-
 
 #if !defined(SELFTEST_FLASH_H)
     #define SELFTEST_FLASH_H
 
 #include "cy_pdl.h"
+#include "SelfTest_common.h"
  
 /** \cond INTERNAL */
 #define FLASH_TEST_FLETCHER64      (0u)
@@ -193,6 +182,12 @@ void SelfTest_Flash_init(uint32_t StartAddressOfFlash,uint32_t EndAddressOfFlash
 
 #define FLASH_END_ADDR                \
     (uint32_t)(CY_FLASH_BASE + CY_FLASH_SIZE - FLASH_RESERVED_CHECKSUM_SIZE)
+#endif
+
+#if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
+#define CY_FLASH_NSC_SIZE 0x00000100UL
+#define FLASH_END_ADDR         \
+    (uint32_t)(CY_FLASH_BASE + (CY_FLASH_SIZE/2UL) - (CY_FLASH_NSC_SIZE +FLASH_RESERVED_CHECKSUM_SIZE))
 #endif
 
 /***************************************

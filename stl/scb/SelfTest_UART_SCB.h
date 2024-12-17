@@ -4,19 +4,12 @@
 *
 * Description:
 *  This file provides the function prototype, constants, and parameter values used
-*  for the UART self tests according to the Class B library for CAT2(PSoC4), CAT1A, 
-*  CAT1C devices.
+*  for the UART self tests according to the Class B library.
 *
 * Related Document:
 *  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
 *  for ModusToolbox
 *
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -73,11 +66,11 @@
 * \defgroup group_uart_macros Macros
 * \defgroup group_uart_functions Functions
 */
-#include "SelfTest_common.h"
-
 
 #if !defined(SELFTEST_UART_SCB_H)
     #define SELFTEST_UART_SCB_H
+
+#include "SelfTest_common.h"
 
 /***************************************
 * Function Prototypes
@@ -101,10 +94,9 @@
 *  1 - test failed <br>
 *  2 - Still testing <br>
 *  3 - Test completed OK  <br>
-*  4 - Error, TX not empty  <br>
+*  4 - Error, TX not empty <br>
 *  5 - Error, RX not empty <br>
-*  6 - Error, TX not enabled <br>
-*  7 - Error, RX not enabled
+*  6 - Error, UART is not enabled
 *
 * \note 
 *  During call, function transmits and receives bytes from 0x01 to 0xFF.

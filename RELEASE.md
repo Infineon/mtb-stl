@@ -1,4 +1,4 @@
-# ModusToolbox Safety Test Library 2.0.0
+# ModusToolbox Safety Test Library 3.0.0
 
 
 Refer to the [README.md](./README.md) for a complete description of the ModusToolbox Safety Test Library.

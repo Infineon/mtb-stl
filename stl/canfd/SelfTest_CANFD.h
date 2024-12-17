@@ -4,15 +4,8 @@
 *
 * Description:
 *  This file provides the function prototypes, constants and parameter values used
-*  for the clock self tests according to Class B library for CAT2(PSoC4), CAT1A, 
-*  CAT1C devices.
+*  for the clock self tests according to Class B library.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -73,23 +66,19 @@
 * \defgroup group_canfd_functions Functions
 */
 
-#include "SelfTest_common.h"
-
-#if CY_CPU_CORTEX_M7 || (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K))
-
 #if !defined(SELFTEST_CANFD_H)
     #define SELFTEST_CANFD_H
 #include "cy_pdl.h"
-#include "cycfg.h"
 #include "cy_canfd.h"
+#include "SelfTest_common.h"
+
+#if ((defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) ||  (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))  || ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) && defined (CY_DEVICE_PSOC6A256K)) || ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) && defined (CY_DEVICE_PSOC6A512K)))
+
+#include "cycfg.h"
 
 /** \cond INTERNAL */
 /** Test Mode Type */
-typedef enum
-{
-    STL_CANFD_TEST_MODE_EXTERNAL_LOOP_BACK   = 0x02u, /**< The External Loop Back Mode */
-    STL_CANFD_TEST_MODE_INTERNAL_LOOP_BACK   = 0x03u  /**< The Internal Loop Back Mode */
-}stl_canfd_test_mode_t;
+
 /** \endcond */
 
 /***************************************
@@ -135,7 +124,7 @@ typedef enum
 uint8_t SelfTest_CANFD(CANFD_Type *base, uint32_t chan,
                                    const cy_stc_canfd_config_t *config,
                                    cy_stc_canfd_context_t *context,
-                                   stl_canfd_test_mode_t test_mode);
+                                   cy_stc_canfd_test_mode_t test_mode);
 /** \} group_canfd_functions */
 
 #endif

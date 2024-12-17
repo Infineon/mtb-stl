@@ -2,19 +2,8 @@
 * File Name: SelfTest_CPU.c
 * Version 1.0.0
 *
-* Description: This file provides the source code for the CPU register self tests
-* for CAT2(PSoC4), CAT1A, CAT1C devices.
+* Description: This file provides the source code for the CPU register self tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -52,7 +41,6 @@
 #include "SelfTest_CPU.h"
 #include "SelfTest_CPU_Regs.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
 
 static volatile uint8_t CPU_SelfTestA;
 static volatile uint16_t CPU_SelfTestB;
@@ -99,7 +87,9 @@ uint8_t SelfTest_CPU_Registers(void)
     /* Enable global interrupts */
     __disable_irq();
 
-    #if defined(__GNUC__)
+    #if defined(__ARMCC_VERSION)
+    ret = SelfTest_CPU_Regs_ARM();
+    #elif defined(__GNUC__)
     ret = SelfTest_CPU_Regs_GCC();
     #elif defined(__ICCARM__)
     ret = SelfTest_CPU_Regs_IAR();
@@ -220,10 +210,10 @@ uint8_t SelfTest_PROGRAM_FLOW(void)
 
     Program_flow_test = true;
 
-    counter1 += 0x0010;
+    counter1 += (uint16_t)0x0010;
     returned_value = SelfTest_PC5555();
-    counter2 -= 0x0010;
-    counter1 += 0x0030; 
+    counter2 -= (uint16_t)0x0010;
+    counter1 += (uint16_t)0x0030; 
     returned_value = SelfTest_PCAAAA();
     
     #if ERROR_IN_PROGRAM_FLOW
@@ -231,12 +221,12 @@ uint8_t SelfTest_PROGRAM_FLOW(void)
     counter2 -= 0x0060;
     #else
     /* Return OK value */
-    counter2 -= 0x0030;
+    counter2 -= (uint16_t)0x0030;
     #endif /* End ERROR_IN_PROGRAM_FLOW */
 
-    if ((counter1 ^ counter2) == 0xFFFF)
+    if ((uint16_t)(counter1 ^ counter2) == (uint16_t)0xFFFF)
     {
-        ret = OK_STATUS;
+        ret = OK_STATUS;    
     }
     (void)returned_value;
     return ret;
@@ -269,7 +259,7 @@ static uint8_t SelfTest_PCAAAA(void)
 {
     if(Program_flow_test)
     {
-        counter1 += 0x0040;
+        counter1 += (uint16_t)0x0040;
     }
     CPU_SelfTestA = SELF_TEST_A_2;
 
@@ -279,7 +269,7 @@ static uint8_t SelfTest_PCAAAA(void)
 
     if (Program_flow_test)
     {
-        counter2 -= 0x0040;
+        counter2 -= (uint16_t)0x0040;
     }
 
     #if ERROR_IN_PROGRAM_COUNTER
@@ -317,7 +307,7 @@ static uint8_t SelfTest_PC5555(void)
 {
     if (Program_flow_test)
     {
-        counter1 += 0x0015;
+        counter1 += (uint16_t)0x0015;
     }
     CPU_SelfTestA = SELF_TEST_A_1;
 
@@ -327,7 +317,7 @@ static uint8_t SelfTest_PC5555(void)
 
     if (Program_flow_test)
     {
-        counter2 -= 0x0015;
+        counter2 -= (uint16_t)0x0015;
     }
 
     #if ERROR_IN_PROGRAM_COUNTER

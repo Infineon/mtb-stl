@@ -4,18 +4,8 @@
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
-*  used for FLASH self tests for CAT2(PSoC4), CAT1A, CAT1C devices.
+*  used for FLASH self tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -52,7 +42,7 @@
 
 #include "SelfTest_Flash.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
+
 #if (FLASH_TEST_MODE == FLASH_TEST_CRC32)
 #include "SelfTest_CRC_calc.h"
 #endif

@@ -92,12 +92,6 @@ $(document).ready(function(){initNavTree('group__group__stack__functions.html','
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:gab8cac5a01bf07b63c803e00b8f469d72"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__stack__functions.html#gab8cac5a01bf07b63c803e00b8f469d72">SelfTests_Init_Stack_Test</a> (uint8_t stack_pattern_blk_size)</td></tr>
-<tr class="memdesc:gab8cac5a01bf07b63c803e00b8f469d72"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function initializes the upper and Lower stack area with 0xAA and 0x55 pattern.  <a href="group__group__stack__functions.html#gab8cac5a01bf07b63c803e00b8f469d72">More...</a><br /></td></tr>
-<tr class="separator:gab8cac5a01bf07b63c803e00b8f469d72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab9170682379622e3691738b85231973c"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__stack__functions.html#gab9170682379622e3691738b85231973c">SelfTests_Stack_Check</a> (void)</td></tr>
-<tr class="memdesc:gab9170682379622e3691738b85231973c"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs stack self test.  <a href="group__group__stack__functions.html#gab9170682379622e3691738b85231973c">More...</a><br /></td></tr>
-<tr class="separator:gab9170682379622e3691738b85231973c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga58bac912b1695dc8f230cbaddeed7cc2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__stack__functions.html#ga58bac912b1695dc8f230cbaddeed7cc2">SelfTests_Init_Stack_Range</a> (uint16_t *stack_address, uint16_t stack_length, uint8_t stack_pattern_blk_size)</td></tr>
 <tr class="memdesc:ga58bac912b1695dc8f230cbaddeed7cc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Summary: This function initializes the upper stack area with 0xAA and 0x55 pattern.  <a href="group__group__stack__functions.html#ga58bac912b1695dc8f230cbaddeed7cc2">More...</a><br /></td></tr>
 <tr class="separator:ga58bac912b1695dc8f230cbaddeed7cc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -106,56 +100,6 @@ Functions</h2></td></tr>
 <tr class="separator:ga71379957753487128852842c734e34d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="gab8cac5a01bf07b63c803e00b8f469d72" name="gab8cac5a01bf07b63c803e00b8f469d72"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab8cac5a01bf07b63c803e00b8f469d72">&#9670;&nbsp;</a></span>SelfTests_Init_Stack_Test()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void SelfTests_Init_Stack_Test </td>
-          <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>stack_pattern_blk_size</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>This function initializes the upper and Lower stack area with 0xAA and 0x55 pattern. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">stack_pattern_blk_size</td><td>No of bytes to be used to fill the pattern. Must be 2^n where n=1 to n=8. (Recommended value for n = 3)</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>None. </dd></dl>
-
-</div>
-</div>
-<a id="gab9170682379622e3691738b85231973c" name="gab9170682379622e3691738b85231973c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab9170682379622e3691738b85231973c">&#9670;&nbsp;</a></span>SelfTests_Stack_Check()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t SelfTests_Stack_Check </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>This function performs stack self test. </p>
-<p >It checks upper and Lower stack area for 0xAA and 0x55 pattern.</p>
-<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
- 1 - Test failed. </dd></dl>
-
-</div>
-</div>
 <a id="ga58bac912b1695dc8f230cbaddeed7cc2" name="ga58bac912b1695dc8f230cbaddeed7cc2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga58bac912b1695dc8f230cbaddeed7cc2">&#9670;&nbsp;</a></span>SelfTests_Init_Stack_Range()</h2>
 

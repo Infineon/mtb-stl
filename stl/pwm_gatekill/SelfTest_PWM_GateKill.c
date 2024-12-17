@@ -2,12 +2,8 @@
 * File Name: SelfTest_PWM_GateKill.c
 * Version 1.0.0
 *
-* Description: This file provides the source code for the PWM Gatekill self tests
-* for CAT1A, CAT1C devices.
+* Description: This file provides the source code for the PWM Gatekill self tests.
 *
-*
-* Hardware Dependency:
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -44,7 +40,6 @@
 #include "cy_pdl.h"
 #include "SelfTest_PWM_GateKill.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
 
 uint8_t SelfTest_PWM_GateKill(TCPWM_Type *base, uint32_t cntNum)
 {

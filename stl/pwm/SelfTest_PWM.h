@@ -4,14 +4,8 @@
 *
 * Description:
 * Description: This file provides the constants and parameter values for the PWM 
-* self tests for CAT1A, CAT1C devices.
+* self tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -72,13 +66,11 @@
 * \defgroup group_pwm_functions Functions
 */
 
-#include "SelfTest_common.h"
-
-#if (CY_CPU_CORTEX_M7 || CY_CPU_CORTEX_M4)
-
 #if !defined(SELFTEST_PWM_H)
     #define SELFTEST_PWM_H
+#include "SelfTest_common.h"
 
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
 /** \addtogroup group_pwm_macros
 * \{
 */
@@ -133,11 +125,11 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type *pinbase, uint32_t pinNum);
 * \param config
 * The pointer to configuration structure.
 *
-* \param int_src
+* \param intr_src
 * Interrupt source 
 ******************************************************************************/
 uint8_t SelfTest_PWM_init(TCPWM_Type *base, uint32_t cntNum,
-			 cy_stc_tcpwm_pwm_config_t const *config, IRQn_Type  int_src);
+			 cy_stc_tcpwm_pwm_config_t const *config, IRQn_Type  intr_src);
 
 /** \} group_pwm_functions */
 

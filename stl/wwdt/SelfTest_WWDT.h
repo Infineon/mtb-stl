@@ -4,14 +4,7 @@
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
-*  used for watchdog timer self tests for CAT1C devices.
-*
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  XMC7200D-E272K8384
+*  used for watchdog timer self tests.
 *
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
@@ -72,15 +65,15 @@
 * \defgroup group_wwdt_macros Macros
 * \defgroup group_wwdt_functions Functions
 */
-#include "SelfTest_common.h"
 
 #if !defined(SELFTEST_WWDT_H)
     #define SELFTEST_WWDT_H
 
 #include "cy_pdl.h"
+#include "SelfTest_common.h"
 
 
-#if CY_CPU_CORTEX_M7
+#if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
 
 /** \addtogroup group_wwdt_macros
 * \{

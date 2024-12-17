@@ -1,21 +1,10 @@
 /* *****************************************************************************
 * File Name: SelfTest_RAM.c
-* Version 1.0.0
+* Version 2.0.0
 *
 * Description:
-*  This file provides the source code to the API for runtime SRAM self tests for
-*  CAT2(PSoC4), CAT1A, CAT1C devices.
+*  This file provides the source code to the API for runtime SRAM self tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -49,87 +38,140 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 
-
 #include "cy_pdl.h"
 #include "SelfTest_RAM.h"
-#include "SelfTest_Config.h"
+#include "SelfTest_ErrorInjection.h"
 
-#if defined(__ICCARM__)
-/* variable to set start address for test Stack block */
-volatile uint32_t test_Stack_Addr;
-/* variable to set start address for test RAM block */
-volatile uint32_t test_SRAM_Addr;
-#endif
+uint8_t SelfTest_SRAM_MARCH(uint8_t *startAddr, uint32_t size, uint8_t *buffAddr, uint32_t buffSize);
+uint8_t SelfTest_SRAM_GALPAT(uint8_t *startAddr, uint32_t size, uint8_t *buffAddr, uint32_t buffSize);
 
-/*******************************************************************************
- * Function Name: SelfTests_Init_March_SRAM_Test
- ********************************************************************************
- *
- * Summary:
- *  This function initializes the SRAM base address.
- *
- * Parameters:
- *  uint8_t shift - set shift from start address for March RAM test
- *
- * Return:
- *  None.
- *
- **********************************************************************************/
-void SelfTests_Init_March_SRAM_Test(uint8_t shift)
-{
-    /* Set base address for March RAM test */
-    March_Test_Init(shift);
-}
+uint8_t SRAM_Test_Read0(uint8_t *stPtr, uint8_t *endPtr);
+void SRAM_Test_Write_0(uint8_t *stPtr, uint8_t *endPtr);
+void SRAM_Test_Write_1(uint8_t *stPtr, uint8_t *endPtr);
+uint8_t SRAM_Test_Read0_Write1_Dec(uint8_t *stPtr, uint8_t *endPtr);
+uint8_t SRAM_Test_Read0_Write1_Inc(uint8_t *stPtr, uint8_t *endPtr);
+uint8_t SRAM_Test_Read1_Write0_Dec(uint8_t *stPtr, uint8_t *endPtr);
+uint8_t SRAM_Test_Read1_Write0_Inc(uint8_t *stPtr, uint8_t *endPtr);
+uint8_t SRAM_Test_Read1_by_Inverting_1Byte(uint8_t *stPtr, uint8_t *endPtr, uint8_t *invertingByte);
+uint8_t SRAM_Test_Read0_by_Inverting_1Byte(uint8_t *stPtr, uint8_t *endPtr, uint8_t *invertingByte);
+void copy_buffer(uint8_t *srcPtr, uint8_t *srcEndPtr, uint8_t *destPtr);
 
 /*******************************************************************************
- * Function Name: SelfTests_Init_GALPAT_SRAM_Test
- ********************************************************************************
- *
- * Summary:
- *  This function initializes the SRAM base address.
- *
- * Parameters:
- *  uint8_t shift - set shift from start address for GALPAT RAM test
- *
- * Return:
- *  None.
- *
- **********************************************************************************/
-void SelfTests_Init_GALPAT_SRAM_Test(uint8_t shift)
-{
-    /* Set base address for March RAM test */
-    GALPAT_Test_Init(shift);
-}
+* Function Name: SelfTest_SRAM
+****************************************************************************//**
+*
+*  This function perform self test on a block of RAM. It can detect stuck-at faults and direct coupling faults. 
+*  The RAM tests are destructible 
+*  in nature so function also accepts temporary buffer which can be used to store/restore
+*  memory block under test. The RAM block under test must not overlap with memory that
+*  is not supposed be overwritten for e.g. stack. This kind of situation must be tested
+*  at the startup.  Because of RAM destructible behavior, it is advisable to disable
+*  interrupts before starting the test.
+*
+*******************************************************************************/
 
+uint8_t SelfTest_SRAM(stl_sram_test_mode_t type, uint8_t *startAddr, uint32_t size, uint8_t *buffAddr, uint32_t buffSize)
+{
+	uint8_t testStatus = 0;
+	uint32_t buffSizeL = buffSize;
+	uint8_t *buffAddrL = buffAddr; 
+	/* Check proper buffer is provided for store/restore */
+	if ( (buffAddrL != NULL) && (buffSizeL != 0u) )
+	{
+		if ( buffSizeL > size )
+		{
+			buffSizeL = size;
+		}
+	}
+	else
+	{
+		buffAddrL = NULL;
+		buffSizeL = 0;
+	}
+	
+	/* Check for the test type */
+	if (type  == SRAM_GALPAT_TEST_MODE)
+	{
+		testStatus= SelfTest_SRAM_GALPAT (startAddr, size, buffAddrL, buffSizeL);
+	}
+	else
+	{
+		/* Default MARCH */
+		testStatus= SelfTest_SRAM_MARCH (startAddr, size, buffAddrL, buffSizeL);
+		
+	}
+	return testStatus;
+}
 
 /*******************************************************************************
  * Function Name: SelfTests_SRAM_March
  ********************************************************************************
  *
  * Summary:
- *  This function perform SRAM self test using March method.
- *
- * Parameters:
- *  None.
- *
- * Return:
- *  Result of test:  "1" - fail test; "2" - still testing; "3" - Test complete OK
- *
+ *  This function perform SRAM self test using March method. 
+ *  - Stores the data from RAM under test to a buffer (optional)
+ *  - Writes 0 to full block of RAM under test
+ *  - Reads 0 and writes 1 on the block of RAM under test 
+ *  - Reads 1 and writes 0 on the block of RAM under test
+ *  - Reads 0 from the block of RAM under test
+ *  - Reads 0 and writes 1 on the block of RAM under test in Decrementing order
+ *  - Reads 1 and writes 0 on the block of RAM under test in Decrementing order
+ *  - Reads 0 from the block of RAM under test
+ *  - Restores the data back from buffer to block of RAM that is tested
  **********************************************************************************/
-uint8_t SelfTests_SRAM_March(void)
+
+uint8_t SelfTest_SRAM_MARCH(uint8_t *startAddr, uint32_t size, uint8_t *buffAddr, uint32_t buffSize)
 {
-    uint8_t test_Status;
-
-    /* Disable global interrupts */
-    __disable_irq();
-
-    /* Perform March test */
-    test_Status = March_Test_SRAM();
-
-    /* Enable global interrupts */
-    __enable_irq();
-
-    return test_Status;
+	uint8_t testStatus = 0;
+	uint8_t *startAddrL = startAddr;
+	uint32_t buffSizeL = buffSize;
+	if (buffSizeL == 0u)
+	{
+		buffSizeL = size;
+	}
+	for (uint32_t i=0; i < size; i += buffSizeL)
+	{
+		/* Check if copy required */
+		if (buffAddr != NULL)
+		{
+			/* Copy SRAM area which is being tested in this loop */
+			copy_buffer(startAddrL, (startAddrL + buffSizeL), buffAddr);
+		}
+		
+		SRAM_Test_Write_0(startAddrL, (startAddrL + buffSizeL ));
+		testStatus = SRAM_Test_Read0_Write1_Inc(startAddrL, (startAddrL + buffSizeL ));
+		if (testStatus == 0u )
+		{
+			testStatus = SRAM_Test_Read1_Write0_Inc(startAddrL, (startAddrL + buffSizeL ));
+		}
+		if (testStatus == 0u )
+		{
+			testStatus = SRAM_Test_Read0(startAddrL, (startAddrL + buffSizeL));
+		}
+		if (testStatus == 0u )
+		{
+			testStatus = SRAM_Test_Read0_Write1_Dec(startAddrL, (startAddrL + buffSizeL));
+		}
+		if (testStatus == 0u )
+		{
+			testStatus = SRAM_Test_Read1_Write0_Dec(startAddrL, (startAddrL + buffSizeL));
+		}
+		if (testStatus == 0u )
+		{
+			testStatus = SRAM_Test_Read0(startAddrL, (startAddrL + buffSizeL));
+		}
+		if (buffAddr != NULL)
+		{
+			/* Copy buffer back into SRAM area */
+			copy_buffer(buffAddr, (buffAddr + buffSizeL), startAddrL);
+		}
+		if (testStatus != 0u )
+		{
+			break;
+		}
+		startAddrL = startAddrL + buffSizeL;
+	}
+	return testStatus;
 }
 
 /*******************************************************************************
@@ -138,129 +180,379 @@ uint8_t SelfTests_SRAM_March(void)
  *
  * Summary:
  *  This function perform SRAM self test using GALPAT method.
- *
- * Parameters:
- *  None.
- *
- * Return:
- *  Result of test:  "1" - fail test; "2" - still testing; "3" - Test complete OK
- *
+ *  - Stores the data from RAM under test to a buffer (optional)
+ *  - Writes 0 to full block of RAM under test
+ *  - Writes 1 to a referance Inverting byte, reads 1 from referance Inverting byte and reads 0 from all other bytes
+ *  - Repeat above step to all the bytes (cells) by incrementing Inverting byte's position until whole RAM block is tested
+ *  - Writes 1 to full block of RAM under test 
+ *  - Writes 0 to a referance Inverting byte, reads 0 from referance Inverting byte and reads 1 from all other bytes. Write 1 to Inverting Byte
+ *  - Repeat above step to all the bytes (cells) by incrementing Inverting byte's position until whole RAM block is tested
+ *  - Restores the data back from buffer to block of RAM that is tested
  **********************************************************************************/
-uint8_t SelfTests_SRAM_GALPAT(void)
+uint8_t SelfTest_SRAM_GALPAT(uint8_t *startAddr, uint32_t size, uint8_t *buffAddr, uint32_t buffSize)
 {
-    uint8_t test_Status;
-
-    /* Disable global interrupts */
-    __disable_irq();
-
-    /* Perform GALPAT test */
-    test_Status = GALPAT_Test_SRAM();
-
-    /* Enable global interrupts */
-    __enable_irq();
-
-    return test_Status;
+	uint8_t testStatus = 0;
+	uint8_t *startAddrL = startAddr;
+	uint8_t *invertingByte = startAddr;
+	uint32_t buffSizeL = buffSize;
+	
+	if ( buffSizeL == 0u)
+	{
+		buffSizeL = size;
+	}
+	for (uint32_t i=0; i < size; i += buffSizeL)
+	{
+		/* Check if copy required */
+		if (buffAddr != NULL)
+		{
+			/* Copy SRAM area which is being tested in this loop */
+			copy_buffer(startAddrL, (startAddrL + buffSizeL), buffAddr);
+		}
+		
+		SRAM_Test_Write_0(startAddrL, (startAddrL + buffSizeL));
+		do
+		{
+			testStatus = SRAM_Test_Read0_by_Inverting_1Byte(startAddrL, (startAddrL + buffSizeL), invertingByte);
+			if (testStatus == 0u )
+			{
+				uint8_t read0 = 0;
+				*invertingByte = read0;
+				invertingByte += 1;
+			}
+		}
+		while( invertingByte < (startAddrL + buffSizeL) );
+		
+		invertingByte = startAddrL;
+		SRAM_Test_Write_1(startAddrL, (startAddrL + buffSizeL));
+		do
+		{
+			testStatus = SRAM_Test_Read1_by_Inverting_1Byte(startAddrL, (startAddrL + buffSizeL), invertingByte);
+			if(testStatus == 0u )
+			{
+				uint8_t read1 = 0xff;
+				*invertingByte = read1;
+				invertingByte += 1;
+			}
+			else
+			{
+				return testStatus;
+			}
+		}
+		while(invertingByte < (startAddrL + buffSizeL) );
+		
+		if (buffAddr != NULL)
+		{
+			/* Copy buffer back into SRAM area */
+			copy_buffer(buffAddr, (buffAddr + buffSizeL), startAddrL);
+		}
+		startAddrL = startAddrL + buffSizeL;
+	}
+	return testStatus;
 }
 
 
 /*******************************************************************************
- * Function Name: SelfTests_Init_March_Stack_Test
+ * Function Name: SelfTests_SRAM_Stack
  ********************************************************************************
  *
  * Summary:
- *  This function initializes the SRAM base address.
- *
- * Parameters:
- *  uint8_t shift - set shift from start address for March Stack test
- *
- * Return:
- *  None.
- *
+ *  This function perform SRAM_STACK self test
+ *  - Fetches the stack Pointer from CMSIS 
+ *  - Obtains the number of bytes that are pushed on to stack 
+ *  - Copys all the data that is pushed to stack and stores in buffer provided
+ *  - Sets the stack Pointer to current copied buffer 
+ *  - Tests the stack area with the MARCH test
+ *  - Restores back all the data that was pushed to stack, from copied buffer 
+ *  - Sets the stack Pointer to original address
  **********************************************************************************/
-void SelfTests_Init_March_Stack_Test(uint8_t shift)
+static uint32_t stackPointer;
+static uint8_t currentStackSize;
+
+
+uint8_t SelfTest_SRAM_Stack(uint8_t *stackBase, uint32_t stackSize, uint8_t *altStackBase)
 {
-    /* Set base address for March Stack test */
-    March_Test_Stack_Init(shift);
+	uint8_t stackTestStatus = 0;
+	CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Directive 4.3', 3, 'Checked manually. Intentional expression ');
+	__asm volatile("mov %0, sp" : "=r" (stackPointer));
+	currentStackSize = (uint8_t)((uint32_t)stackBase - stackPointer);
+	
+	/* Check proper buffer address is provided for store/restore */
+	if (((uint32_t)altStackBase >= ((uint32_t)stackBase-stackSize)) && ((uint32_t)altStackBase <= (uint32_t)stackBase))
+	{
+		return ERROR_STATUS;
+	}
+	copy_buffer((uint8_t *)stackPointer, stackBase, altStackBase - currentStackSize);
+	__asm volatile("mov sp, %0" :: "r" ((uint32_t)altStackBase - currentStackSize));
+	stackTestStatus = SelfTest_SRAM_MARCH(stackBase - stackSize, stackSize, NULL, 0);
+	copy_buffer((uint8_t *)altStackBase - currentStackSize, altStackBase, (uint8_t *)stackPointer );
+	__asm volatile("mov sp, %0" :: "r" (stackPointer));
+	CY_MISRA_BLOCK_END('MISRA C-2012 Directive 4.3');
+	return stackTestStatus;
 }
 
-/*******************************************************************************
- * Function Name: SelfTests_Init_GALPAT_Stack_Test
- ********************************************************************************
- *
- * Summary:
- *  This function initializes the SRAM base address.
- *
- * Parameters:
- *  uint8_t shift - set shift from start address for March Stack test
- *
- * Return:
- *  None.
- *
- **********************************************************************************/
-void SelfTests_Init_GALPAT_Stack_Test(uint8_t shift)
+
+/* Writes 0 to full block of RAM under test */
+
+void SRAM_Test_Write_0(uint8_t *stPtr, uint8_t *endPtr)
 {
-    /* Set base address for March Stack test */
-    GALPAT_Test_Stack_Init(shift);
+	uint8_t *stPtrL = stPtr;
+	do
+	{
+		*stPtrL = 0x0;
+		stPtrL += 1;
+	} 
+	while (stPtrL < endPtr);
+	return;
 }
 
+/* Writes 1 to full block of RAM under test */
 
-/*******************************************************************************
- * Function Name: SelfTests_Stack_March
- ********************************************************************************
- *
- * Summary:
- *  This function perform Stack RAM self test using March method.
- *
- * Parameters:
- *  None.
- *
- * Return:
- *  Result of test:  "1" - fail test; "2" - still testing; "3" - Test complete OK
- *
- **********************************************************************************/
-uint8_t SelfTests_Stack_March(void)
+void SRAM_Test_Write_1(uint8_t *stPtr, uint8_t *endPtr)
 {
-    uint8_t test_Status;
-
-    /* Disable global interrupts */
-    __disable_irq();
-
-    /* Perform March test */
-    test_Status = March_Test_Stack();
-
-    /* Enable global interrupts */
-    __enable_irq();
-
-    return test_Status;
+	/* Check if intentional error should be made for testing */
+	#if (ERROR_IN_SRAM_GALPAT == 1u)
+		*stPtr =  0;
+		return;
+	#endif /* End (ERROR_IN_SRAM_GALPAT == 1u) */
+	uint8_t *stPtrL = stPtr;
+	do
+	{
+		*stPtrL = 0xff;
+		stPtrL += 1;
+	} 
+	while (stPtrL < endPtr);
+	return;
 }
 
-/*******************************************************************************
- * Function Name: SelfTests_Stack_GALPAT
- ********************************************************************************
- *
- * Summary:
- *  This function perform Stack RAM self test using GALPAT method.
- *
- * Parameters:
- *  None.
- *
- * Return:
- *  Result of test:  "1" - fail test; "2" - still testing; "3" - Test complete OK
- *
- **********************************************************************************/
-uint8_t SelfTests_Stack_GALPAT(void)
+/* Reads 0 and writes 1 on the block of RAM under test */
+
+uint8_t SRAM_Test_Read0_Write1_Inc(uint8_t *stPtr, uint8_t *endPtr)
 {
-    uint8_t test_Status;
-
-    /* Disable global interrupts */
-    __disable_irq();
-
-    /* Perform GALPAT test */
-    test_Status = GALPAT_Test_Stack();
-
-    /* Enable global interrupts */
-    __enable_irq();
-
-    return test_Status;
+	uint8_t status_flag=0;
+	uint8_t *stPtrL = stPtr;
+	do
+	{
+		/* Check if intentional error should be made for testing */
+		#if (ERROR_IN_SRAM_MARCH == 1u)
+			*stPtr =  0xff;
+		#endif /* End (ERROR_IN_SRAM_MARCH == 1u) */
+		uint8_t read0 = *stPtrL;
+		if( read0 == 0x0u)
+		{
+			*stPtrL = 0xff;
+			stPtrL += 1;
+		}
+		else
+		{
+			status_flag = ERROR_STATUS;
+			break;
+		}
+	}
+	while(stPtrL < endPtr);
+	return status_flag;
 }
+
+/* Reads 1 and writes 0 on the block of RAM under test */
+
+uint8_t SRAM_Test_Read1_Write0_Inc(uint8_t *stPtr, uint8_t *endPtr)
+{
+	uint8_t status_flag=0;
+	uint8_t *stPtrL = stPtr;
+	do {
+		uint8_t read1 = *stPtrL;
+		if(read1==0xFFu)
+		{
+			read1=0;
+			*stPtrL=read1;
+			stPtrL+=1;
+		}
+		else 
+		{
+			status_flag = ERROR_STATUS;
+			break;
+		}
+	}
+	while(stPtrL < endPtr);
+	return status_flag;
+}
+
+/* Reads 0 from the block of RAM under test */
+
+uint8_t SRAM_Test_Read0(uint8_t *stPtr, uint8_t *endPtr)
+{
+	uint8_t status_flag=0;
+	uint8_t *stPtrL = stPtr;
+	do{
+		uint8_t read0 = *stPtrL;
+		if(read0==0x0u)
+		{
+			stPtrL+=1;
+		}
+		else 
+		{
+			status_flag=ERROR_STATUS;
+			break ;
+		}
+	}
+	while(stPtrL < endPtr);
+	return status_flag;
+}
+
+/* Reads 0 and writes 1 on the block of RAM under test in Decrementing order */
+
+uint8_t SRAM_Test_Read0_Write1_Dec(uint8_t *stPtr, uint8_t *endPtr)
+{
+	uint8_t status_flag=0;
+	uint8_t *endPtr1 = endPtr-1;
+	do {
+		uint8_t read0=*endPtr1;
+		if(read0==0u)
+		{
+			read0=0xff;
+			*endPtr1=read0;
+			endPtr1=endPtr1-1;
+		}
+		else 
+		{
+			status_flag=ERROR_STATUS;
+			break;
+		}
+	}
+	while(endPtr1 >= stPtr);
+	return status_flag;
+}
+
+/* Reads 1 and writes 0 on the block of RAM under test in Decrementing order */
+
+uint8_t SRAM_Test_Read1_Write0_Dec(uint8_t *stPtr, uint8_t *endPtr)
+{
+	uint8_t status_flag=0;
+	uint8_t *endPtr1 = endPtr-1;
+	do {
+		uint8_t read1=*endPtr1;
+		if(read1==0xFFu)
+		{
+			read1=0;
+			*endPtr1=read1;
+			endPtr1=endPtr1-1;
+		}
+		else 
+		{
+			status_flag=ERROR_STATUS;
+			break;
+		}
+	}
+	while(endPtr1 >= stPtr);
+	return status_flag;
+}
+
+/* Stores/Restores the data from RAM/STACK under test to a buffer */
+
+void copy_buffer(uint8_t *srcPtr, uint8_t *srcEndPtr, uint8_t *destPtr)
+{
+	uint8_t *srcPtrL = srcPtr;
+	uint8_t *destPtrL = destPtr;
+	do 
+	{
+		*destPtrL = *srcPtrL;
+		srcPtrL++;
+		destPtrL++;
+	}
+	while(srcPtrL < srcEndPtr);
+}
+
+/* Writes 1 to a referance Inverting byte ,reads 1 from referance Inverting byte and reads 0 from all other bytes */
+
+uint8_t SRAM_Test_Read0_by_Inverting_1Byte(uint8_t *stPtr, uint8_t *endPtr, uint8_t *invertingByte)
+{
+	uint8_t testStatus = 0;
+	uint8_t read0 = 0xff;
+	uint8_t *stPtrL = stPtr;
+	*invertingByte = read0;
+	do
+	{
+		if(stPtrL == invertingByte)
+		{
+			read0 = *invertingByte;
+			if(read0 == 0xFFu )
+			{
+				stPtrL+=1;
+			}
+			else
+			{ 
+				return ERROR_STATUS;
+			}
+		}
+		else 
+		{ 
+			read0 = *stPtrL;
+			if(read0 == 0u)
+			{
+				read0 = *invertingByte;
+				if(read0 == 0xFFu)
+				{
+					stPtrL+=1;
+				}
+				else 
+				{ 
+					return ERROR_STATUS;
+				}
+			}
+			else 
+			{
+				return ERROR_STATUS;
+			}
+		}
+	}
+	while(stPtrL < endPtr );
+	return testStatus;
+}
+
+/* Writes 0 to a referance Inverting byte ,reads 0 from referance Inverting byte and reads 1 from all other bytes */
+
+uint8_t SRAM_Test_Read1_by_Inverting_1Byte(uint8_t *stPtr, uint8_t *endPtr , uint8_t *invertingByte)
+{
+	uint8_t testStatus = 0;
+	uint8_t read1 = 0;
+	uint8_t *stPtrL = stPtr;
+	*invertingByte = read1;
+	do
+	{
+		if(stPtrL == invertingByte)
+		{
+			read1 = *invertingByte;
+			if(read1 == 0u )
+			{
+				stPtrL+=1;
+			}
+			else
+			{ 
+				return ERROR_STATUS;
+			}
+		}
+		else 
+		{ 
+			read1 = *stPtrL;
+			if(read1 == 0xFFu )
+			{
+				read1 = *invertingByte;
+				if(read1 == 0u )
+				{
+					stPtrL+=1;
+				}
+				else 
+				{ 
+					return ERROR_STATUS;
+				}
+			}
+			else 
+			{
+				return ERROR_STATUS;
+			}
+		}
+	}
+	while(stPtrL < endPtr );
+	return testStatus;
+}
+
 /* [] END OF FILE */

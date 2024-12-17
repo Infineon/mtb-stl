@@ -4,16 +4,7 @@
 *
 * Description:
 *  This file provides the function prototypes, constants, and parameter values used
-*  for the analog component self tests according to Class B library
-*  for CAT2(PSoC4) devices.
-*
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
+*  for the analog component self tests according to Class B library.
 *
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
@@ -54,7 +45,8 @@
 * This module carries out 3 tests: <br>
 * 1) SAR ADC <br>
 * 2) OPAMP <br>
-* 3) LPCOMP
+* 3) LPCOMP <br>
+* 4) DAC
 *
 * \section group_analog_more_information More Information
 *
@@ -75,6 +67,11 @@
 * connected to ground. The results are checked. The inputs are switched and the 
 * result is checked again.
 *
+* DAC Test:
+* This test is to check the DAC analog functions. Performs DAC test and
+* verifies that input of DAC and output from ADC are same.
+* If it is as per expected then test passes.
+*
 * \section group_analog_profile_changelog Changelog
 * <table class="doxtable">
 *   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
@@ -89,13 +86,12 @@
 * \defgroup group_analog_functions Functions
 */
 
-#include "SelfTest_common.h"
-
 #if !defined(SELFTEST_ANALOG_H)
     #define SELFTEST_ANALOG_H
 
 #include "cy_pdl.h"
 #include "cybsp.h"
+#include "SelfTest_common.h"
 
 /* Supports three self test modes: */
 /* ANALOG_TEST_VREF_EXTERNAL  - depends on a external three series resistor
@@ -140,6 +136,12 @@
     #error "Hardware does not support ANALOG_TEST_VREF_CSD_IDAC mode"
     #endif
 #endif
+
+#ifdef CY_IP_MXS40PASS_CTDAC
+    #define DAC_INPUT 0x7D0 /* Maps to 1.5 V */
+    #define DAC_ADC_OUTPUT_DEVIATION 0.01 /* Devation of 1% between DAC input and ADC output */
+#endif
+
 /** \endcond */
 
 /***************************************
@@ -159,11 +161,14 @@
     /** Whether Comparator is present or not */
     #define CLASSB_SELF_TEST_COMP           1u
 
-#elif (CY_CPU_CORTEX_M4)
+#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33 )
     /** Whether ADC is present or not */
     #define CLASSB_SELF_TEST_ADC            1u
     /** Whether Comparator is present or not */
     #define CLASSB_SELF_TEST_COMP           1u
+    #if CY_CPU_CORTEX_M4
+    #define CLASSB_SELF_TEST_DAC            1u
+    #endif
     #if (defined(CY_DEVICE_PSOC6ABLE2) || defined(CY_DEVICE_PSOC6A256K))
         /** Whether OP-AMP is present or not */
         #define OPAMP_TEST_ACURACCY             12
@@ -391,7 +396,7 @@
 *
 *
 * \param base 
-* The pointer to a SAR ADC instance
+* The pointer to a SAR ADC instance. For CAT1B, base is the group instance.
 * \param channel
 * channel no. where the input voltage needs to be read
 * \param expected_res 
@@ -401,7 +406,7 @@
 * \param vbg_channel
 * Channel no. where the VBG voltage is connected. Only for CAT1C device.
 * \param count_to_mV 
-* 1 = convert the count to mV.(take more time)
+* 1 = convert the count to mV.(take more time). Not applicable for CAT1B device
 *
 * \return
 *  0 - Test Passed <br>
@@ -409,7 +414,15 @@
 *
 *******************************************************************************/
 #if defined(CLASSB_SELF_TEST_ADC)
-    uint8_t SelfTests_ADC(void * base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV); 
+    #if CY_CPU_CORTEX_M0P
+        uint8_t SelfTests_ADC(SAR_Type * base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV);
+    #elif CY_CPU_CORTEX_M4
+        uint8_t SelfTests_ADC(SAR_Type * base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV);
+    #elif CY_CPU_CORTEX_M7
+       uint8_t SelfTests_ADC(PASS_SAR_Type * base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV);
+    #elif CY_CPU_CORTEX_M33
+        uint8_t SelfTests_ADC(uint32_t base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV);
+	#endif
 #endif /* End Testing ADC */
 
 /*******************************************************************************
@@ -436,6 +449,30 @@
 uint8_t SelfTests_Comparator(LPCOMP_Type const* lpcomp_base, cy_en_lpcomp_channel_t lpcomp_channel,
                              uint8_t expected_res);
 #endif /* End  Testing AN cmp */
+
+
+/*******************************************************************************
+* Function Name: SelfTests_DAC
+****************************************************************************//**
+*
+* Performs DAC test and verifies that input of DAC and output from ADC are same.
+* The digital input value to DAC maps to 1.5V
+*
+* \param dacBase 
+* The pointer to a DAC instance
+* \param adcBase 
+* The pointer to a SAR ADC instance
+* \param adcChannel
+* channel number of SAR ADC instance
+*
+* \return
+*  0 - Test Passed <br>
+*  1 - Test Failed
+*
+*******************************************************************************/
+#if defined(CY_IP_MXS40PASS_CTDAC) || defined (CY_DOXYGEN)
+uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChannel);
+#endif
 
 /** \} group_analog_functions */
 

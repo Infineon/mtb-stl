@@ -4,15 +4,7 @@
 *
 * Description:
 *  This file provides source code for the APIs to perform analog component
-*  self tests according to the Class B library for CAT2(PSoC4) devices.
-*
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
+*  self tests according to the Class B library.
 *
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
@@ -48,7 +40,6 @@
 *******************************************************************************/
 #include "SelfTest_Analog.h"
 #include "SelfTest_ErrorInjection.h"
-#include "SelfTest_Config.h"
 
 #if (CY_CPU_CORTEX_M0P)
 
@@ -544,7 +535,7 @@ static uint8_t SelfTests_Set_IDAC_Offset(SAR_Type* sar_base, uint32_t channel)
 *****************************************************************************/
 #if (CY_CPU_CORTEX_M0P)
 #ifdef CLASSB_SELF_TEST_ADC
-uint8_t SelfTests_ADC(void* base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV)
+uint8_t SelfTests_ADC(SAR_Type * base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV)
 {
     (void)vbg_channel;
     (void)count_to_mV;
@@ -552,9 +543,8 @@ uint8_t SelfTests_ADC(void* base, uint32_t channel, int16_t expected_res, int16_
 
     uint16_t guardCnt;
     uint8_t ret = ERROR_STATUS;
-    SAR_Type *psoc4_base = (SAR_Type*)base;
     /* Start ADC conversion */
-    Cy_SAR_StartConvert(psoc4_base, CY_SAR_START_CONVERT_SINGLE_SHOT);
+    Cy_SAR_StartConvert(base, CY_SAR_START_CONVERT_SINGLE_SHOT);
 
     /* Wait for end of conversion using guard interval > ADC conversion time */
     guardCnt = 0u;
@@ -562,7 +552,7 @@ uint8_t SelfTests_ADC(void* base, uint32_t channel, int16_t expected_res, int16_
     {
         guardCnt++;
         Cy_SysLib_DelayUs(1u);
-    } while((Cy_SAR_IsEndConversion(psoc4_base,
+    } while((Cy_SAR_IsEndConversion(base,
                                     CY_SAR_RETURN_STATUS) != CY_SAR_SUCCESS) &&
             (guardCnt < ADC_TEST_CON_TIME_uS));
 
@@ -570,8 +560,8 @@ uint8_t SelfTests_ADC(void* base, uint32_t channel, int16_t expected_res, int16_
     if (guardCnt < ADC_TEST_CON_TIME_uS)
     {
         /* Read value from ADC */
-        adc_res = Cy_SAR_GetResult16(psoc4_base, channel);
-        adc_res = Cy_SAR_CountsTo_mVolts(psoc4_base, channel, adc_res);
+        adc_res = Cy_SAR_GetResult16(base, channel);
+        adc_res = Cy_SAR_CountsTo_mVolts(base, channel, adc_res);
 
         #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
         if (adc_res > dacOffset)
@@ -603,16 +593,15 @@ uint8_t SelfTests_ADC(void* base, uint32_t channel, int16_t expected_res, int16_
 
 #elif  (CY_CPU_CORTEX_M4)
 #ifdef CLASSB_SELF_TEST_ADC
-uint8_t SelfTests_ADC(void* base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV)
+uint8_t SelfTests_ADC(SAR_Type * base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV)
 {
     (void)vbg_channel;
     int16_t adc_res = 0;
 
     uint16_t guardCnt;
     uint8_t ret = ERROR_STATUS;
-    SAR_Type *psoc6_base = (SAR_Type*)base;
     /* Start ADC conversion */
-    Cy_SAR_StartConvert(psoc6_base, CY_SAR_START_CONVERT_SINGLE_SHOT);
+    Cy_SAR_StartConvert(base, CY_SAR_START_CONVERT_SINGLE_SHOT);
 
     /* Wait for end of conversion using guard interval > ADC conversion time */
     guardCnt = 0u;
@@ -620,7 +609,7 @@ uint8_t SelfTests_ADC(void* base, uint32_t channel, int16_t expected_res, int16_
     {
         guardCnt++;
         Cy_SysLib_DelayUs(1u);
-    } while((Cy_SAR_IsEndConversion(psoc6_base,
+    } while((Cy_SAR_IsEndConversion(base,
                                     CY_SAR_RETURN_STATUS) != CY_SAR_SUCCESS) &&
             (guardCnt < ADC_TEST_CON_TIME_uS));
 
@@ -628,11 +617,11 @@ uint8_t SelfTests_ADC(void* base, uint32_t channel, int16_t expected_res, int16_
     if (guardCnt < ADC_TEST_CON_TIME_uS)
     {
         /* Read value from ADC */
-        adc_res = Cy_SAR_GetResult16(psoc6_base, channel);
+        adc_res = Cy_SAR_GetResult16(base, channel);
 
         if(count_to_mV)
         {
-            adc_res = Cy_SAR_CountsTo_mVolts(psoc6_base, channel, adc_res);
+            adc_res = Cy_SAR_CountsTo_mVolts(base, channel, adc_res);
         }
 
         #if ERROR_IN_ADC
@@ -657,9 +646,9 @@ uint8_t SelfTests_ADC(void* base, uint32_t channel, int16_t expected_res, int16_
 
 #elif (CY_CPU_CORTEX_M7)
 #ifdef CLASSB_SELF_TEST_ADC
-uint8_t SelfTests_ADC(void * base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV)
+uint8_t SelfTests_ADC(PASS_SAR_Type * base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV)
 {
-    float adc_res = 0;
+    float adc_res = 0.0f;
 
     uint16_t guardCnt;
     uint8_t ret = ERROR_STATUS;
@@ -667,10 +656,9 @@ uint8_t SelfTests_ADC(void * base, uint32_t channel, int16_t expected_res, int16
     /* Obtaining conversion results in counts */
     uint16_t resultVBG;
     uint16_t resultAN0;
-    (void)resultVBG;
-    PASS_SAR_Type *xmc_base = (PASS_SAR_Type*)base;
+
     /* Issue software start trigger */
-    Cy_SAR2_Channel_SoftwareTrigger(xmc_base, channel);
+    Cy_SAR2_Channel_SoftwareTrigger(base, channel);
 
     /* Wait for end of conversion using guard interval > ADC conversion time */
     guardCnt = 0u;
@@ -678,7 +666,7 @@ uint8_t SelfTests_ADC(void * base, uint32_t channel, int16_t expected_res, int16
     {
         guardCnt++;
         Cy_SysLib_DelayUs(1u);
-    } while((CY_SAR2_INT_GRP_DONE != Cy_SAR2_Channel_GetInterruptStatus(xmc_base, vbg_channel)) &&
+    } while((CY_SAR2_INT_GRP_DONE != Cy_SAR2_Channel_GetInterruptStatus(base, vbg_channel)) &&
             (guardCnt < ADC_TEST_CON_TIME_uS));
 
     /* Check if timeout */
@@ -687,16 +675,16 @@ uint8_t SelfTests_ADC(void * base, uint32_t channel, int16_t expected_res, int16
         /* Read value from ADC */
         if(count_to_mV)
         {
-            resultVBG = Cy_SAR2_Channel_GetResult(xmc_base, vbg_channel, NULL);
+            resultVBG = Cy_SAR2_Channel_GetResult(base, vbg_channel, NULL);
         }
-        resultAN0 = Cy_SAR2_Channel_GetResult(xmc_base, channel, NULL);
+        resultAN0 = Cy_SAR2_Channel_GetResult(base, channel, NULL);
         /* Clear interrupt source */
-        Cy_SAR2_Channel_ClearInterrupt(xmc_base, channel, CY_SAR2_INT_GRP_DONE);
+        Cy_SAR2_Channel_ClearInterrupt(base, channel, CY_SAR2_INT_GRP_DONE);
 
         if (count_to_mV)
         {
             /* Calculate conversion results in volts */
-            adc_res = (resultAN0 * 900.0f) / resultVBG;
+            adc_res = ((float)resultAN0 * 900.0f) / (float)resultVBG;
         }
         else
         {
@@ -712,7 +700,9 @@ uint8_t SelfTests_ADC(void * base, uint32_t channel, int16_t expected_res, int16
     /* Check that measured results are in range */
     if (ret == OK_STATUS)
     {
-        if ((adc_res < (expected_res - accuracy)) || (adc_res > (expected_res + accuracy)))
+        float exp_min_acc = (float)expected_res - (float)accuracy;
+        float exp_pl_acc = (float)expected_res + (float)accuracy;
+        if ((adc_res < exp_min_acc) || (adc_res > exp_pl_acc))
         {
             ret = ERROR_STATUS;
         }
@@ -722,6 +712,68 @@ uint8_t SelfTests_ADC(void * base, uint32_t channel, int16_t expected_res, int16
 }
 
 #endif /* CLASSB_SELF_TEST_ADC defined */
+#elif  (CY_CPU_CORTEX_M33)
+#ifdef CLASSB_SELF_TEST_ADC
+uint8_t SelfTests_ADC(uint32_t group, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV)
+{
+    (void)vbg_channel;
+    (void)count_to_mV;
+    int16_t adc_res = 0;
+    uint32_t result_status = 0;
+
+    uint16_t guardCnt;
+    uint8_t ret = ERROR_STATUS;
+
+    /* Start the HPPASS autonomous controller (AC) from state 0, didn't wait for HPPASS block ready */
+    if(CY_HPPASS_SUCCESS != Cy_HPPASS_AC_Start(0U, 0U))
+    {
+        CY_ASSERT(0);
+    }
+
+    /* Check SAR ADC busy status */
+    while(Cy_HPPASS_SAR_IsBusy());
+    Cy_SysLib_Delay(100u);
+    /* Start ADC conversion */
+    /* Trigger SAR ADC group 0 conversion */
+    Cy_HPPASS_SetFwTrigger((1U << group));
+
+    /* Wait for end of conversion using guard interval > ADC conversion time */
+    guardCnt = 0u;
+
+    do
+    {
+        guardCnt++;
+        result_status = Cy_HPPASS_SAR_Result_GetStatus();
+    } while(!(result_status & (1UL << channel)) && (guardCnt < ADC_TEST_CON_TIME_uS));
+
+    /* Check if timeout */
+    if (guardCnt < ADC_TEST_CON_TIME_uS)
+    {
+	    /* Get channel data */
+        adc_res = Cy_HPPASS_SAR_Result_ChannelRead(channel);
+
+        #if ERROR_IN_ADC
+        adc_res += 2*ANALOG_ADC_ACURACCY;
+        #endif
+        ret = OK_STATUS;
+    }
+
+    /* Clear result status */
+    Cy_HPPASS_SAR_Result_ClearStatus(1UL << channel);
+
+    /* Check that measured results are in range */
+    if (ret == OK_STATUS)
+    {
+        if ((adc_res < (expected_res - accuracy)) || (adc_res > (expected_res + accuracy)))
+        {
+            ret = ERROR_STATUS;
+        }
+    }
+
+    return ret;
+}
+#endif /* CLASSB_SELF_TEST_ADC defined */
+
 #endif
 
 
@@ -913,4 +965,60 @@ uint8_t SelfTests_Comparator(LPCOMP_Type const* lpcomp_base, cy_en_lpcomp_channe
 
 #endif /* CLASSB_SELF_TEST_COMP defined */
 
+#if defined(CY_IP_MXS40PASS_CTDAC) || defined (CY_DOXYGEN)
+/*****************************************************************************
+* Function Name: SelfTests_DAC
+******************************************************************************
+*
+* Summary:
+*  Test DAC veriifies that input to DAC and output from ADC are same.
+*  The digital input value to DAC maps to 1.5V
+*
+* Parameters:
+*  CTDAC_Type* dacBase - Pointer to structure describing DAC instance registers
+*  SAR_Type* adcBase - Pointer to structure describing SAR ADC instance registers
+*  uint32_t adcChannel - SAR ADC channel number
+*
+* return:
+*  0 - test pass
+*  1 - test failed
+*
+*****************************************************************************/
+uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChannel)
+{
+    uint8_t ret = ERROR_STATUS;
+    uint32_t adcResult = 0;
+    uint32_t dacInput = DAC_INPUT;
+
+    /* Set DAC value  */
+    Cy_CTDAC_SetValue(dacBase,dacInput);
+
+    /* Start ADC conversion */
+    Cy_SAR_StartConvert(adcBase, CY_SAR_START_CONVERT_CONTINUOUS);
+
+    /* Wait for end of conversion */
+    do
+    {
+        Cy_SysLib_DelayUs(1u);
+    } while((Cy_SAR_IsEndConversion(adcBase,
+                                            CY_SAR_RETURN_STATUS) != CY_SAR_SUCCESS));
+    /* Get ADC output value */
+    adcResult = Cy_SAR_GetResult32(adcBase, adcChannel);
+#if (ERROR_IN_DAC == 1)
+    adcResult = 0x1;
+#endif /* ERROR_IN_DAC == 1 */
+
+    /* Compare result */
+    if ((adcResult < (dacInput - (dacInput * DAC_ADC_OUTPUT_DEVIATION))) || (adcResult > (dacInput + (dacInput * DAC_ADC_OUTPUT_DEVIATION))))
+    {
+        ret = ERROR_STATUS;
+    }
+    else
+    {
+        ret = OK_STATUS;
+    }
+
+    return ret;
+}
+#endif /* CY_IP_MXS40PASS_CTDAC defined */
 /* [] END OF FILE */

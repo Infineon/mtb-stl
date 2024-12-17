@@ -90,14 +90,11 @@ $(document).ready(function(){initNavTree('group__group__ram.html',''); initResiz
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
 <p >To meet Class B requirement, SRAM test must be checked for “DC fault”. </p>
-<p >Either of the 2 methods can be used: </p><pre class="fragment">  1) March/Checkerboard : This test first duplicates data in the area to be tested
-                          as this test is destructive. Then the RAM area is written
+<p >Either of the 2 methods can be used: </p><pre class="fragment">  1) March/Checkerboard : This test is destructive. The RAM area is written
                           with  alternate “0” and “1” to memory, and verifies if the
-                          writen data is right by reading back. At the end of this test
-                          the original data is restored to its correct location.
+                          writen data is right by reading back.
                     
-  2) GALPAT             : This test first duplicates data in the area to be tested
-                          as this test is destructive.This test initilizes the chosen 
+  2) GALPAT             : This test is destructive. This test initilizes the chosen 
                           range of memory uniformly (i.e. all 0 s or all 1 s). The first
                           memory cell to be tested is then inverted and all the remaining 
                           cells are inspected to ensure that their contents are correct. 
@@ -105,12 +102,8 @@ $(document).ready(function(){initNavTree('group__group__ram.html',''); initResiz
                           cell is also checked. This procedure is repeated for each cell 
                           in the chosen memory range. A second run is carried out with the
                           opposite initialisation. Any difference produces a failure message.
-                          It can detect stuck-at faults and direct coupling faults. At the 
-                          end of this test the original data is restored to its correct 
-                          location in memory. 
-</pre><dl class="section note"><dt>Note</dt><dd>Update CY_SRAM_BASE, CY_SRAM_SIZE, CY_STACK_SIZE according to the device being tested.</dd>
-<dd>
-GALPAT test is time consuming.This tests can be implemented at startup procedure to test entire SRAM area.</dd></dl>
+                          It can detect stuck-at faults and direct coupling faults.
+</pre><dl class="section note"><dt>Note</dt><dd>GALPAT test is time consuming.This tests can be implemented at startup procedure to test entire SRAM area.</dd></dl>
 <h1><a class="anchor" id="group_ram_profile_changelog"></a>
 Changelog</h1>
 <table class="doxtable">
@@ -124,9 +117,11 @@ Changelog</h1>
 API Reference</h2></td></tr>
 <tr class="memitem:group__group__ram__macros"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__ram__macros.html">Macros</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:group__group__march__functions"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__march__functions.html">MARCH</a></td></tr>
+<tr class="memitem:group__group__sram__enums"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__sram__enums.html">Enumerated Types</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:group__group__galpat__functions"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__galpat__functions.html">GALPAT</a></td></tr>
+<tr class="memitem:group__group__sram__functions"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__sram__functions.html">SRAM</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:group__group__sram__stack__functions"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__sram__stack__functions.html">STACK</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->

@@ -92,12 +92,14 @@ $(document).ready(function(){initNavTree('group__group__analog.html',''); initRe
 <p >This module carries out 3 tests: <br  />
  1) SAR ADC <br  />
  2) OPAMP <br  />
- 3) LPCOMP. </p>
+ 3) LPCOMP <br  />
+ 4) DAC. </p>
 <h1><a class="anchor" id="group_analog_more_information"></a>
 More Information</h1>
 <p >SAR ADC Test: This test is to check the SAR ADC analog functions. Each ADC enabled by the test is connected to an reference voltage using the Programmable Analog block. If the measured value is more than the expected value, an error is returned.</p>
 <p >OPAMP Test: The opamp is tested by generating the same output as the input (Unity Gain Buffer) and the result is read by the SAR ADC. If it is as per expected the test passes.</p>
 <p >LPCOMP: The inputs to the comparators can be connected to the internal reference voltage, one side of each comparator is connected to Some Voltage and the other side is connected to ground. The results are checked. The inputs are switched and the result is checked again.</p>
+<p >DAC Test: This test is to check the DAC analog functions. Performs DAC test and verifies that input of DAC and output from ADC are same. If it is as per expected then test passes.</p>
 <h1><a class="anchor" id="group_analog_profile_changelog"></a>
 Changelog</h1>
 <table class="doxtable">

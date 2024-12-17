@@ -4,18 +4,8 @@
 *
 * Description:
 * This file provides constants and parameter values used for CPU register self
-* tests for CAT2(PSoC4), CAT1A, CAT1C devices.
+* tests.
 *
-* Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
-*  for ModusToolbox
-*
-* Hardware Dependency:
-*  PSoC 4100S Max Device
-*  PSoC 4500S Device
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -49,18 +39,18 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 
-#include "SelfTest_common.h"
 
-
-#if !defined(SELFTEST_CPU_ASM_H)
-#define SELFTEST_CPU_ASM_H
+#if !defined(SELFTEST_CPU_REGS_H)
+#define SELFTEST_CPU_REGS_H
 
 #include "cy_pdl.h"
-
+#include "SelfTest_common.h"
 /***************************************
 * Function Prototypes
 ***************************************/
-#if defined(__GNUC__)
+#if defined(__ARMCC_VERSION)
+uint8_t SelfTest_CPU_Regs_ARM(void);
+#elif defined(__GNUC__)
 uint8_t SelfTest_CPU_Regs_GCC(void);
 #elif defined(__ICCARM__)
 uint8_t SelfTest_CPU_Regs_IAR(void);
@@ -68,7 +58,7 @@ uint8_t SelfTest_CPU_Regs_IAR(void);
 uint8_t SelfTest_CPU_Regs_MDK(void);
 #endif /* End (__GNUC__) ||  (__CC_ARM) */
 
-#endif /* End SELFTEST_CPU_H */
+#endif /* End SELFTEST_CPU_REGS_H */
 
 
 /* [] END OF FILE */
