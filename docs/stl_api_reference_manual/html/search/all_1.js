@@ -28,6 +28,5 @@ var searchData=
   ['crc_5fmask_25',['CRC_MASK',['../group__group__crc__macros.html#gac21f2d275f975b7357d95a49567856c8',1,'SelfTest_CRC_calc.h']]],
   ['cy_5fecc_5fc_5ferror_26',['CY_ECC_C_ERROR',['../group__group__ecc__enums.html#gga110785fcd11cb40d50cc90ef773f054daf918b1f9d3a8d821ccc7e90a4e28e65c',1,'SelfTest_ECC.h']]],
   ['cy_5fecc_5fnc_5ferror_27',['CY_ECC_NC_ERROR',['../group__group__ecc__enums.html#gga110785fcd11cb40d50cc90ef773f054da1a6e60e013ac26460d61768446115c17',1,'SelfTest_ECC.h']]],
-  ['cy_5fecc_5fno_5ferror_28',['CY_ECC_NO_ERROR',['../group__group__ecc__enums.html#gga110785fcd11cb40d50cc90ef773f054da349a017ec7aeae5e73497577c48fddbd',1,'SelfTest_ECC.h']]],
-  ['cy_5fen_5fecc_5ferror_5fmode_5ft_29',['cy_en_ecc_error_mode_t',['../group__group__ecc__enums.html#ga110785fcd11cb40d50cc90ef773f054d',1,'SelfTest_ECC.h']]]
+  ['cy_5fen_5fecc_5ferror_5fmode_5ft_28',['cy_en_ecc_error_mode_t',['../group__group__ecc__enums.html#ga110785fcd11cb40d50cc90ef773f054d',1,'SelfTest_ECC.h']]]
 ];

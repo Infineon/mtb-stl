@@ -46,7 +46,7 @@
 * bit error and reports fault for double bit error.
 *
 * \section group_ecc_more_information More Information
-* ECC self test is supported on CAT1C devices.
+* ECC self test is supported on CAT1B, CAT1C devices.
 *
 * \section group_ecc_profile_changelog Changelog
 * <table class="doxtable">
@@ -66,14 +66,36 @@
 
 #include "cy_pdl.h"
 #include "SelfTest_common.h"
+#include "SelfTest_ErrorInjection.h"
 
-#if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
+#if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))  || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
+#include "cy_sysfault.h"
 
 /** \cond INTERNAL */
 #define CY_FLASH_SIZE_ROW                512U
+#if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
 #define CY_FLASH_ADDR ((CY_FLASH_SM_SBM_BASE + CY_FLASH_SM_SBM_SIZE) - CY_FLASH_SIZE_ROW)
 #define CY_ECC_NC_ERROR_PARITY    0x14
 #define CY_ECC_C_ERROR_PARITY     0x5D
+#define CY_MEMORY_DATA            0x5A5A5A5A
+#define CY_ECC_C_FAULT            CY_SYSFAULT_FLASHC_MAIN_C_ECC
+#define CY_ECC_NC_FAULT           CY_SYSFAULT_FLASHC_MAIN_NC_ECC
+#endif
+
+#if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
+#define CY_FLASH_ADDR (CY_FLASH_BASE + (CY_FLASH_SIZE/2))
+#define CY_ECC_NC_ERROR_PARITY    0xE1
+#define CY_ECC_C_ERROR_PARITY     0x16
+#define CY_MEMORY_DATA            0x12341234
+#define CY_ECC_C_FAULT            CPUSS_FLASHC_MAIN_C_ECC_MMIO
+#define CY_ECC_NC_FAULT           CPUSS_FLASHC_MAIN_NC_ECC_MMIO
+#define CY_ECC_C_RAM_FAULT        CPUSS_RAMC0_C_ECC_MMIO
+#define CY_ECC_NC_RAM_FAULT       CPUSS_RAMC0_NC_ECC_MMIO
+#define CY_RAM_ADDR               0x34009000
+#define CY_RAM_ECC_NC_ERROR_PARITY 0x039
+#define CY_RAM_ECC_C_ERROR_PARITY  0x070
+#define CY_RAM_MEMORY_DATA         0x5A5A5A5A
+#endif
 /** \endcond */
 
 /***************************************
@@ -85,7 +107,6 @@
 /** Error injection mode */
 typedef enum
 {
-    CY_ECC_NO_ERROR = 0, /**< No ECC error injection.*/
     CY_ECC_C_ERROR = 1,  /**< Correctable ECC error injection.*/
     CY_ECC_NC_ERROR = 2, /**< Non correctable error injection.*/
 } cy_en_ecc_error_mode_t;
@@ -112,9 +133,59 @@ typedef enum
 *  0 - Test passed <br>
 *  1 - Test failed
 *
+* \note
+* This API is applicable to CAT1C devices
+*
 *******************************************************************************/
 uint8_t SelfTest_ECC(cy_en_ecc_error_mode_t eccErrorMode);
 
+/*******************************************************************************
+* Function Name: SelfTest_ECC_Flash
+****************************************************************************//**
+*
+* This function performs the ECC hardware self test to detect and correct the single
+* bit error and reports fault for double bit error.
+*
+* \param addr 
+* Aligned flash row address.
+*
+* \param eccErrorMode 
+* Error injection mode \ref cy_en_ecc_error_mode_t
+*
+* \return
+*  0 - Test passed <br>
+*  1 - Test failed
+*
+* \note
+* This API is applicable to CAT1B devices
+* Only Non-Correctable ECC fault is supported on CAT1B devices for flash memory.
+*
+*******************************************************************************/
+uint8_t SelfTest_ECC_Flash(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode);
+
+
+/*******************************************************************************
+* Function Name: SelfTest_ECC_Ram
+****************************************************************************//**
+*
+* This function performs the ECC hardware self test to RAM block to detect and correct the single
+* bit error and reports fault for double bit error.
+*
+* \param addr 
+* Ram address.
+*
+* \param eccErrorMode 
+* Error injection mode \ref cy_en_ecc_error_mode_t
+*
+* \return
+*  0 - Test passed <br>
+*  1 - Test failed
+*
+* \note
+* This API is applicable to CAT1B devices
+*
+*******************************************************************************/
+uint8_t SelfTest_ECC_Ram(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode);
 /** \}group_ecc_functions */
 
 /** \}group_ecc */

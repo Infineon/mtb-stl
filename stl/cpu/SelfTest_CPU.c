@@ -63,7 +63,7 @@ static uint8_t SelfTest_PC5555(void);
 #pragma default_function_attributes  = @ "PCAAAA"
 static uint8_t SelfTest_PCAAAA(void);
 #pragma default_function_attributes =
-#endif // if defined(__GNUC__)
+#endif /* if defined(__GNUC__) */
 
 /*******************************************************************************
  * Function Name: SelfTest_CPU_RAM

@@ -109,8 +109,8 @@ void SelfTest_CAN_RxMsgCallback(bool bRxFifoMsg, uint8_t u8MsgBufOrRxFifoNum,
 {
     (void)u8MsgBufOrRxFifoNum;
     bool data_error = false;
-	if((true == bRxFifoMsg) && ((pstcCanFDmsg->r0_f->id >= 0x50U) && (pstcCanFDmsg->r0_f->id <= 0x55U))) /* Should receive data in RX-FIFO */
-	{
+    if((true == bRxFifoMsg) && ((pstcCanFDmsg->r0_f->id >= 0x50U) && (pstcCanFDmsg->r0_f->id <= 0x55U))) /* Should receive data in RX-FIFO */
+    {
         #if ERROR_IN_CANFD
             SelfTest_CANFD_dataBuffer_0[1] = 0x0;
         #endif
@@ -147,7 +147,7 @@ static cy_canfd_rx_msg_func_ptr_t rx_call_fxn = &SelfTest_CAN_RxMsgCallback;
 *******************************************************************************/
 uint32_t TransmitMessage(cy_stc_canfd_tx_buffer_t *txBuffer, uint8_t index)
 {
-	return (uint32_t)(Cy_CANFD_UpdateAndTransmitMsgBuffer(SelfTest_base, SelfTest_chan, txBuffer, index, SelfTest_context));
+    return (uint32_t)(Cy_CANFD_UpdateAndTransmitMsgBuffer(SelfTest_base, SelfTest_chan, txBuffer, index, SelfTest_context));
 }
 
 
@@ -216,23 +216,23 @@ uint8_t SelfTest_CANFD(CANFD_Type *base, uint32_t chan,
     /* Disables the configuration changes */
     canfd_status = Cy_CANFD_ConfigChangesDisable(base, chan);
 
-	can_data_received_counter = 0;
+    can_data_received_counter = 0;
 
     SelfTest_CANFD_T0RegisterBuffer_0.id = 0x60;
-	status = TransmitMessage(&SelfTest_CANFD_txBuffer_0, 0);
+    status = TransmitMessage(&SelfTest_CANFD_txBuffer_0, 0);
     if((uint32_t)CY_CANFD_SUCCESS != status)
     {
         return ERROR_STATUS;
     }
-	Cy_SysLib_Delay(1000u);
+    Cy_SysLib_Delay(1000u);
 
-	SelfTest_CANFD_T0RegisterBuffer_0.id = 0x52;
-	status = TransmitMessage(&SelfTest_CANFD_txBuffer_0, 0);
+    SelfTest_CANFD_T0RegisterBuffer_0.id = 0x52;
+    status = TransmitMessage(&SelfTest_CANFD_txBuffer_0, 0);
     if((uint32_t)CY_CANFD_SUCCESS != status)
     {
         return ERROR_STATUS;
     }
-	Cy_SysLib_Delay(1000u);
+    Cy_SysLib_Delay(1000u);
 
     canfd_status = Cy_CANFD_ConfigChangesEnable(base, chan);
     
@@ -257,14 +257,14 @@ uint8_t SelfTest_CANFD(CANFD_Type *base, uint32_t chan,
     canfd_status = Cy_CANFD_ConfigChangesDisable(base, chan);
     (void)(canfd_status);
     
-	if ((uint8_t)1U == can_data_received_counter)
-	{
-		return OK_STATUS;
-	}
-	else
-	{
-		return ERROR_STATUS;
-	}
+    if ((uint8_t)1U == can_data_received_counter)
+    {
+        return OK_STATUS;
+    }
+    else
+    {
+        return ERROR_STATUS;
+    }
 }
 
 #endif

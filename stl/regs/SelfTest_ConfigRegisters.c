@@ -216,13 +216,13 @@ static volatile uint32_t* regs32_ToTest[] =
 {
 #if CY_CPU_CORTEX_M4
     /* Analog routing regs */
-    // This value will get changes by SelfTests_Init_StartUp_ConfigReg function during runtime.
+    /* This value will get changes by SelfTests_Init_StartUp_ConfigReg function during runtime. */
     (uint32_t*)(0x409F0E00),
   
     /* Clock registers */
     &(SRSS->WDT_CTL),
 #endif
-    //SRSS_CLK_PATH_SELECT
+    /* SRSS_CLK_PATH_SELECT */
     &(SRSS->CLK_PATH_SELECT[0]),
     &(SRSS->CLK_PATH_SELECT[1]),
     &(SRSS->CLK_PATH_SELECT[2]),
@@ -239,7 +239,7 @@ static volatile uint32_t* regs32_ToTest[] =
     &(SRSS->CLK_PATH_SELECT[13]),
     &(SRSS->CLK_PATH_SELECT[14]),
     &(SRSS->CLK_PATH_SELECT[15]),
-     //SRSS_CLK_ROOT_SELECT
+    /* SRSS_CLK_ROOT_SELECT */
     &(SRSS->CLK_ROOT_SELECT[0]),
     &(SRSS->CLK_ROOT_SELECT[1]),
     &(SRSS->CLK_ROOT_SELECT[2]),
@@ -271,7 +271,7 @@ static volatile uint32_t* regs32_ToTest[] =
     &(SRSS->CLK_FLL_CONFIG),
     &(SRSS->CLK_FLL_CONFIG2),
     &(SRSS->CLK_FLL_CONFIG3),
-     //SRSS_CLK_PLL_CONFIG
+    /* SRSS_CLK_PLL_CONFIG */
     &(SRSS->CLK_PLL_CONFIG[0]),
     &(SRSS->CLK_PLL_CONFIG[1]),
     &(SRSS->CLK_PLL_CONFIG[2]),
@@ -339,7 +339,7 @@ static volatile uint32_t* regs32_ToTest[] =
 #elif CY_CPU_CORTEX_M33
 static volatile uint32_t* regs32_ToTest[] =
 {
-    //SRSS_CLK_PATH_SELECT
+    /* SRSS_CLK_PATH_SELECT */
     &(SRSS->CLK_PATH_SELECT[0]),
     &(SRSS->CLK_PATH_SELECT[1]),
     &(SRSS->CLK_PATH_SELECT[2]),
@@ -356,7 +356,7 @@ static volatile uint32_t* regs32_ToTest[] =
     &(SRSS->CLK_PATH_SELECT[13]),
     &(SRSS->CLK_PATH_SELECT[14]),
     &(SRSS->CLK_PATH_SELECT[15]),
-     //SRSS_CLK_ROOT_SELECT
+    /* SRSS_CLK_ROOT_SELECT */
     &(SRSS->CLK_ROOT_SELECT[0]),
     &(SRSS->CLK_ROOT_SELECT[1]),
     &(SRSS->CLK_ROOT_SELECT[2]),
@@ -381,7 +381,7 @@ static volatile uint32_t* regs32_ToTest[] =
     &(SRSS->CLK_FLL_CONFIG),
     &(SRSS->CLK_FLL_CONFIG2),
     &(SRSS->CLK_FLL_CONFIG3),
-     //SRSS_CLK_PLL_CONFIG
+    /* SRSS_CLK_PLL_CONFIG */
     &(SRSS->CLK_PLL_CONFIG[0]),
     &(SRSS->CLK_PLL_CONFIG[1]),
     &(SRSS->CLK_PLL_CONFIG[2]),

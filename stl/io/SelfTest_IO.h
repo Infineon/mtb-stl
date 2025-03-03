@@ -156,7 +156,7 @@ uint8_t SelfTest_IO_GetPortError(void);
 #elif defined(CY_DEVICE_SERIES_PSOC_4100S)
 /* Number of IO ports: PORT0 - PORT4 */
 #define IO_PORTS                        (5u)
-#endif // if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX)
+#endif /* if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX) */
 
 
 #elif CY_CPU_CORTEX_M4

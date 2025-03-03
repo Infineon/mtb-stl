@@ -718,6 +718,7 @@ uint8_t SelfTests_ADC(uint32_t group, uint32_t channel, int16_t expected_res, in
 {
     (void)vbg_channel;
     (void)count_to_mV;
+    (void)group;
     int16_t adc_res = 0;
     uint32_t result_status = 0;
 
@@ -734,8 +735,8 @@ uint8_t SelfTests_ADC(uint32_t group, uint32_t channel, int16_t expected_res, in
     while(Cy_HPPASS_SAR_IsBusy());
     Cy_SysLib_Delay(100u);
     /* Start ADC conversion */
-    /* Trigger SAR ADC group 0 conversion */
-    Cy_HPPASS_SetFwTrigger((1U << group));
+    /* Trigger SAR ADC */
+    Cy_HPPASS_SetFwTrigger((channel));
 
     /* Wait for end of conversion using guard interval > ADC conversion time */
     guardCnt = 0u;
@@ -749,7 +750,7 @@ uint8_t SelfTests_ADC(uint32_t group, uint32_t channel, int16_t expected_res, in
     /* Check if timeout */
     if (guardCnt < ADC_TEST_CON_TIME_uS)
     {
-	    /* Get channel data */
+        /* Get channel data */
         adc_res = Cy_HPPASS_SAR_Result_ChannelRead(channel);
 
         #if ERROR_IN_ADC
@@ -1021,4 +1022,104 @@ uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChanne
     return ret;
 }
 #endif /* CY_IP_MXS40PASS_CTDAC defined */
+
+
+#ifdef CLASSB_SELF_TEST_DAC
+/*******************************************************************************
+* Function Name: SelfTests_DAC
+****************************************************************************//**
+*
+* Performs DAC test and verifies that input of DAC and output from ADC are same.
+*
+* Parameters :
+* adc_channel -  Pointer to the ADC channel
+* dac_slice -  Pointer to DAC slice
+* dac_val -  Value to be loaded in DAC register
+* expected_res - channel Expected result in ADC
+* accuracy -  Error tolerance
+*
+* Return :
+*  0 - Test Passed
+*  1 - Test Failed
+*
+*******************************************************************************/
+/** DAC conversion time in test mode, uS */
+#define DAC_TEST_CON_TIME_uS            (1000u)
+uint8_t SelfTests_DAC(uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val, int16_t expected_res, int16_t accuracy)
+{
+    int16_t adc_res = 0;
+    uint32_t result_status = 0;
+
+    uint16_t guardCnt_ADC;
+    uint16_t guardCnt_DAC;
+    uint8_t ret = ERROR_STATUS;
+
+    /* Start the HPPASS autonomous controller (AC) from state 0, didn't wait for HPPASS block ready */
+    if(CY_HPPASS_SUCCESS != Cy_HPPASS_AC_Start(0U, 0U))
+    {
+        CY_ASSERT(0);
+    }
+
+    /* Check SAR ADC busy status */
+    while(Cy_HPPASS_SAR_IsBusy());
+    Cy_SysLib_Delay(100u);
+
+    /* Set DAC value */
+    Cy_HPPASS_DAC_SetValue(dac_slice, dac_val);
+
+    /* Start DAC*/
+    Cy_HPPASS_DAC_Start(dac_slice, 0);
+
+    /* Start DAC conversion */
+    Cy_HPPASS_SetFwTrigger(CY_HPPASS_TRIG_1_MSK);
+
+    /* Wait for end of conversion using guard interval > ADC conversion time */
+    guardCnt_DAC = 0u;
+    do
+    {
+        guardCnt_DAC++;
+        Cy_SysLib_DelayUs(1u);
+    } while((Cy_HPPASS_DAC_IsBusy(0) == true) && (guardCnt_DAC < DAC_TEST_CON_TIME_uS));
+
+    Cy_HPPASS_DAC_Stop(dac_slice);
+
+    /* Start ADC conversion */
+    Cy_HPPASS_SetFwTrigger(CY_HPPASS_TRIG_2_MSK);
+
+    /* Wait for end of conversion using guard interval > ADC conversion time */
+    guardCnt_ADC = 0u;
+
+    do
+    {
+        guardCnt_ADC++;
+        result_status = Cy_HPPASS_SAR_Result_GetStatus();
+    } while(!(result_status & (1UL << adc_channel)) && (guardCnt_ADC < ADC_TEST_CON_TIME_uS));
+
+    /* Check if timeout */
+    if ((guardCnt_ADC < ADC_TEST_CON_TIME_uS) && (guardCnt_ADC < DAC_TEST_CON_TIME_uS))
+    {
+        /* Get channel data */
+        adc_res = Cy_HPPASS_SAR_Result_ChannelRead(adc_channel);
+
+        #if ERROR_IN_ADC
+        adc_res += 2*ANALOG_ADC_ACURACCY;
+        #endif
+        ret = OK_STATUS;
+    }
+
+    /* Clear result status */
+    Cy_HPPASS_SAR_Result_ClearStatus(1UL << adc_channel);
+
+    /* Check that measured results are in range */
+    if (ret == OK_STATUS)
+    {
+        if ((adc_res < (expected_res - accuracy)) || (adc_res > (expected_res + accuracy)))
+        {
+            ret = ERROR_STATUS;
+        }
+    }
+
+    return ret;
+}
+#endif
 /* [] END OF FILE */

@@ -81,12 +81,12 @@
      |---|    <--- Respond send ---    |---|
   Packet format:
   -> <STX><ADDR><DL><[Data bytes length equal DL]><CRCH><CRCL>
-	  STX        - 0x02 begin packet marker. Unique byte of start packet
-	  ADDR       - device address
-	  DL         - data length in bytes [1..255]
-	  CRCH       - MSB of CRC-16 that calculated from ADDR to last data byte
-	  CRCL       - LSB of CRC-16    that calculated from ADDR to last data byte
-	  
+      STX        - 0x02 begin packet marker. Unique byte of start packet
+      ADDR       - device address
+      DL         - data length in bytes [1..255]
+      CRCH       - MSB of CRC-16 that calculated from ADDR to last data byte
+      CRCL       - LSB of CRC-16    that calculated from ADDR to last data byte
+      
   -> If there is a byte <ADDR> <DL> <[Data]> or <[CRC]> that equals STX
      then it's exchanged with two byte sequence <ESC><STX+1>
   

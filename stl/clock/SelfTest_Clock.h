@@ -142,7 +142,7 @@ void SelfTest_Clock_ISR_TIMER(void);
 /** For CAT1A, CAT1B(PSoC C3) and CAT1C this value is calculated during runtime depending on the Pheripheral clock and it's divider. */
 #define CLOCK_TEST_TIME_TIMER_PERIOD        \
     (((CY_CFG_SYSCLK_IMO_FREQ_HZ/(1000000uL)) * (CLOCK_TEST_TIME)) / CLOCK_TEST_TIMER_CLK_DIV)
-	
+
 /** \} group_clock_macros */
 
 /** \cond INTERNAL */

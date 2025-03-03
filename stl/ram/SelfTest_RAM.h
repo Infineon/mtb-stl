@@ -99,8 +99,8 @@
 
 typedef enum
 {
-	SRAM_MARCH_TEST_MODE = 0,  /**< Selects March test algorithm for sram */
-	SRAM_GALPAT_TEST_MODE = 1  /**< Selects Galpat test algorithm for sram */
+    SRAM_MARCH_TEST_MODE = 0,  /**< Selects March test algorithm for sram */
+    SRAM_GALPAT_TEST_MODE = 1  /**< Selects Galpat test algorithm for sram */
 }stl_sram_test_mode_t;
 
 /** \} group_sram_enums */
@@ -173,7 +173,8 @@ uint8_t SelfTest_SRAM(stl_sram_test_mode_t type, uint8_t *startAddr, uint32_t si
 *  The pointer to start of the RAM area to be used as alternate Stack Base. RAM address 
 *  from altStackBase to (altStackBase - stackSize) is used to store/restore the Stack under test. 
 *  The existing content of this area will be destructed and this area must not overlap with the Stack 
-*  under test.
+*  under test. The platform might set stack limit using __set_MSPLIM, ensure that 
+*  the alternate stack is within the stack limit set by the platform.
 * \return
 *   ""0" - Test passed                                        
 *   "1" - Test Failed                          

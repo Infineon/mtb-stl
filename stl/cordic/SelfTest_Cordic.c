@@ -40,6 +40,7 @@
 
 #include "cy_pdl.h"
 #include "SelfTest_Cordic.h"
+#include "math.h"
 
 #if defined (CY_IP_MXCORDIC)
 
@@ -80,32 +81,32 @@ static uint8_t cosine_cordic(void);
 
 static uint8_t sine_cordic(void)
 {
-	float32_t res;
-	int32_t angle_deg = IN_SIN_COS;
-	CY_CORDIC_Q31_t result_q31 = 0;
-	float32_t tolerance = 0.0001f;
+    float32_t res;
+    int32_t angle_deg = IN_SIN_COS;
+    CY_CORDIC_Q31_t result_q31 = 0;
+    float32_t tolerance = 0.0001f;
 
-	#if(!ERROR_IN_CORDIC)
-		/* Converting the angle in degree to radian and radian in Q31 format */
-		CY_CORDIC_Q31_t  angle_q31 = FLOAT_DEG_TO_RAD_Q31(angle_deg);
-	#else
-		CY_CORDIC_Q31_t  angle_q31 = FLOAT_DEG_TO_RAD_Q31(60);
-	#endif
-	
-	/* Calculating sine using CORDIC */
-	result_q31 = Cy_CORDIC_Sin(MXCORDIC,angle_q31);
-	
-	/* Converting the result in Q31 format to float */
-	res = Q31_TO_FLOAT(result_q31);
-	
-	/* Checks the difference between results from CORDIC and fixed output are within tolerance */
-	if(fabs(res - OUT_SIN) < tolerance )
-	{
-		return OK_STATUS;
-	}
-	else return ERROR_STATUS;
+    #if(!ERROR_IN_CORDIC)
+        /* Converting the angle in degree to radian and radian in Q31 format */
+        CY_CORDIC_Q31_t  angle_q31 = FLOAT_DEG_TO_RAD_Q31(angle_deg);
+    #else
+        CY_CORDIC_Q31_t  angle_q31 = FLOAT_DEG_TO_RAD_Q31(60);
+    #endif
+    
+    /* Calculating sine using CORDIC */
+    result_q31 = Cy_CORDIC_Sin(MXCORDIC,angle_q31);
+    
+    /* Converting the result in Q31 format to float */
+    res = Q31_TO_FLOAT(result_q31);
+    
+    /* Checks the difference between results from CORDIC and fixed output are within tolerance */
+    if(fabs(res - OUT_SIN) < tolerance )
+    {
+        return OK_STATUS;
+    }
+    else return ERROR_STATUS;
 }
-	
+
 /*******************************************************************************
  * Function Name: cosine
  *********************************************************************************
@@ -125,26 +126,26 @@ static uint8_t sine_cordic(void)
 
 static uint8_t cosine_cordic(void)
 {
-	float32_t res;
-	CY_CORDIC_Q31_t result_q31 = 0;
-	int32_t angle_deg = IN_SIN_COS;
-	float32_t tolerance = 0.0001f;
+    float32_t res;
+    CY_CORDIC_Q31_t result_q31 = 0;
+    int32_t angle_deg = IN_SIN_COS;
+    float32_t tolerance = 0.0001f;
 
-	/* Converting the angle in degree to radian and radian in Q31 format */
-	CY_CORDIC_Q31_t angle_q31 = FLOAT_DEG_TO_RAD_Q31(angle_deg);
+    /* Converting the angle in degree to radian and radian in Q31 format */
+    CY_CORDIC_Q31_t angle_q31 = FLOAT_DEG_TO_RAD_Q31(angle_deg);
 
-	/* Calculating sine using CORDIC */
-	result_q31 = Cy_CORDIC_Cos(MXCORDIC,angle_q31);
+    /* Calculating sine using CORDIC */
+    result_q31 = Cy_CORDIC_Cos(MXCORDIC,angle_q31);
 
-	/* Converting the result in Q31 format to float */
-	res = Q31_TO_FLOAT(result_q31);
-	
-	/* Checks the difference between results from CORDIC and fixed output are within tolerance */
-	if(fabs(res - OUT_COS) < tolerance )
-	{
-		return OK_STATUS;
-	}
-	else return ERROR_STATUS;
+    /* Converting the result in Q31 format to float */
+    res = Q31_TO_FLOAT(result_q31);
+    
+    /* Checks the difference between results from CORDIC and fixed output are within tolerance */
+    if(fabs(res - OUT_COS) < tolerance )
+    {
+        return OK_STATUS;
+    }
+    else return ERROR_STATUS;
 }
 
 #endif /* CY_IP_MXCORDIC */
@@ -165,22 +166,22 @@ uint8_t SelfTest_Cordic(void)
 {
 #if defined (CY_IP_MXCORDIC)
 
-	/* Enable the CORDIC */
-	Cy_CORDIC_Enable(MXCORDIC);
-	
+    /* Enable the CORDIC */
+    Cy_CORDIC_Enable(MXCORDIC);
+    
     /* Enable global interrupts */
     __enable_irq();
-	if (OK_STATUS != sine_cordic()) /* Sine function */
-	{
-		return ERROR_STATUS;
-	}
-	if (OK_STATUS !=  cosine_cordic()) /* Cosine function */
-	{
-		return ERROR_STATUS;
-	}
-	return OK_STATUS;
+    if (OK_STATUS != sine_cordic()) /* Sine function */
+    {
+        return ERROR_STATUS;
+    }
+    if (OK_STATUS !=  cosine_cordic()) /* Cosine function */
+    {
+        return ERROR_STATUS;
+    }
+    return OK_STATUS;
 #else
-	return ERROR_STATUS;
+    return ERROR_STATUS;
 #endif /* CY_IP_MXCORDIC */
 }
 

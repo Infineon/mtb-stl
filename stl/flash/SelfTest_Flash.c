@@ -357,6 +357,6 @@ static void SelfTest_Fletcher64_CheckSum_Formula(uint32_t endAdress)
 }
 
 
-#endif // if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
+#endif /* if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64) */
 
 /* [] END OF FILE */

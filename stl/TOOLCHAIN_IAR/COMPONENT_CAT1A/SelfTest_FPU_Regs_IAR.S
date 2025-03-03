@@ -79,9 +79,9 @@ SelfTest_FPU_Regs_IAR:
     VPUSH.32  {S0,S1}
     VMRS      R1, FPSCR
     
-//Assuming that the CPU test is successfull.
-// Very first time the S0 is checked using the CPU registers as we are now aware that the 
-// FPU register are working properly or not.
+/* Assuming that the CPU test is successfull.
+ Very first time the S0 is checked using the CPU registers as we are now aware that the 
+ FPU register are working properly or not. */
 
 
     /* S0 registers test */
@@ -570,8 +570,7 @@ SelfTest_FPU_Regs_IAR:
     VMOV.F32       S23, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        test_asm_fail
-	
-	
+
 
     /* S24 registers test */
     VMOV.F32      S0, S24
@@ -591,9 +590,7 @@ SelfTest_FPU_Regs_IAR:
     VMOV.F32       S24, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        test_asm_fail
-	
-	
-	
+
     /* S25 registers test */
     VMOV.F32      S0, S25
     MOV       R0, #0xAAAAAAAA
@@ -612,8 +609,7 @@ SelfTest_FPU_Regs_IAR:
     VMOV.F32       S25, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        test_asm_fail
-	
-	
+
     /* S26 registers test */
     VMOV.F32      S0, S26
     MOV       R0, #0xAAAAAAAA
@@ -632,9 +628,7 @@ SelfTest_FPU_Regs_IAR:
     VMOV.F32       S26, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        test_asm_fail
-	
-	
-	
+
     /* S27 registers test */
     VMOV.F32      S0, S27
     MOV       R0, #0xAAAAAAAA
@@ -653,9 +647,7 @@ SelfTest_FPU_Regs_IAR:
     VMOV.F32       S27, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        test_asm_fail
-	
-	
-	
+
     /* S28 registers test */
     VMOV.F32      S0, S28
     MOV       R0, #0xAAAAAAAA
@@ -674,9 +666,7 @@ SelfTest_FPU_Regs_IAR:
     VMOV.F32       S28, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        test_asm_fail
-	
-	
-	
+
     /* S29 registers test */
     VMOV.F32      S0, S29
     MOV       R0, #0xAAAAAAAA
@@ -695,9 +685,7 @@ SelfTest_FPU_Regs_IAR:
     VMOV.F32       S29, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        test_asm_fail
-	
-	
-	
+
     /* S30 registers test */
     VMOV.F32      S0, S30
     MOV       R0, #0xAAAAAAAA
@@ -716,9 +704,7 @@ SelfTest_FPU_Regs_IAR:
     VMOV.F32       S30, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        test_asm_fail
-	
-	
-	
+
     /* S31 registers test */
     VMOV.F32      S0, S31
     MOV       R0, #0xAAAAAAAA
@@ -740,8 +726,7 @@ SelfTest_FPU_Regs_IAR:
     VMOV.F32       S31, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        test_asm_fail
-	
-		
+
 
     /* Return success */
     MOVS      R0, #0
@@ -755,6 +740,6 @@ test_asm_fail:
     VMSR      FPSCR, R1
     VPOP.32   {S0,S1}
     POP       {R1, R2, R3, PC}
-    
+
  END
 /* [] END OF FILE */

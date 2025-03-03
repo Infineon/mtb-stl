@@ -87,15 +87,15 @@
 
 typedef struct stl_motif_tcpwm_config
 {
-	TCPWM_Type* Hall_0_base;  /**< Hall Input 0 TCPWM Base address */
-	uint32_t  	Hall_0_Num ;  /**< Hall Input 0 TCPWM counter number */
-	cy_stc_tcpwm_pwm_config_t const * Hall_0_in_config; /**< Hall Input 0 TCPWM config structure */
-	TCPWM_Type* Hall_1_base ; /**< Hall Input 1 TCPWM Base address */
-	uint32_t 	Hall_1_Num ;  /**< Hall Input 1 TCPWM counter number */
-	cy_stc_tcpwm_pwm_config_t const * Hall_1_in_config; /**< Hall Input 1 TCPWM config structure */
-	TCPWM_Type* Hall_2_base ; /**< Hall Input 2 TCPWM Base address */
-	uint32_t 	Hall_2_Num ;  /**< Hall Input 2 TCPWM counter number */
-	cy_stc_tcpwm_pwm_config_t const * Hall_2_in_config; /**< Hall Input 2 TCPWM config structure */
+    TCPWM_Type* Hall_0_base;  /**< Hall Input 0 TCPWM Base address */
+    uint32_t    Hall_0_Num ;  /**< Hall Input 0 TCPWM counter number */
+    cy_stc_tcpwm_pwm_config_t const * Hall_0_in_config;  /**< Hall Input 0 TCPWM config structure */
+    TCPWM_Type* Hall_1_base;  /**< Hall Input 1 TCPWM Base address */
+    uint32_t    Hall_1_Num ;  /**< Hall Input 1 TCPWM counter number */
+    cy_stc_tcpwm_pwm_config_t const * Hall_1_in_config;  /**< Hall Input 1 TCPWM config structure */
+    TCPWM_Type* Hall_2_base;  /**< Hall Input 2 TCPWM Base address */
+    uint32_t    Hall_2_Num ;  /**< Hall Input 2 TCPWM counter number */
+    cy_stc_tcpwm_pwm_config_t const * Hall_2_in_config;  /**< Hall Input 2 TCPWM config structure */
 }stl_motif_tcpwm_config_t;
 
 /** \} group_motif_structure */

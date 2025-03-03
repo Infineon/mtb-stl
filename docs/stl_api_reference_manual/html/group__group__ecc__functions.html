@@ -95,6 +95,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gaf5328d9150b06cca4077abacdacbe888"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__ecc__functions.html#gaf5328d9150b06cca4077abacdacbe888">SelfTest_ECC</a> (<a class="el" href="group__group__ecc__enums.html#ga110785fcd11cb40d50cc90ef773f054d">cy_en_ecc_error_mode_t</a> eccErrorMode)</td></tr>
 <tr class="memdesc:gaf5328d9150b06cca4077abacdacbe888"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs the ECC hardware self test to detect and correct the single bit error and reports fault for double bit error.  <a href="group__group__ecc__functions.html#gaf5328d9150b06cca4077abacdacbe888">More...</a><br /></td></tr>
 <tr class="separator:gaf5328d9150b06cca4077abacdacbe888"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf52bf5477e3c67809545b40a02ae470d"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__ecc__functions.html#gaf52bf5477e3c67809545b40a02ae470d">SelfTest_ECC_Flash</a> (uint32_t addr, <a class="el" href="group__group__ecc__enums.html#ga110785fcd11cb40d50cc90ef773f054d">cy_en_ecc_error_mode_t</a> eccErrorMode)</td></tr>
+<tr class="memdesc:gaf52bf5477e3c67809545b40a02ae470d"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs the ECC hardware self test to detect and correct the single bit error and reports fault for double bit error.  <a href="group__group__ecc__functions.html#gaf52bf5477e3c67809545b40a02ae470d">More...</a><br /></td></tr>
+<tr class="separator:gaf52bf5477e3c67809545b40a02ae470d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac1dbb00ad9ea284e92ecd81a04f45ca1"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__ecc__functions.html#gac1dbb00ad9ea284e92ecd81a04f45ca1">SelfTest_ECC_Ram</a> (uint32_t addr, <a class="el" href="group__group__ecc__enums.html#ga110785fcd11cb40d50cc90ef773f054d">cy_en_ecc_error_mode_t</a> eccErrorMode)</td></tr>
+<tr class="memdesc:gac1dbb00ad9ea284e92ecd81a04f45ca1"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs the ECC hardware self test to RAM block to detect and correct the single bit error and reports fault for double bit error.  <a href="group__group__ecc__functions.html#gac1dbb00ad9ea284e92ecd81a04f45ca1">More...</a><br /></td></tr>
+<tr class="separator:gac1dbb00ad9ea284e92ecd81a04f45ca1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="gaf5328d9150b06cca4077abacdacbe888" name="gaf5328d9150b06cca4077abacdacbe888"></a>
@@ -122,10 +128,91 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
  1 - Test failed</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This API is applicable to CAT1C devices</dd></dl>
 <p>This function performs the ECC hardware self test to detect and correct the single bit error and reports fault for double bit error.</p>
 <p >Parameters: Error injection mode</p>
 <p >Return: 0 - Test passed <br  />
  1 - Test failed </p>
+
+</div>
+</div>
+<a id="gaf52bf5477e3c67809545b40a02ae470d" name="gaf52bf5477e3c67809545b40a02ae470d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf52bf5477e3c67809545b40a02ae470d">&#9670;&nbsp;</a></span>SelfTest_ECC_Flash()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_ECC_Flash </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>addr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__group__ecc__enums.html#ga110785fcd11cb40d50cc90ef773f054d">cy_en_ecc_error_mode_t</a>&#160;</td>
+          <td class="paramname"><em>eccErrorMode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This function performs the ECC hardware self test to detect and correct the single bit error and reports fault for double bit error. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">addr</td><td>Aligned flash row address.</td></tr>
+    <tr><td class="paramname">eccErrorMode</td><td>Error injection mode <a class="el" href="group__group__ecc__enums.html#ga110785fcd11cb40d50cc90ef773f054d">cy_en_ecc_error_mode_t</a></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This API is applicable to CAT1B devices Only Non-Correctable ECC fault is supported on CAT1B devices for flash memory. </dd></dl>
+
+</div>
+</div>
+<a id="gac1dbb00ad9ea284e92ecd81a04f45ca1" name="gac1dbb00ad9ea284e92ecd81a04f45ca1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac1dbb00ad9ea284e92ecd81a04f45ca1">&#9670;&nbsp;</a></span>SelfTest_ECC_Ram()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_ECC_Ram </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>addr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__group__ecc__enums.html#ga110785fcd11cb40d50cc90ef773f054d">cy_en_ecc_error_mode_t</a>&#160;</td>
+          <td class="paramname"><em>eccErrorMode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This function performs the ECC hardware self test to RAM block to detect and correct the single bit error and reports fault for double bit error. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">addr</td><td>Ram address.</td></tr>
+    <tr><td class="paramname">eccErrorMode</td><td>Error injection mode <a class="el" href="group__group__ecc__enums.html#ga110785fcd11cb40d50cc90ef773f054d">cy_en_ecc_error_mode_t</a></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This API is applicable to CAT1B devices </dd></dl>
 
 </div>
 </div>

@@ -52,10 +52,10 @@ static cy_stc_tcpwm_pwm_config_t const *config1;
 
 static void TIMER_ISR(void)
 {
-	uint32_t interrupts = Cy_TCPWM_GetInterruptStatusMasked(base1, cntNum1);
+    uint32_t interrupts = Cy_TCPWM_GetInterruptStatusMasked(base1, cntNum1);
 
-	if (0UL != (CY_TCPWM_INT_ON_TC & interrupts))
-	{
+    if (0UL != (CY_TCPWM_INT_ON_TC & interrupts))
+    {
         if(pwm_test_isr_count >= 4U)
         {
             Cy_TCPWM_PWM_Disable(base1, cntNum1);
@@ -64,12 +64,12 @@ static void TIMER_ISR(void)
     }
     
     /* Clear the interrupt */
-	Cy_TCPWM_ClearInterrupt(base1, cntNum1, interrupts);
+    Cy_TCPWM_ClearInterrupt(base1, cntNum1, interrupts);
 }
 
 
 uint8_t SelfTest_PWM_init(TCPWM_Type *base, uint32_t cntNum,
-			 cy_stc_tcpwm_pwm_config_t const *config, IRQn_Type  intr_src)
+             cy_stc_tcpwm_pwm_config_t const *config, IRQn_Type  intr_src)
 {
 #if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
     const cy_stc_sysint_t sTIMER_IRQ_cfg =
@@ -89,30 +89,30 @@ uint8_t SelfTest_PWM_init(TCPWM_Type *base, uint32_t cntNum,
     cy_en_tcpwm_status_t apiStatus;
 
     /* Configure the TCPWM for PWM operation. */
-	apiStatus = Cy_TCPWM_PWM_Init(base, cntNum, config);
-	if(apiStatus != CY_TCPWM_SUCCESS)
-	{
-		return (uint8_t)-1;
-	}
+    apiStatus = Cy_TCPWM_PWM_Init(base, cntNum, config);
+    if(apiStatus != CY_TCPWM_SUCCESS)
+    {
+        return (uint8_t)-1;
+    }
 
     /* set the interrupt line for TIMER_HW */
-	if (CY_SYSINT_SUCCESS != Cy_SysInt_Init(&sTIMER_IRQ_cfg, &TIMER_ISR))
-	{
-		return (uint8_t)-1;
-	}
+    if (CY_SYSINT_SUCCESS != Cy_SysInt_Init(&sTIMER_IRQ_cfg, &TIMER_ISR))
+    {
+        return (uint8_t)-1;
+    }
 
 #if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
-	/* Enable system Interrupt */
+    /* Enable system Interrupt */
     /* Enable Interrupt */
     NVIC_EnableIRQ(sTIMER_IRQ_cfg.intrSrc); 
 #else
-	/* Enable system Interrupt */
+    /* Enable system Interrupt */
     NVIC_EnableIRQ((IRQn_Type) NvicMux3_IRQn);
 #endif
-	base1 = base;
-	cntNum1 = cntNum;
+    base1 = base;
+    cntNum1 = cntNum;
     config1  = config;
-	return 0;
+    return 0;
 }
 
 

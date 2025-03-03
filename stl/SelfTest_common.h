@@ -49,8 +49,7 @@
 #define ERROR_UART_NOT_ENABLE           (6u)
 #define UNKNOWN_ERROR                   (8u)
 
-/* UART and SPI Self-Test common return status codes
-   (TO DO: MIDDLEWARE-11530 and MIDDLEWARE-11535) */
+/* UART and SPI Self-Test common return status codes */
 #define ERROR_TX_NOT_EMPTY              (4u)
 #define ERROR_RX_NOT_EMPTY              (5u)
 
@@ -60,7 +59,6 @@
 #define ERROR_STACK_UNDERFLOW             (2u)
 
 /* I2C Self-Test return status codes */
-/* TO DO: Change Busy status value to 2u (MIDDLEWARE-11529) */
 #define I2C_MASTER_BUSY_STATUS          (4u)
 
 /* Digital I/O Self-Test return status codes */
@@ -75,7 +73,7 @@
 #define CRC_SAVED_STATUS                (2u)
 
 /* Additional return status codes for Flash, Clock, Configuration Registers,
-   I2C, UART, SPI (TO DO: Remove these codes in mtb-stl-v0.5) */
+   I2C, UART, SPI */
 #define PASS_STILL_TESTING_STATUS       (2u)
 #define PASS_COMPLETE_STATUS            (3u)
 

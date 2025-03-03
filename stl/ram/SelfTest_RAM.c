@@ -72,35 +72,35 @@ void copy_buffer(uint8_t *srcPtr, uint8_t *srcEndPtr, uint8_t *destPtr);
 
 uint8_t SelfTest_SRAM(stl_sram_test_mode_t type, uint8_t *startAddr, uint32_t size, uint8_t *buffAddr, uint32_t buffSize)
 {
-	uint8_t testStatus = 0;
-	uint32_t buffSizeL = buffSize;
-	uint8_t *buffAddrL = buffAddr; 
-	/* Check proper buffer is provided for store/restore */
-	if ( (buffAddrL != NULL) && (buffSizeL != 0u) )
-	{
-		if ( buffSizeL > size )
-		{
-			buffSizeL = size;
-		}
-	}
-	else
-	{
-		buffAddrL = NULL;
-		buffSizeL = 0;
-	}
-	
-	/* Check for the test type */
-	if (type  == SRAM_GALPAT_TEST_MODE)
-	{
-		testStatus= SelfTest_SRAM_GALPAT (startAddr, size, buffAddrL, buffSizeL);
-	}
-	else
-	{
-		/* Default MARCH */
-		testStatus= SelfTest_SRAM_MARCH (startAddr, size, buffAddrL, buffSizeL);
-		
-	}
-	return testStatus;
+    uint8_t testStatus = 0;
+    uint32_t buffSizeL = buffSize;
+    uint8_t *buffAddrL = buffAddr; 
+    /* Check proper buffer is provided for store/restore */
+    if ( (buffAddrL != NULL) && (buffSizeL != 0u) )
+    {
+        if ( buffSizeL > size )
+        {
+            buffSizeL = size;
+        }
+    }
+    else
+    {
+        buffAddrL = NULL;
+        buffSizeL = 0;
+    }
+    
+    /* Check for the test type */
+    if (type  == SRAM_GALPAT_TEST_MODE)
+    {
+        testStatus= SelfTest_SRAM_GALPAT (startAddr, size, buffAddrL, buffSizeL);
+    }
+    else
+    {
+        /* Default MARCH */
+        testStatus= SelfTest_SRAM_MARCH (startAddr, size, buffAddrL, buffSizeL);
+        
+    }
+    return testStatus;
 }
 
 /*******************************************************************************
@@ -122,56 +122,56 @@ uint8_t SelfTest_SRAM(stl_sram_test_mode_t type, uint8_t *startAddr, uint32_t si
 
 uint8_t SelfTest_SRAM_MARCH(uint8_t *startAddr, uint32_t size, uint8_t *buffAddr, uint32_t buffSize)
 {
-	uint8_t testStatus = 0;
-	uint8_t *startAddrL = startAddr;
-	uint32_t buffSizeL = buffSize;
-	if (buffSizeL == 0u)
-	{
-		buffSizeL = size;
-	}
-	for (uint32_t i=0; i < size; i += buffSizeL)
-	{
-		/* Check if copy required */
-		if (buffAddr != NULL)
-		{
-			/* Copy SRAM area which is being tested in this loop */
-			copy_buffer(startAddrL, (startAddrL + buffSizeL), buffAddr);
-		}
-		
-		SRAM_Test_Write_0(startAddrL, (startAddrL + buffSizeL ));
-		testStatus = SRAM_Test_Read0_Write1_Inc(startAddrL, (startAddrL + buffSizeL ));
-		if (testStatus == 0u )
-		{
-			testStatus = SRAM_Test_Read1_Write0_Inc(startAddrL, (startAddrL + buffSizeL ));
-		}
-		if (testStatus == 0u )
-		{
-			testStatus = SRAM_Test_Read0(startAddrL, (startAddrL + buffSizeL));
-		}
-		if (testStatus == 0u )
-		{
-			testStatus = SRAM_Test_Read0_Write1_Dec(startAddrL, (startAddrL + buffSizeL));
-		}
-		if (testStatus == 0u )
-		{
-			testStatus = SRAM_Test_Read1_Write0_Dec(startAddrL, (startAddrL + buffSizeL));
-		}
-		if (testStatus == 0u )
-		{
-			testStatus = SRAM_Test_Read0(startAddrL, (startAddrL + buffSizeL));
-		}
-		if (buffAddr != NULL)
-		{
-			/* Copy buffer back into SRAM area */
-			copy_buffer(buffAddr, (buffAddr + buffSizeL), startAddrL);
-		}
-		if (testStatus != 0u )
-		{
-			break;
-		}
-		startAddrL = startAddrL + buffSizeL;
-	}
-	return testStatus;
+    uint8_t testStatus = 0;
+    uint8_t *startAddrL = startAddr;
+    uint32_t buffSizeL = buffSize;
+    if (buffSizeL == 0u)
+    {
+        buffSizeL = size;
+    }
+    for (uint32_t i=0; i < size; i += buffSizeL)
+    {
+        /* Check if copy required */
+        if (buffAddr != NULL)
+        {
+            /* Copy SRAM area which is being tested in this loop */
+            copy_buffer(startAddrL, (startAddrL + buffSizeL), buffAddr);
+        }
+        
+        SRAM_Test_Write_0(startAddrL, (startAddrL + buffSizeL ));
+        testStatus = SRAM_Test_Read0_Write1_Inc(startAddrL, (startAddrL + buffSizeL ));
+        if (testStatus == 0u )
+        {
+            testStatus = SRAM_Test_Read1_Write0_Inc(startAddrL, (startAddrL + buffSizeL ));
+        }
+        if (testStatus == 0u )
+        {
+            testStatus = SRAM_Test_Read0(startAddrL, (startAddrL + buffSizeL));
+        }
+        if (testStatus == 0u )
+        {
+            testStatus = SRAM_Test_Read0_Write1_Dec(startAddrL, (startAddrL + buffSizeL));
+        }
+        if (testStatus == 0u )
+        {
+            testStatus = SRAM_Test_Read1_Write0_Dec(startAddrL, (startAddrL + buffSizeL));
+        }
+        if (testStatus == 0u )
+        {
+            testStatus = SRAM_Test_Read0(startAddrL, (startAddrL + buffSizeL));
+        }
+        if (buffAddr != NULL)
+        {
+            /* Copy buffer back into SRAM area */
+            copy_buffer(buffAddr, (buffAddr + buffSizeL), startAddrL);
+        }
+        if (testStatus != 0u )
+        {
+            break;
+        }
+        startAddrL = startAddrL + buffSizeL;
+    }
+    return testStatus;
 }
 
 /*******************************************************************************
@@ -191,63 +191,63 @@ uint8_t SelfTest_SRAM_MARCH(uint8_t *startAddr, uint32_t size, uint8_t *buffAddr
  **********************************************************************************/
 uint8_t SelfTest_SRAM_GALPAT(uint8_t *startAddr, uint32_t size, uint8_t *buffAddr, uint32_t buffSize)
 {
-	uint8_t testStatus = 0;
-	uint8_t *startAddrL = startAddr;
-	uint8_t *invertingByte = startAddr;
-	uint32_t buffSizeL = buffSize;
-	
-	if ( buffSizeL == 0u)
-	{
-		buffSizeL = size;
-	}
-	for (uint32_t i=0; i < size; i += buffSizeL)
-	{
-		/* Check if copy required */
-		if (buffAddr != NULL)
-		{
-			/* Copy SRAM area which is being tested in this loop */
-			copy_buffer(startAddrL, (startAddrL + buffSizeL), buffAddr);
-		}
-		
-		SRAM_Test_Write_0(startAddrL, (startAddrL + buffSizeL));
-		do
-		{
-			testStatus = SRAM_Test_Read0_by_Inverting_1Byte(startAddrL, (startAddrL + buffSizeL), invertingByte);
-			if (testStatus == 0u )
-			{
-				uint8_t read0 = 0;
-				*invertingByte = read0;
-				invertingByte += 1;
-			}
-		}
-		while( invertingByte < (startAddrL + buffSizeL) );
-		
-		invertingByte = startAddrL;
-		SRAM_Test_Write_1(startAddrL, (startAddrL + buffSizeL));
-		do
-		{
-			testStatus = SRAM_Test_Read1_by_Inverting_1Byte(startAddrL, (startAddrL + buffSizeL), invertingByte);
-			if(testStatus == 0u )
-			{
-				uint8_t read1 = 0xff;
-				*invertingByte = read1;
-				invertingByte += 1;
-			}
-			else
-			{
-				return testStatus;
-			}
-		}
-		while(invertingByte < (startAddrL + buffSizeL) );
-		
-		if (buffAddr != NULL)
-		{
-			/* Copy buffer back into SRAM area */
-			copy_buffer(buffAddr, (buffAddr + buffSizeL), startAddrL);
-		}
-		startAddrL = startAddrL + buffSizeL;
-	}
-	return testStatus;
+    uint8_t testStatus = 0;
+    uint8_t *startAddrL = startAddr;
+    uint8_t *invertingByte = startAddr;
+    uint32_t buffSizeL = buffSize;
+    
+    if ( buffSizeL == 0u)
+    {
+        buffSizeL = size;
+    }
+    for (uint32_t i=0; i < size; i += buffSizeL)
+    {
+        /* Check if copy required */
+        if (buffAddr != NULL)
+        {
+            /* Copy SRAM area which is being tested in this loop */
+            copy_buffer(startAddrL, (startAddrL + buffSizeL), buffAddr);
+        }
+        
+        SRAM_Test_Write_0(startAddrL, (startAddrL + buffSizeL));
+        do
+        {
+            testStatus = SRAM_Test_Read0_by_Inverting_1Byte(startAddrL, (startAddrL + buffSizeL), invertingByte);
+            if (testStatus == 0u )
+            {
+                uint8_t read0 = 0;
+                *invertingByte = read0;
+                invertingByte += 1;
+            }
+        }
+        while( invertingByte < (startAddrL + buffSizeL) );
+        
+        invertingByte = startAddrL;
+        SRAM_Test_Write_1(startAddrL, (startAddrL + buffSizeL));
+        do
+        {
+            testStatus = SRAM_Test_Read1_by_Inverting_1Byte(startAddrL, (startAddrL + buffSizeL), invertingByte);
+            if(testStatus == 0u )
+            {
+                uint8_t read1 = 0xff;
+                *invertingByte = read1;
+                invertingByte += 1;
+            }
+            else
+            {
+                return testStatus;
+            }
+        }
+        while(invertingByte < (startAddrL + buffSizeL) );
+        
+        if (buffAddr != NULL)
+        {
+            /* Copy buffer back into SRAM area */
+            copy_buffer(buffAddr, (buffAddr + buffSizeL), startAddrL);
+        }
+        startAddrL = startAddrL + buffSizeL;
+    }
+    return testStatus;
 }
 
 
@@ -271,23 +271,23 @@ static uint8_t currentStackSize;
 
 uint8_t SelfTest_SRAM_Stack(uint8_t *stackBase, uint32_t stackSize, uint8_t *altStackBase)
 {
-	uint8_t stackTestStatus = 0;
-	CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Directive 4.3', 3, 'Checked manually. Intentional expression ');
-	__asm volatile("mov %0, sp" : "=r" (stackPointer));
-	currentStackSize = (uint8_t)((uint32_t)stackBase - stackPointer);
-	
-	/* Check proper buffer address is provided for store/restore */
-	if (((uint32_t)altStackBase >= ((uint32_t)stackBase-stackSize)) && ((uint32_t)altStackBase <= (uint32_t)stackBase))
-	{
-		return ERROR_STATUS;
-	}
-	copy_buffer((uint8_t *)stackPointer, stackBase, altStackBase - currentStackSize);
-	__asm volatile("mov sp, %0" :: "r" ((uint32_t)altStackBase - currentStackSize));
-	stackTestStatus = SelfTest_SRAM_MARCH(stackBase - stackSize, stackSize, NULL, 0);
-	copy_buffer((uint8_t *)altStackBase - currentStackSize, altStackBase, (uint8_t *)stackPointer );
-	__asm volatile("mov sp, %0" :: "r" (stackPointer));
-	CY_MISRA_BLOCK_END('MISRA C-2012 Directive 4.3');
-	return stackTestStatus;
+    uint8_t stackTestStatus = 0;
+    CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Directive 4.3', 3, 'Checked manually. Intentional expression ');
+    __asm volatile("mov %0, sp" : "=r" (stackPointer));
+    currentStackSize = (uint8_t)((uint32_t)stackBase - stackPointer);
+    
+    /* Check proper buffer address is provided for store/restore */
+    if (((uint32_t)altStackBase >= ((uint32_t)stackBase-stackSize)) && ((uint32_t)altStackBase <= (uint32_t)stackBase))
+    {
+        return ERROR_STATUS;
+    }
+    copy_buffer((uint8_t *)stackPointer, stackBase, altStackBase - currentStackSize);
+    __asm volatile("mov sp, %0" :: "r" ((uint32_t)altStackBase - currentStackSize));
+    stackTestStatus = SelfTest_SRAM_MARCH(stackBase - stackSize, stackSize, NULL, 0);
+    copy_buffer((uint8_t *)altStackBase - currentStackSize, altStackBase, (uint8_t *)stackPointer );
+    __asm volatile("mov sp, %0" :: "r" (stackPointer));
+    CY_MISRA_BLOCK_END('MISRA C-2012 Directive 4.3');
+    return stackTestStatus;
 }
 
 
@@ -295,264 +295,264 @@ uint8_t SelfTest_SRAM_Stack(uint8_t *stackBase, uint32_t stackSize, uint8_t *alt
 
 void SRAM_Test_Write_0(uint8_t *stPtr, uint8_t *endPtr)
 {
-	uint8_t *stPtrL = stPtr;
-	do
-	{
-		*stPtrL = 0x0;
-		stPtrL += 1;
-	} 
-	while (stPtrL < endPtr);
-	return;
+    uint8_t *stPtrL = stPtr;
+    do
+    {
+        *stPtrL = 0x0;
+        stPtrL += 1;
+    } 
+    while (stPtrL < endPtr);
+    return;
 }
 
 /* Writes 1 to full block of RAM under test */
 
 void SRAM_Test_Write_1(uint8_t *stPtr, uint8_t *endPtr)
 {
-	/* Check if intentional error should be made for testing */
-	#if (ERROR_IN_SRAM_GALPAT == 1u)
-		*stPtr =  0;
-		return;
-	#endif /* End (ERROR_IN_SRAM_GALPAT == 1u) */
-	uint8_t *stPtrL = stPtr;
-	do
-	{
-		*stPtrL = 0xff;
-		stPtrL += 1;
-	} 
-	while (stPtrL < endPtr);
-	return;
+    /* Check if intentional error should be made for testing */
+    #if (ERROR_IN_SRAM_GALPAT == 1u)
+        *stPtr =  0;
+        return;
+    #endif /* End (ERROR_IN_SRAM_GALPAT == 1u) */
+    uint8_t *stPtrL = stPtr;
+    do
+    {
+        *stPtrL = 0xff;
+        stPtrL += 1;
+    } 
+    while (stPtrL < endPtr);
+    return;
 }
 
 /* Reads 0 and writes 1 on the block of RAM under test */
 
 uint8_t SRAM_Test_Read0_Write1_Inc(uint8_t *stPtr, uint8_t *endPtr)
 {
-	uint8_t status_flag=0;
-	uint8_t *stPtrL = stPtr;
-	do
-	{
-		/* Check if intentional error should be made for testing */
-		#if (ERROR_IN_SRAM_MARCH == 1u)
-			*stPtr =  0xff;
-		#endif /* End (ERROR_IN_SRAM_MARCH == 1u) */
-		uint8_t read0 = *stPtrL;
-		if( read0 == 0x0u)
-		{
-			*stPtrL = 0xff;
-			stPtrL += 1;
-		}
-		else
-		{
-			status_flag = ERROR_STATUS;
-			break;
-		}
-	}
-	while(stPtrL < endPtr);
-	return status_flag;
+    uint8_t status_flag=0;
+    uint8_t *stPtrL = stPtr;
+    do
+    {
+        /* Check if intentional error should be made for testing */
+        #if (ERROR_IN_SRAM_MARCH == 1u)
+            *stPtr =  0xff;
+        #endif /* End (ERROR_IN_SRAM_MARCH == 1u) */
+        uint8_t read0 = *stPtrL;
+        if( read0 == 0x0u)
+        {
+            *stPtrL = 0xff;
+            stPtrL += 1;
+        }
+        else
+        {
+            status_flag = ERROR_STATUS;
+            break;
+        }
+    }
+    while(stPtrL < endPtr);
+    return status_flag;
 }
 
 /* Reads 1 and writes 0 on the block of RAM under test */
 
 uint8_t SRAM_Test_Read1_Write0_Inc(uint8_t *stPtr, uint8_t *endPtr)
 {
-	uint8_t status_flag=0;
-	uint8_t *stPtrL = stPtr;
-	do {
-		uint8_t read1 = *stPtrL;
-		if(read1==0xFFu)
-		{
-			read1=0;
-			*stPtrL=read1;
-			stPtrL+=1;
-		}
-		else 
-		{
-			status_flag = ERROR_STATUS;
-			break;
-		}
-	}
-	while(stPtrL < endPtr);
-	return status_flag;
+    uint8_t status_flag=0;
+    uint8_t *stPtrL = stPtr;
+    do {
+        uint8_t read1 = *stPtrL;
+        if(read1==0xFFu)
+        {
+            read1=0;
+            *stPtrL=read1;
+            stPtrL+=1;
+        }
+        else 
+        {
+            status_flag = ERROR_STATUS;
+            break;
+        }
+    }
+    while(stPtrL < endPtr);
+    return status_flag;
 }
 
 /* Reads 0 from the block of RAM under test */
 
 uint8_t SRAM_Test_Read0(uint8_t *stPtr, uint8_t *endPtr)
 {
-	uint8_t status_flag=0;
-	uint8_t *stPtrL = stPtr;
-	do{
-		uint8_t read0 = *stPtrL;
-		if(read0==0x0u)
-		{
-			stPtrL+=1;
-		}
-		else 
-		{
-			status_flag=ERROR_STATUS;
-			break ;
-		}
-	}
-	while(stPtrL < endPtr);
-	return status_flag;
+    uint8_t status_flag=0;
+    uint8_t *stPtrL = stPtr;
+    do{
+        uint8_t read0 = *stPtrL;
+        if(read0==0x0u)
+        {
+            stPtrL+=1;
+        }
+        else 
+        {
+            status_flag=ERROR_STATUS;
+            break ;
+        }
+    }
+    while(stPtrL < endPtr);
+    return status_flag;
 }
 
 /* Reads 0 and writes 1 on the block of RAM under test in Decrementing order */
 
 uint8_t SRAM_Test_Read0_Write1_Dec(uint8_t *stPtr, uint8_t *endPtr)
 {
-	uint8_t status_flag=0;
-	uint8_t *endPtr1 = endPtr-1;
-	do {
-		uint8_t read0=*endPtr1;
-		if(read0==0u)
-		{
-			read0=0xff;
-			*endPtr1=read0;
-			endPtr1=endPtr1-1;
-		}
-		else 
-		{
-			status_flag=ERROR_STATUS;
-			break;
-		}
-	}
-	while(endPtr1 >= stPtr);
-	return status_flag;
+    uint8_t status_flag=0;
+    uint8_t *endPtr1 = endPtr-1;
+    do {
+        uint8_t read0=*endPtr1;
+        if(read0==0u)
+        {
+            read0=0xff;
+            *endPtr1=read0;
+            endPtr1=endPtr1-1;
+        }
+        else 
+        {
+            status_flag=ERROR_STATUS;
+            break;
+        }
+    }
+    while(endPtr1 >= stPtr);
+    return status_flag;
 }
 
 /* Reads 1 and writes 0 on the block of RAM under test in Decrementing order */
 
 uint8_t SRAM_Test_Read1_Write0_Dec(uint8_t *stPtr, uint8_t *endPtr)
 {
-	uint8_t status_flag=0;
-	uint8_t *endPtr1 = endPtr-1;
-	do {
-		uint8_t read1=*endPtr1;
-		if(read1==0xFFu)
-		{
-			read1=0;
-			*endPtr1=read1;
-			endPtr1=endPtr1-1;
-		}
-		else 
-		{
-			status_flag=ERROR_STATUS;
-			break;
-		}
-	}
-	while(endPtr1 >= stPtr);
-	return status_flag;
+    uint8_t status_flag=0;
+    uint8_t *endPtr1 = endPtr-1;
+    do {
+        uint8_t read1=*endPtr1;
+        if(read1==0xFFu)
+        {
+            read1=0;
+            *endPtr1=read1;
+            endPtr1=endPtr1-1;
+        }
+        else 
+        {
+            status_flag=ERROR_STATUS;
+            break;
+        }
+    }
+    while(endPtr1 >= stPtr);
+    return status_flag;
 }
 
 /* Stores/Restores the data from RAM/STACK under test to a buffer */
 
 void copy_buffer(uint8_t *srcPtr, uint8_t *srcEndPtr, uint8_t *destPtr)
 {
-	uint8_t *srcPtrL = srcPtr;
-	uint8_t *destPtrL = destPtr;
-	do 
-	{
-		*destPtrL = *srcPtrL;
-		srcPtrL++;
-		destPtrL++;
-	}
-	while(srcPtrL < srcEndPtr);
+    uint8_t *srcPtrL = srcPtr;
+    uint8_t *destPtrL = destPtr;
+    do 
+    {
+        *destPtrL = *srcPtrL;
+        srcPtrL++;
+        destPtrL++;
+    }
+    while(srcPtrL < srcEndPtr);
 }
 
 /* Writes 1 to a referance Inverting byte ,reads 1 from referance Inverting byte and reads 0 from all other bytes */
 
 uint8_t SRAM_Test_Read0_by_Inverting_1Byte(uint8_t *stPtr, uint8_t *endPtr, uint8_t *invertingByte)
 {
-	uint8_t testStatus = 0;
-	uint8_t read0 = 0xff;
-	uint8_t *stPtrL = stPtr;
-	*invertingByte = read0;
-	do
-	{
-		if(stPtrL == invertingByte)
-		{
-			read0 = *invertingByte;
-			if(read0 == 0xFFu )
-			{
-				stPtrL+=1;
-			}
-			else
-			{ 
-				return ERROR_STATUS;
-			}
-		}
-		else 
-		{ 
-			read0 = *stPtrL;
-			if(read0 == 0u)
-			{
-				read0 = *invertingByte;
-				if(read0 == 0xFFu)
-				{
-					stPtrL+=1;
-				}
-				else 
-				{ 
-					return ERROR_STATUS;
-				}
-			}
-			else 
-			{
-				return ERROR_STATUS;
-			}
-		}
-	}
-	while(stPtrL < endPtr );
-	return testStatus;
+    uint8_t testStatus = 0;
+    uint8_t read0 = 0xff;
+    uint8_t *stPtrL = stPtr;
+    *invertingByte = read0;
+    do
+    {
+        if(stPtrL == invertingByte)
+        {
+            read0 = *invertingByte;
+            if(read0 == 0xFFu )
+            {
+                stPtrL+=1;
+            }
+            else
+            { 
+                return ERROR_STATUS;
+            }
+        }
+        else 
+        { 
+            read0 = *stPtrL;
+            if(read0 == 0u)
+            {
+                read0 = *invertingByte;
+                if(read0 == 0xFFu)
+                {
+                    stPtrL+=1;
+                }
+                else 
+                { 
+                    return ERROR_STATUS;
+                }
+            }
+            else 
+            {
+                return ERROR_STATUS;
+            }
+        }
+    }
+    while(stPtrL < endPtr );
+    return testStatus;
 }
 
 /* Writes 0 to a referance Inverting byte ,reads 0 from referance Inverting byte and reads 1 from all other bytes */
 
 uint8_t SRAM_Test_Read1_by_Inverting_1Byte(uint8_t *stPtr, uint8_t *endPtr , uint8_t *invertingByte)
 {
-	uint8_t testStatus = 0;
-	uint8_t read1 = 0;
-	uint8_t *stPtrL = stPtr;
-	*invertingByte = read1;
-	do
-	{
-		if(stPtrL == invertingByte)
-		{
-			read1 = *invertingByte;
-			if(read1 == 0u )
-			{
-				stPtrL+=1;
-			}
-			else
-			{ 
-				return ERROR_STATUS;
-			}
-		}
-		else 
-		{ 
-			read1 = *stPtrL;
-			if(read1 == 0xFFu )
-			{
-				read1 = *invertingByte;
-				if(read1 == 0u )
-				{
-					stPtrL+=1;
-				}
-				else 
-				{ 
-					return ERROR_STATUS;
-				}
-			}
-			else 
-			{
-				return ERROR_STATUS;
-			}
-		}
-	}
-	while(stPtrL < endPtr );
-	return testStatus;
+    uint8_t testStatus = 0;
+    uint8_t read1 = 0;
+    uint8_t *stPtrL = stPtr;
+    *invertingByte = read1;
+    do
+    {
+        if(stPtrL == invertingByte)
+        {
+            read1 = *invertingByte;
+            if(read1 == 0u )
+            {
+                stPtrL+=1;
+            }
+            else
+            { 
+                return ERROR_STATUS;
+            }
+        }
+        else 
+        { 
+            read1 = *stPtrL;
+            if(read1 == 0xFFu )
+            {
+                read1 = *invertingByte;
+                if(read1 == 0u )
+                {
+                    stPtrL+=1;
+                }
+                else 
+                { 
+                    return ERROR_STATUS;
+                }
+            }
+            else 
+            {
+                return ERROR_STATUS;
+            }
+        }
+    }
+    while(stPtrL < endPtr );
+    return testStatus;
 }
 
 /* [] END OF FILE */

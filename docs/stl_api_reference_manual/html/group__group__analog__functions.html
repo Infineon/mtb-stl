@@ -104,6 +104,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga017cdc43bcf6ac462143e5c2c02e4b41"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#ga017cdc43bcf6ac462143e5c2c02e4b41">SelfTests_DAC</a> (CTDAC_Type *dacBase, SAR_Type *adcBase, uint32_t adcChannel)</td></tr>
 <tr class="memdesc:ga017cdc43bcf6ac462143e5c2c02e4b41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs DAC test and verifies that input of DAC and output from ADC are same.  <a href="group__group__analog__functions.html#ga017cdc43bcf6ac462143e5c2c02e4b41">More...</a><br /></td></tr>
 <tr class="separator:ga017cdc43bcf6ac462143e5c2c02e4b41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae404d6facf9ecd58e5a8071c1a5ddc9e"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#gae404d6facf9ecd58e5a8071c1a5ddc9e">SelfTests_DAC</a> (uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val, int16_t expected_res, int16_t accuracy)</td></tr>
+<tr class="memdesc:gae404d6facf9ecd58e5a8071c1a5ddc9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs DAC test and verifies that input of DAC and output from ADC are same.  <a href="group__group__analog__functions.html#gae404d6facf9ecd58e5a8071c1a5ddc9e">More...</a><br /></td></tr>
+<tr class="separator:gae404d6facf9ecd58e5a8071c1a5ddc9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ga4b667d77b973335906304f6a2fff7efd" name="ga4b667d77b973335906304f6a2fff7efd"></a>
@@ -229,7 +232,8 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 - Test Passed <br  />
- 1 - Test Failed </dd></dl>
+ 1 - Test Failed</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>For CA1B devices, User needs to configure the trigger input same as channel number. </dd></dl>
 
 </div>
 </div>
@@ -280,7 +284,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ga017cdc43bcf6ac462143e5c2c02e4b41" name="ga017cdc43bcf6ac462143e5c2c02e4b41"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga017cdc43bcf6ac462143e5c2c02e4b41">&#9670;&nbsp;</a></span>SelfTests_DAC()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga017cdc43bcf6ac462143e5c2c02e4b41">&#9670;&nbsp;</a></span>SelfTests_DAC() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -322,7 +326,69 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 - Test Passed <br  />
- 1 - Test Failed </dd></dl>
+ 1 - Test Failed</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Applicable only to CAT1A devices </dd></dl>
+
+</div>
+</div>
+<a id="gae404d6facf9ecd58e5a8071c1a5ddc9e" name="gae404d6facf9ecd58e5a8071c1a5ddc9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae404d6facf9ecd58e5a8071c1a5ddc9e">&#9670;&nbsp;</a></span>SelfTests_DAC() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTests_DAC </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>adc_channel</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>dac_slice</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>dac_val</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>expected_res</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>accuracy</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Performs DAC test and verifies that input of DAC and output from ADC are same. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">adc_channel</td><td>Pointer to the ADC channel </td></tr>
+    <tr><td class="paramname">dac_slice</td><td>Pointer to DAC slice </td></tr>
+    <tr><td class="paramname">dac_val</td><td>Value to be loaded in DAC register </td></tr>
+    <tr><td class="paramname">expected_res</td><td>channel Expected result in ADC </td></tr>
+    <tr><td class="paramname">accuracy</td><td>Error tolerance </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test Passed <br  />
+ 1 - Test Failed</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Applicable only to CAT1B devices </dd></dl>
 
 </div>
 </div>

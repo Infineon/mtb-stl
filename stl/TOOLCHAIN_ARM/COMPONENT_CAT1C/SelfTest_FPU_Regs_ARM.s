@@ -52,22 +52,22 @@ ERROR_IN_FPU_REGISTERS EQU 0x00
 
 
 ;---------------------------------------------------------------------------------- 
-; SelfTest_FPU_Regs_GCC                                                             
+; SelfTest_FPU_Regs_GCC
 ;---------------------------------------------------------------------------------- 
-;                                                                                   
-; Summary:                                                                          
-;   This function performs checkerboard test for all FPU registers for PSoC 6        
-;   and XMC                                                                         
-;                                                                                   
-; Parameters:                                                                       
-;   None.                                                                           
-;                                                                                   
-; Return:                                                                           
-;  0 - No error                                                                     
-;  Not 0 - Error detected                                                           
-;                                                                                   
-; Destroys:                                                                         
-;   r0                                                                              
+;
+; Summary:
+;   This function performs checkerboard test for all FPU registers for PSoC 6
+;   and XMC
+;
+; Parameters:
+;   None.
+;
+; Return:
+;  0 - No error
+;  Not 0 - Error detected
+;
+; Destroys:
+;   r0
 ;---------------------------------------------------------------------------------- 
 
 ; uint8 SelfTest_FPU_Regs_GCC(void);  
@@ -569,8 +569,8 @@ SelfTest_FPU_Regs_GCC FUNCTION
     VMOV.F32       S23, S0
     VMRS       APSR_nzcv, FPSCR
     BNE.w        __test_asm_fail
-	
-	
+    
+    
 
     ; S24 registers test  
     VMOV.F32      S0, S24
@@ -590,9 +590,9 @@ SelfTest_FPU_Regs_GCC FUNCTION
     VMOV.F32       S24, S0
     VMRS       APSR_nzcv, FPSCR
     BNE.w        __test_asm_fail
-	
-	
-	
+    
+    
+    
     ; S25 registers test  
     VMOV.F32      S0, S25
     MOV       R0, #0xAAAAAAAA
@@ -611,8 +611,8 @@ SelfTest_FPU_Regs_GCC FUNCTION
     VMOV.F32       S25, S0
     VMRS       APSR_nzcv, FPSCR
     BNE.w        __test_asm_fail
-	
-	
+    
+    
     ; S26 registers test  
     VMOV.F32      S0, S26
     MOV       R0, #0xAAAAAAAA
@@ -631,9 +631,9 @@ SelfTest_FPU_Regs_GCC FUNCTION
     VMOV.F32       S26, S0
     VMRS       APSR_nzcv, FPSCR
     BNE.w        __test_asm_fail
-	
-	
-	
+    
+    
+    
     ; S27 registers test  
     VMOV.F32      S0, S27
     MOV       R0, #0xAAAAAAAA
@@ -652,9 +652,9 @@ SelfTest_FPU_Regs_GCC FUNCTION
     VMOV.F32       S27, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        __test_asm_fail
-	
-	
-	
+    
+    
+    
     ; S28 registers test  
     VMOV.F32      S0, S28
     MOV       R0, #0xAAAAAAAA
@@ -673,9 +673,9 @@ SelfTest_FPU_Regs_GCC FUNCTION
     VMOV.F32       S28, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        __test_asm_fail
-	
-	
-	
+    
+    
+    
     ; S29 registers test  
     VMOV.F32      S0, S29
     MOV       R0, #0xAAAAAAAA
@@ -694,9 +694,9 @@ SelfTest_FPU_Regs_GCC FUNCTION
     VMOV.F32       S29, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        __test_asm_fail
-	
-	
-	
+    
+    
+    
     ; S30 registers test  
     VMOV.F32      S0, S30
     MOV       R0, #0xAAAAAAAA
@@ -715,9 +715,9 @@ SelfTest_FPU_Regs_GCC FUNCTION
     VMOV.F32       S30, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        __test_asm_fail
-	
-	
-	
+    
+    
+    
     ; S31 registers test  
     VMOV.F32      S0, S31
     MOV       R0, #0xAAAAAAAA
@@ -739,8 +739,8 @@ SelfTest_FPU_Regs_GCC FUNCTION
     VMOV.F32       S31, S0
     VMRS       APSR_nzcv, FPSCR
     BNE        __test_asm_fail
-	
-		
+    
+        
 
     ; Return success  
     MOVS      R0, #0

@@ -86,7 +86,6 @@ void SelfTest_Motif_Init(TCPWM_MOTIF_GRP_MOTIF_Type *base ,cy_stc_tcpwm_motif_ha
 
     /* MOTIF module initialization in Hall sensor Mode */
     Cy_TCPWM_MOTIF_Hall_Sensor_Init(base, config);
-
 }
 
 
@@ -105,34 +104,32 @@ void SelfTest_Motif_Init(TCPWM_MOTIF_GRP_MOTIF_Type *base ,cy_stc_tcpwm_motif_ha
 
 uint8_t SelfTest_Motif_Start(TCPWM_MOTIF_GRP_MOTIF_Type *base, stl_motif_tcpwm_config_t *input_config)
 {
-	uint32_t res_arr[6] = {0x2A33332A,0,0xCC8A8ACC,0x8ACC8ACC,0,0x332A332A};
-	uint8_t result = OK_STATUS;
-	uint32_t cnt1 = 0;
+    uint32_t res_arr[6] = {0x2A33332A,0,0xCC8A8ACC,0x8ACC8ACC,0,0x332A332A};
+    uint8_t result = OK_STATUS;
+    uint32_t cnt1 = 0;
     Cy_TCPWM_MOTIF_Start(base);
 
     for(int i=1; i<=6; i++)
     {
-
-    	uint32_t interrupt_status = Cy_TCPWM_MOTIF_GetInterruptStatus(base);
-    	Cy_TCPWM_MOTIF_ClearInterrupt(base,interrupt_status);
+        uint32_t interrupt_status = Cy_TCPWM_MOTIF_GetInterruptStatus(base);
+        Cy_TCPWM_MOTIF_ClearInterrupt(base,interrupt_status);
 
         /* Get the counter value. This is started when motif is started and motif output is ticking. */
         cnt1 = Cy_TCPWM_MOTIF_HALL_Get_Output_Modulation_Value(base);
         if (cnt1 != res_arr[i-1])
         {
-        	result = ERROR_STATUS;
+            result = ERROR_STATUS;
         }
         CyDelay(100U);
-		#if (ERROR_IN_MOTIF)
-        	Cy_TCPWM_PWM_Configure_LineSelect(input_config->Hall_0_base, input_config->Hall_1_Num, (cy_en_line_select_config_t)input0[i], (cy_en_line_select_config_t)input0[i]);
-		#else
-			Cy_TCPWM_PWM_Configure_LineSelect(input_config->Hall_0_base, input_config->Hall_0_Num, (cy_en_line_select_config_t)input0[i], (cy_en_line_select_config_t)input0[i]);
-		#endif
-		Cy_TCPWM_PWM_Configure_LineSelect(input_config->Hall_1_base, input_config->Hall_1_Num, (cy_en_line_select_config_t)input1[i], (cy_en_line_select_config_t)input1[i]);
-		Cy_TCPWM_PWM_Configure_LineSelect(input_config->Hall_2_base, input_config->Hall_2_Num, (cy_en_line_select_config_t)input2[i], (cy_en_line_select_config_t)input2[i]);
-
+        #if (ERROR_IN_MOTIF)
+        Cy_TCPWM_PWM_Configure_LineSelect(input_config->Hall_0_base, input_config->Hall_1_Num, (cy_en_line_select_config_t)input0[i], (cy_en_line_select_config_t)input0[i]);
+        #else
+        Cy_TCPWM_PWM_Configure_LineSelect(input_config->Hall_0_base, input_config->Hall_0_Num, (cy_en_line_select_config_t)input0[i], (cy_en_line_select_config_t)input0[i]);
+        #endif
+        Cy_TCPWM_PWM_Configure_LineSelect(input_config->Hall_1_base, input_config->Hall_1_Num, (cy_en_line_select_config_t)input1[i], (cy_en_line_select_config_t)input1[i]);
+        Cy_TCPWM_PWM_Configure_LineSelect(input_config->Hall_2_base, input_config->Hall_2_Num, (cy_en_line_select_config_t)input2[i], (cy_en_line_select_config_t)input2[i]);
     }
-	return result;
+    return result;
 }
 
 #endif /* SELFTEST_MOTIF_H */

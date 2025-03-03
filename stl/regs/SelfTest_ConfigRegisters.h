@@ -54,11 +54,10 @@ Two test modes are implemented in the functions:
 
    1) Store duplicates of startup configuration registers in flash memory after device startup. 
       Periodically, the configuration registers are compared with stored duplicates. Corrupted
-	  registers can be restored from flash after checking.
-	  
+      registers can be restored from flash after checking.
    2) Compare the calculated CRC with the CRC previously stored in flash if the CRC status semaphore
       is set. If the status semaphore is not set, the CRC must be calculated and stored in flash, and
-	  the status semaphore must be set.
+      the status semaphore must be set.
 \endverbatim
 *
 *
@@ -122,10 +121,10 @@ Two test modes are implemented in the functions:
     #define CONF_REG_FLASH_SMALL_SECTOR_SIZE           CY_FLASH_SM_SBM_SIZE 
 /** Calculating offset address for last row of flash for storing the register data*/
     #define LAST_ROW_IN_FLASH_OFFSET        ((CONF_REG_FLASH_SMALL_SECTOR_SIZE - CY_FLASH_SIZEOF_ROW))
-/** Calculating the starting address of last row. This value may differ depending on device used. */	
+/** Calculating the starting address of last row. This value may differ depending on device used. */
     #define LAST_ROW_IN_FLASH_ADDR          (CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE + (LAST_ROW_IN_FLASH_OFFSET))
 #endif
-#else // if (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE)
+#else /* if (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE) */
 
 
 #if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))

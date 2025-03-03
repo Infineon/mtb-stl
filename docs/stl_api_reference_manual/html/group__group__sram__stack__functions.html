@@ -135,7 +135,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">stackBase</td><td>The pointer to the Stack Base. </td></tr>
     <tr><td class="paramname">stackSize</td><td>The size Stack. </td></tr>
-    <tr><td class="paramname">altStackBase</td><td>The pointer to start of the RAM area to be used as alternate Stack Base. RAM address from altStackBase to (altStackBase - stackSize) is used to store/restore the Stack under test. The existing content of this area will be destructed and this area must not overlap with the Stack under test. </td></tr>
+    <tr><td class="paramname">altStackBase</td><td>The pointer to start of the RAM area to be used as alternate Stack Base. RAM address from altStackBase to (altStackBase - stackSize) is used to store/restore the Stack under test. The existing content of this area will be destructed and this area must not overlap with the Stack under test. The platform might set stack limit using __set_MSPLIM, ensure that the alternate stack is within the stack limit set by the platform. </td></tr>
   </table>
   </dd>
 </dl>

@@ -73,6 +73,8 @@
 #include "SelfTest_Timer_Counter.h"
 #include "SelfTest_PWM_GateKill.h"
 #include "SelfTest_PWM.h"
+#include "SelfTest_Cordic.h"
+#include "SelfTest_ECC.h"
 #endif
 
 #if CY_CPU_CORTEX_M7
@@ -80,11 +82,10 @@
 #include "SelfTest_ECC.h"
 #endif
 
-#if CY_CPU_CORTEX_M7 || (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K)) || (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A512K))
+#if CY_CPU_CORTEX_M7 || CY_CPU_CORTEX_M33 || (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K)) || (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A512K))
 #include "SelfTest_CANFD.h"
 #endif
 
-/* TO DO: Remove UART_Debug.h in scope of MIDDLEWARE-11507 */
 #include "UART_Debug.h"
 
 

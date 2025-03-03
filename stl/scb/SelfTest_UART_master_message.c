@@ -613,7 +613,7 @@ void UartMesMaster_Timeout_ISR(void)
     Cy_TCPWM_TriggerStopOrKill_Single(Counter_Struct.counter_base, Counter_Struct.cntNum);
 #else
     #if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) && defined (CY_DEVICE_PSOC6A256K))
-	Cy_TCPWM_TriggerStopOrKill_Single(Counter_Struct.counter_base, Counter_Struct.cntMsk);
+    Cy_TCPWM_TriggerStopOrKill_Single(Counter_Struct.counter_base, Counter_Struct.cntMsk);
     #else
     Cy_TCPWM_TriggerStopOrKill(Counter_Struct.counter_base, Counter_Struct.cntMsk);
     #endif

@@ -1,4 +1,4 @@
-# ModusToolbox Safety Test Library 3.0.0
+# ModusToolbox Safety Test Library 3.1.0
 
 
 Refer to the [README.md](./README.md) for a complete description of the ModusToolbox Safety Test Library.
@@ -8,9 +8,9 @@ Refer to the [README.md](./README.md) for a complete description of the ModusToo
 ### CAT1A
 * Initial Implementation
 
-* Devices Supported: CY8C624ABZI-S2D44, CY8C6245LQI-S3D72, CY8CKIT-062S4, CY8CKIT-062-WIFI-BT
+* Devices Supported: Product families under PSOC™ 61 Programmable Line and Product families under PSOC™ 62 Performance Line
 
-* Compiler Supported: GCC_ARM Compiler
+* Compiler Supported: GCC_ARM, ARM, IAR Compiler
 
 * List of Self-Tests supported:
     | Group              | Module |
@@ -18,14 +18,29 @@ Refer to the [README.md](./README.md) for a complete description of the ModusToo
     | System platform    | Digital I/O, Interrupt, Clock, IPC, Startup Configuration Registers, DMAC, DMA/DW, WDT |
     | CPU                | CPU Registers, Program Counter, Program Flow, FPU Registers |
     | Memory             | Flash, RAM, Stack |
-    | Peripheral         | UART, I2C, SPI, UART data transfer, ADC, Comparator, OP-AMP, Timer counter, PWM, PWM Gatekill, CANFD |
+    | Peripheral         | UART, I2C, SPI, UART data transfer, ADC, DAC, Comparator, OP-AMP, Timer counter, PWM, PWM Gatekill, CANFD |
+
+### CAT1B
+* Initial Implementation
+
+* Devices Supported: PSC3M5FDS2AFQ1
+
+* Compiler Supported: GCC_ARM, ARM, IAR Compiler
+
+* List of Self-Tests supported:
+    | Group              | Module |
+    | ------             | ------ |
+    | System platform    | Digital I/O, Interrupt, Clock, IPC, Startup Configuration Registers, DMA/DW, WDT |
+    | CPU                | CPU Registers, Program Counter, Program Flow, FPU Registers |
+    | Memory             | Flash, RAM, Stack |
+    | Peripheral         | UART, I2C, SPI, UART data transfer, ADC, DAC, Comparator, Timer counter, PWM, PWM Gatekill, CANFD, MOTIF, CORDIC, ECC |
 
 ### CAT1C
 * Initial Implementation
 
 * Devices Supported: XMC7200D-E272K8384, XMC7100D-F176K4160
 
-* Compiler Supported: GCC_ARM Compiler
+* Compiler Supported: GCC_ARM, ARM, IAR Compiler
 
 * List of Self-Tests supported:
     | Group              | Module |
@@ -64,12 +79,13 @@ This version of the ModusToolbox Safety Test Library was validated for the compa
 
 | Software and Tools                                      | Version |
 | :---                                                    | :----:  |
-| ModusToolbox Software Environment                       | 3.2.0   |
-| CAT1 Peripheral Driver Library                          | 3.11.0  |
+| ModusToolbox Software Environment                       | 3.3.0   |
+| CAT1 Peripheral Driver Library                          | 3.14.0  |
 | CAT2 Peripheral Driver Library                          | 2.5.0   |
 | Core Library                                            | 1.4.0   |
 | GCC Compiler                                            | 11.3.1  |
-| IAR Compiler                                            | 9.30.1  |
+| IAR Compiler                                            | 9.50.2  |
+| ARM Compiler                                            | 6.22    |
 
 
 ## More information

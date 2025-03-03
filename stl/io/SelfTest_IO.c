@@ -79,7 +79,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
     GPIO_PRT8, GPIO_PRT9, GPIO_PRT10, GPIO_PRT11, \
     GPIO_PRT12
 };
-#endif // if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX)
+#endif /* if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX) */
 
 #if defined(CY_DEVICE_SERIES_PSOC_4500S)
 static const uint8_t PinToTest[] =
@@ -101,7 +101,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
     GPIO_PRT0, GPIO_PRT1, GPIO_PRT2, GPIO_PRT3, \
     GPIO_PRT4, GPIO_PRT5, GPIO_PRT6, GPIO_PRT7,
 };
-#endif // if defined(CY_DEVICE_SERIES_PSOC_4500S)
+#endif /* if defined(CY_DEVICE_SERIES_PSOC_4500S) */
 
 #if  defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS) && (CY_FLASH_SIZE == 0x00040000UL)
 static const uint8_t PinToTest[] =
@@ -123,7 +123,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
     GPIO_PRT0, GPIO_PRT1, GPIO_PRT2, GPIO_PRT3, \
     GPIO_PRT4, GPIO_PRT5, GPIO_PRT6, GPIO_PRT7,
 };
-#endif // if  defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS) && (CY_FLASH_SIZE == 0x00040000UL)
+#endif /* if  defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS) && (CY_FLASH_SIZE == 0x00040000UL) */
 
 #if  defined(CY_DEVICE_SERIES_PSOC_4100S)
 static const uint8_t PinToTest[] =
@@ -142,7 +142,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
     GPIO_PRT0, GPIO_PRT1, GPIO_PRT2, GPIO_PRT3, \
     GPIO_PRT4,
 };
-#endif // if  defined(CY_DEVICE_SERIES_PSOC_4100S)
+#endif /* if  defined(CY_DEVICE_SERIES_PSOC_4100S) */
 
 
 #elif CY_CPU_CORTEX_M4
@@ -196,7 +196,7 @@ static const uint8_t PinToTest[] =
         0x00u, /* PORT2 mask */
         0x00u, /* PORT3 mask */
         0x00u, /* PORT4 mask */
-        0x00u, /* PORT5 mask */
+        0x10u, /* PORT5 mask */
         0x00u, /* PORT6 mask */
         0x00u, /* PORT7 mask */
         0x00u, /* PORT8 mask */

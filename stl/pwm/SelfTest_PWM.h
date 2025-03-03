@@ -129,7 +129,7 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type *pinbase, uint32_t pinNum);
 * Interrupt source 
 ******************************************************************************/
 uint8_t SelfTest_PWM_init(TCPWM_Type *base, uint32_t cntNum,
-			 cy_stc_tcpwm_pwm_config_t const *config, IRQn_Type  intr_src);
+             cy_stc_tcpwm_pwm_config_t const *config, IRQn_Type  intr_src);
 
 /** \} group_pwm_functions */
 

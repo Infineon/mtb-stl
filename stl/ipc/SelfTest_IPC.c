@@ -418,7 +418,7 @@ const cy_stc_sysint_t ipcIntConfig2 =
 * ISR for Each IPC interrupt
 *******************************************************************************/
 #if CY_CPU_CORTEX_M7
-//ISR for IPC Interrupt Number 1
+/* ISR for IPC Interrupt Number 1 */
 void IPC_Interrupt_User_1(void)
 {
     uint32_t shadowIntr;
@@ -432,7 +432,7 @@ void IPC_Interrupt_User_1(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 2
+/* ISR for IPC Interrupt Number 2 */
 void IPC_Interrupt_User_2(void)
 {
     uint32_t shadowIntr;
@@ -446,7 +446,7 @@ void IPC_Interrupt_User_2(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 3
+/* ISR for IPC Interrupt Number 3 */
 void IPC_Interrupt_User_3(void)
 {
     uint32_t shadowIntr;
@@ -460,7 +460,7 @@ void IPC_Interrupt_User_3(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 4
+/* ISR for IPC Interrupt Number 4 */
 void IPC_Interrupt_User_4(void)
 {
     uint32_t shadowIntr;
@@ -474,7 +474,7 @@ void IPC_Interrupt_User_4(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 5
+/* ISR for IPC Interrupt Number 5 */
 void IPC_Interrupt_User_5(void)
 {
     uint32_t shadowIntr;
@@ -488,7 +488,7 @@ void IPC_Interrupt_User_5(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 6
+/* ISR for IPC Interrupt Number 6 */
 void IPC_Interrupt_User_6(void)
 {
     uint32_t shadowIntr;
@@ -502,7 +502,7 @@ void IPC_Interrupt_User_6(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 7
+/* ISR for IPC Interrupt Number 7 */
 void IPC_Interrupt_User_7(void)
 {
     uint32_t shadowIntr;
@@ -517,7 +517,7 @@ void IPC_Interrupt_User_7(void)
 }
 
 #elif CY_CPU_CORTEX_M4
-//ISR for IPC Interrupt Number 7
+/* ISR for IPC Interrupt Number 7 */
 void IPC_Interrupt_User_7(void)
 {
     uint32_t shadowIntr;
@@ -532,7 +532,7 @@ void IPC_Interrupt_User_7(void)
 }
 CY_MISRA_BLOCK_END('MISRA C-2012 Rule 8.6')
 
-//ISR for IPC Interrupt Number 8
+/* ISR for IPC Interrupt Number 8 */
 void IPC_Interrupt_User_8(void)
 {
     uint32_t shadowIntr;
@@ -546,7 +546,7 @@ void IPC_Interrupt_User_8(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 9
+/* ISR for IPC Interrupt Number 9 */
 void IPC_Interrupt_User_9(void)
 {
     uint32_t shadowIntr;
@@ -560,7 +560,7 @@ void IPC_Interrupt_User_9(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 10
+/* ISR for IPC Interrupt Number 10 */
 void IPC_Interrupt_User_10(void)
 {
     uint32_t shadowIntr;
@@ -574,7 +574,7 @@ void IPC_Interrupt_User_10(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 11
+/* ISR for IPC Interrupt Number 11 */
 void IPC_Interrupt_User_11(void)
 {
     uint32_t shadowIntr;
@@ -588,7 +588,7 @@ void IPC_Interrupt_User_11(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 12
+/* ISR for IPC Interrupt Number 12 */
 void IPC_Interrupt_User_12(void)
 {
     uint32_t shadowIntr;
@@ -602,7 +602,7 @@ void IPC_Interrupt_User_12(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 13
+/* ISR for IPC Interrupt Number 13 */
 void IPC_Interrupt_User_13(void)
 {
     uint32_t shadowIntr;
@@ -616,7 +616,7 @@ void IPC_Interrupt_User_13(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 14
+/* ISR for IPC Interrupt Number 14 */
 void IPC_Interrupt_User_14(void)
 {
     uint32_t shadowIntr;
@@ -630,7 +630,7 @@ void IPC_Interrupt_User_14(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 15
+/* ISR for IPC Interrupt Number 15 */
 void IPC_Interrupt_User_15(void)
 {
     uint32_t shadowIntr;
@@ -644,7 +644,7 @@ void IPC_Interrupt_User_15(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 #elif CY_CPU_CORTEX_M33
-//ISR for IPC Interrupt Number 1
+/* ISR for IPC Interrupt Number 1 */
 void IPC_Interrupt_User_1(void)
 {
     uint32_t shadowIntr;
@@ -658,7 +658,7 @@ void IPC_Interrupt_User_1(void)
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
 
-//ISR for IPC Interrupt Number 2
+/* ISR for IPC Interrupt Number 2 */
 void IPC_Interrupt_User_2(void)
 {
     uint32_t shadowIntr;

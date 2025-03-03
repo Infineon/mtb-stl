@@ -166,7 +166,7 @@
     #define CLASSB_SELF_TEST_ADC            1u
     /** Whether Comparator is present or not */
     #define CLASSB_SELF_TEST_COMP           1u
-    #if CY_CPU_CORTEX_M4
+    #if CY_CPU_CORTEX_M33
     #define CLASSB_SELF_TEST_DAC            1u
     #endif
     #if (defined(CY_DEVICE_PSOC6ABLE2) || defined(CY_DEVICE_PSOC6A256K))
@@ -412,6 +412,9 @@
 *  0 - Test Passed <br>
 *  1 - Test Failed
 *
+* \note
+* For CA1B devices, User needs to configure the trigger input same as channel number.
+*
 *******************************************************************************/
 #if defined(CLASSB_SELF_TEST_ADC)
     #if CY_CPU_CORTEX_M0P
@@ -422,7 +425,7 @@
        uint8_t SelfTests_ADC(PASS_SAR_Type * base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV);
     #elif CY_CPU_CORTEX_M33
         uint8_t SelfTests_ADC(uint32_t base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV);
-	#endif
+    #endif
 #endif /* End Testing ADC */
 
 /*******************************************************************************
@@ -469,11 +472,41 @@ uint8_t SelfTests_Comparator(LPCOMP_Type const* lpcomp_base, cy_en_lpcomp_channe
 *  0 - Test Passed <br>
 *  1 - Test Failed
 *
+* \note
+* Applicable only to CAT1A devices
+*
 *******************************************************************************/
 #if defined(CY_IP_MXS40PASS_CTDAC) || defined (CY_DOXYGEN)
 uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChannel);
 #endif
 
+#if defined(CLASSB_SELF_TEST_DAC) || defined (CY_DOXYGEN)
+/*******************************************************************************
+* Function Name: SelfTests_DAC
+****************************************************************************//**
+*
+* Performs DAC test and verifies that input of DAC and output from ADC are same.
+*
+* \param adc_channel 
+* Pointer to the ADC channel
+* \param dac_slice 
+* Pointer to DAC slice
+* \param dac_val
+* Value to be loaded in DAC register
+* \param expected_res
+* channel Expected result in ADC
+* \param accuracy
+* Error tolerance
+* \return
+*  0 - Test Passed <br>
+*  1 - Test Failed
+*
+* \note
+* Applicable only to CAT1B devices
+*
+*******************************************************************************/
+uint8_t SelfTests_DAC(uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val, int16_t expected_res, int16_t accuracy);
+#endif
 /** \} group_analog_functions */
 
 /** \} group_analog */

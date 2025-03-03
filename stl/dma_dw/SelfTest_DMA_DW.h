@@ -88,15 +88,15 @@ The DMA blocks are tested using the following procedure.
 * Function Name: SelfTest_DMA_DW
 ****************************************************************************//**
 *
-* This function writes a pattern (64 bytes) to the destination using the DMA and 
-* the destination block is verified to contain the correct pattern. 
+* This function writes a pattern (66 bytes) to the destination using the DMA and
+* the destination block is verified to contain the correct pattern.
 *
 *
-* \param base 
+* \param base
 * The pointer to the hardware DMA block <br>
-* \param channel 
+* \param channel
 * A channel number
-* \param descriptor0 
+* \param descriptor0
 * This is the descriptor to be associated with the channel (transfer 0's to destination).
 * \param descriptor1
 * This is the descriptor to be associated with the channel (transfer pattern to destination).
@@ -106,9 +106,9 @@ The DMA blocks are tested using the following procedure.
 * This is a configuration structure that has all initialization information for the descriptor.
 * \param channelConfig
 * The structure that has the initialization information for the channel.
-* \param trigLine	
+* \param trigLine
 * The input of the trigger mux.
-* -> Bit 30 represents if the signal is an input/output. When this bit is set, the trigger activation is for an output 
+* -> Bit 30 represents if the signal is an input/output. When this bit is set, the trigger activation is for an output
 * trigger from the trigger multiplexer. When this bit is reset, the trigger activation is for an input trigger to the trigger multiplexer. <br>
 * -> Bits 12:8 represent the trigger group selection. <br>
 * -> In case of output trigger line (bit 30 is set): For PERI_ver1: <br>
@@ -130,7 +130,7 @@ The DMA blocks are tested using the following procedure.
 
 #if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
 
-    #if defined(CY_DEVICE_PSOC6ABLE2) 
+    #if defined(CY_DEVICE_PSOC6ABLE2)
         uint8_t SelfTest_DMA_DW(DW_Type * base, uint32_t channel, cy_stc_dma_descriptor_t * descriptor0, cy_stc_dma_descriptor_t * descriptor1,
                                 const cy_stc_dma_descriptor_config_t * des0_config,const cy_stc_dma_descriptor_config_t * des1_config,
                                 cy_stc_dma_channel_config_t const * channelConfig, en_trig_input_grp0_t trigLine);
@@ -160,7 +160,7 @@ uint8_t SelfTest_DMA_DW(DW_Type * base, uint32_t channel, cy_stc_dma_descriptor_
 ***************************************/
 
 
-#endif 
+#endif
 
 /** \} group_dma */
 #endif

@@ -51,79 +51,88 @@
 
 #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
 CY_SECTION_SHAREDMEM uint32_t dmac_data_src_0[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-CY_SECTION_SHAREDMEM uint8_t dmac_data_src_1[64] = {0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,0x00};
+CY_SECTION_SHAREDMEM uint8_t dmac_data_src_1[66] = {
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff
+    };
 
-CY_SECTION_SHAREDMEM uint32_t dmac_data_dst_0[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};          /* Descriptor_0 Data Transfer destination */
-CY_SECTION_SHAREDMEM uint8_t dmac_data_dst_1[64]={0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,
-                                0x0,0x0,0x0,0x00};          /* Descriptor_1 Data Transfer destination */
+CY_SECTION_SHAREDMEM uint32_t dmac_data_dst_0[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+CY_SECTION_SHAREDMEM uint8_t dmac_data_dst_1[66] = {
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0,
+    0x0,0x0,0x0
+    };
 #else
 const uint32_t dmac_data_src_0[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-const uint8_t dmac_data_src_1[64] = {0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,
-                                0x00,0x00,0xff,0x00};
+const uint8_t dmac_data_src_1[66] = {
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff,
+    0x00,0x00,0xff
+    };
 
-uint32_t dmac_data_dst_0[16];          /* Descriptor_0 Data Transfer destination */
-uint8_t dmac_data_dst_1[64];          /* Descriptor_1 Data Transfer destination */
+uint32_t dmac_data_dst_0[16];
+uint8_t dmac_data_dst_1[66];
 #endif
 /*******************************************************************************
- * Function Name: SelfTest_DMA/DW
+ * Function Name: SelfTest_DMAC
  ********************************************************************************
  *
  * Summary: Any data shared between the bus masters should handle by using non cacheable memory.
@@ -144,20 +153,20 @@ uint8_t SelfTest_DMAC(DMAC_Type * base, uint32_t channel, cy_stc_dmac_descriptor
                         cy_stc_dmac_channel_config_t const * channelConfig, en_trig_output_mdma_t trigLine)
 {
     uint8_t ret = 0;
-    (void)memset(dmac_data_dst_0, 0, 16U * sizeof(dmac_data_dst_0[0]));
-    (void)memset(dmac_data_dst_1, 0, 64U * sizeof(dmac_data_dst_1[0]));
+    (void)memset(dmac_data_dst_0, 0xAA, sizeof(dmac_data_dst_0));
+    (void)memset(dmac_data_dst_1, 0, sizeof(dmac_data_dst_1));
 
-    // Init Descriptors
+    /* Init Descriptors */
     cy_en_dmac_status_t dmac_status = Cy_DMAC_Descriptor_Init(descriptor0, des0_config);
     dmac_status = Cy_DMAC_Descriptor_Init(descriptor1, des1_config);
 
-    // Set source and dest address
-    //Descriptor 0
+    /* Set source and dest address */
+    /* Descriptor 0*/
     Cy_DMAC_Descriptor_SetSrcAddress(descriptor0, dmac_data_src_0);
-	Cy_DMAC_Descriptor_SetDstAddress(descriptor0, dmac_data_dst_0);
-    // Descriptor 1
-	Cy_DMAC_Descriptor_SetSrcAddress(descriptor1, dmac_data_src_1);
-	Cy_DMAC_Descriptor_SetDstAddress(descriptor1, dmac_data_dst_1);
+    Cy_DMAC_Descriptor_SetDstAddress(descriptor0, dmac_data_dst_0);
+    /* Descriptor 1 */
+    Cy_DMAC_Descriptor_SetSrcAddress(descriptor1, dmac_data_src_1);
+    Cy_DMAC_Descriptor_SetDstAddress(descriptor1, dmac_data_dst_1);
     Cy_DMAC_Enable(base);
 
 
@@ -166,24 +175,24 @@ uint8_t SelfTest_DMAC(DMAC_Type * base, uint32_t channel, cy_stc_dmac_descriptor
     SCB_CleanDCache_by_Addr(descriptor0, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
     SCB_CleanDCache_by_Addr(descriptor1, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
 #endif
-	Cy_DMAC_Channel_Enable(base, channel);
+    Cy_DMAC_Channel_Enable(base, channel);
 
-	cy_en_trigmux_status_t trigmux_status = Cy_TrigMux_SwTrigger((uint32_t)trigLine, CY_TRIGGER_TWO_CYCLES);
-    
+    cy_en_trigmux_status_t trigmux_status = Cy_TrigMux_SwTrigger((uint32_t)trigLine, CY_TRIGGER_TWO_CYCLES);
+
     uint32_t interruptStatus = Cy_DMAC_Channel_GetInterruptStatus(base,channel);
-	while(interruptStatus == 0UL)
-	{
+    while(interruptStatus == 0UL)
+    {
       interruptStatus = Cy_DMAC_Channel_GetInterruptStatus(base,channel);
-	}
+    }
 #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
     SCB_InvalidateDCache_by_Addr (descriptor0, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
     SCB_InvalidateDCache_by_Addr (descriptor1, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
 #endif
 
     int32_t cmpRes;
-	
+
 #if (ERROR_IN_DMAC == 1u)
-		dmac_data_dst_0[0]= 1;
+        dmac_data_dst_0[0] = 1;
 #endif /* End (ERROR_IN_DMA_DW == 1u) */
 
     cmpRes = memcmp(dmac_data_src_0, dmac_data_dst_0, 64);

@@ -101,7 +101,6 @@ More Information</h1>
    1) Store duplicates of startup configuration registers in flash memory after device startup. 
       Periodically, the configuration registers are compared with stored duplicates. Corrupted
       registers can be restored from flash after checking.
-      
    2) Compare the calculated CRC with the CRC previously stored in flash if the CRC status semaphore
       is set. If the status semaphore is not set, the CRC must be calculated and stored in flash, and
       the status semaphore must be set.

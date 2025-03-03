@@ -170,7 +170,7 @@ uint8_t SelfTest_WDT(void)
         Cy_WDT_SetMatch(WDT_PERIOD);
 
 #elif CY_CPU_CORTEX_M7
-        Cy_WDT_SetUpperLimit(WDT_PERIOD); // Reset after 3 seconds
+        Cy_WDT_SetUpperLimit(WDT_PERIOD); /* Reset after 3 seconds */
         Cy_WDT_SetUpperAction(CY_WDT_LOW_UPPER_LIMIT_ACTION_RESET);
 #elif CY_CPU_CORTEX_M33
         /* Step 2- Write the match bits - operate with only 14 bits */
