@@ -1,13 +1,12 @@
 /******************************************************************************
  * File Name:  SelfTest_Interrupt.h
- * Version 1.0.0
  *
  * Description:
  *  This file provides function prototypes, constants, and parameter values
  *  used for interrupt self test.
  *
  *******************************************************************************
- * Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -54,16 +53,6 @@
 * main loop. Each specific interrupt handler which is to be supervised, must decrement a dedicated global variable (freq), 
 * InterruptTest() compares that variable to predefined upper and lower bounds, returns an error, if the limits are exceeded.
 *
-*
-* \section group_intr_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_intr_macros Macros
 * \defgroup group_intr_functions Functions

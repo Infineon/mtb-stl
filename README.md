@@ -19,4 +19,4 @@ For more information, refer to the following documents:
 * [Infineon Technologies AG](https://www.infineon.com)
 
 ---
-© 2023, Cypress Semiconductor Corporation (an Infineon company) or an affiliate of Cypress Semiconductor Corporation.
+© 2025, Cypress Semiconductor Corporation (an Infineon company) or an affiliate of Cypress Semiconductor Corporation.

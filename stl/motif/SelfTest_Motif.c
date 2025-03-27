@@ -1,12 +1,11 @@
 /*******************************************************************************
 * File Name: SelfTest_Motif.c
-* Version 1.0.0
 *
 * Description:
 *  This file provides the source code to the API for Motif self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -57,7 +56,7 @@ int input2[6] = {1,1,1,0,0,0};
 
 /*******************************************************************************
 * Function Name: SelfTest_Motif_Init
-****************************************************************************//**
+********************************************************************************
 *
 *  This function perform self test on Motif module.
 *  The MOTIF unit is a flexible and powerful component for motor control systems
@@ -91,7 +90,7 @@ void SelfTest_Motif_Init(TCPWM_MOTIF_GRP_MOTIF_Type *base ,cy_stc_tcpwm_motif_ha
 
 /*******************************************************************************
 * Function Name: SelfTest_Motif_Start
-****************************************************************************//**
+********************************************************************************
 *
 *  This function starts the Motif module and Modulation output from motif
 *  is started with existing values. It reports the status of the interrupts

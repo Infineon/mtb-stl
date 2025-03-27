@@ -90,34 +90,24 @@ $(document).ready(function(){initNavTree('group__group__ipc.html',''); initResiz
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
 <p >This module performs check on each free IPC channel with all free IPC interrupts. </p>
-<pre class="fragment">Following steps are performed:
-  1) Acquire the IPC channel.
-  2) Write some message.
-  3) Acquire notification event to a specify IPC interrupt.
-  4) Read the written data in ISR.
-  5) Release an specific IPC channel from the locked state.
-</pre><h1><a class="anchor" id="group_ipc_more_information"></a>
+<p >Following steps are performed: <br  />
+ 1) Acquire the IPC channel. <br  />
+ 2) Write some message. <br  />
+ 3) Acquire notification event to a specify IPC interrupt. <br  />
+ 4) Read the written data in ISR. <br  />
+ 5) Release an specific IPC channel from the locked state.</p>
+<h1><a class="anchor" id="group_ipc_more_information"></a>
 More Information</h1>
-<pre class="fragment">For PSoC6 following channels and interrupts are checked:
+<pre class="fragment"> For PSoC6 following channels and interrupts are checked:
  Free Channels    : 8 - 15
  Free Interrupts : 7 - 15
- 
-For XMC Dual CM7 device channels and interrupts are checked:
+
+ For XMC Dual CM7 device channels and interrupts are checked:
  Free Channels   : 4 - 7
  Free Interrupts : 1 - 7
-</pre><h1><a class="anchor" id="group_ipc_profile_changelog"></a>
-Changelog</h1>
-<table class="doxtable">
-<tr>
-<th>Version</th><th>Changes</th><th>Reason for Change </th></tr>
-<tr>
-<td>1.00 </td><td>Initial Version. </td><td>Initial Version.  </td></tr>
-</table>
-<table class="memberdecls">
+</pre> <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>
-<tr class="memitem:group__group__ipc__macros"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__ipc__macros.html">Macros</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__ipc__functions"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__ipc__functions.html">Functions</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

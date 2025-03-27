@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_Clock.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides the function prototypes, constants and parameter values used
 *  for the clock self tests according to Class B library.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -55,16 +54,6 @@
 * If the WCO is available, it should be used for this test, since it is much more accurate. If the 
 * other oscillators (ECO, EXT_CLK, IMO) are safety critical, customers can use this test as a guideline.
 *
-*
-* \section group_clock_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_clock_macros Macros
 * \defgroup group_clock_functions Functions
@@ -128,7 +117,7 @@ void SelfTest_Clock_ISR_TIMER(void);
 */
 /** Lower possible clock count for WDT depending on the accuracy of Oscillator */
 /* For PSoC 4100S Max, ILO = 40kHz */
-/* lower possible clock count = 40 * (1 - 50%) = 16 */
+/* lower possible clock count = 40 * (1 - 50%) = 20 */
 #define CLOCK_TICKS_LO                      (20u)
 
 /** Higher possible clock count for WDT depending on the accuracy of Oscillator */

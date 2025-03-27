@@ -129,13 +129,13 @@ Functions</h2></td></tr>
 <p>Performs PWM test and verify that the duty cycle set is actually achieved in output. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pinbase</td><td>The pointer to a GPIO port instance to which the PWM pin is connected to.</td></tr>
-    <tr><td class="paramname">pinNum</td><td>The GPIO pin number to which the PWM pin is connected to.</td></tr>
+    <tr><td class="paramname">pinbase</td><td>The pointer to a GPIO port instance to which the PWM pin is connected to</td></tr>
+    <tr><td class="paramname">pinNum</td><td>The GPIO pin number to which the PWM pin is connected to</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>The parameter passed for CAT1C devices will be ignored.</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>0 - Test Passed <br  />
+<dl class="section note"><dt>Note</dt><dd>The parameter passed for CAT1C devices will be ignored</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
  1 - Test failed </dd></dl>
 
 </div>
@@ -181,13 +181,15 @@ Functions</h2></td></tr>
 <p>Initialize Timer interrupt for the Self test. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">base</td><td>The pointer to a TCPWM instance.</td></tr>
-    <tr><td class="paramname">cntNum</td><td>The Counter instance number in the selected TCPWM.</td></tr>
-    <tr><td class="paramname">config</td><td>The pointer to configuration structure.</td></tr>
-    <tr><td class="paramname">intr_src</td><td>Interrupt source </td></tr>
+    <tr><td class="paramname">base</td><td>The pointer to a TCPWM instance</td></tr>
+    <tr><td class="paramname">cntNum</td><td>The Counter instance number in the selected TCPWM</td></tr>
+    <tr><td class="paramname">config</td><td>The pointer to configuration structure</td></tr>
+    <tr><td class="paramname">intr_src</td><td>Interrupt source</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Initialization successful <br  />
+ 1 - Initialization failed </dd></dl>
 
 </div>
 </div>

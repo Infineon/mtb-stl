@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_CPU_Regs.h
-* Version 1.0.0
 *
 * Description:
 * This file provides constants and parameter values used for CPU register self
 * tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related

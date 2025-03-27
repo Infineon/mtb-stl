@@ -92,22 +92,12 @@ $(document).ready(function(){initNavTree('group__group__fpu.html',''); initResiz
 <p >The FPU registers test detects stuck-at faults in the FPU by using the checkerboard test. </p>
 <h1><a class="anchor" id="group_fpu_more_information"></a>
 More Information</h1>
-<p >This test ensures that the bits in the registers are not stuck at value '0' or '1'. It is a destructive test that performs the following major tasks: </p><pre class="fragment"> 1) The registers are tested by performing a write/read/compare test sequence using a checkerboard pattern (0x5555 5555, then 0xaaaa aaaaa). 
-    These binary sequences are valid floating point values.
+<p >This test ensures that the bits in the registers are not stuck at value '0' or '1'. It is a destructive test that performs the following major tasks: </p><pre class="fragment"> 1) The registers are tested by performing a write/read/compare test sequence using a checkerboard pattern
+    (0x5555 5555, then 0xaaaa aaaaa). These binary sequences are valid floating point values.
  2) The test returns an error code if the returned values do not match.
-</pre><h1><a class="anchor" id="group_fpu_profile_changelog"></a>
-Changelog</h1>
-<table class="doxtable">
-<tr>
-<th>Version</th><th>Changes</th><th>Reason for Change </th></tr>
-<tr>
-<td>1.00 </td><td>Initial Version. </td><td>Initial Version.  </td></tr>
-</table>
-<table class="memberdecls">
+</pre> <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>
-<tr class="memitem:group__group__fpu__macros"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__fpu__macros.html">Macros</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__fpu__functions"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__fpu__functions.html">Functions</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

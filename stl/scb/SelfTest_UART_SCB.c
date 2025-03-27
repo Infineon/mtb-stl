@@ -1,6 +1,5 @@
 /*******************************************************************************
 * File Name: SelfTest_UART_SCB.c
-* Version 1.0.0
 *
 * Description:
 *  This file provides the source code to do the UART self tests
@@ -11,7 +10,7 @@
 *  for ModusToolbox
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -61,7 +60,7 @@ static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte);
 *  uint8_transmitByte - data to be transmitted over UART
 *
 * Return:
-*  0 - test success
+*  0 - Test success
 *  1 - test failed
 *
 * Note:

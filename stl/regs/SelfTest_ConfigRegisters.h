@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_ConfigRegisters.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values used
 *  for Startup Configuration Register self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -49,27 +48,15 @@
 *
 * \section group_regs_more_information More Information
 *
-// \verbatim
-Two test modes are implemented in the functions:
-
-   1) Store duplicates of startup configuration registers in flash memory after device startup. 
-      Periodically, the configuration registers are compared with stored duplicates. Corrupted
-      registers can be restored from flash after checking.
-   2) Compare the calculated CRC with the CRC previously stored in flash if the CRC status semaphore
-      is set. If the status semaphore is not set, the CRC must be calculated and stored in flash, and
-      the status semaphore must be set.
-\endverbatim
+* Two test modes are implemented in the functions:
 *
+*      1) Store duplicates of startup configuration registers in flash memory after device startup.
+*       Periodically, the configuration registers are compared with stored duplicates. Corrupted
+*       registers can be restored from flash after checking.
+*      2) Compare the calculated CRC with the CRC previously stored in flash if the CRC status semaphore
+*       is set. If the status semaphore is not set, the CRC must be calculated and stored in flash, and
+*       the status semaphore must be set.
 *
-* \section group_regs_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_regs_macros Macros
 * \defgroup group_regs_functions Functions
@@ -169,13 +156,9 @@ Two test modes are implemented in the functions:
 * stored in flash with current the current configuration registers value.
 * If values are different function returns fail.
 *
-*
-*
-*
 * \return
 *  0 - Test Passed <br>
 *  1 - Test failed
-*
 *
 *******************************************************************************/
 uint8_t SelfTests_StartUp_ConfigReg(void);
@@ -190,12 +173,11 @@ uint8_t SelfTests_StartUp_ConfigReg(void);
 *
 *
 * \note
-* Applicable only for CAT1A devices.
+* Applicable only for CAT1A devices
 *
 *
 * \return
 *  None
-*
 *
 *******************************************************************************/
 void SelfTests_Init_StartUp_ConfigReg(void);
@@ -217,13 +199,13 @@ void SelfTests_Init_StartUp_ConfigReg(void);
 *
 *
 * \note
-* To be used only if the STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE <br>
-* This function should be called once after the initial PSoC power up and initialization before entering the main program.
+* To be used only if the STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE. <br>
+* This function should be called once after the initial PSoC power up and initialization before entering the main program
 *
 * \return
-*  0 - writing to flash is successful. <br>
-*  >=1 - writing to flash is not successful. Refer to Flash Driver PDL documentation
-*  for error codes.
+*  0 - Writing to flash is successful <br>
+*  >=1 - Writing to flash is not successful. Refer to Flash Driver PDL documentation
+*  for error codes
 *
 *
 *******************************************************************************/

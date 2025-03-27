@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ModusToolbox Safety Test Library: Ram                       (RAM STL module)</title>
+<title>ModusToolbox Safety Test Library: RAM                       (RAM STL module)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -85,38 +85,27 @@ $(document).ready(function(){initNavTree('group__group__ram.html',''); initResiz
 <div class="header">
   <div class="summary">
 <a href="#groups">API Reference</a>  </div>
-  <div class="headertitle"><div class="title">Ram (RAM STL module)</div></div>
+  <div class="headertitle"><div class="title">RAM (RAM STL module)</div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
 <p >To meet Class B requirement, SRAM test must be checked for “DC fault”. </p>
-<p >Either of the 2 methods can be used: </p><pre class="fragment">  1) March/Checkerboard : This test is destructive. The RAM area is written
-                          with  alternate “0” and “1” to memory, and verifies if the
-                          writen data is right by reading back.
-                    
-  2) GALPAT             : This test is destructive. This test initilizes the chosen 
-                          range of memory uniformly (i.e. all 0 s or all 1 s). The first
-                          memory cell to be tested is then inverted and all the remaining 
-                          cells are inspected to ensure that their contents are correct. 
-                          After every read access to one of the remaining cells, the inverted
-                          cell is also checked. This procedure is repeated for each cell 
-                          in the chosen memory range. A second run is carried out with the
-                          opposite initialisation. Any difference produces a failure message.
-                          It can detect stuck-at faults and direct coupling faults.
-</pre><dl class="section note"><dt>Note</dt><dd>GALPAT test is time consuming.This tests can be implemented at startup procedure to test entire SRAM area.</dd></dl>
-<h1><a class="anchor" id="group_ram_profile_changelog"></a>
-Changelog</h1>
-<table class="doxtable">
-<tr>
-<th>Version</th><th>Changes</th><th>Reason for Change </th></tr>
-<tr>
-<td>1.00 </td><td>Initial Version. </td><td>Initial Version.  </td></tr>
-</table>
+<p >Either of the 2 methods can be used: </p><pre class="fragment"> 1) March/Checkerboard:  This test is destructive. The RAM area is written
+                      with  alternate “0” and “1” to memory, and verifies if the
+                      writen data is right by reading back.
+ 2) GALPAT:              This test is destructive. This test initilizes the chosen
+                      range of memory uniformly (i.e. all 0 s or all 1 s). The first
+                      memory cell to be tested is then inverted and all the remaining
+                      cells are inspected to ensure that their contents are correct.
+                      After every read access to one of the remaining cells, the inverted
+                      cell is also checked. This procedure is repeated for each cell
+                      in the chosen memory range. A second run is carried out with the
+                      opposite initialisation. Any difference produces a failure message.
+                      It can detect stuck-at faults and direct coupling faults.
+</pre> <dl class="section note"><dt>Note</dt><dd>GALPAT test is time consuming. This tests can be implemented at startup procedure to test entire SRAM area </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>
-<tr class="memitem:group__group__ram__macros"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__ram__macros.html">Macros</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__sram__enums"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__sram__enums.html">Enumerated Types</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__sram__functions"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__sram__functions.html">SRAM</a></td></tr>

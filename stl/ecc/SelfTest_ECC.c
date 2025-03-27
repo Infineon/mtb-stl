@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_ECC.c
-* Version 1.0.0
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
 *  used for ECC self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -149,7 +148,7 @@ void configureECC(cy_en_ecc_error_mode_t eccErrorMode)
 #if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
 /*******************************************************************************
 * Function Name: SelfTest_ECC
-****************************************************************************//**
+********************************************************************************
 *
 * Summary:
 *  This function performs the ECC hardware self test to detect, correct the single
@@ -216,7 +215,7 @@ uint8_t SelfTest_ECC(cy_en_ecc_error_mode_t eccErrorMode)
 #if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
 /*******************************************************************************
 * Function Name: SelfTest_ECC_Flash
-****************************************************************************//**
+********************************************************************************
 *
 * Summary:
 *  This function performs the ECC hardware self test to detect, correct the single
@@ -299,7 +298,7 @@ uint8_t SelfTest_ECC_Flash(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode)
 
 /*******************************************************************************
 * Function Name: SelfTest_ECC_Ram
-****************************************************************************//**
+********************************************************************************
 *
 * Summary:
 *  This function performs the ECC hardware self test to RAM block to detect, correct the single

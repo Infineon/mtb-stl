@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_Analog.c
-* Version 1.0.0
 *
 * Description:
 *  This file provides source code for the APIs to perform analog component
 *  self tests according to the Class B library.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -1027,7 +1026,7 @@ uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChanne
 #ifdef CLASSB_SELF_TEST_DAC
 /*******************************************************************************
 * Function Name: SelfTests_DAC
-****************************************************************************//**
+********************************************************************************
 *
 * Performs DAC test and verifies that input of DAC and output from ADC are same.
 *

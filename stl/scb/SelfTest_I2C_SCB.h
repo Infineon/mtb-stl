@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_I2C_SCB.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides the function prototype, constants, and parameter values used
 *  for the I2C self tests according to the Class B library.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -49,33 +48,20 @@
 *
 * \section group_i2c_more_information More Information
 *
+* I2C Write API - Operation:
 *
+*      1) Initiates I2C Master transaction to write data to the slave.
+*      2) Waits for Write transfer completion.
+*      3) Reads the Slave Write buffer.
+*      4) Performs 1's complement on the read data.
+*      5) Writes the complemented data to Slave Read Buffer.
 *
-// \verbatim
-I2C Write API - Operation
-1) Initiates I2C Master transaction to write data to the slave.
-2) Waits for Write transfer completion
-3) Reads the Slave Write buffer
-4) Performs 1's complement on the read data
-5) Writes the complemented data to Slave Read Buffer
-
-I2C Read API - Operation
-1) Initiates I2C Master transaction to read data from the slave .
-2) Waits for Read transfer completion
-3) Checks whether the data read is equal to the complement of data written
-\endverbatim
+* I2C Read API - Operation:
 *
+*      1) Initiates I2C Master transaction to read data from the slave.
+*      2) Waits for Read transfer completion.
+*      3) Checks whether the data read is equal to the complement of data written.
 *
-*
-* \section group_i2c_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_i2c_macros Macros
 * \defgroup group_i2c_functions Functions
@@ -103,21 +89,21 @@ I2C Read API - Operation
 *
 *
 * \param master_base
-*  The pointer to the master I2C SCB instance.
+*  The pointer to the master I2C SCB instance
 * \param master_context
-*  The pointer to the master I2C SCB context.
+*  The pointer to the master I2C SCB context
 * \param slave_base
-*  The pointer to the slave I2C SCB instance.
+*  The pointer to the slave I2C SCB instance
 * \param slave_context
-*  The pointer to the slave I2C SCB context.
+*  The pointer to the slave I2C SCB context
 * \param slave_read_buf 
-*  The pointer to slave read buffer.
+*  The pointer to slave read buffer
 * \param slave_write_buf 
-*  The pointer to slave write buffer.
+*  The pointer to slave write buffer
 *
 *
 * \note
-*  During call, function transmits from 0x01 to 0xFF
+*  During call, function transmits from 0x01 to 0xFF.
 *  Clear I2C Master status, read buffer and write buffer
 *
 *

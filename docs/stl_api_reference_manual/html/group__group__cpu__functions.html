@@ -121,8 +121,8 @@ Functions</h2></td></tr>
 
 <p>This function performs the test of the PC register. </p>
 <p >Function calls SelfTest_PC5555() and SelfTest_PCAAAA() which are placed at addresses in flash that most closely match the 0x5555... pattern and 0xAAAA... pattern. These functions must return unique values to SelfTestA, SelfTestB and SelfTestC variables if PC is working correctly.</p>
-<dl class="section return"><dt>Returns</dt><dd>0 - test pass <br  />
- 1 - test fail. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed </dd></dl>
 
 </div>
 </div>
@@ -143,8 +143,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>This function performs checkerboard test for all CPU registers except the PC register. </p>
-<dl class="section return"><dt>Returns</dt><dd>0 - test pass <br  />
- 1 - test fail. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed </dd></dl>
 
 </div>
 </div>
@@ -166,8 +166,8 @@ Functions</h2></td></tr>
 
 <p>This function tests the program flow. </p>
 <p >For every critical execution code block, this function adds to or subtracts from complementary counters before the block execution and immediately after execution. This procedure allows verification of whether the code block is correctly called from the main program flow and to check if the block is correctly executed. Provided there are the same number of exit and entry points, the counter pair will always be complementary after each tested block.</p>
-<dl class="section return"><dt>Returns</dt><dd>0 - test pass <br  />
- 1 - test fail. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed </dd></dl>
 
 </div>
 </div>

@@ -1,7 +1,5 @@
 /*******************************************************************************
 * File Name: SelfTest_UART_master_message.h
-* Version 1.0.0
-*
 *
 * Description:
 *  This file provides the source code to the API for the UART master
@@ -26,7 +24,7 @@
 *  then it's exchanged with two byte sequence <ESC><ESC+1>
 *
 ********************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -85,14 +83,11 @@
 *
 *
 * \param uart_base 
-* The pointer to the master UART SCB instance. <br>
+* The pointer to the master UART SCB instance
 * \param counter_base
-* The pointer to the master TCPWM instance.
+* The pointer to the master TCPWM instance
 * \param cntNum 
-* The Counter instance number in the selected TCPWM.
-*
-* \return
-*  NONE
+* The Counter instance number in the selected TCPWM
 *
 *******************************************************************************/
 void UartMesMaster_Init(CySCB_Type* uart_base, TCPWM_Type* counter_base,  uint32_t cntNum);
@@ -105,22 +100,22 @@ void UartMesMaster_Init(CySCB_Type* uart_base, TCPWM_Type* counter_base,  uint32
 *
 *
 * \param address 
-* Slave address for data transfer <br>
+* Slave address for data transfer
 * \param txd 
-* Pointer to transmitted data <br>
+* Pointer to transmitted data
 * \param tlen 
-* size of transmitted data in bytes <br>
+* Size of transmitted data in bytes
 * \param rxd 
-* pointer to the buffer where the received data will be stored <br>
+* Pointer to the buffer where the received data will be stored
 * \param rlen 
-* size of received data buffer
+* Size of received data buffer
 *
 * \return
-*  0 - If the unit began a message process
-*  1 - if not (cause unit busy or invalid input data)
+*  0 - If the unit began a message process <br>
+*  1 - If not (cause unit busy or invalid input data)
 *
 * \note
-* use UartMesMaster_State() to check busy state
+* Use UartMesMaster_State() to check busy state
 *
 *******************************************************************************/
 uint8_t UartMesMaster_DataProc(uint8_t address, uint8_t * txd, uint8_t tlen, uint8_t * rxd, uint8_t rlen);
@@ -131,14 +126,11 @@ uint8_t UartMesMaster_DataProc(uint8_t address, uint8_t * txd, uint8_t tlen, uin
 *
 * Returns current master unit state
 *
-*
-*
-*
 * \return
 * UM_ERROR        - last message process ended with error (the slave didn't
-*                     respond or invalid responded data format)
+*                     respond or invalid responded data format) <br>
 * UM_COMPLETE     - last message process succeeded (responded data is in the
-*                   received buffer)
+*                   received buffer) <br>
 * UM_BUSY         - unit is busy with message process
 *
 *
@@ -151,16 +143,12 @@ uint8_t UartMesMaster_State(void);
 *
 * Returns size of the received data
 *
-*
-*
-*
 * \return
 *  Received data size in buffer
 
 * \note
-*  Result valid only if unit state is UM_COMPLETE
-*  use UartMesMaster_State() to check this condition.
-*
+*  Result valid only if unit state is UM_COMPLETE.
+*  Use UartMesMaster_State() to check this condition
 *
 *******************************************************************************/
 uint8_t UartMesMaster_GetDataSize(void);
@@ -172,13 +160,6 @@ uint8_t UartMesMaster_GetDataSize(void);
 * UART timer guard interrupt. This function provides timeout control when data is
 * sent but response is not received after packet transaction.
 *
-*
-*
-*
-* \return
-* NONE
-*
-*
 *******************************************************************************/
 void UartMesMaster_Timeout_ISR(void);
 
@@ -187,13 +168,6 @@ void UartMesMaster_Timeout_ISR(void);
 ****************************************************************************//**
 *
 * Interrupt handler for UART to receive/transmit
-*
-*
-*
-*
-* \return
-* NONE
-*
 *
 *******************************************************************************/
 void UartMesMaster_Msg_ISR(void);

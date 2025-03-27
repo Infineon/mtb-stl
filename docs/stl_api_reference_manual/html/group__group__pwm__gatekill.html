@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ModusToolbox Safety Test Library: PWM GateKill              (PWM GAteKill STL module)</title>
+<title>ModusToolbox Safety Test Library: PWM GateKill              (PWM GateKill STL module)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('group__group__pwm__gatekill.html','');
 <div class="header">
   <div class="summary">
 <a href="#groups">API Reference</a>  </div>
-  <div class="headertitle"><div class="title">PWM GateKill (PWM GAteKill STL module)</div></div>
+  <div class="headertitle"><div class="title">PWM GateKill (PWM GateKill STL module)</div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -93,26 +93,15 @@ $(document).ready(function(){initNavTree('group__group__pwm__gatekill.html','');
 <p >When an over-voltage or over-current state is detected, the Gate Kill shuts down the output drivers in less than 50 nanoseconds.</p>
 <h1><a class="anchor" id="group_pwm_gatekill_more_information"></a>
 More Information</h1>
-<pre class="fragment">The test is carried out as mentioned below.
- 1) The Low power comparator/ SAR ADC Range Voilation Intr output is routed to Kill
-    signal of TCPWM indicating over-voltage/over-current condition if voltage on +ve
-    terminal is &gt; -ve.
+<p >The test is carried out as mentioned below: </p><pre class="fragment"> 1) The Low power comparator/ SAR ADC Range Voilation Intr output is routed to Kill
+ signal of TCPWM indicating over-voltage/over-current condition if voltage on +ve
+ terminal is &gt; -ve.
  2) If over-voltage or over-current condition it will Kill PWM output.
- 3) The TCPWM base and CntNum is passed to check whether the counter is stopped or not. 
+ 3) The TCPWM base and CntNum is passed to check whether the counter is stopped or not.
  4) If counter is not incrementing/decrementing the PWM output is inactive.
-</pre><h1><a class="anchor" id="group_pwm_gatekill_profile_changelog"></a>
-Changelog</h1>
-<table class="doxtable">
-<tr>
-<th>Version</th><th>Changes</th><th>Reason for Change </th></tr>
-<tr>
-<td>1.00 </td><td>Initial Version. </td><td>Initial Version.  </td></tr>
-</table>
-<table class="memberdecls">
+</pre> <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>
-<tr class="memitem:group__group__pwm__gatekill__macros"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pwm__gatekill__macros.html">Macros</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__pwm__gatekill__functions"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pwm__gatekill__functions.html">Functions</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

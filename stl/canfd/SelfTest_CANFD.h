@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_CANFD.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides the function prototypes, constants and parameter values used
-*  for the clock self tests according to Class B library.
+*  for the CAN-FD self tests according to Class B library.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -50,19 +49,8 @@
 *
 *
 * \note
-* Only applicable to CAT1C devices.
+* Only applicable to CAT1C devices
 *
-* \section group_canfd_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
-*
-* \defgroup group_canfd_macros Macros
 * \defgroup group_canfd_functions Functions
 */
 
@@ -101,20 +89,19 @@
 *
 *
 * \param base 
-* The pointer to a CAN FD instance. <br>
+* The pointer to a CAN FD instance
 * \param chan 
-* The CAN FD channel number. <br> 
+* The CAN FD channel number
 * \param config 
-* The pointer to the CAN FD configuration structure.
+* The pointer to the CAN FD configuration structure
 * \param context 
 * The pointer to the context structure allocated
 * by the user. The structure is used during the CAN FD operation for internal
 * configuration and data retention. User must not modify anything in this
-* structure.
-*
+* structure
 * \param test_mode 
-* internal : will not drive the pin
-* external : will drive the external pins along with loopback
+* internal: will not drive the pin <br>
+* external: will drive the external pins along with loopback
 *
 * \return
 *  0 - Test passed <br>

@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_Analog.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides the function prototypes, constants, and parameter values used
 *  for the analog component self tests according to Class B library.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -42,7 +41,7 @@
 * \addtogroup group_analog
 * \{
 *
-* This module carries out 3 tests: <br>
+* This module carries out 4 tests: <br>
 * 1) SAR ADC <br>
 * 2) OPAMP <br>
 * 3) LPCOMP <br>
@@ -53,8 +52,8 @@
 * SAR ADC Test:
 * This test is to check the SAR ADC analog functions. Each ADC enabled by 
 * the test is connected to an reference voltage using the Programmable 
-* Analog block. If the measured value is more than the expected value,
-* an error is returned.
+* Analog block. If the measured value falls within the expected range,
+* the test passes.
 *
 * OPAMP Test:
 * The opamp is tested by generating the same output as the input 
@@ -72,15 +71,6 @@
 * verifies that input of DAC and output from ADC are same.
 * If it is as per expected then test passes.
 *
-* \section group_analog_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_analog_macros Macros
 * \defgroup group_analog_functions Functions
@@ -154,12 +144,20 @@
 #if (CY_CPU_CORTEX_M0P)
     /** OP-AMP accuracy: 12% */
     #define OPAMP_TEST_ACURACCY             12
+
+    #if defined(CY_DEVICE_SERIES_PSOC_4100T_PLUS)
+    /** Whether ADC is present or not*/
+    #define CLASSB_SELF_TEST_ADC            1u
+    /** Whether OPAMP is present or not */
+    #define CLASSB_SELF_TEST_OPAMP          1u
+    #else
     /** Whether ADC is present or not*/
     #define CLASSB_SELF_TEST_ADC            1u
     /** Whether OPAMP is present or not */
     #define CLASSB_SELF_TEST_OPAMP          1u
     /** Whether Comparator is present or not */
     #define CLASSB_SELF_TEST_COMP           1u
+    #endif /* CY_DEVICE_SERIES_PSOC_4100T_PLUS */
 
 #elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33 )
     /** Whether ADC is present or not */
@@ -368,20 +366,20 @@
 * Performs OPAMP test and verify measured voltage is in accuracy range.
 *
 *
-* \param sar_base 
+* \param sar_base
 * The pointer to a SAR ADC instance
 * \param expected_res 
-* if count_to_mV = 1 => Expected result in mV, else Expected result in counts.
-* \param accuracy 
+* If count_to_mV = 1 => Expected result in mV, else Expected result in counts.
+* \param accuracy
 * Accuracy in count ANALOG_OPAMP_ACURACCY
-* \param opamp_in_channel 
-* channel no. where the OPAMP output is been read
-* \param count_to_mV 
+* \param opamp_in_channel
+* Channel no. where the OPAMP output is been read
+* \param count_to_mV
 * 1 = convert the count to mV.(take more time)
 *
 * \return
-*  0 - Test Passed <br>
-*  1 - Test Failed
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 *******************************************************************************/
 #if defined(CLASSB_SELF_TEST_OPAMP)
@@ -396,24 +394,24 @@
 *
 *
 * \param base 
-* The pointer to a SAR ADC instance. For CAT1B, base is the group instance.
+* The pointer to a SAR ADC instance. For CAT1B, base is the group instance
 * \param channel
-* channel no. where the input voltage needs to be read
-* \param expected_res 
-* if count_to_mV = 1 => Expected result in mV, else Expected result in counts.
-* \param accuracy 
+* Channel no. where the input voltage needs to be read
+* \param expected_res
+* If count_to_mV = 1 => Expected result in mV, else Expected result in counts
+* \param accuracy
 * Accuracy in count ANALOG_ADC_ACURACCY
 * \param vbg_channel
-* Channel no. where the VBG voltage is connected. Only for CAT1C device.
+* Channel no. where the VBG voltage is connected. Only for CAT1C device
 * \param count_to_mV 
 * 1 = convert the count to mV.(take more time). Not applicable for CAT1B device
 *
 * \return
-*  0 - Test Passed <br>
-*  1 - Test Failed
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 * \note
-* For CA1B devices, User needs to configure the trigger input same as channel number.
+* For CA1B devices, User needs to configure the trigger input same as channel number
 *
 *******************************************************************************/
 #if defined(CLASSB_SELF_TEST_ADC)
@@ -436,16 +434,16 @@
 * compared to -ve terminal generates high output and vice verse.
 *
 *
-* \param lpcomp_base 
+* \param lpcomp_base
 * The pointer to a Comparator instance
 * \param lpcomp_channel
 * Configured channel number
-* \param expected_res 
+* \param expected_res
 * Expected result (1 or 0)
 *
 * \return
-*  0 - Test Passed <br>
-*  1 - Test Failed
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 *******************************************************************************/
 #if defined(CLASSB_SELF_TEST_COMP)
@@ -461,16 +459,16 @@ uint8_t SelfTests_Comparator(LPCOMP_Type const* lpcomp_base, cy_en_lpcomp_channe
 * Performs DAC test and verifies that input of DAC and output from ADC are same.
 * The digital input value to DAC maps to 1.5V
 *
-* \param dacBase 
+* \param dacBase
 * The pointer to a DAC instance
-* \param adcBase 
+* \param adcBase
 * The pointer to a SAR ADC instance
 * \param adcChannel
-* channel number of SAR ADC instance
+* Channel number of SAR ADC instance
 *
 * \return
-*  0 - Test Passed <br>
-*  1 - Test Failed
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 * \note
 * Applicable only to CAT1A devices
@@ -494,12 +492,12 @@ uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChanne
 * \param dac_val
 * Value to be loaded in DAC register
 * \param expected_res
-* channel Expected result in ADC
+* Channel Expected result in ADC
 * \param accuracy
 * Error tolerance
 * \return
-*  0 - Test Passed <br>
-*  1 - Test Failed
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 * \note
 * Applicable only to CAT1B devices

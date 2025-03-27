@@ -5,7 +5,7 @@
 * Include this file in all of your source files that access mtb-stl middleware.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -37,6 +37,10 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 
+#if !defined(SELFTEST_H)
+    #define SELFTEST_H
+
+#include "cy_pdl.h"
 #include "SelfTest_Analog.h"
 #include "SelfTest_Clock.h"
 #include "SelfTest_ConfigRegisters.h"
@@ -54,39 +58,36 @@
 #include "SelfTest_WDT.h"
 #include "SelfTest_UART_master_message.h"
 #include "SelfTest_UART_slave_message.h"
-
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
-#include "SelfTest_FPU_Regs.h"
 #include "SelfTest_DMAC.h"
+#include "SelfTest_PWM.h"
+#include "SelfTest_PWM_GateKill.h"
+#include "SelfTest_Timer_Counter.h"
+
+#if (defined(CY_CPU_CORTEX_M4) || defined(CY_CPU_CORTEX_M7))
+#include "SelfTest_FPU_Regs.h"
 #include "SelfTest_DMA_DW.h"
 #include "SelfTest_IPC.h"
-#include "SelfTest_Timer_Counter.h"
-#include "SelfTest_PWM_GateKill.h"
-#include "SelfTest_PWM.h"
 #endif
 
-#if CY_CPU_CORTEX_M33
+#if defined(CY_CPU_CORTEX_M33)
 #include "SelfTest_Motif.h"
 #include "SelfTest_FPU_Regs.h"
 #include "SelfTest_DMA_DW.h"
 #include "SelfTest_IPC.h"
-#include "SelfTest_Timer_Counter.h"
-#include "SelfTest_PWM_GateKill.h"
-#include "SelfTest_PWM.h"
 #include "SelfTest_Cordic.h"
 #include "SelfTest_ECC.h"
 #endif
 
-#if CY_CPU_CORTEX_M7
+#if defined(CY_CPU_CORTEX_M7)
 #include "SelfTest_WWDT.h"
 #include "SelfTest_ECC.h"
 #endif
 
-#if CY_CPU_CORTEX_M7 || CY_CPU_CORTEX_M33 || (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A256K)) || (CY_CPU_CORTEX_M4 && defined (CY_DEVICE_PSOC6A512K))
+#if defined(CY_CPU_CORTEX_M7) || defined(CY_CPU_CORTEX_M33) || defined(CY_DEVICE_PSOC6A256K) || defined(CY_DEVICE_PSOC6A512K)
 #include "SelfTest_CANFD.h"
 #endif
 
 #include "UART_Debug.h"
 
-
+#endif
 /* [] END OF FILE */

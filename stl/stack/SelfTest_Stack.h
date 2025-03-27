@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_Stack.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides constants and parameter values used for Stack
 *  self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -48,18 +47,6 @@ This can occur, for example, if recursive functions are used.
 This library fills a block of memory above and below the stack with a fixed pattern and periodically tested the pattern for corruption. 
 *
 *
-*
-*
-* \section group_stack_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
-*
 * \defgroup group_stack_macros Macros
 * \defgroup group_stack_functions Functions
 */
@@ -82,20 +69,17 @@ This library fills a block of memory above and below the stack with a fixed patt
  * Function Name: SelfTests_Init_Stack_Range
  *****************************************************************************//**
  *
- * Summary:
- *  This function initializes the upper stack area with 0xAA and 0x55 pattern.
+ * This function initializes the upper and lower 
+ * stack area with 0xAA and 0x55 pattern.
  *
- * Parameters:
  * \param stack_address
- * The pointer to the stack.
+ * The pointer to the stack
  * \param stack_length
- * The length of the stack.
+ * The length of the stack
  * \param stack_pattern_blk_size
  * No of bytes to be used to fill the pattern. Must be 2^n where n=1 to n=8. 
  * (Recommended value for n = 3)
  *
- * Return:
- *  None.
  *
  *******************************************************************************/
 
@@ -104,18 +88,17 @@ void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length, 
  * Function Name: SelfTests_Stack_Check_Range
  *****************************************************************************//**
  *
- * Summary:
- *  This function performs stack self test. It checks upper stack area for 0xAA
- *  and 0x55 pattern.
+ * This function performs stack self test. It checks upper and lower
+ * stack area for 0xAA and 0x55 pattern.
  *
- * Parameters:
  * \param stack_address
- * The pointer to the stack.
+ * The pointer to the stack
  * \param stack_length
- * The length of the stack.
+ * The length of the stack
  *
- * Return:
- *  Result of test:  "0" - pass test; "1" - fail test.
+ * \return
+ *  0 - Test passed <br>
+ *  1 - Test failed
  *
  **********************************************************************************/
 uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_length);

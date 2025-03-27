@@ -7,12 +7,12 @@
 ;
 ;  Owner:
 ;   JOBI
-; 
-;  Related Document: 
+;
+;  Related Document:
 ;   AN89056: PSoC 4 - IEC 60730 Class B and IEC 61508 Safety Software Library
 ;
 ; Hardware Dependency:
-;  CY8C40XX, CY8C42XX, CY8C42XXM, CY8C42XXL, CY8C40XXS, CY8C41XXS and 
+;  CY8C40XX, CY8C42XX, CY8C42XXM, CY8C42XXL, CY8C40XXS, CY8C41XXS and
 ;  CY8C41XXS Plus Devices
 ;
 ;-------------------------------------------------------------------------------
@@ -48,7 +48,7 @@
     THUMB
 
 ; Set this const to 0x01 to generate error for registers test
-ERROR_IN_CPU_REGISTERS        EQU        0x00
+ERROR_IN_CPU_REGISTERS      EQU     0x00
 
 ;-------------------------------------------------------------------------------
 ; Function Name: SelfTest_CPU_Regs_ARM
@@ -71,7 +71,7 @@ SelfTest_CPU_Regs_ARM FUNCTION
         PUSH  {R1-R7, LR}
 
         ; Test SP register
-        ; Note: SP ignores writes to the lower two bits, 
+        ; Note: SP ignores writes to the lower two bits,
         ; so they are intentionally set to 0
 
         ; Save SP to R1
@@ -107,13 +107,13 @@ __test_stack_ok
         MOV   R8, R0
         CMP   R8, R0
         MOV   R8, R1
-        BNE.w   __test_asm_fail
+        BNE   __test_high_reg_fail
 
         LDR   R0, =0x55555555
         MOV   R8, R0
         CMP   R8, R0
         MOV   R8, R1
-        BNE.w   __test_asm_fail
+        BNE   __test_high_reg_fail
 
         ; R9 registers test
         MOV   R1, R9
@@ -121,13 +121,13 @@ __test_stack_ok
         MOV   R9, R0
         CMP   R9, R0
         MOV   R9, R1
-        BNE.w   __test_asm_fail
+        BNE   __test_high_reg_fail
 
         LDR   R0, =0x55555555
         MOV   R9, R0
         CMP   R9, R0
         MOV   R9, R1
-        BNE.w   __test_asm_fail
+        BNE   __test_high_reg_fail
 
         ; R10 registers test
         MOV   R1, R10
@@ -135,13 +135,13 @@ __test_stack_ok
         MOV   R10, R0
         CMP   R10, R0
         MOV   R10, R1
-        BNE.w   __test_asm_fail
+        BNE   __test_high_reg_fail
 
         LDR   R0, =0x55555555
         MOV   R10, R0
         CMP   R10, R0
         MOV   R10, R1
-        BNE.w   __test_asm_fail
+        BNE   __test_high_reg_fail
 
         ; R11 registers test
         MOV   R1, R11
@@ -149,13 +149,13 @@ __test_stack_ok
         MOV   R11, R0
         CMP   R11, R0
         MOV   R11, R1
-        BNE   __test_asm_fail
+        BNE   __test_high_reg_fail
 
         LDR   R0, =0x55555555
         MOV   R11, R0
         CMP   R11, R0
         MOV   R11, R1
-        BNE   __test_asm_fail
+        BNE   __test_high_reg_fail
 
         ; R12 registers test
         MOV   R1, R12
@@ -163,13 +163,13 @@ __test_stack_ok
         MOV   R12, R0
         CMP   R12, R0
         MOV   R12, R1
-        BNE   __test_asm_fail
+        BNE   __test_high_reg_fail
 
         LDR   R0, =0x55555555
         MOV   R12, R0
         CMP   R12, R0
         MOV   R12, R1
-        BNE   __test_asm_fail
+        BNE   __test_high_reg_fail
 
         ; LR registers test
         MOV   R1, LR
@@ -177,14 +177,20 @@ __test_stack_ok
         MOV   LR, R0
         CMP   LR, R0
         MOV   LR, R1
-        BNE   __test_asm_fail
+        BNE   __test_high_reg_fail
 
         LDR   R0, =0x55555555
         MOV   LR, R0
         CMP   LR, R0
         MOV   LR, R1
-        BNE   __test_asm_fail
+        BNE   __test_high_reg_fail
 
+        B     __test_high_reg_ok
+
+__test_high_reg_fail
+        B    __test_asm_fail
+
+__test_high_reg_ok
         ; R0 registers test
         LDR   R1, =0xAAAAAAAA
         MOV   R0, R1

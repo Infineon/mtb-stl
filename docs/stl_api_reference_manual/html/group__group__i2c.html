@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ModusToolbox Safety Test Library: i2c                       (i2c STL module)</title>
+<title>ModusToolbox Safety Test Library: I2C                       (I2C STL module)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('group__group__i2c.html',''); initResiz
 <div class="header">
   <div class="summary">
 <a href="#groups">API Reference</a>  </div>
-  <div class="headertitle"><div class="title">i2c (i2c STL module)</div></div>
+  <div class="headertitle"><div class="title">I2C (I2C STL module)</div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -95,26 +95,15 @@ $(document).ready(function(){initNavTree('group__group__i2c.html',''); initResiz
  3) Master reads the data from slave and compares it with the complement of data sent in last interaction.</p>
 <h1><a class="anchor" id="group_i2c_more_information"></a>
 More Information</h1>
-<pre class="fragment">I2C Write API - Operation
-1) Initiates I2C Master transaction to write data to the slave.
-2) Waits for Write transfer completion
-3) Reads the Slave Write buffer
-4) Performs 1's complement on the read data
-5) Writes the complemented data to Slave Read Buffer
-
-I2C Read API - Operation
-1) Initiates I2C Master transaction to read data from the slave .
-2) Waits for Read transfer completion
-3) Checks whether the data read is equal to the complement of data written
-</pre><h1><a class="anchor" id="group_i2c_profile_changelog"></a>
-Changelog</h1>
-<table class="doxtable">
-<tr>
-<th>Version</th><th>Changes</th><th>Reason for Change </th></tr>
-<tr>
-<td>1.00 </td><td>Initial Version. </td><td>Initial Version.  </td></tr>
-</table>
-<table class="memberdecls">
+<p >I2C Write API - Operation: </p><pre class="fragment"> 1) Initiates I2C Master transaction to write data to the slave.
+ 2) Waits for Write transfer completion.
+ 3) Reads the Slave Write buffer.
+ 4) Performs 1's complement on the read data.
+ 5) Writes the complemented data to Slave Read Buffer.
+</pre><p> I2C Read API - Operation: </p><pre class="fragment"> 1) Initiates I2C Master transaction to read data from the slave.
+ 2) Waits for Read transfer completion.
+ 3) Checks whether the data read is equal to the complement of data written.
+</pre> <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>
 <tr class="memitem:group__group__i2c__macros"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__i2c__macros.html">Macros</a></td></tr>

@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_PWM.h
-* Version 1.0.0
 *
 * Description:
-* Description: This file provides the constants and parameter values for the PWM 
-* self tests.
+*  This file provides the constants and parameter values for the PWM 
+*  self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -52,15 +51,6 @@
 *  successful if the off/on ratio is between 1.875(1 7/8) to 2.125(2 1/8). A 
 * range is used because the CPU polling loop is asynchronous to the PWM timing.
 *
-* \section group_pwm_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_pwm_macros Macros
 * \defgroup group_pwm_functions Functions
@@ -70,7 +60,8 @@
     #define SELFTEST_PWM_H
 #include "SelfTest_common.h"
 
-#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
+#if (defined(CY_IP_MXTCPWM) || defined(CY_IP_M0S8TCPWM) || CY_DOXYGEN)
+
 /** \addtogroup group_pwm_macros
 * \{
 */
@@ -94,18 +85,18 @@
 * in output. 
 *
 * \param pinbase
-* The pointer to a GPIO port instance to which the PWM pin is connected to.
+* The pointer to a GPIO port instance to which the PWM pin is connected to
 *
 * \param pinNum
-* The GPIO pin number to which the PWM pin is connected to.
+* The GPIO pin number to which the PWM pin is connected to
 *
 *
 * \note
-* The parameter passed for CAT1C devices will be ignored.
+* The parameter passed for CAT1C devices will be ignored
 *
 * \return
-*  0 - Test Passed <br>
-*  1 - Test failed 
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 *******************************************************************************/
 uint8_t SelfTest_PWM(GPIO_PRT_Type *pinbase, uint32_t pinNum);
@@ -117,16 +108,20 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type *pinbase, uint32_t pinNum);
 * Initialize Timer interrupt for the Self test.
 *
 * \param base
-* The pointer to a TCPWM instance.
+* The pointer to a TCPWM instance
 *
 * \param cntNum
-* The Counter instance number in the selected TCPWM.
+* The Counter instance number in the selected TCPWM
 *
 * \param config
-* The pointer to configuration structure.
+* The pointer to configuration structure
 *
 * \param intr_src
-* Interrupt source 
+* Interrupt source
+*
+* \return
+*  0 - Initialization successful <br>
+*  1 - Initialization failed
 ******************************************************************************/
 uint8_t SelfTest_PWM_init(TCPWM_Type *base, uint32_t cntNum,
              cy_stc_tcpwm_pwm_config_t const *config, IRQn_Type  intr_src);

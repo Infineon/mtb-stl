@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ModusToolbox Safety Test Library: UART_Data_Transfer        (UART_Data_Transfer STL module)</title>
+<title>ModusToolbox Safety Test Library: UART Data Transfer        (UART Data Transfer STL module)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('group__group__uart__data__tsf.html',''
 <div class="header">
   <div class="summary">
 <a href="#groups">API Reference</a>  </div>
-  <div class="headertitle"><div class="title">UART_Data_Transfer (UART_Data_Transfer STL module)</div></div>
+  <div class="headertitle"><div class="title">UART Data Transfer (UART Data Transfer STL module)</div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -97,37 +97,23 @@ $(document).ready(function(){initNavTree('group__group__uart__data__tsf.html',''
  3) The timer interrupt is used to detect the end of an unsuccessful transmission.</p>
 <h1><a class="anchor" id="group_uart_data_tsf_more_information"></a>
 More Information</h1>
-<pre class="fragment">  Protocol description
-  Master(A) slave(B) communication:
-     |---|    --- Request send ---&gt;    |---|
-     | A |    {Wait for respond}       | B |
-     |---|    &lt;--- Respond send ---    |---|
-  Packet format:
-  -&gt; &lt;STX&gt;&lt;ADDR&gt;&lt;DL&gt;&lt;[Data bytes length equal DL]&gt;&lt;CRCH&gt;&lt;CRCL&gt;
-      STX        - 0x02 begin packet marker. Unique byte of start packet
-      ADDR       - device address
-      DL         - data length in bytes [1..255]
-      CRCH       - MSB of CRC-16 that calculated from ADDR to last data byte
-      CRCL       - LSB of CRC-16    that calculated from ADDR to last data byte
-      
-  -&gt; If there is a byte &lt;ADDR&gt; &lt;DL&gt; &lt;[Data]&gt; or &lt;[CRC]&gt; that equals STX
-     then it's exchanged with two byte sequence &lt;ESC&gt;&lt;STX+1&gt;
-  
-  -&gt; If there is a byte &lt;ADDR&gt; &lt;DL&gt; &lt;[Data]&gt; or &lt;[CRC]&gt; that equals ESC
-     then it's exchanged with two byte sequence &lt;ESC&gt;&lt;ESC+1&gt;
-</pre><h1><a class="anchor" id="group_uart_data_tsf_profile_changelog"></a>
-Changelog</h1>
-<table class="doxtable">
-<tr>
-<th>Version</th><th>Changes</th><th>Reason for Change </th></tr>
-<tr>
-<td>1.00 </td><td>Initial Version. </td><td>Initial Version.  </td></tr>
-</table>
-<table class="memberdecls">
+<p >Protocol description Master(A) slave(B) communication: </p><div class="fragment"><div class="line">|---|    --- Request send ---&gt;    |---| </div>
+</div><!-- fragment --> <div class="fragment"><div class="line">| A |    {Wait <span class="keywordflow">for</span> respond}       | B | </div>
+</div><!-- fragment --> <div class="fragment"><div class="line">|---|    &lt;--- Respond send ---    |---| </div>
+</div><!-- fragment --><p> Packet format: <br  />
+ 1) </p><div class="fragment"><div class="line">&lt;STX&gt;&lt;ADDR&gt;&lt;DL&gt;&lt;[Data bytes length equal DL]&gt;&lt;CRCH&gt;&lt;CRCL&gt; </div>
+</div><!-- fragment --> <pre class="fragment">  a) STX        - 0x02 begin packet marker. Unique byte of start packet
+  b) ADDR       - device address
+  c) DL         - data length in bytes [1..255]
+  d) CRCH       - MSB of CRC-16 that calculated from ADDR to last data byte
+  e) CRCL       - LSB of CRC-16    that calculated from ADDR to last data byte
+</pre><p> 2) If there is a byte </p><div class="fragment"><div class="line">&lt;ADDR&gt; &lt;DL&gt; &lt;[Data]&gt; or &lt;[CRC]&gt; </div>
+</div><!-- fragment --><p> that equals STX then its exchanged with two byte sequence </p><div class="fragment"><div class="line">&lt;ESC&gt;&lt;STX+1&gt;. </div>
+</div><!-- fragment --><p >3) If there is a byte </p><div class="fragment"><div class="line">&lt;ADDR&gt; &lt;DL&gt; &lt;[Data]&gt; or &lt;[CRC]&gt; </div>
+</div><!-- fragment --><p> that equals ESC then its exchanged with two byte sequence </p><div class="fragment"><div class="line">&lt;ESC&gt;&lt;ESC+1&gt;. </div>
+</div><!-- fragment --> <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>
-<tr class="memitem:group__group__uart__data__tsf__macros"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__uart__data__tsf__macros.html">Macros</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__uart__data__tsf__functions__master"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__uart__data__tsf__functions__master.html">Master</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__uart__data__tsf__functions__slave"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__uart__data__tsf__functions__slave.html">Slave</a></td></tr>

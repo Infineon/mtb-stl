@@ -1,11 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_PWM_GateKill.c
-* Version 1.0.0
 *
-* Description: This file provides the source code for the PWM Gatekill self tests.
+*
+* Description:
+*  This file provides the source code for the PWM Gatekill self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -37,10 +38,10 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 
-#include "cy_pdl.h"
 #include "SelfTest_PWM_GateKill.h"
 #include "SelfTest_ErrorInjection.h"
 
+#if (defined(CY_IP_M0S8TCPWM) || defined(CY_IP_MXTCPWM))
 uint8_t SelfTest_PWM_GateKill(TCPWM_Type *base, uint32_t cntNum)
 {
 
@@ -65,3 +66,6 @@ uint8_t SelfTest_PWM_GateKill(TCPWM_Type *base, uint32_t cntNum)
         return ERROR_STATUS;
     }
 }
+#endif /* (defined(CY_IP_M0S8TCPWM) || defined(CY_IP_MXTCPWM)) */
+
+/* [] END OF FILE */

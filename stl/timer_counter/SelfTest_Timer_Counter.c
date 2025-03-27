@@ -1,12 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_Timer_Counter.c
-* Version 1.1.0
 *
-* Description: This file provides the source code for the APIs to perform
-* Timer counter source testing according to the Class B library.
+* Description: 
+*  This file provides the source code for the APIs to perform
+*  Timer counter source testing according to the Class B library.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -42,14 +42,16 @@
 #include "SelfTest_Timer_Counter.h"
 #include "SelfTest_ErrorInjection.h"
 
-#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
+#if (defined(CY_IP_MXTCPWM) || defined(CY_IP_M0S8TCPWM))
+
 /*******************************************************************************
 * Global Variables
 *******************************************************************************/
-static uint8_t int_occur = 0;
+static volatile uint8_t int_occur = 0U;
 static TCPWM_Type* base1;
 static uint32_t cntNum1;
-static volatile uint32_t count1;
+
+
 /******************************************************************************
 * Function Name: SelfTest_TIMER_COUNTER_ISR
 *******************************************************************************
@@ -69,7 +71,7 @@ void SelfTest_TIMER_COUNTER_ISR(void)
 
 
 /******************************************************************************
-* Function Name: timer_counter_interrupt_init
+* Function Name: SelfTest_Timer_Counter_init
 *******************************************************************************
 *
 * Summary:
@@ -85,47 +87,48 @@ void SelfTest_TIMER_COUNTER_ISR(void)
 * The pointer to configuration structure. See \ref cy_stc_tcpwm_counter_config_t.
 *
 * \param intsrc
-* Interrupt source 
+* Interrupt source
 ******************************************************************************/
 void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum, cy_stc_tcpwm_counter_config_t const *config, IRQn_Type intsrc)
 {
     base1 = base;
     cntNum1 = cntNum;
-    cy_rslt_t result;
-    #if CY_CPU_CORTEX_M7 
+
+    #if defined (CY_IP_M7CPUSS)
     const cy_stc_sysint_t intrCfg =
     {
-        .intrSrc = (((uint32_t)NvicMux3_IRQn << 16U) | ((uint32_t)intsrc)), /* Bit 0-15 of intrSrc is used to store system interrupt value and bit 16-31 to store CPU IRQ value */
+        /* Bit 0-15 of intrSrc is used to store system interrupt value and bit 16-31 to store CPU IRQ value */
+        .intrSrc = (((uint32_t)NvicMux3_IRQn << 16U) | ((uint32_t)intsrc)),
         .intrPriority = 3UL
     };
-    #elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
-    cy_stc_sysint_t intrCfg =
+    #else
+    const cy_stc_sysint_t intrCfg =
     {
-       /*.intrSrc =*/ intsrc, /* Interrupt source is Timer interrupt */
-       /*.intrPriority =*/ 3UL   /* Interrupt priority is 3 */
+        .intrSrc = intsrc,
+        .intrPriority = 3UL
     };
     #endif
-    cy_en_tcpwm_status_t tcpwm_init_status = Cy_TCPWM_Counter_Init(base, cntNum, config);
-    (void)tcpwm_init_status;
-    result = (cy_rslt_t)Cy_SysInt_Init(&intrCfg, SelfTest_TIMER_COUNTER_ISR);
 
-    if(result != (cy_rslt_t)CY_SYSINT_SUCCESS)
+    if(CY_TCPWM_SUCCESS != Cy_TCPWM_Counter_Init(base, cntNum, config))
     {
-        CY_ASSERT(result == CY_SYSINT_SUCCESS);
+        CY_ASSERT(0U);
+    }
+
+    if(CY_SYSINT_SUCCESS != Cy_SysInt_Init(&intrCfg, SelfTest_TIMER_COUNTER_ISR))
+    {
+        CY_ASSERT(0U);
     }
 
     /* Enable Interrupt */
-    #if CY_CPU_CORTEX_M7 
+    #if defined (CY_IP_M7CPUSS)
     NVIC_EnableIRQ((IRQn_Type) NvicMux3_IRQn);
-    #elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
+    #else
     NVIC_EnableIRQ(intrCfg.intrSrc);
     #endif
 
-    /* Enable timer */
     Cy_TCPWM_Counter_Enable(base, cntNum);
 
-    Cy_TCPWM_SetInterruptMask(base, cntNum, CY_TCPWM_INT_ON_TC);
-
+    Cy_TCPWM_SetInterruptMask(base, cntNum, CY_TCPWM_INT_ON_CC);
 }
 
 
@@ -145,42 +148,42 @@ void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum, cy_stc_tcpwm
 *****************************************************************************/
 uint8_t SelfTest_Counter_Timer(void)
 {
-    int_occur = 0;
-    count1 = 0;
-    uint8_t ret;
-    uint16_t delay_cnt = 0;
-    Cy_TCPWM_Counter_SetCompare0BufVal(base1, cntNum1,TIMER_COUNTER_TEST_PERIOD);
-    Cy_TCPWM_Counter_SetPeriod(base1, cntNum1,TIMER_COUNTER_TEST_PERIOD);
-    Cy_TCPWM_Counter_SetCounter(base1, cntNum1, 0);
+    uint8_t ret = ERROR_STATUS;
+    uint16_t delay_cnt = 0U;
+    uint32_t counterVal;
+
+    int_occur = 0U;
+
+    Cy_TCPWM_Counter_SetCompare0(base1, cntNum1, TIMER_COUNTER_TEST_COMPARE);
+    Cy_TCPWM_Counter_SetPeriod(base1, cntNum1, TIMER_COUNTER_TEST_PERIOD);
+    Cy_TCPWM_Counter_SetCounter(base1, cntNum1, 0U);
     Cy_TCPWM_Counter_Enable(base1, cntNum1);
 
-    #if (ERROR_IN_TIMER_COUNTER == 0)
-        /* refresh and start counter */
-        Cy_TCPWM_TriggerReloadOrIndex_Single(base1,cntNum1);
+    #if (ERROR_IN_TIMER_COUNTER == 0U)
+        #if defined(CY_IP_M0S8TCPWM)
+        Cy_TCPWM_TriggerReloadOrIndex(base1, 1UL << cntNum1);
+        #else
+        Cy_TCPWM_TriggerReloadOrIndex_Single(base1, cntNum1);
+        #endif
     #endif
+
     do
     {
-        count1 = Cy_TCPWM_Counter_GetCounter(base1, cntNum1);
+        counterVal = Cy_TCPWM_Counter_GetCounter(base1, cntNum1);
         Cy_SysLib_DelayUs(1);
         delay_cnt++;
-    } while ((int_occur == 0U) && (delay_cnt < 600U));
+    } while ((int_occur == 0U) && (TIMER_COUNTER_TIMEOUT > delay_cnt));
 
-    if(delay_cnt >=600U)
+    if(TIMER_COUNTER_TIMEOUT > delay_cnt)
     {
-        return ERROR_STATUS;
-    }
-
-    const uint32_t count1_val = count1;
-    if((count1_val < TIMER_COUNTER_COUNT_LOW) || (count1_val > TIMER_COUNTER_COUNT_HIGH))
-    {
-        ret = ERROR_STATUS;
-    }
-    else
-    {
-        ret = OK_STATUS;
+        if((TIMER_COUNTER_COUNT_LOW < counterVal) && (TIMER_COUNTER_COUNT_HIGH > counterVal))
+        {
+            ret = OK_STATUS;
+        }
     }
     return ret;
 }
 
-#endif
+#endif /* (defined(CY_IP_MXTCPWM) || defined(CY_IP_M0S8TCPWM)) */
+
 /* [] END OF FILE */

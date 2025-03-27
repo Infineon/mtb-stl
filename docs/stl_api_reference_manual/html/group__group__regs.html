@@ -96,23 +96,13 @@ $(document).ready(function(){initNavTree('group__group__regs.html',''); initResi
  </p>
 <h1><a class="anchor" id="group_regs_more_information"></a>
 More Information</h1>
-<pre class="fragment">Two test modes are implemented in the functions:
-
-   1) Store duplicates of startup configuration registers in flash memory after device startup. 
-      Periodically, the configuration registers are compared with stored duplicates. Corrupted
-      registers can be restored from flash after checking.
-   2) Compare the calculated CRC with the CRC previously stored in flash if the CRC status semaphore
-      is set. If the status semaphore is not set, the CRC must be calculated and stored in flash, and
-      the status semaphore must be set.
-</pre><h1><a class="anchor" id="group_regs_profile_changelog"></a>
-Changelog</h1>
-<table class="doxtable">
-<tr>
-<th>Version</th><th>Changes</th><th>Reason for Change </th></tr>
-<tr>
-<td>1.00 </td><td>Initial Version. </td><td>Initial Version.  </td></tr>
-</table>
-<table class="memberdecls">
+<p >Two test modes are implemented in the functions: </p><pre class="fragment"> 1) Store duplicates of startup configuration registers in flash memory after device startup.
+  Periodically, the configuration registers are compared with stored duplicates. Corrupted
+  registers can be restored from flash after checking.
+ 2) Compare the calculated CRC with the CRC previously stored in flash if the CRC status semaphore
+  is set. If the status semaphore is not set, the CRC must be calculated and stored in flash, and
+  the status semaphore must be set.
+</pre> <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>
 <tr class="memitem:group__group__regs__macros"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__regs__macros.html">Macros</a></td></tr>

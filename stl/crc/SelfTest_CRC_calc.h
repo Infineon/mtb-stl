@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_CRC_calc.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
 *  used for the CRC16 implementation according to CCITT standards.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -38,7 +37,6 @@
 * of such system or application assumes all risk of such use and in doing
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
-
 /**
 * \addtogroup group_crc
 * \{
@@ -49,15 +47,6 @@
 *
 * This api's are used by the various modules for calculating CRC.
 *
-* \section group_CRC_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.30</td>
-*     <td>Fixed MISRA 2012 violations.</td>
-*     <td>MISRA 2012 compliance.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_crc_macros Macros
 * \defgroup group_crc_functions Functions
@@ -101,7 +90,7 @@
 * Length of area for CRC calculation
 *
 * \return
-* Calculated CRC value
+*  Calculated CRC value
 *
 *******************************************************************************/
 uint16_t SelfTests_CRC16_CCITT(uint32_t BaseAdress, uint16_t len);
@@ -115,13 +104,13 @@ uint16_t SelfTests_CRC16_CCITT(uint32_t BaseAdress, uint16_t len);
 * and "len"
 *
 * \param crc
-* current CRC
+* Current CRC
 *
 * \param BaseAdress
 * Address from which CRC needs to calculate
 *
 * \param len
-* length of area for CRC calculation
+* Length of area for CRC calculation
 *
 * \return
 * Calculated CRC value
@@ -137,7 +126,7 @@ uint16_t SelfTests_CRC16_CCITT_ACC(uint16_t crc, uint32_t BaseAdress, uint16_t l
 * This function calculates CRC of one byte "val"
 *
 * \param crc
-* current CRC
+* Current CRC
 *
 * \param val
 * Value for which CRC needs to calculate
@@ -177,7 +166,7 @@ uint32_t SelfTests_CRC32(uint32_t BaseAdress, uint32_t len);
 * and "len"
 *
 * \param crc
-* current CRC
+* Current CRC
 *
 * \param BaseAdress
 * Address from which CRC needs to calculate
@@ -199,10 +188,10 @@ uint32_t SelfTests_CRC32_ACC(uint32_t crc, uint32_t BaseAdress, uint32_t len);
 *  This function calculates CRC of one byte "val"
 *
 * \param crc
-* current CRC
+* Current CRC
 *
 * \param val
-* value to calculate CRC
+* Value to calculate CRC
 *
 * \return
 * Calculated CRC value

@@ -1,14 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_Cordic.h
-* Version 1.0.0
 *
 * Description:
-*
 *  This file provides constants and parameter values used for CORDIC
 *  self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -39,31 +37,17 @@
 * of such system or application assumes all risk of such use and in doing
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
-
 /**
 * \addtogroup group_cordic
 * \{
 *
-* To meet Class B requirement, Cordic must be tested for sine and cosine trignometric functions.
-\verbatim
-1.Sine and Cosine trignometric functions are performed using CORDIC IP 
-2.First Converting the angle in degree to radian and radian in Q31 format , then provided as input
-3.Converting the result in Q31 format to float
-4.Checks the difference between results from CORDIC and fixed output are within tolerance
-\endverbatim
+* To meet Class B requirement, Cordic must be tested for sine and cosine trignometric functions: <br>
 *
-* 
+*      1) Sine and Cosine trignometric functions are performed using CORDIC IP.
+*      2) First Converting the angle in degree to radian and radian in Q31 format , then provided as input.
+*      3) Converting the result in Q31 format to float.
+*      4) Checks the difference between results from CORDIC and fixed output are within tolerance.
 *
-*
-* \section group_cordic_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_cordic_functions Functions
 */
@@ -85,15 +69,17 @@
 * Function Name: SelfTest_Cordic
 ****************************************************************************//**
 *
-*  This function perform self test on Cordic IP.
-*  The CORDIC block accelerates calculation of trigonometric functions. 
-*  Sine and Cosine trignometric functions are performed in this API,then returns 
-*  the result OK_STATUS after successfully performing the tests or returns ERROR_STATUS  
-*  if the test fails.
+* This function perform self test on Cordic IP.
+*
+* The CORDIC block accelerates calculation of trigonometric functions. 
+* Sine and Cosine trignometric functions are performed in this API,then returns 
+* the result OK_STATUS after successfully performing the tests or returns 
+* ERROR_STATUS if the test fails.
+*
 *
 * \return
-*   "0" "OK_STATUS" - Test passed                                        
-*   "1" "ERROR_STATUS" - Test Failed                          
+*  "0" "OK_STATUS" - Test passed <br>
+*  "1" "ERROR_STATUS" - Test failed
 *
 *******************************************************************************/
 

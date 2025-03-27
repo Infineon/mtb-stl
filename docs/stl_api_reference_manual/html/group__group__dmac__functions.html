@@ -93,12 +93,15 @@ $(document).ready(function(){initNavTree('group__group__dmac__functions.html',''
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga1d6f4bb28f27b5404eaf335e486a2ff9"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__dmac__functions.html#ga1d6f4bb28f27b5404eaf335e486a2ff9">SelfTest_DMAC</a> (DMAC_Type *base, uint32_t channel, cy_stc_dmac_descriptor_t *descriptor0, cy_stc_dmac_descriptor_t *descriptor1, const cy_stc_dmac_descriptor_config_t *des0_config, const cy_stc_dmac_descriptor_config_t *des1_config, cy_stc_dmac_channel_config_t const *channelConfig, en_trig_output_mdma_t trigLine)</td></tr>
-<tr class="memdesc:ga1d6f4bb28f27b5404eaf335e486a2ff9"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function writes a pattern (66 bytes) to the destination using the DMA and the destination block is verified to contain the correct pattern.  <a href="group__group__dmac__functions.html#ga1d6f4bb28f27b5404eaf335e486a2ff9">More...</a><br /></td></tr>
+<tr class="memdesc:ga1d6f4bb28f27b5404eaf335e486a2ff9"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs the DMAC channel test routine by transfering data between data arrays using DMAC and verifying if the destination block contain expected data pattern.  <a href="group__group__dmac__functions.html#ga1d6f4bb28f27b5404eaf335e486a2ff9">More...</a><br /></td></tr>
 <tr class="separator:ga1d6f4bb28f27b5404eaf335e486a2ff9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae5e5a018e0afacf1ee5c36b4e92533d6"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__dmac__functions.html#gae5e5a018e0afacf1ee5c36b4e92533d6">SelfTest_DMAC</a> (DMAC_Type *base, uint32_t channel, uint32_t trigLine)</td></tr>
+<tr class="memdesc:gae5e5a018e0afacf1ee5c36b4e92533d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs the DMAC channel test routine by transfering data between data arrays using DMAC and verifying if the destination block contain expected data pattern.  <a href="group__group__dmac__functions.html#gae5e5a018e0afacf1ee5c36b4e92533d6">More...</a><br /></td></tr>
+<tr class="separator:gae5e5a018e0afacf1ee5c36b4e92533d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ga1d6f4bb28f27b5404eaf335e486a2ff9" name="ga1d6f4bb28f27b5404eaf335e486a2ff9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga1d6f4bb28f27b5404eaf335e486a2ff9">&#9670;&nbsp;</a></span>SelfTest_DMAC()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1d6f4bb28f27b5404eaf335e486a2ff9">&#9670;&nbsp;</a></span>SelfTest_DMAC() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -159,30 +162,85 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This function writes a pattern (66 bytes) to the destination using the DMA and the destination block is verified to contain the correct pattern. </p>
+<p>This function performs the DMAC channel test routine by transfering data between data arrays using DMAC and verifying if the destination block contain expected data pattern. </p>
+<p >The DMAC blocks are tested using the following procedure: <br  />
+ 1) A destination block of size 66 bytes is set to 0 with DMA transfers using 16 x 32-bit transfers from a fixed address. <br  />
+ 2) The destination block is verified to be all 0. <br  />
+ 3) Another destination block is filled with 00 00 ff by using an 8-bit DMA transfers from a fixed address with an increment of 1 and a length of 64. <br  />
+ 4) The destination block is verified to contain the correct pattern (shown below with lowest address first): ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000…</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">base</td><td>The pointer to the hardware DMA block <br  />
- </td></tr>
+    <tr><td class="paramname">base</td><td>The pointer to the hardware DMA block </td></tr>
     <tr><td class="paramname">channel</td><td>A channel number </td></tr>
-    <tr><td class="paramname">descriptor0</td><td>This is the descriptor to be associated with the channel (transfer 0's to destination). </td></tr>
-    <tr><td class="paramname">descriptor1</td><td>This is the descriptor to be associated with the channel (transfer pattern to destination). </td></tr>
-    <tr><td class="paramname">des0_config</td><td>This is a configuration structure that has all initialization information for the descriptor. </td></tr>
-    <tr><td class="paramname">des1_config</td><td>This is a configuration structure that has all initialization information for the descriptor. </td></tr>
-    <tr><td class="paramname">channelConfig</td><td>The structure that has the initialization information for the channel. </td></tr>
+    <tr><td class="paramname">descriptor0</td><td>This is the descriptor to be associated with the channel (transfer 0's to destination) </td></tr>
+    <tr><td class="paramname">descriptor1</td><td>This is the descriptor to be associated with the channel (transfer pattern to destination) </td></tr>
+    <tr><td class="paramname">des0_config</td><td>This is a configuration structure that has all initialization information for the descriptor </td></tr>
+    <tr><td class="paramname">des1_config</td><td>This is a configuration structure that has all initialization information for the descriptor </td></tr>
+    <tr><td class="paramname">channelConfig</td><td>The structure that has the initialization information for the channel </td></tr>
     <tr><td class="paramname">trigLine</td><td>The input of the trigger mux. -&gt; Bit 30 represents if the signal is an input/output. When this bit is set, the trigger activation is for an output trigger from the trigger multiplexer. When this bit is reset, the trigger activation is for an input trigger to the trigger multiplexer. <br  />
  -&gt; Bits 12:8 represent the trigger group selection. <br  />
  -&gt; In case of output trigger line (bit 30 is set): For PERI_ver1: <br  />
  -&gt; Bits 6:0 select the output trigger number in the trigger group. For PERI_ver2: <br  />
  -&gt; Bits 7:0 select the output trigger number in the trigger group. In case of input trigger line (bit 30 is unset): <br  />
- -&gt; Bits 7:0 select the input trigger signal for the trigger multiplexer <br  />
-</td></tr>
+ -&gt; Bits 7:0 select the input trigger signal for the trigger multiplexer</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>Only applicable for CAT1A and CAT1C devices.</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>0 - Test pass; <br  />
- 1 - Test fail; </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Only applicable for CAT1A and CAT1C devices</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed </dd></dl>
+
+</div>
+</div>
+<a id="gae5e5a018e0afacf1ee5c36b4e92533d6" name="gae5e5a018e0afacf1ee5c36b4e92533d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae5e5a018e0afacf1ee5c36b4e92533d6">&#9670;&nbsp;</a></span>SelfTest_DMAC() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_DMAC </td>
+          <td>(</td>
+          <td class="paramtype">DMAC_Type *&#160;</td>
+          <td class="paramname"><em>base</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>channel</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>trigLine</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This function performs the DMAC channel test routine by transfering data between data arrays using DMAC and verifying if the destination block contain expected data pattern. </p>
+<p >The DMAC blocks are tested using the following procedure: <br  />
+ 1) A destination block of size 64 bytes is set to 0 with DMA transfers using 16 x 32-bit transfers from a fixed address. <br  />
+ 2) The destination block is verified to be all 0. <br  />
+ 3) The same destination block is filled with 00 00 ff by using an 8-bit DMA transfers from a fixed address with an increment of 1 and a length of 64. <br  />
+ 4) The destination block is verified to contain the correct pattern (shown below with lowest address first): ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000…</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">base</td><td>The pointer to the hardware DMAC block</td></tr>
+    <tr><td class="paramname">channel</td><td>The DMAC channel number</td></tr>
+    <tr><td class="paramname">trigLine</td><td>The input trigger to start data transfer for selected DMAC channel. Refer to device TRM for details on trigLine value selection</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>Only applicable for CAT2 devices</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed </dd></dl>
 
 </div>
 </div>

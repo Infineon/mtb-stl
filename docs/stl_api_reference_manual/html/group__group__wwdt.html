@@ -90,15 +90,7 @@ $(document).ready(function(){initNavTree('group__group__wwdt.html',''); initResi
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
 <p >Window-selectable WDTs allow the watchdog timeout period to be adjusted, providing more flexibility to meet different processor timing requirements. </p>
-<p >The windowed WDT provides a way to demand that the ClearWDT instruction be executed, for example, only in the last quarter of the watchdog timeout period. Essentially, this enables better code flow monitoring to catch firmware bugs. For example, an application bug that results in the ClearWDT instruction repeatedly executing close to the beginning of the code flow could be interpreted as a normal operation in the non-windowed WDT mode. The caveat to the windowed WDT mode is that the ClearWDT instruction must be called within a prescribed window, which limits the tolerance of the clock source that drives the WDT.</p>
-<h1><a class="anchor" id="group_wwdt_profile_changelog"></a>
-Changelog</h1>
-<table class="doxtable">
-<tr>
-<th>Version</th><th>Changes</th><th>Reason for Change </th></tr>
-<tr>
-<td>1.00 </td><td>Initial Version. </td><td>Initial Version.  </td></tr>
-</table>
+<p >The windowed WDT provides a way to demand that the ClearWDT instruction be executed, for example, only in the last quarter of the watchdog timeout period. Essentially, this enables better code flow monitoring to catch firmware bugs. For example, an application bug that results in the ClearWDT instruction repeatedly executing close to the beginning of the code flow could be interpreted as a normal operation in the non-windowed WDT mode. The caveat to the windowed WDT mode is that the ClearWDT instruction must be called within a prescribed window, which limits the tolerance of the clock source that drives the WDT. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>

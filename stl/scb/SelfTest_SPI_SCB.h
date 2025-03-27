@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_SPI_SCB.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides the function prototypes, constants, and parameter values used
 *  for the SPI self tests according to the Class B library.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -48,18 +47,6 @@
 * testing all 256 values and they are all a success, the function returns 3. 
 *
 *
-*
-* \section group_spi_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
-*
-* \defgroup group_spi_macros Macros
 * \defgroup group_spi_functions Functions
 */
 
@@ -93,8 +80,8 @@
 *
 *
 * \return
-*  1 - test failed <br>
-*  2 - still testing <br>
+*  1 - Test failed <br>
+*  2 - Still testing <br>
 *  3 - Test completed <br>
 *  4 - TX Not empty <br>
 *  5 - RX Not empty

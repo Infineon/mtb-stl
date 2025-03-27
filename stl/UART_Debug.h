@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: UART_Debug.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
 *  used for UART debug output.
 *
 *******************************************************************************
-* Copyright 2020-2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related

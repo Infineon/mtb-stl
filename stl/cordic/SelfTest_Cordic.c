@@ -1,12 +1,11 @@
 /*******************************************************************************
 * File Name: SelfTest_Cordic.c
-* Version 1.0.0
 *
 * Description:
 *  This file provides the source code to the API for Cordic self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -152,7 +151,7 @@ static uint8_t cosine_cordic(void)
 
 /*******************************************************************************
 * Function Name: SelfTest_Cordic
-****************************************************************************//**
+********************************************************************************
 *
 *  This function perform self test on Cordic IP.
 *  The CORDIC block accelerates calculation of trigonometric functions. 

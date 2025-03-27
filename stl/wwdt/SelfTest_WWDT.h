@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_WWDT.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
 *  used for watchdog timer self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -50,17 +49,6 @@
 * The caveat to the windowed WDT mode is that the ClearWDT instruction must be called within a prescribed window, which limits the tolerance
 * of the clock source that drives the WDT.
 *
-*
-*
-* \section group_wwdt_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_wwdt_macros Macros
 * \defgroup group_wwdt_functions Functions
@@ -113,7 +101,7 @@
 *
 *
 * \note
-* Only applicable for CAT1C devices.
+* Only applicable for CAT1C devices
 * \return
 *  0 - Test passed <br>
 *  1 - Test failed 

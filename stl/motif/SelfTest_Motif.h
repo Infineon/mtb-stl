@@ -1,14 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_Motif.h
-* Version 1.0.0
 *
 * Description:
-*
 *  This file provides constants and parameter values used for Motif
 *  self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -44,26 +42,14 @@
 * \addtogroup group_motif
 * \{
 *
-* To meet Class B requirement, Motif must be tested for Multi channel pattern mode in conjunction with Hall sensor mode.
-\verbatim
-1.Multi channel pattern mode in conjunction with Hall sensor mode are performed using Motif module.
-2.First initialize the MOTIF module in Hall sensor mode and input PWMs
-3.HALL lookup table(HLUT) and MCP lookup table(MLUT) are initialized in Device Configurator.
-4.Checks the difference between output modulation values from MOTIF and MCP values.
-\endverbatim
+* To meet Class B requirement, Motif must be tested for Multi channel pattern mode in conjunction with Hall sensor
+* mode:
 *
-* 
+*      1) Multi channel pattern mode in conjunction with Hall sensor mode are performed using Motif module.
+*      2) First initialize the MOTIF module in Hall sensor mode and input PWMs.
+*      3) HALL lookup table(HLUT) and MCP lookup table(MLUT) are initialized in Device Configurator.
+*      4) Checks the difference between output modulation values from MOTIF and MCP values.
 *
-*
-* \section group_motif_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_motif_structure Data structure
 * \defgroup group_motif_functions Functions
@@ -118,8 +104,15 @@ typedef struct stl_motif_tcpwm_config
 *  This API initializes the MOTIF module in Hall sensor mode and
 *  input PWMs which simulates HALL sensor output
 *
-* \return
-*   void                         
+* \param base
+* Pointer to the base address of the TCPWM MOTIF group instance.
+*
+* \param config
+* Pointer to the configuration structure for the Hall sensor mode.
+*
+* \param input_config
+* Pointer to the structure containing the PWM input configurations
+* for simulating Hall sensor outputs.
 *
 *******************************************************************************/
 
@@ -136,9 +129,15 @@ void SelfTest_Motif_Init(TCPWM_MOTIF_GRP_MOTIF_Type *base ,cy_stc_tcpwm_motif_ha
 *  the result OK_STATUS if values match or returns ERROR_STATUS
 *  if the values do not match.
 *
+* \param base
+* Pointer to the base address of the TCPWM MOTIF group instance.
+*
+* \param input_config
+* Pointer to the structure containing the PWM input configurations.
+*
 * \return
-*   "0" "OK_STATUS" - Test passed                                        
-*   "1" "ERROR_STATUS" - Test Failed                          
+*  "0" "OK_STATUS" - Test passed <br>
+*  "1" "ERROR_STATUS" - Test failed
 *
 *******************************************************************************/
 

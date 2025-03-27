@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_ECC.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
 *  used for Ecc self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -48,15 +47,6 @@
 * \section group_ecc_more_information More Information
 * ECC self test is supported on CAT1B, CAT1C devices.
 *
-* \section group_ecc_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_ecc_enums Enumerated Types 
 * \defgroup group_ecc_functions Functions
@@ -157,8 +147,8 @@ uint8_t SelfTest_ECC(cy_en_ecc_error_mode_t eccErrorMode);
 *  1 - Test failed
 *
 * \note
-* This API is applicable to CAT1B devices
-* Only Non-Correctable ECC fault is supported on CAT1B devices for flash memory.
+* This API is applicable to CAT1B devices.
+* Only Non-Correctable ECC fault is supported on CAT1B devices for flash memory
 *
 *******************************************************************************/
 uint8_t SelfTest_ECC_Flash(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode);

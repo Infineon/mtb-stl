@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_Flash.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
 *  used for FLASH self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -51,18 +50,9 @@
 * a running checksum of the entire user flash memory. The actual 64-bit checksum of flash is stored in the last 8 bytes of flash
 * itself. When the test reaches the end of flash minus 8 bytes (0x7FF8 on 32-KB devices), it stops. Custom linker files are used
 * to place the checksum in the desired location. The calculated checksum value is then compared with the actual value stored in 
-* the last 8 bytes of flash. A mismatch indicates flash failure, and code execution is frozen to avoid trying to execute invalid code.
-* The checksum can also be stored in SFLASH, EEPROM, or any other external flash. 
+* the last 8 bytes of flash. A mismatch indicates flash failure. The checksum can also be stored in SFLASH, EEPROM, 
+* or any other external flash. 
 *
-* \section group_flash_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_flash_macros Macros
 * \defgroup group_flash_functions Functions
@@ -131,7 +121,7 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest);
 * Expected checksum. Must be stored outside the range of check. <br>
 *
 * \note
-* This function needs to be called prior to \ref SelfTest_FlashCheckSum else the test will fail.
+* This function needs to be called prior to \ref SelfTest_FlashCheckSum else the test will fail
 *
 *******************************************************************************/
 void SelfTest_Flash_init(uint32_t StartAddressOfFlash,uint32_t EndAddressOfFlash, uint64_t flash_ExpectedCheckSum);

@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('group__group__i2c__functions.html','')
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">Functions<div class="ingroups"><a class="el" href="group__group__i2c.html">i2c                       (i2c STL module)</a></div></div></div>
+  <div class="headertitle"><div class="title">Functions<div class="ingroups"><a class="el" href="group__group__i2c.html">I2C                       (I2C STL module)</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -151,16 +151,16 @@ Functions</h2></td></tr>
 <p >Slave read the data and write the complement[1's] to the slave read buffer Master read back the data from slave and check the data is corrupted.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">master_base</td><td>The pointer to the master I2C SCB instance. </td></tr>
-    <tr><td class="paramname">master_context</td><td>The pointer to the master I2C SCB context. </td></tr>
-    <tr><td class="paramname">slave_base</td><td>The pointer to the slave I2C SCB instance. </td></tr>
-    <tr><td class="paramname">slave_context</td><td>The pointer to the slave I2C SCB context. </td></tr>
-    <tr><td class="paramname">slave_read_buf</td><td>The pointer to slave read buffer. </td></tr>
-    <tr><td class="paramname">slave_write_buf</td><td>The pointer to slave write buffer.</td></tr>
+    <tr><td class="paramname">master_base</td><td>The pointer to the master I2C SCB instance </td></tr>
+    <tr><td class="paramname">master_context</td><td>The pointer to the master I2C SCB context </td></tr>
+    <tr><td class="paramname">slave_base</td><td>The pointer to the slave I2C SCB instance </td></tr>
+    <tr><td class="paramname">slave_context</td><td>The pointer to the slave I2C SCB context </td></tr>
+    <tr><td class="paramname">slave_read_buf</td><td>The pointer to slave read buffer </td></tr>
+    <tr><td class="paramname">slave_write_buf</td><td>The pointer to slave write buffer</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>During call, function transmits from 0x01 to 0xFF Clear I2C Master status, read buffer and write buffer</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>During call, function transmits from 0x01 to 0xFF. Clear I2C Master status, read buffer and write buffer</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>1 - Test failed <br  />
  2 - Still testing <br  />
  3 - Test completed OK </dd></dl>

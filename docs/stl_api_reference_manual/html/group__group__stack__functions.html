@@ -93,10 +93,10 @@ $(document).ready(function(){initNavTree('group__group__stack__functions.html','
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga58bac912b1695dc8f230cbaddeed7cc2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__stack__functions.html#ga58bac912b1695dc8f230cbaddeed7cc2">SelfTests_Init_Stack_Range</a> (uint16_t *stack_address, uint16_t stack_length, uint8_t stack_pattern_blk_size)</td></tr>
-<tr class="memdesc:ga58bac912b1695dc8f230cbaddeed7cc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Summary: This function initializes the upper stack area with 0xAA and 0x55 pattern.  <a href="group__group__stack__functions.html#ga58bac912b1695dc8f230cbaddeed7cc2">More...</a><br /></td></tr>
+<tr class="memdesc:ga58bac912b1695dc8f230cbaddeed7cc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function initializes the upper and lower stack area with 0xAA and 0x55 pattern.  <a href="group__group__stack__functions.html#ga58bac912b1695dc8f230cbaddeed7cc2">More...</a><br /></td></tr>
 <tr class="separator:ga58bac912b1695dc8f230cbaddeed7cc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga71379957753487128852842c734e34d0"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__stack__functions.html#ga71379957753487128852842c734e34d0">SelfTests_Stack_Check_Range</a> (uint16_t *stack_address, uint16_t stack_length)</td></tr>
-<tr class="memdesc:ga71379957753487128852842c734e34d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Summary: This function performs stack self test.  <a href="group__group__stack__functions.html#ga71379957753487128852842c734e34d0">More...</a><br /></td></tr>
+<tr class="memdesc:ga71379957753487128852842c734e34d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs stack self test.  <a href="group__group__stack__functions.html#ga71379957753487128852842c734e34d0">More...</a><br /></td></tr>
 <tr class="separator:ga71379957753487128852842c734e34d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -132,16 +132,15 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Summary: This function initializes the upper stack area with 0xAA and 0x55 pattern. </p>
-<p >Parameters: </p><dl class="params"><dt>Parameters</dt><dd>
+<p>This function initializes the upper and lower stack area with 0xAA and 0x55 pattern. </p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">stack_address</td><td>The pointer to the stack. </td></tr>
-    <tr><td class="paramname">stack_length</td><td>The length of the stack. </td></tr>
-    <tr><td class="paramname">stack_pattern_blk_size</td><td>No of bytes to be used to fill the pattern. Must be 2^n where n=1 to n=8. (Recommended value for n = 3)</td></tr>
+    <tr><td class="paramname">stack_address</td><td>The pointer to the stack </td></tr>
+    <tr><td class="paramname">stack_length</td><td>The length of the stack </td></tr>
+    <tr><td class="paramname">stack_pattern_blk_size</td><td>No of bytes to be used to fill the pattern. Must be 2^n where n=1 to n=8. (Recommended value for n = 3) </td></tr>
   </table>
   </dd>
 </dl>
-<p>Return: None. </p>
 
 </div>
 </div>
@@ -171,16 +170,17 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Summary: This function performs stack self test. </p>
-<p >It checks upper stack area for 0xAA and 0x55 pattern.</p>
-<p >Parameters: </p><dl class="params"><dt>Parameters</dt><dd>
+<p>This function performs stack self test. </p>
+<p >It checks upper and lower stack area for 0xAA and 0x55 pattern.</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">stack_address</td><td>The pointer to the stack. </td></tr>
-    <tr><td class="paramname">stack_length</td><td>The length of the stack.</td></tr>
+    <tr><td class="paramname">stack_address</td><td>The pointer to the stack </td></tr>
+    <tr><td class="paramname">stack_length</td><td>The length of the stack</td></tr>
   </table>
   </dd>
 </dl>
-<p>Return: Result of test: "0" - pass test; "1" - fail test. </p>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed </dd></dl>
 
 </div>
 </div>

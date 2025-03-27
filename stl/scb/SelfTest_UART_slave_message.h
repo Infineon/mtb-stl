@@ -1,7 +1,5 @@
 /*******************************************************************************
 * File Name: SelfTest_UART_slave_message.h
-* Version 1.0.0
-*
 *
 * Description:
 *  This file provides the source code to the API for the UART slave
@@ -26,7 +24,7 @@
 *  then it's exchanged with two byte sequence <ESC><ESC+1>
 *
 ********************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -73,38 +71,27 @@
 *
 * \section group_uart_data_tsf_more_information More Information
 *
-// \verbatim
-  Protocol description
-  Master(A) slave(B) communication:
-     |---|    --- Request send --->    |---|
-     | A |    {Wait for respond}       | B |
-     |---|    <--- Respond send ---    |---|
-  Packet format:
-  -> <STX><ADDR><DL><[Data bytes length equal DL]><CRCH><CRCL>
-      STX        - 0x02 begin packet marker. Unique byte of start packet
-      ADDR       - device address
-      DL         - data length in bytes [1..255]
-      CRCH       - MSB of CRC-16 that calculated from ADDR to last data byte
-      CRCL       - LSB of CRC-16    that calculated from ADDR to last data byte
-      
-  -> If there is a byte <ADDR> <DL> <[Data]> or <[CRC]> that equals STX
-     then it's exchanged with two byte sequence <ESC><STX+1>
-  
-  -> If there is a byte <ADDR> <DL> <[Data]> or <[CRC]> that equals ESC
-     then it's exchanged with two byte sequence <ESC><ESC+1>
-\endverbatim  
+*    Protocol description
+*    Master(A) slave(B) communication:
+*    \code |---|    --- Request send --->    |---| \endcode
+*    \code | A |    {Wait for respond}       | B | \endcode
+*    \code |---|    <--- Respond send ---    |---| \endcode
+*    Packet format: <br>
+*    1) \code <STX><ADDR><DL><[Data bytes length equal DL]><CRCH><CRCL> \endcode
 *
-* \section group_uart_data_tsf_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
+*          a) STX        - 0x02 begin packet marker. Unique byte of start packet
+*          b) ADDR       - device address
+*          c) DL         - data length in bytes [1..255]
+*          d) CRCH       - MSB of CRC-16 that calculated from ADDR to last data byte
+*          e) CRCL       - LSB of CRC-16    that calculated from ADDR to last data byte
 *
-* \defgroup group_uart_data_tsf_macros Macros
+*    2) If there is a byte \code <ADDR> <DL> <[Data]> or <[CRC]> \endcode that equals STX
+*       then its exchanged with two byte sequence \code <ESC><STX+1>. \endcode
+*
+*    3) If there is a byte \code <ADDR> <DL> <[Data]> or <[CRC]> \endcode that equals ESC
+*       then its exchanged with two byte sequence \code <ESC><ESC+1>. \endcode
+*
+*
 * \defgroup group_uart_data_tsf_functions_master Master
 * \defgroup group_uart_data_tsf_functions_slave Slave
 */
@@ -130,12 +117,9 @@
 *
 *
 * \param uart_base 
-* The pointer to the slave UART SCB instance. <br>
+* The pointer to the slave UART SCB instance
 * \param address 
-* slave bus address
-*
-* \return
-*  NONE
+* Slave bus address
 *
 *******************************************************************************/
 void UartMesSlave_Init(CySCB_Type* uart_base, uint8_t address);
@@ -148,13 +132,13 @@ void UartMesSlave_Init(CySCB_Type* uart_base, uint8_t address);
 *
 *
 * \param txd 
-*  Pointer to sent data <br>
+*  Pointer to sent data
 * \param tlen 
 *  Size of sent data in bytes
 *
 *
 * \return
-*  0 - If the unit begins a response process
+*  0 - If the unit begins a response process <br>
 *  1 - If not (cause IDLE or RESPOND state)
 *
 * \note 
@@ -169,13 +153,10 @@ uint8_t UartMesSlave_Respond(uint8_t * txd, uint8_t tlen);
 * Returns state of the current slave unit
 *
 *
-*
-*
 * \return
-*  UM_IDLE             - unit wait for packet from master
-*  UM_PACKREADY        - unit receive the packet. Respond will be send
+*  UM_IDLE             - unit wait for packet from master <br>
+*  UM_PACKREADY        - unit receive the packet. Respond will be send <br>
 *  UM_RESPOND          - unit send respond
-*
 *
 *******************************************************************************/
 uint8_t UartMesSlave_State(void);
@@ -187,14 +168,12 @@ uint8_t UartMesSlave_State(void);
 * Returns received data size
 *
 *
-*
-*
 * \return
 *  Size of the Received data in buffer
 *
 * \note 
-*  result valid only if unit state is UM_PACKREADY
-*  use UartMesSlave_State() to check this condition
+*  Result valid only if unit state is UM_PACKREADY.
+*  Use UartMesSlave_State() to check this condition
 *******************************************************************************/
 uint8_t UartMesSlave_GetDataSize(void);
 
@@ -205,11 +184,8 @@ uint8_t UartMesSlave_GetDataSize(void);
 * Returns pointer to received data buffer
 *
 *
-*
-*
 * \return
 *  Pointer to received data buffer
-*
 *
 *******************************************************************************/
 volatile uint8_t * UartMesSlave_GetDataPtr(void);
@@ -219,9 +195,6 @@ volatile uint8_t * UartMesSlave_GetDataPtr(void);
 ****************************************************************************//**
 *
 * Interrupt handler for UART to receive/transmit.
-*
-* \return
-*  None
 *
 *******************************************************************************/
 void UartMesSlave_Msg_ISR(void);

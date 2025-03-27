@@ -1,10 +1,9 @@
 /*******************************************************************************
 * File Name: SelfTest_IPC.h
-* Version 1.0.0
 *
 * Description:
-* This file provides constants and parameter values used for IPC self
-* tests.
+*  This file provides constants and parameter values used for IPC self
+*  tests.
 *
 *
 * Hardware Dependency:
@@ -12,7 +11,7 @@
 *  CY8C6245LQI-S3D72
 *  XMC7200D-E272K8384
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -48,38 +47,24 @@
 * \{
 *
 * This module performs check on each free IPC channel with all free IPC interrupts.
-// \verbatim
-Following steps are performed:
-  1) Acquire the IPC channel.
-  2) Write some message.
-  3) Acquire notification event to a specify IPC interrupt.
-  4) Read the written data in ISR.
-  5) Release an specific IPC channel from the locked state.
-\endverbatim
+*      Following steps are performed: <br>
+*      1) Acquire the IPC channel. <br>
+*      2) Write some message. <br>
+*      3) Acquire notification event to a specify IPC interrupt. <br>
+*      4) Read the written data in ISR. <br>
+*      5) Release an specific IPC channel from the locked state. 
 *
 * \section group_ipc_more_information More Information
 *
-// \verbatim
-For PSoC6 following channels and interrupts are checked:
- Free Channels    : 8 - 15
- Free Interrupts : 7 - 15
- 
-For XMC Dual CM7 device channels and interrupts are checked:
- Free Channels   : 4 - 7
- Free Interrupts : 1 - 7
-\endverbatim
+*      For PSoC6 following channels and interrupts are checked:
+*      Free Channels    : 8 - 15
+*      Free Interrupts : 7 - 15
 *
-* \section group_ipc_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
+*      For XMC Dual CM7 device channels and interrupts are checked:
+*      Free Channels   : 4 - 7
+*      Free Interrupts : 1 - 7
 *
-* \defgroup group_ipc_macros Macros
+*
 * \defgroup group_ipc_functions Functions
 */
 
@@ -104,10 +89,6 @@ For XMC Dual CM7 device channels and interrupts are checked:
 ****************************************************************************//**
 *
 * This function performs check on each free IPC channel with all free IPC interrupts.
-*
-*
-*
-*
 *
 * \return
 *  0 - Test passed <br>

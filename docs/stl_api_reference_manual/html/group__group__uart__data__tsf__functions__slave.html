@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('group__group__uart__data__tsf__functio
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">Slave<div class="ingroups"><a class="el" href="group__group__uart__data__tsf.html">UART_Data_Transfer        (UART_Data_Transfer STL module)</a></div></div></div>
+  <div class="headertitle"><div class="title">Slave<div class="ingroups"><a class="el" href="group__group__uart__data__tsf.html">UART Data Transfer        (UART Data Transfer STL module)</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -107,8 +107,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga3bd88482588c2345669e8d4471e8c21b"><td class="memItemLeft" align="right" valign="top">volatile uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__uart__data__tsf__functions__slave.html#ga3bd88482588c2345669e8d4471e8c21b">UartMesSlave_GetDataPtr</a> (void)</td></tr>
 <tr class="memdesc:ga3bd88482588c2345669e8d4471e8c21b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns pointer to received data buffer.  <a href="group__group__uart__data__tsf__functions__slave.html#ga3bd88482588c2345669e8d4471e8c21b">More...</a><br /></td></tr>
 <tr class="separator:ga3bd88482588c2345669e8d4471e8c21b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1da52f72b80233fb01a5f4c6c4db27e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__uart__data__tsf__functions__slave.html#ga1da52f72b80233fb01a5f4c6c4db27e5">UartMesSlave_Msg_ISR</a> (void)</td></tr>
-<tr class="memdesc:ga1da52f72b80233fb01a5f4c6c4db27e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interrupt handler for UART to receive/transmit.  <a href="group__group__uart__data__tsf__functions__slave.html#ga1da52f72b80233fb01a5f4c6c4db27e5">More...</a><br /></td></tr>
+<tr class="memitem:ga1da52f72b80233fb01a5f4c6c4db27e5"><td class="memItemLeft" align="right" valign="top"><a id="ga1da52f72b80233fb01a5f4c6c4db27e5" name="ga1da52f72b80233fb01a5f4c6c4db27e5"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>UartMesSlave_Msg_ISR</b> (void)</td></tr>
+<tr class="memdesc:ga1da52f72b80233fb01a5f4c6c4db27e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interrupt handler for UART to receive/transmit. <br /></td></tr>
 <tr class="separator:ga1da52f72b80233fb01a5f4c6c4db27e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -142,13 +143,11 @@ Functions</h2></td></tr>
 <p >This function starts needed components and initialize control status structure.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">uart_base</td><td>The pointer to the slave UART SCB instance. <br  />
- </td></tr>
-    <tr><td class="paramname">address</td><td>slave bus address</td></tr>
+    <tr><td class="paramname">uart_base</td><td>The pointer to the slave UART SCB instance </td></tr>
+    <tr><td class="paramname">address</td><td>Slave bus address </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>NONE </dd></dl>
 
 </div>
 </div>
@@ -181,13 +180,13 @@ Functions</h2></td></tr>
 <p>Start background sending of the respond. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">txd</td><td>Pointer to sent data <br  />
- </td></tr>
+    <tr><td class="paramname">txd</td><td>Pointer to sent data </td></tr>
     <tr><td class="paramname">tlen</td><td>Size of sent data in bytes</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 - If the unit begins a response process 1 - If not (cause IDLE or RESPOND state)</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - If the unit begins a response process <br  />
+ 1 - If not (cause IDLE or RESPOND state)</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Use <a class="el" href="group__group__uart__data__tsf__functions__slave.html#ga200a6621ac55a5433715ce11c9e8c6af" title="Returns state of the current slave unit.">UartMesSlave_State()</a> to check this condition </dd></dl>
 
 </div>
@@ -209,7 +208,9 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns state of the current slave unit. </p>
-<dl class="section return"><dt>Returns</dt><dd>UM_IDLE - unit wait for packet from master UM_PACKREADY - unit receive the packet. Respond will be send UM_RESPOND - unit send respond </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>UM_IDLE - unit wait for packet from master <br  />
+ UM_PACKREADY - unit receive the packet. Respond will be send <br  />
+ UM_RESPOND - unit send respond </dd></dl>
 
 </div>
 </div>
@@ -231,7 +232,7 @@ Functions</h2></td></tr>
 
 <p>Returns received data size. </p>
 <dl class="section return"><dt>Returns</dt><dd>Size of the Received data in buffer</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>result valid only if unit state is UM_PACKREADY use <a class="el" href="group__group__uart__data__tsf__functions__slave.html#ga200a6621ac55a5433715ce11c9e8c6af" title="Returns state of the current slave unit.">UartMesSlave_State()</a> to check this condition </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Result valid only if unit state is UM_PACKREADY. Use <a class="el" href="group__group__uart__data__tsf__functions__slave.html#ga200a6621ac55a5433715ce11c9e8c6af" title="Returns state of the current slave unit.">UartMesSlave_State()</a> to check this condition </dd></dl>
 
 </div>
 </div>
@@ -253,27 +254,6 @@ Functions</h2></td></tr>
 
 <p>Returns pointer to received data buffer. </p>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to received data buffer </dd></dl>
-
-</div>
-</div>
-<a id="ga1da52f72b80233fb01a5f4c6c4db27e5" name="ga1da52f72b80233fb01a5f4c6c4db27e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga1da52f72b80233fb01a5f4c6c4db27e5">&#9670;&nbsp;</a></span>UartMesSlave_Msg_ISR()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void UartMesSlave_Msg_ISR </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Interrupt handler for UART to receive/transmit. </p>
-<dl class="section return"><dt>Returns</dt><dd>None </dd></dl>
 
 </div>
 </div>

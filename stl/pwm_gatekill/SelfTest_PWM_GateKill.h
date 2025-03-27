@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_PWM_Gatekill.h
-* Version 1.0.0
 *
 * Description:
-* Description: This file provides the constants and parameter values for the PWM 
-* Gatekill self tests.
+*  This file provides the constants and parameter values for the PWM 
+*  Gatekill self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -48,35 +47,26 @@
 *
 * \section group_pwm_gatekill_more_information More Information
 *
-// \verbatim
-The test is carried out as mentioned below.
- 1) The Low power comparator/ SAR ADC Range Voilation Intr output is routed to Kill
-    signal of TCPWM indicating over-voltage/over-current condition if voltage on +ve
-    terminal is > -ve.
- 2) If over-voltage or over-current condition it will Kill PWM output.
- 3) The TCPWM base and CntNum is passed to check whether the counter is stopped or not. 
- 4) If counter is not incrementing/decrementing the PWM output is inactive.
-\endverbatim
+* The test is carried out as mentioned below:
 *
-* \section group_pwm_gatekill_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
+*      1) The Low power comparator/ SAR ADC Range Voilation Intr output is routed to Kill
+*      signal of TCPWM indicating over-voltage/over-current condition if voltage on +ve
+*      terminal is > -ve.
+*      2) If over-voltage or over-current condition it will Kill PWM output.
+*      3) The TCPWM base and CntNum is passed to check whether the counter is stopped or not.
+*      4) If counter is not incrementing/decrementing the PWM output is inactive.
 *
-* \defgroup group_pwm_gatekill_macros Macros
+*
 * \defgroup group_pwm_gatekill_functions Functions
 */
 
 #if !defined(SELFTEST_PWM_GATEKILL_H)
     #define SELFTEST_PWM_GATEKILL_H
-    
+
+#include "cy_pdl.h"
 #include "SelfTest_common.h"
 
+#if (defined(CY_IP_M0S8TCPWM) || defined(CY_IP_MXTCPWM) || defined(CY_DOXYGEN))
 /***************************************
 * Function Prototypes
 ***************************************/
@@ -99,19 +89,18 @@ The test is carried out as mentioned below.
 * The Counter instance number in the selected TCPWM
 *
 *
-* \note
-* Applicable to CAT1A and CAT1C devices.
-*
-*
 * \return
-*  0 - Test Passed <br>
-*  1 - Test failed 
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 *******************************************************************************/
 uint8_t SelfTest_PWM_GateKill(TCPWM_Type *base, uint32_t cntNum);
 
 /** \} group_pwm_gatekill_functions */
 
-/** \} group_pwm_gatekill */
+#endif /* (defined(CY_IP_M0S8TCPWM) || defined(CY_IP_MXTCPWM) || defined(CY_DOXYGEN)) */
 
-#endif
+#endif /* !defined(SELFTEST_PWM_GATEKILL_H) */
+
+/** \} group_pwm_gatekill */
+/* [] END OF FILE */

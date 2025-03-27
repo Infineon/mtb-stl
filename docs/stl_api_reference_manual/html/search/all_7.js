@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['i2c_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_28i2c_20stl_20module_29_0',['i2c                       (i2c STL module)',['../group__group__i2c.html',1,'']]],
+  ['i2c_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_28i2c_20stl_20module_29_0',['I2C                       (I2C STL module)',['../group__group__i2c.html',1,'']]],
   ['i2c_5fslave_5faddr_1',['I2C_SLAVE_ADDR',['../group__group__i2c__macros.html#ga649ca8c7e017db38d09d4834dfccd361',1,'SelfTest_I2C_SCB.h']]],
   ['ignore_5fbits_2',['IGNORE_BITS',['../group__group__wdt__macros.html#gae8369c3720313b7e9d405de288fef24e',1,'SelfTest_WDT.h']]],
   ['ilo_5fstart_5fup_5ftime_3',['ILO_START_UP_TIME',['../group__group__wdt__macros.html#ga3b22073cb4cdb84253052b08d545de75',1,'SelfTest_WDT.h']]],

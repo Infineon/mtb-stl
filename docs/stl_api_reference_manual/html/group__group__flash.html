@@ -93,15 +93,7 @@ $(document).ready(function(){initNavTree('group__group__flash.html',''); initRes
 <p >The current library uses a Fletcher's 64-bit checksum. The stl_Flash.h file defines the flash size that needs to be monitored.</p>
 <h1><a class="anchor" id="group_flash_more_information"></a>
 More Information</h1>
-<p >The proposed checksum flash test reads each ROM or flash location and accumulates the values in a 64-bit variable to calculate a running checksum of the entire user flash memory. The actual 64-bit checksum of flash is stored in the last 8 bytes of flash itself. When the test reaches the end of flash minus 8 bytes (0x7FF8 on 32-KB devices), it stops. Custom linker files are used to place the checksum in the desired location. The calculated checksum value is then compared with the actual value stored in the last 8 bytes of flash. A mismatch indicates flash failure, and code execution is frozen to avoid trying to execute invalid code. The checksum can also be stored in SFLASH, EEPROM, or any other external flash.</p>
-<h1><a class="anchor" id="group_flash_profile_changelog"></a>
-Changelog</h1>
-<table class="doxtable">
-<tr>
-<th>Version</th><th>Changes</th><th>Reason for Change </th></tr>
-<tr>
-<td>1.00 </td><td>Initial Version. </td><td>Initial Version.  </td></tr>
-</table>
+<p >The proposed checksum flash test reads each ROM or flash location and accumulates the values in a 64-bit variable to calculate a running checksum of the entire user flash memory. The actual 64-bit checksum of flash is stored in the last 8 bytes of flash itself. When the test reaches the end of flash minus 8 bytes (0x7FF8 on 32-KB devices), it stops. Custom linker files are used to place the checksum in the desired location. The calculated checksum value is then compared with the actual value stored in the last 8 bytes of flash. A mismatch indicates flash failure. The checksum can also be stored in SFLASH, EEPROM, or any other external flash. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>

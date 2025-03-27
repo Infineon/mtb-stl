@@ -1,12 +1,11 @@
 /*******************************************************************************
 * File Name: SelfTest_CRC_calc.c
-* Version 1.0.0
 *
 * Description:
 * This file provides the source code for CRC32 implementation.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related

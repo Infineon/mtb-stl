@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_DMAC.h
-* Version 1.0.0
 *
 * Description:
 * This file provides constants and parameter values used for DMAC self
 * tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -42,28 +41,14 @@
 * \addtogroup group_dmac
 * \{
 *
-* The DMAC test performs test on Direct Memory Access Controller using fixed size of DW transfer.
+* The DMAC test performs test on Direct Memory Access Controller using fixed size of DMAC transfer.
 *
 * \section group_dmac_more_information More Information
 *
-// \verbatim
-The DMAC blocks are tested using the following procedure.
-
-  1) A destination block of size 64 bytes is set to 0 with DW transfers using 16 x 32-bit transfers from a fixed address.
-  2) The destination block is verified to be all 0.
-  3) The same destination block is filled with 00 00 ff by using an 8-bit DMA from a fixed address with an increment of 3 and a length of 22 (64+(3-1))/3.
-  4) The destination block is verified to contain the correct pattern (shown below with lowest address first): ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000…
-\endverbatim
+* This test verifies the DMAC data transfer functionality and it's integrity.
+* Due to hardware differences, DMAC test algorithm is different for different
+* device families. Refer to SelfTest_DMAC() function description for details.
 *
-* \section group_dmac_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_dmac_macros Macros
 * \defgroup group_dmac_functions Functions
@@ -72,10 +57,21 @@ The DMAC blocks are tested using the following procedure.
 #if !defined(SELFTEST_DMAC_H)
     #define SELFTEST_DMAC_H
 
+#include "cy_pdl.h"
 #include "SelfTest_common.h"
 
-#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)))
-#if (((defined(CY_IP_M4CPUSS_DMAC) && (CY_IP_M4CPUSS_DMAC))) || ((defined(CY_IP_M7CPUSS_DMAC) && (CY_IP_M7CPUSS_DMAC))) || defined (CY_DOXYGEN))
+/**
+* \addtogroup group_dmac_macros
+* \{
+*/
+
+/** DMAC data transfer timeout */
+#define SELFTEST_DMAC_TIMEOUT   (50UL)
+
+/** \} group_dmac_macros */
+
+
+#if (defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M7CPUSS_DMAC) || defined (CY_DOXYGEN))
 
 /***************************************
 * Function Prototypes
@@ -90,24 +86,34 @@ The DMAC blocks are tested using the following procedure.
 * Function Name: SelfTest_DMAC
 ****************************************************************************//**
 *
-* This function writes a pattern (66 bytes) to the destination using the DMA and
-* the destination block is verified to contain the correct pattern.
+* This function performs the DMAC channel test routine by transfering data
+* between data arrays using DMAC and verifying if the destination block
+* contain expected data pattern.
+*
+* The DMAC blocks are tested using the following procedure: <br>
+* 1) A destination block of size 66 bytes is set to 0 with DMA transfers using 16 x 32-bit transfers from a fixed
+*    address. <br>
+* 2) The destination block is verified to be all 0. <br>
+* 3) Another destination block is filled with 00 00 ff by using an 8-bit DMA transfers from a fixed address
+*    with an increment of 1 and a length of 64. <br>
+* 4) The destination block is verified to contain the correct pattern (shown below with lowest address first):
+*    ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000…
 *
 *
 * \param base
-* The pointer to the hardware DMA block <br>
+* The pointer to the hardware DMA block
 * \param channel
 * A channel number
 * \param descriptor0
-* This is the descriptor to be associated with the channel (transfer 0's to destination).
+* This is the descriptor to be associated with the channel (transfer 0's to destination)
 * \param descriptor1
-* This is the descriptor to be associated with the channel (transfer pattern to destination).
+* This is the descriptor to be associated with the channel (transfer pattern to destination)
 * \param des0_config
-* This is a configuration structure that has all initialization information for the descriptor.
+* This is a configuration structure that has all initialization information for the descriptor
 * \param des1_config
-* This is a configuration structure that has all initialization information for the descriptor.
+* This is a configuration structure that has all initialization information for the descriptor
 * \param channelConfig
-* The structure that has the initialization information for the channel.
+* The structure that has the initialization information for the channel
 * \param trigLine
 * The input of the trigger mux.
 * -> Bit 30 represents if the signal is an input/output. When this bit is set, the trigger activation is for an output
@@ -116,24 +122,66 @@ The DMAC blocks are tested using the following procedure.
 * -> In case of output trigger line (bit 30 is set): For PERI_ver1: <br>
 * -> Bits 6:0 select the output trigger number in the trigger group. For PERI_ver2: <br>
 * -> Bits 7:0 select the output trigger number in the trigger group. In case of input trigger line (bit 30 is unset): <br>
-* -> Bits 7:0 select the input trigger signal for the trigger multiplexer  <br>
+* -> Bits 7:0 select the input trigger signal for the trigger multiplexer
 *
 * \note
-* Only applicable for CAT1A and CAT1C devices.
+* Only applicable for CAT1A and CAT1C devices
 *
 *
 * \return
-* 0 - Test pass; <br>
-* 1 - Test fail;
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 *******************************************************************************/
 uint8_t SelfTest_DMAC(DMAC_Type * base, uint32_t channel, cy_stc_dmac_descriptor_t * descriptor0, cy_stc_dmac_descriptor_t * descriptor1,
                         const cy_stc_dmac_descriptor_config_t * des0_config,const cy_stc_dmac_descriptor_config_t * des1_config,
                         cy_stc_dmac_channel_config_t const * channelConfig, en_trig_output_mdma_t trigLine);
-/** \} group_dmac_functions */
 
 #endif
+
+
+#if (defined(CY_IP_M0S8CPUSSV3_DMAC) || defined (CY_DOXYGEN))
+
+/*******************************************************************************
+* Function Name: SelfTest_DMAC
+****************************************************************************//**
+*
+* This function performs the DMAC channel test routine by transfering data
+* between data arrays using DMAC and verifying if the destination block
+* contain expected data pattern.
+*
+* The DMAC blocks are tested using the following procedure: <br>
+* 1) A destination block of size 64 bytes is set to 0 with DMA transfers using 16 x 32-bit transfers from a fixed
+*    address. <br>
+* 2) The destination block is verified to be all 0. <br>
+* 3) The same destination block is filled with 00 00 ff by using an 8-bit DMA transfers from a fixed address
+*    with an increment of 1 and a length of 64. <br>
+* 4) The destination block is verified to contain the correct pattern (shown below with lowest address first):
+*    ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000…
+*
+* \param base
+* The pointer to the hardware DMAC block
+*
+* \param channel
+* The DMAC channel number
+*
+* \param trigLine
+* The input trigger to start data transfer for selected DMAC channel.
+* Refer to device TRM for details on trigLine value selection
+*
+* \note
+* Only applicable for CAT2 devices
+*
+* \return
+*  0 - Test passed <br>
+*  1 - Test failed
+*
+*******************************************************************************/
+uint8_t SelfTest_DMAC(DMAC_Type * base, uint32_t channel, uint32_t trigLine);
+
 #endif
+
+/** \} group_dmac_functions */
 
 /** \} group_dmac */
 #endif

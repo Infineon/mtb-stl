@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('group__group__sram__stack__functions.h
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">STACK<div class="ingroups"><a class="el" href="group__group__ram.html">Ram                       (RAM STL module)</a></div></div></div>
+  <div class="headertitle"><div class="title">STACK<div class="ingroups"><a class="el" href="group__group__ram.html">RAM                       (RAM STL module)</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -133,15 +133,14 @@ Functions</h2></td></tr>
 <p >It can detect stuck-at faults and direct coupling faults. The RAM tests are destructible in nature so this function copies the stack in use to the provided RAM area. Once the test is completed, stack is copied back to its original location. Because of RAM destructible behavior, it is advisable to disable interrupts before starting the test.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">stackBase</td><td>The pointer to the Stack Base. </td></tr>
-    <tr><td class="paramname">stackSize</td><td>The size Stack. </td></tr>
-    <tr><td class="paramname">altStackBase</td><td>The pointer to start of the RAM area to be used as alternate Stack Base. RAM address from altStackBase to (altStackBase - stackSize) is used to store/restore the Stack under test. The existing content of this area will be destructed and this area must not overlap with the Stack under test. The platform might set stack limit using __set_MSPLIM, ensure that the alternate stack is within the stack limit set by the platform. </td></tr>
+    <tr><td class="paramname">stackBase</td><td>The pointer to the Stack Base </td></tr>
+    <tr><td class="paramname">stackSize</td><td>The size of Stack </td></tr>
+    <tr><td class="paramname">altStackBase</td><td>The pointer to start of the RAM area to be used as alternate Stack Base. RAM address from altStackBase to (altStackBase - stackSize) is used to store/restore the Stack under test. The existing content of this area will be destructed and this area must not overlap with the Stack under test. The platform might set stack limit using __set_MSPLIM, ensure that the alternate stack is within the stack limit set by the platform</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>""0" - Test passed                                        &lt;br&gt;
-  "1" - Test Failed <br  />
- </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed </dd></dl>
 
 </div>
 </div>

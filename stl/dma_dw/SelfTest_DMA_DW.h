@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_DMA_DW.h
-* Version 1.0.0
 *
 * Description:
 * This file provides constants and parameter values used for DMA_DW self
 * tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -46,26 +45,17 @@
 *
 * \section group_dma_more_information More Information
 *
-// \verbatim
-The DMA blocks are tested using the following procedure.
-
-  1) A destination block of size 64 bytes is set to 0 with DW transfers using 16 x 32-bit transfers from a fixed address.
-  2) The destination block is verified to be all 0.
-  3) The same destination block is filled with 00 00 ff by using an 8-bit DMA from a fixed address with an increment of 3 and a length of 22 (64+(3-1))/3.
-  4) The destination block is verified to contain the correct pattern (shown below with lowest address first): ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000…
-\endverbatim
+*      The DMA blocks are tested using the following procedure:
 *
-* \section group_dma_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
+*      1) A destination block of size 64 bytes is set to 0 with DW transfers using 16 x 32-bit transfers from a fixed
+*         address.
+*      2) The destination block is verified to be all 0.
+*      3) The same destination block is filled with 00 00 ff by using an 8-bit DMA from a fixed address with an
+*         increment of 3 and a length of 22 (64+(3-1))/3.
+*      4) The destination block is verified to contain the correct pattern (shown below with lowest address first):
+*         ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000…
 *
-* \defgroup group_dma_macros Macros
+*
 * \defgroup group_dma_functions Functions
 */
 
@@ -118,12 +108,12 @@ The DMA blocks are tested using the following procedure.
 *
 *
 * \note
-* Only applicable for CAT1A, CAT1B(PSoC C3) and CAT1C devices.
+* Only applicable for CAT1A, CAT1B(PSoC C3) and CAT1C devices
 *
 *
 * \return
-* 0 - Test pass <br>
-* 1 - Test fail
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 *******************************************************************************/
 

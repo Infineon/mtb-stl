@@ -1,12 +1,11 @@
 /*******************************************************************************
 * File Name: SelfTest_IO.c
-* Version 1.0.0
 *
 * Description:
 *  This file provides the source code for I/O self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -103,7 +102,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
 };
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4500S) */
 
-#if  defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS) && (CY_FLASH_SIZE == 0x00040000UL)
+#if defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS) && (CY_FLASH_SIZE == 0x00040000UL)
 static const uint8_t PinToTest[] =
 {
     /* Below mask is based on the project setting and CY8CKIT-45S MAX kit hardware */
@@ -114,6 +113,27 @@ static const uint8_t PinToTest[] =
     0x00u,            /* PORT4 mask */
     0xE3u,            /* PORT5 mask */
     0x16u,            /* PORT6 mask */
+    0x00u,            /* PORT7 mask */
+};
+
+/* IO ports register addresses */
+static GPIO_PRT_Type* PORT_Regs[] =
+{
+    GPIO_PRT0, GPIO_PRT1, GPIO_PRT2, GPIO_PRT3, \
+    GPIO_PRT4, GPIO_PRT5, GPIO_PRT6, GPIO_PRT7,
+};
+
+#elif defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS)
+static const uint8_t PinToTest[] =
+{
+    /* Below mask is based on the project setting and CY8CKIT-149 kit hardware */
+    0x09u,            /* PORT0 mask */
+    0x28u,            /* PORT1 mask */
+    0x5Au,            /* PORT2 mask */
+    0x60u,            /* PORT3 mask */
+    0x80u,            /* PORT4 mask */
+    0x48u,            /* PORT5 mask */
+    0x00u,            /* PORT6 mask */
     0x00u,            /* PORT7 mask */
 };
 
@@ -144,6 +164,26 @@ static GPIO_PRT_Type* PORT_Regs[] =
 };
 #endif /* if  defined(CY_DEVICE_SERIES_PSOC_4100S) */
 
+#if defined(CY_DEVICE_SERIES_PSOC_4100T_PLUS)
+static const uint8_t PinToTest[] =
+{
+    /* Below mask is based on the project setting and CY8CPROTO-041TP kit hardware */
+    0x00u,            /* PORT0 mask */
+    0x00u,            /* PORT1 mask */
+    0x7Fu,            /* PORT2 mask */
+    0x02u,            /* PORT3 mask */
+    0x07u,            /* PORT4 mask */
+    0x00u,            /* PORT5 mask */
+    0x04u,            /* PORT6 mask */
+};
+
+/* IO ports register addresses */
+static GPIO_PRT_Type* PORT_Regs[] =
+{
+    GPIO_PRT0, GPIO_PRT1, GPIO_PRT2, GPIO_PRT3, \
+    GPIO_PRT4, GPIO_PRT5, GPIO_PRT6,
+};
+#endif // if defined(CY_DEVICE_SERIES_PSOC_4100T_PLUS)
 
 #elif CY_CPU_CORTEX_M4
 static const uint8_t PinToTest[] =

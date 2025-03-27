@@ -1,12 +1,11 @@
 /* *****************************************************************************
 * File Name: SelfTest_Stack.c
-* Version 1.0.0
 *
 * Description:
 *  This file provides the source code to the API for runtime Stack self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -44,9 +43,6 @@
 
 
 static uint8_t cy_stack_pattern_block_size = 0;
-
-CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 18.4', 4, \
-'Using arithmetic on pointer.')
 
 /*******************************************************************************
  * Function Name: SelfTests_Init_Stack_Range
@@ -154,7 +150,6 @@ uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_leng
     }
     return ret;
 }
-CY_MISRA_BLOCK_END('MISRA C-2012 Rule 18.4')
 /* [] END OF FILE */
 
 

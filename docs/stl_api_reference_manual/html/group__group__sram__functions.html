@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('group__group__sram__functions.html',''
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">SRAM<div class="ingroups"><a class="el" href="group__group__ram.html">Ram                       (RAM STL module)</a></div></div></div>
+  <div class="headertitle"><div class="title">SRAM<div class="ingroups"><a class="el" href="group__group__ram.html">RAM                       (RAM STL module)</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -146,17 +146,15 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">type</td><td>The type of RAM test to be run </td></tr>
-    <tr><td class="paramname">startAddr</td><td>The pointer to start of the RAM block to be tested. </td></tr>
-    <tr><td class="paramname">size</td><td>The size of RAM block to be tested. </td></tr>
-    <tr><td class="paramname">buffAddr</td><td>The pointer to start of the buffer to be used to store/restore data of RAM block to be tested. If NULL, test would be performed * without store/restore being performed. </td></tr>
-    <tr><td class="paramname">buffSize</td><td>The size of buffer which is used to store/restore. If buffSize is smaller than size, the test internally loops through the RAM * block operating on memory size equal to buffSize in each iteration.</td></tr>
+    <tr><td class="paramname">startAddr</td><td>The pointer to start of the RAM block to be tested </td></tr>
+    <tr><td class="paramname">size</td><td>The size of RAM block to be tested </td></tr>
+    <tr><td class="paramname">buffAddr</td><td>The pointer to start of the buffer to be used to store/restore data of RAM block to be tested. If NULL, test would be performed without store/restore being performed. </td></tr>
+    <tr><td class="paramname">buffSize</td><td>The size of buffer which is used to store/restore. If buffSize is smaller than size, the test internally loops through the RAM block operating on memory size equal to buffSize in each iteration.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>""0" - Test passed                                        &lt;br&gt;
-  "1" - Test Failed <br  />
-</dd></dl>
-<p>It can detect stuck-at faults and direct coupling faults. The RAM tests are destructible in nature so function also accepts temporary buffer which can be used to store/restore memory block under test. The RAM block under test must not overlap with memory that is not supposed be overwritten for e.g. stack. This kind of situation must be tested at the startup. Because of RAM destructible behavior, it is advisable to disable interrupts before starting the test. </p>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed </dd></dl>
 
 </div>
 </div>

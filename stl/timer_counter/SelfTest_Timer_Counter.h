@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_Timer_Counter.h
-* Version 1.1.0
 *
 * Description:
 *  This file provides the function prototypes, constants and parameter values used
 *  for the clock self tests according to Class B library.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -42,19 +41,15 @@
 * \addtogroup group_timer_counter
 * \{
 *
-* This test uses the timer function to check that the counter is incrementing.
+* This test uses the timer function to ensure that the counter is 
+* incrementing correctly.
+* It involves initializing the counter and its corresponding
+* interrupt service routine (ISR).
+* The counter is configured to increment based on specified period and
+* compare values.
+* The ISR verifies the occurrence of the compare count interrupt,
+* indicating that the timer has reached its configured compare value.
 *
-*
-*
-* \section group_timer_counter_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_timer_counter_macros Macros
 * \defgroup group_timer_counter_functions Functions
@@ -66,7 +61,7 @@
 #include "cybsp.h"
 #include "SelfTest_common.h"
 
-#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
+#if (defined(CY_IP_MXTCPWM) || defined(CY_IP_M0S8TCPWM) || defined(CY_DOXYGEN))
 /***************************************
 * Function Prototypes
 ***************************************/
@@ -81,19 +76,17 @@
 * Initialize the counter and initialize the timer interrupt for the Self test.
 *
 * \param base
-* The pointer to a TCPWM instance.
+* The pointer to a TCPWM instance
 *
 * \param cntNum
-* The Counter instance number in the selected TCPWM.
+* The Counter instance number in the selected TCPWM
 *
 * \param config
-* The pointer to configuration structure.
+* The pointer to configuration structure
 *
 * \param intsrc
-* Interrupt source 
+* Interrupt source
 *
-* \return
-* NULL
 *
 ******************************************************************************/
 void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum, cy_stc_tcpwm_counter_config_t const *config, IRQn_Type intsrc);
@@ -106,7 +99,7 @@ void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum, cy_stc_tcpwm
 *
 *
 * \return
-*  0 - Test Passed <br>
+*  0 - Test passed <br>
 *  1 - Test failed
 *
 *
@@ -123,21 +116,26 @@ uint8_t SelfTest_Counter_Timer(void);
 /** \addtogroup group_timer_counter_macros
 * \{
 */
-/** Number of clock cycles */
-#define TIMER_COUNTER_TEST_PERIOD                      (50000u)
+/** TCPWM Period value */
+#define TIMER_COUNTER_TEST_PERIOD                      (65535U)
+
+/** TCPWM Compare value */
+#define TIMER_COUNTER_TEST_COMPARE                     (50000U)
 
 /** Lower possible clock cycles count*/
-#define TIMER_COUNTER_COUNT_LOW                        (48800u)
-
+#define TIMER_COUNTER_COUNT_LOW                        (48800U)
 
 /** Higher possible clock cycles count*/
-#define TIMER_COUNTER_COUNT_HIGH                       (51200u)
+#define TIMER_COUNTER_COUNT_HIGH                       (51200U)
+
+/** Higher possible clock cycles count*/
+#define TIMER_COUNTER_TIMEOUT                          (600U)
 
 /** \} group_timer_counter_macros */
 
 /** \} group_timer_counter */
-#endif /* End SELFTEST_TIMER_COUNTER_H */
+#endif /* (defined(CY_IP_MXTCPWM) || defined(CY_IP_M0S8TCPWM) || defined(CY_DOXYGEN)) */
 
+#endif /* !defined(SELFTEST_TIMER_COUNTER_H) */
 
 /* [] END OF FILE */
-#endif

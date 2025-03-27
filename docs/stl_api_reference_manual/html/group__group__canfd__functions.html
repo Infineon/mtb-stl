@@ -145,13 +145,12 @@ Functions</h2></td></tr>
 <p >Similarly, a message with message ID 0x50 is transmitted and the message received in RX FIFO is verified.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">base</td><td>The pointer to a CAN FD instance. <br  />
- </td></tr>
-    <tr><td class="paramname">chan</td><td>The CAN FD channel number. <br  />
- </td></tr>
-    <tr><td class="paramname">config</td><td>The pointer to the CAN FD configuration structure. </td></tr>
-    <tr><td class="paramname">context</td><td>The pointer to the context structure allocated by the user. The structure is used during the CAN FD operation for internal configuration and data retention. User must not modify anything in this structure.</td></tr>
-    <tr><td class="paramname">test_mode</td><td>internal : will not drive the pin external : will drive the external pins along with loopback</td></tr>
+    <tr><td class="paramname">base</td><td>The pointer to a CAN FD instance </td></tr>
+    <tr><td class="paramname">chan</td><td>The CAN FD channel number </td></tr>
+    <tr><td class="paramname">config</td><td>The pointer to the CAN FD configuration structure </td></tr>
+    <tr><td class="paramname">context</td><td>The pointer to the context structure allocated by the user. The structure is used during the CAN FD operation for internal configuration and data retention. User must not modify anything in this structure </td></tr>
+    <tr><td class="paramname">test_mode</td><td>internal: will not drive the pin <br  />
+ external: will drive the external pins along with loopback</td></tr>
   </table>
   </dd>
 </dl>

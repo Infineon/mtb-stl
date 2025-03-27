@@ -157,15 +157,15 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sar_base</td><td>The pointer to a SAR ADC instance </td></tr>
-    <tr><td class="paramname">expected_res</td><td>if count_to_mV = 1 =&gt; Expected result in mV, else Expected result in counts. </td></tr>
+    <tr><td class="paramname">expected_res</td><td>If count_to_mV = 1 =&gt; Expected result in mV, else Expected result in counts. </td></tr>
     <tr><td class="paramname">accuracy</td><td>Accuracy in count ANALOG_OPAMP_ACURACCY </td></tr>
-    <tr><td class="paramname">opamp_in_channel</td><td>channel no. where the OPAMP output is been read </td></tr>
+    <tr><td class="paramname">opamp_in_channel</td><td>Channel no. where the OPAMP output is been read </td></tr>
     <tr><td class="paramname">count_to_mV</td><td>1 = convert the count to mV.(take more time)</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 - Test Passed <br  />
- 1 - Test Failed </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed </dd></dl>
 
 </div>
 </div>
@@ -222,18 +222,18 @@ Functions</h2></td></tr>
 <p>Performs ADC test and verify measured voltage is in accuracy range. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">base</td><td>The pointer to a SAR ADC instance. For CAT1B, base is the group instance. </td></tr>
-    <tr><td class="paramname">channel</td><td>channel no. where the input voltage needs to be read </td></tr>
-    <tr><td class="paramname">expected_res</td><td>if count_to_mV = 1 =&gt; Expected result in mV, else Expected result in counts. </td></tr>
+    <tr><td class="paramname">base</td><td>The pointer to a SAR ADC instance. For CAT1B, base is the group instance </td></tr>
+    <tr><td class="paramname">channel</td><td>Channel no. where the input voltage needs to be read </td></tr>
+    <tr><td class="paramname">expected_res</td><td>If count_to_mV = 1 =&gt; Expected result in mV, else Expected result in counts </td></tr>
     <tr><td class="paramname">accuracy</td><td>Accuracy in count ANALOG_ADC_ACURACCY </td></tr>
-    <tr><td class="paramname">vbg_channel</td><td>Channel no. where the VBG voltage is connected. Only for CAT1C device. </td></tr>
+    <tr><td class="paramname">vbg_channel</td><td>Channel no. where the VBG voltage is connected. Only for CAT1C device </td></tr>
     <tr><td class="paramname">count_to_mV</td><td>1 = convert the count to mV.(take more time). Not applicable for CAT1B device</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 - Test Passed <br  />
- 1 - Test Failed</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>For CA1B devices, User needs to configure the trigger input same as channel number. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>For CA1B devices, User needs to configure the trigger input same as channel number </dd></dl>
 
 </div>
 </div>
@@ -278,8 +278,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 - Test Passed <br  />
- 1 - Test Failed </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed </dd></dl>
 
 </div>
 </div>
@@ -321,12 +321,12 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">dacBase</td><td>The pointer to a DAC instance </td></tr>
     <tr><td class="paramname">adcBase</td><td>The pointer to a SAR ADC instance </td></tr>
-    <tr><td class="paramname">adcChannel</td><td>channel number of SAR ADC instance</td></tr>
+    <tr><td class="paramname">adcChannel</td><td>Channel number of SAR ADC instance</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 - Test Passed <br  />
- 1 - Test Failed</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Applicable only to CAT1A devices </dd></dl>
 
 </div>
@@ -381,13 +381,13 @@ Functions</h2></td></tr>
     <tr><td class="paramname">adc_channel</td><td>Pointer to the ADC channel </td></tr>
     <tr><td class="paramname">dac_slice</td><td>Pointer to DAC slice </td></tr>
     <tr><td class="paramname">dac_val</td><td>Value to be loaded in DAC register </td></tr>
-    <tr><td class="paramname">expected_res</td><td>channel Expected result in ADC </td></tr>
+    <tr><td class="paramname">expected_res</td><td>Channel Expected result in ADC </td></tr>
     <tr><td class="paramname">accuracy</td><td>Error tolerance </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 - Test Passed <br  />
- 1 - Test Failed</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Applicable only to CAT1B devices </dd></dl>
 
 </div>

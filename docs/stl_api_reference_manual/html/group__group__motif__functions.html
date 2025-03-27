@@ -134,8 +134,14 @@ Functions</h2></td></tr>
 
 <p>This function perform self test on Motif module. </p>
 <p >The MOTIF unit is a flexible and powerful component for motor control systems that use Rotary Encoders, Hall Sensors as feedback loop. This API initializes the MOTIF module in Hall sensor mode and input PWMs which simulates HALL sensor output</p>
-<dl class="section return"><dt>Returns</dt><dd>void <br  />
- </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">base</td><td>Pointer to the base address of the TCPWM MOTIF group instance.</td></tr>
+    <tr><td class="paramname">config</td><td>Pointer to the configuration structure for the Hall sensor mode.</td></tr>
+    <tr><td class="paramname">input_config</td><td>Pointer to the structure containing the PWM input configurations for simulating Hall sensor outputs. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -167,9 +173,15 @@ Functions</h2></td></tr>
 
 <p>This function starts the Motif module and Modulation output from motif is started with existing values. </p>
 <p >It reports the status of the interrupts and clears the triggered interrupts. It compares the defined Multi-Channel Mode Pattern with output modulation value, returns the result OK_STATUS if values match or returns ERROR_STATUS if the values do not match.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">base</td><td>Pointer to the base address of the TCPWM MOTIF group instance.</td></tr>
+    <tr><td class="paramname">input_config</td><td>Pointer to the structure containing the PWM input configurations.</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>"0" "OK_STATUS" - Test passed <br  />
- "1" "ERROR_STATUS" - Test Failed <br  />
- </dd></dl>
+ "1" "ERROR_STATUS" - Test failed </dd></dl>
 
 </div>
 </div>

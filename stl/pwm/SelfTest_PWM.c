@@ -1,11 +1,11 @@
 /*******************************************************************************
 * File Name: SelfTest_PWM.c
-* Version 1.0.0
 *
-* Description: This file provides the source code for the PWM self tests.
+* Description:
+*  This file provides the source code for the PWM self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -42,13 +42,14 @@
 #include "SelfTest_ErrorInjection.h"
 
 
-#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
+#if (defined(CY_IP_MXTCPWM) || defined(CY_IP_M0S8TCPWM))
 
 static TCPWM_Type *base1;
 static uint32_t cntNum1;
 static volatile uint16_t pwm_test_isr_count;
 static uint32_t h_cnt, l_cnt;
 static cy_stc_tcpwm_pwm_config_t const *config1;
+
 
 static void TIMER_ISR(void)
 {
@@ -71,61 +72,70 @@ static void TIMER_ISR(void)
 uint8_t SelfTest_PWM_init(TCPWM_Type *base, uint32_t cntNum,
              cy_stc_tcpwm_pwm_config_t const *config, IRQn_Type  intr_src)
 {
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
+    uint8_t ret = OK_STATUS;
+
+#if defined (CY_IP_M7CPUSS)
+    const cy_stc_sysint_t sTIMER_IRQ_cfg =
+    {
+        /* Bit 0-15 of intrSrc is used to store system interrupt value and bit 16-31 to store CPU IRQ value */
+        .intrSrc = (((uint32_t)NvicMux3_IRQn << 16U) | ((uint32_t)intr_src)),
+        .intrPriority = 2UL
+    };
+#else
     const cy_stc_sysint_t sTIMER_IRQ_cfg =
     {
         .intrSrc = intr_src,
         .intrPriority = 2UL
     };
-#else
-    const cy_stc_sysint_t sTIMER_IRQ_cfg =
-    {
-        .intrSrc = (((uint32_t)NvicMux3_IRQn << 16U) | ((uint32_t)intr_src)), /* Bit 0-15 of intrSrc is used to store system interrupt value and bit 16-31 to store CPU IRQ value */
-        .intrPriority = 2UL
-    };
 #endif
-
-    /* Variable to store API status */
-    cy_en_tcpwm_status_t apiStatus;
 
     /* Configure the TCPWM for PWM operation. */
-    apiStatus = Cy_TCPWM_PWM_Init(base, cntNum, config);
-    if(apiStatus != CY_TCPWM_SUCCESS)
+    if(CY_TCPWM_SUCCESS != Cy_TCPWM_PWM_Init(base, cntNum, config))
     {
-        return (uint8_t)-1;
+        ret = (uint8_t)-1;
     }
 
-    /* set the interrupt line for TIMER_HW */
-    if (CY_SYSINT_SUCCESS != Cy_SysInt_Init(&sTIMER_IRQ_cfg, &TIMER_ISR))
+    if(OK_STATUS == ret)
     {
-        return (uint8_t)-1;
+        /* Set the interrupt line for TIMER_HW */
+        if ((CY_SYSINT_SUCCESS != Cy_SysInt_Init(&sTIMER_IRQ_cfg, &TIMER_ISR)))
+        {
+            ret =  (uint8_t)-1;
+        }
     }
 
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
-    /* Enable system Interrupt */
-    /* Enable Interrupt */
-    NVIC_EnableIRQ(sTIMER_IRQ_cfg.intrSrc); 
+    if (OK_STATUS == ret)
+    {
+#if defined (CY_IP_M7CPUSS)
+        /* Enable system Interrupt */
+        NVIC_EnableIRQ((IRQn_Type) NvicMux3_IRQn);
 #else
-    /* Enable system Interrupt */
-    NVIC_EnableIRQ((IRQn_Type) NvicMux3_IRQn);
+        /* Enable Interrupt */
+        NVIC_EnableIRQ(sTIMER_IRQ_cfg.intrSrc);
 #endif
-    base1 = base;
-    cntNum1 = cntNum;
-    config1  = config;
-    return 0;
+
+        base1 = base;
+        cntNum1 = cntNum;
+        config1  = config;
+    }
+
+    return ret;
 }
 
 
 uint8_t SelfTest_PWM(GPIO_PRT_Type *pinbase, uint32_t pinNum)
 {
-#if CY_CPU_CORTEX_M7 || CY_CPU_CORTEX_M33
+#if defined (CY_IP_MXTCPWM) && (CY_IP_MXTCPWM_VERSION >= 2U)
     (void)pinbase;
     (void)pinNum;
 #endif
+    uint8_t ret = ERROR_STATUS;
+    uint8_t clk_divide;
+
     h_cnt = 0U;
     l_cnt = 0U;
     pwm_test_isr_count = 0;
-    uint8_t clk_divide; 
+
     switch (config1->clockPrescaler)
     {
     case CY_TCPWM_PWM_PRESCALER_DIVBY_1:
@@ -156,26 +166,38 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type *pinbase, uint32_t pinNum)
         clk_divide = 1;
         break;
     }
-#if CY_CPU_CORTEX_M33
-    uint32_t PWM_PERIOD = (((Cy_SysClk_ClkHfGetFrequency(3) / 1000000U) / clk_divide) * (PWM_TIME));
+
+#if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
+    uint32_t PWM_PERIOD = (((Cy_SysClk_ClkHfGetFrequency(3U) / 1000000U) / clk_divide) * (PWM_TIME));
+
+#elif (defined(CY_CPU_CORTEX_M0P) && (CY_CPU_CORTEX_M0P))
+    uint32_t PWM_PERIOD = (((Cy_SysClk_ClkHfGetFrequency() / 1000000U) / clk_divide) * (PWM_TIME));
+
 #else
     uint32_t PWM_PERIOD = (((Cy_SysClk_ClkPeriGetFrequency() / 1000000U) / clk_divide) * (PWM_TIME));
 #endif
-    uint32_t PWM_CMP0 = PWM_PERIOD/3U;
-    Cy_TCPWM_PWM_SetPeriod0(base1, cntNum1, (PWM_PERIOD-1U));
-#if ERROR_IN_PWM
+
+    Cy_TCPWM_PWM_SetPeriod0(base1, cntNum1, (PWM_PERIOD - 1U));
+
+#if (ERROR_IN_PWM == 1u)
     /* Set 50% duty cycle instead of 33% */
-    (void)PWM_CMP0;
-    Cy_TCPWM_PWM_SetCompare0(base1, cntNum1, (PWM_PERIOD/2));
+    Cy_TCPWM_PWM_SetCompare0(base1, cntNum1, (PWM_PERIOD / 2U));
 #else
-    Cy_TCPWM_PWM_SetCompare0(base1, cntNum1, (PWM_CMP0 - 1U));
+    Cy_TCPWM_PWM_SetCompare0(base1, cntNum1, ((PWM_PERIOD / 3U) - 1U));
 #endif
+
     Cy_TCPWM_PWM_Enable(base1, cntNum1);
+
+#if defined(CY_IP_M0S8TCPWM)
+    Cy_TCPWM_TriggerReloadOrIndex(base1, 1UL << cntNum1);
+#else
     Cy_TCPWM_TriggerReloadOrIndex_Single(base1, cntNum1);
+#endif
+
     do
     {
-#if CY_CPU_CORTEX_M4
-        if (1U == Cy_GPIO_Read(pinbase, pinNum))
+#if defined (CY_IP_MXTCPWM) && (CY_IP_MXTCPWM_VERSION >= 2U)
+        if (Cy_TCPWM_PWM_LineOutStatus(base1, cntNum1, CY_TCPWM_PWM_LINE_PWM) != 0UL)
         {
             h_cnt++;
         }
@@ -184,7 +206,9 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type *pinbase, uint32_t pinNum)
             l_cnt++;
         }
 #else
-        if (Cy_TCPWM_PWM_LineOutStatus(base1, cntNum1, CY_TCPWM_PWM_LINE_PWM) != 0UL)
+        Cy_SysLib_DelayUs(1U);
+
+        if (0U != Cy_GPIO_Read(pinbase, pinNum))
         {
             h_cnt++;
         }
@@ -194,18 +218,17 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type *pinbase, uint32_t pinNum)
         }
 #endif
     } while (pwm_test_isr_count < 5U);
+
     if (h_cnt != 0U) 
     {
         float off_on_ratio = (float)l_cnt/(float)h_cnt;
         if ((off_on_ratio > (float)1.875) && (off_on_ratio < (float)2.125))
         {
-            return OK_STATUS;
+            ret = OK_STATUS;
         }
     }
-    else
-    {
-        return ERROR_STATUS;
-    }
-    return ERROR_STATUS;
+
+    return ret;
 }
+
 #endif

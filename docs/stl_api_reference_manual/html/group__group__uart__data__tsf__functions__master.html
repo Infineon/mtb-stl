@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('group__group__uart__data__tsf__functio
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">Master<div class="ingroups"><a class="el" href="group__group__uart__data__tsf.html">UART_Data_Transfer        (UART_Data_Transfer STL module)</a></div></div></div>
+  <div class="headertitle"><div class="title">Master<div class="ingroups"><a class="el" href="group__group__uart__data__tsf.html">UART Data Transfer        (UART Data Transfer STL module)</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -107,8 +107,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gaf8d102cf05c8cf9705cbbe645ffbbcc7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__uart__data__tsf__functions__master.html#gaf8d102cf05c8cf9705cbbe645ffbbcc7">UartMesMaster_Timeout_ISR</a> (void)</td></tr>
 <tr class="memdesc:gaf8d102cf05c8cf9705cbbe645ffbbcc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">UART timer guard interrupt.  <a href="group__group__uart__data__tsf__functions__master.html#gaf8d102cf05c8cf9705cbbe645ffbbcc7">More...</a><br /></td></tr>
 <tr class="separator:gaf8d102cf05c8cf9705cbbe645ffbbcc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga263e9b5eef2234c47d61a2a74d2244e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__uart__data__tsf__functions__master.html#ga263e9b5eef2234c47d61a2a74d2244e6">UartMesMaster_Msg_ISR</a> (void)</td></tr>
-<tr class="memdesc:ga263e9b5eef2234c47d61a2a74d2244e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interrupt handler for UART to receive/transmit.  <a href="group__group__uart__data__tsf__functions__master.html#ga263e9b5eef2234c47d61a2a74d2244e6">More...</a><br /></td></tr>
+<tr class="memitem:ga263e9b5eef2234c47d61a2a74d2244e6"><td class="memItemLeft" align="right" valign="top"><a id="ga263e9b5eef2234c47d61a2a74d2244e6" name="ga263e9b5eef2234c47d61a2a74d2244e6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>UartMesMaster_Msg_ISR</b> (void)</td></tr>
+<tr class="memdesc:ga263e9b5eef2234c47d61a2a74d2244e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interrupt handler for UART to receive/transmit. <br /></td></tr>
 <tr class="separator:ga263e9b5eef2234c47d61a2a74d2244e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -148,14 +149,12 @@ Functions</h2></td></tr>
 <p >This function starts needed components and initializes control status structure</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">uart_base</td><td>The pointer to the master UART SCB instance. <br  />
- </td></tr>
-    <tr><td class="paramname">counter_base</td><td>The pointer to the master TCPWM instance. </td></tr>
-    <tr><td class="paramname">cntNum</td><td>The Counter instance number in the selected TCPWM.</td></tr>
+    <tr><td class="paramname">uart_base</td><td>The pointer to the master UART SCB instance </td></tr>
+    <tr><td class="paramname">counter_base</td><td>The pointer to the master TCPWM instance </td></tr>
+    <tr><td class="paramname">cntNum</td><td>The Counter instance number in the selected TCPWM </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>NONE </dd></dl>
 
 </div>
 </div>
@@ -206,20 +205,17 @@ Functions</h2></td></tr>
 <p>Start the background process of the packet's transmission. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">address</td><td>Slave address for data transfer <br  />
- </td></tr>
-    <tr><td class="paramname">txd</td><td>Pointer to transmitted data <br  />
- </td></tr>
-    <tr><td class="paramname">tlen</td><td>size of transmitted data in bytes <br  />
- </td></tr>
-    <tr><td class="paramname">rxd</td><td>pointer to the buffer where the received data will be stored <br  />
- </td></tr>
-    <tr><td class="paramname">rlen</td><td>size of received data buffer</td></tr>
+    <tr><td class="paramname">address</td><td>Slave address for data transfer </td></tr>
+    <tr><td class="paramname">txd</td><td>Pointer to transmitted data </td></tr>
+    <tr><td class="paramname">tlen</td><td>Size of transmitted data in bytes </td></tr>
+    <tr><td class="paramname">rxd</td><td>Pointer to the buffer where the received data will be stored </td></tr>
+    <tr><td class="paramname">rlen</td><td>Size of received data buffer</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 - If the unit began a message process 1 - if not (cause unit busy or invalid input data)</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>use <a class="el" href="group__group__uart__data__tsf__functions__master.html#ga391ce0555eb704eeaf986a004993f9bf" title="Returns current master unit state.">UartMesMaster_State()</a> to check busy state </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - If the unit began a message process <br  />
+ 1 - If not (cause unit busy or invalid input data)</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Use <a class="el" href="group__group__uart__data__tsf__functions__master.html#ga391ce0555eb704eeaf986a004993f9bf" title="Returns current master unit state.">UartMesMaster_State()</a> to check busy state </dd></dl>
 
 </div>
 </div>
@@ -240,7 +236,9 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns current master unit state. </p>
-<dl class="section return"><dt>Returns</dt><dd>UM_ERROR - last message process ended with error (the slave didn't respond or invalid responded data format) UM_COMPLETE - last message process succeeded (responded data is in the received buffer) UM_BUSY - unit is busy with message process </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>UM_ERROR - last message process ended with error (the slave didn't respond or invalid responded data format) <br  />
+ UM_COMPLETE - last message process succeeded (responded data is in the received buffer) <br  />
+ UM_BUSY - unit is busy with message process </dd></dl>
 
 </div>
 </div>
@@ -262,7 +260,7 @@ Functions</h2></td></tr>
 
 <p>Returns size of the received data. </p>
 <dl class="section return"><dt>Returns</dt><dd>Received data size in buffer</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>Result valid only if unit state is UM_COMPLETE use <a class="el" href="group__group__uart__data__tsf__functions__master.html#ga391ce0555eb704eeaf986a004993f9bf" title="Returns current master unit state.">UartMesMaster_State()</a> to check this condition. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Result valid only if unit state is UM_COMPLETE. Use <a class="el" href="group__group__uart__data__tsf__functions__master.html#ga391ce0555eb704eeaf986a004993f9bf" title="Returns current master unit state.">UartMesMaster_State()</a> to check this condition </dd></dl>
 
 </div>
 </div>
@@ -283,29 +281,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>UART timer guard interrupt. </p>
-<p >This function provides timeout control when data is sent but response is not received after packet transaction.</p>
-<dl class="section return"><dt>Returns</dt><dd>NONE </dd></dl>
-
-</div>
-</div>
-<a id="ga263e9b5eef2234c47d61a2a74d2244e6" name="ga263e9b5eef2234c47d61a2a74d2244e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga263e9b5eef2234c47d61a2a74d2244e6">&#9670;&nbsp;</a></span>UartMesMaster_Msg_ISR()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void UartMesMaster_Msg_ISR </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Interrupt handler for UART to receive/transmit. </p>
-<dl class="section return"><dt>Returns</dt><dd>NONE </dd></dl>
+<p >This function provides timeout control when data is sent but response is not received after packet transaction. </p>
 
 </div>
 </div>

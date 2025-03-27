@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_WDT.c
-* Version 1.0.0
 *
 * Description:
 *  This file provides the source code for the watchdog timer
 *  Class B support tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -43,8 +42,6 @@
 #include "SelfTest_WDT.h"
 #include "SelfTest_ErrorInjection.h"
 
-CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 8.6', 1, \
-'Only one defination will be used during compilation.')
 #if CY_CPU_CORTEX_M0P
 
 /*****************************************************************************
@@ -203,6 +200,5 @@ uint8_t SelfTest_WDT(void)
 }
 
 #endif
-CY_MISRA_BLOCK_END('MISRA C-2012 Rule 8.6')
 
 /* [] END OF FILE */

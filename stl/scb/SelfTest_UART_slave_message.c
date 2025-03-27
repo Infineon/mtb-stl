@@ -1,7 +1,5 @@
 /*******************************************************************************
 * File Name: SelfTest_UART_slave_message.c
-* Version 1.0.0
-*
 *
 * Description:
 *  This file provides the source code to the API for the UART slave
@@ -26,7 +24,7 @@
 *  then it's exchanged with two byte sequence <ESC><ESC+1>
 *
 ********************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related

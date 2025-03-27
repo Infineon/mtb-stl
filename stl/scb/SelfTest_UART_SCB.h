@@ -1,6 +1,5 @@
 /*******************************************************************************
 * File Name: SelfTest_UART_SCB.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides the function prototype, constants, and parameter values used
@@ -11,7 +10,7 @@
 *  for ModusToolbox
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -53,17 +52,6 @@
 * so that all of the cells in the 256 byte FIFO are used.
 *
 *
-* \section group_uart_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
-*
-* \defgroup group_uart_macros Macros
 * \defgroup group_uart_functions Functions
 */
 
@@ -88,10 +76,10 @@
 *
 *
 * \param base 
-*  Pointer to SCB hardware to configure 
+* Pointer to SCB hardware to configure
 *
 * \return
-*  1 - test failed <br>
+*  1 - Test failed <br>
 *  2 - Still testing <br>
 *  3 - Test completed OK  <br>
 *  4 - Error, TX not empty <br>
@@ -100,7 +88,7 @@
 *
 * \note 
 *  During call, function transmits and receives bytes from 0x01 to 0xFF.
-*  User is responsible for routing the loop back before the test.
+*  User is responsible for routing the loop back before the test
 *******************************************************************************/
 uint8_t SelfTest_UART_SCB(CySCB_Type* base);
 

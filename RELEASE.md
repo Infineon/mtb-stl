@@ -1,77 +1,75 @@
-# ModusToolbox Safety Test Library 3.1.0
+# ModusToolbox Safety Test Library 3.2.0
 
 
 Refer to the [README.md](./README.md) for a complete description of the ModusToolbox Safety Test Library.
 
-## Implementation Details
+## What is Included?
 
 ### CAT1A
-* Initial Implementation
-
 * Devices Supported: Product families under PSOC™ 61 Programmable Line and Product families under PSOC™ 62 Performance Line
 
-* Compiler Supported: GCC_ARM, ARM, IAR Compiler
+* Compilers Supported: GCC_ARM, ARM, IAR
 
 * List of Self-Tests supported:
     | Group              | Module |
     | ------             | ------ |
-    | System platform    | Digital I/O, Interrupt, Clock, IPC, Startup Configuration Registers, DMAC, DMA/DW, WDT |
+    | System platform    | Interrupt, Clock, IPC, Startup Configuration Registers, DMAC, DMA/DW, WDT |
     | CPU                | CPU Registers, Program Counter, Program Flow, FPU Registers |
     | Memory             | Flash, RAM, Stack |
-    | Peripheral         | UART, I2C, SPI, UART data transfer, ADC, DAC, Comparator, OP-AMP, Timer counter, PWM, PWM Gatekill, CANFD |
+    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, ADC, DAC, Comparator, OP-AMP, Timer Counter, PWM, PWM Gatekill, CANFD |
 
 ### CAT1B
-* Initial Implementation
-
 * Devices Supported: PSC3M5FDS2AFQ1
 
-* Compiler Supported: GCC_ARM, ARM, IAR Compiler
+* Compilers Supported: GCC_ARM, ARM, IAR
 
 * List of Self-Tests supported:
     | Group              | Module |
     | ------             | ------ |
-    | System platform    | Digital I/O, Interrupt, Clock, IPC, Startup Configuration Registers, DMA/DW, WDT |
+    | System platform    | Interrupt, Clock, IPC, Startup Configuration Registers, DMA/DW, WDT |
     | CPU                | CPU Registers, Program Counter, Program Flow, FPU Registers |
     | Memory             | Flash, RAM, Stack |
-    | Peripheral         | UART, I2C, SPI, UART data transfer, ADC, DAC, Comparator, Timer counter, PWM, PWM Gatekill, CANFD, MOTIF, CORDIC, ECC |
+    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, ADC, DAC, Comparator, Timer Counter, PWM, PWM Gatekill, CANFD, MOTIF, CORDIC, ECC |
 
 ### CAT1C
-* Initial Implementation
-
 * Devices Supported: XMC7200D-E272K8384, XMC7100D-F176K4160
 
-* Compiler Supported: GCC_ARM, ARM, IAR Compiler
+* Compilers Supported: GCC_ARM, ARM, IAR
 
 * List of Self-Tests supported:
     | Group              | Module |
     | ------             | ------ |
-    | System platform    | Digital I/O, Interrupt, Clock, IPC, Startup Configuration Registers, DMAC, DMA/DW, WDT, Windowed Watchdog |
+    | System platform    | Interrupt, Clock, IPC, Startup Configuration Registers, DMAC, DMA/DW, WDT, Windowed Watchdog |
     | CPU                | CPU Registers, Program Counter, Program Flow, FPU Registers |
     | Memory             | Flash, RAM, Stack |
-    | Peripheral         | UART, I2C, SPI, UART data transfer, ADC, Comparator, OP-AMP, Timer counter, PWM, PWM Gatekill, CANFD |
+    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, ADC, Comparator, OP-AMP, Timer Counter, PWM, PWM Gatekill, CANFD |
 
 ### CAT2
- - No changes have been made to the previous release: https://github.com/Infineon/mtb-stl/releases/tag/release-v1.0.0
- - For CAT2, this is a pre-production release. It is not recommended for production use unless the functionality is delivered in Infineon-provided applications.
+* Device Families Supported: PSOC 4100S Max, PSOC 4500S, PSOC4100T Plus, PSOC4100S Plus
 
-* Devices Supported: CY8CKIT-041S-MAX, CY8CKIT-045S
-
-* Compiler Supported: GCC_ARM Compiler, IAR Compiler
+* Compilers Supported: GCC_ARM, ARM, IAR
 
 * List of Self-Tests supported:
     | Group              | Module |
     | ------             | ------ |
     | Analog group       | SAR ADC, OPAMP, LPCOMP |
-    | System platform    | Digital I/O, Interrupt, Clock, Startup Configuration Registers, WDT |
-    | CPU                | CPU Registers, Program Counter |
+    | System platform    | Interrupt, Clock, Startup Configuration Registers, WDT, DMAC |
+    | CPU                | CPU Registers, Program Counter, Program Flow |
     | Memory             | Flash, RAM, Stack |
-    | Peripheral         | UART, I2C, SPI |
+    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, Timer Counter, PWM, PWM Gatekill |
 
 * Note: To perform SRAM tests, update CY_SRAM_BASE, CY_SRAM_SIZE, CY_STACK_SIZE according to the device being tested.
 
-## Defect Fixes
+## What Changed?
 
-* Initial release
+### v3.2.0
+* Updated user documentation
+* Added support for PSOC4100T Plus and PSOC4100S Plus device families
+* Added support of CAT2 devices for the following tests:
+    * DMAC
+    * Timer Counter
+    * PWM
+    * PWM Gatekill
 
 ## Supported Software and Tools
 
@@ -79,10 +77,9 @@ This version of the ModusToolbox Safety Test Library was validated for the compa
 
 | Software and Tools                                      | Version |
 | :---                                                    | :----:  |
-| ModusToolbox Software Environment                       | 3.3.0   |
+| ModusToolbox Software Environment                       | 3.4.0   |
 | CAT1 Peripheral Driver Library                          | 3.14.0  |
-| CAT2 Peripheral Driver Library                          | 2.5.0   |
-| Core Library                                            | 1.4.0   |
+| CAT2 Peripheral Driver Library                          | 2.15.0  |
 | GCC Compiler                                            | 11.3.1  |
 | IAR Compiler                                            | 9.50.2  |
 | ARM Compiler                                            | 6.22    |
@@ -97,4 +94,4 @@ For more information, refer to the following documents:
 * [Infineon Technologies AG](https://www.infineon.com)
 
 ---
-© 2023, Cypress Semiconductor Corporation (an Infineon company) or an affiliate of Cypress Semiconductor Corporation.
+© 2025, Cypress Semiconductor Corporation (an Infineon company) or an affiliate of Cypress Semiconductor Corporation.

@@ -1,14 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_RAM.h
-* Version 2.0.0
 *
 * Description:
-*
 *  This file provides constants and parameter values used for SRAM
 *  self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -44,40 +42,27 @@
 * \addtogroup group_ram
 * \{
 *
-* To meet Class B requirement, SRAM test must be checked for “DC fault”. Either 
-* of the 2 methods can be used:
-\verbatim
-  1) March/Checkerboard : This test is destructive. The RAM area is written
-                          with  alternate “0” and “1” to memory, and verifies if the
-                          writen data is right by reading back.
-                    
-  2) GALPAT             : This test is destructive. This test initilizes the chosen 
-                          range of memory uniformly (i.e. all 0 s or all 1 s). The first
-                          memory cell to be tested is then inverted and all the remaining 
-                          cells are inspected to ensure that their contents are correct. 
-                          After every read access to one of the remaining cells, the inverted
-                          cell is also checked. This procedure is repeated for each cell 
-                          in the chosen memory range. A second run is carried out with the
-                          opposite initialisation. Any difference produces a failure message.
-                          It can detect stuck-at faults and direct coupling faults.
-\endverbatim
+* To meet Class B requirement, SRAM test must be checked for “DC fault”. Either of the 2
+* methods can be used:
 *
-* \note GALPAT test is time consuming.This tests can be implemented at startup procedure
-* to test entire SRAM area.
-* 
+*      1) March/Checkerboard:  This test is destructive. The RAM area is written
+*                           with  alternate “0” and “1” to memory, and verifies if the
+*                           writen data is right by reading back.
+*      2) GALPAT:              This test is destructive. This test initilizes the chosen
+*                           range of memory uniformly (i.e. all 0 s or all 1 s). The first
+*                           memory cell to be tested is then inverted and all the remaining
+*                           cells are inspected to ensure that their contents are correct.
+*                           After every read access to one of the remaining cells, the inverted
+*                           cell is also checked. This procedure is repeated for each cell
+*                           in the chosen memory range. A second run is carried out with the
+*                           opposite initialisation. Any difference produces a failure message.
+*                           It can detect stuck-at faults and direct coupling faults.
+*
+* \note
+* GALPAT test is time consuming. This tests can be implemented at startup procedure
+* to test entire SRAM area
 *
 *
-* \section group_ram_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
-*
-* \defgroup group_ram_macros Macros
 * \defgroup group_sram_enums Enumerated Types 
 * \defgroup group_sram_functions SRAM
 * \defgroup group_sram_stack_functions STACK
@@ -126,19 +111,22 @@ typedef enum
 *  interrupts before starting the test.
 *
 * \param type
-*  The type of RAM test to be run
+* The type of RAM test to be run
 * \param startAddr
-*  The pointer to start of the RAM block to be tested.
+* The pointer to start of the RAM block to be tested
 * \param size
-*  The size of RAM block to be tested.
+* The size of RAM block to be tested
 * \param buffAddr
-*  The pointer to start of the buffer to be used to store/restore data of RAM block to be tested. If NULL, test would be performed *  without store/restore being performed.
+* The pointer to start of the buffer to be used to store/restore data of RAM block to be tested. 
+* If NULL, test would be performed without store/restore being performed.
 * \param buffSize 
-*  The size of buffer which is used to store/restore. If buffSize is smaller than size, the test internally loops through the RAM *  block operating on memory size equal to buffSize in each iteration.
+* The size of buffer which is used to store/restore. If buffSize is smaller than size,
+* the test internally loops through the RAM block operating on memory size
+* equal to buffSize in each iteration.
 *
 * \return
-*   ""0" - Test passed                                        
-*   "1" - Test Failed                          
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 *******************************************************************************/
 
@@ -166,18 +154,19 @@ uint8_t SelfTest_SRAM(stl_sram_test_mode_t type, uint8_t *startAddr, uint32_t si
 *  interrupts before starting the test.
 *
 * \param stackBase
-*  The pointer to the Stack Base.
+* The pointer to the Stack Base
 * \param stackSize
-*  The size Stack.
+* The size of Stack
 * \param altStackBase
-*  The pointer to start of the RAM area to be used as alternate Stack Base. RAM address 
-*  from altStackBase to (altStackBase - stackSize) is used to store/restore the Stack under test. 
-*  The existing content of this area will be destructed and this area must not overlap with the Stack 
-*  under test. The platform might set stack limit using __set_MSPLIM, ensure that 
-*  the alternate stack is within the stack limit set by the platform.
+* The pointer to start of the RAM area to be used as alternate Stack Base. RAM address 
+* from altStackBase to (altStackBase - stackSize) is used to store/restore the Stack under test. 
+* The existing content of this area will be destructed and this area must not overlap with the Stack 
+* under test. The platform might set stack limit using __set_MSPLIM, ensure that 
+* the alternate stack is within the stack limit set by the platform
+* 
 * \return
-*   ""0" - Test passed                                        
-*   "1" - Test Failed                          
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 *******************************************************************************/
 

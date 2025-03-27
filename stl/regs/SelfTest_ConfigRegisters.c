@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_ConfigRegisters.c
-* Version 1.0.0
 *
 * Description:
 *  This file provides the source code to the APIs for configuration register self
 *  tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -116,7 +115,7 @@ static volatile uint32_t* regs32_ToTest[] =
 #endif /*  4100S MAX  */
 
 /* Table of register 32Bit registers to be tested */
-#if (defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS) && (CY_FLASH_SIZE == 0x00040000UL)) || \
+#if (defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS)) || \
     (defined(CY_DEVICE_SERIES_PSOC_4500S))
 static volatile uint32_t* regs32_ToTest[] =
 {
@@ -166,7 +165,7 @@ static volatile uint32_t* regs32_ToTest[] =
     &(GPIO_PRT7->PC),
     &(GPIO_PRT7->PC2),
 };
-#endif /* 4500S & 4100S Plus 256k */
+#endif /* 4500S & 4100S Plus */
 
 #if defined(CY_DEVICE_SERIES_PSOC_4100S)
 static volatile uint32_t* regs32_ToTest[] =
@@ -209,6 +208,52 @@ static volatile uint32_t* regs32_ToTest[] =
     &(GPIO_PRT4->PC2),
 };
 #endif /* 4100S */
+
+#if defined(CY_DEVICE_SERIES_PSOC_4100T_PLUS)
+static volatile uint32_t* regs32_ToTest[] =
+{
+    /* Clock registers */
+    &(SRSSLT->CLK_IMO_SELECT),
+    &(SRSSLT->CLK_IMO_TRIM1),
+    &(SRSSLT->CLK_IMO_TRIM2),
+    &(SRSSLT->CLK_IMO_TRIM3),
+    &(SRSSLT->CLK_IMO_CONFIG),
+    &(SRSSLT->CLK_ILO_CONFIG),
+    &(PERI->PCLK_CTL[2]),
+    &(PERI->PCLK_CTL[5]),
+    &(PERI->DIV_16_CTL[0]),
+    &(PERI->DIV_16_CTL[1]),
+    &(WCO->WDT_CONFIG),
+
+    /* Analog routing regs */
+    &(SAR0->PUMP_CTRL),
+
+    /* HSIOM registers */
+    &(HSIOM_PRT0->PORT_SEL),
+    &(HSIOM_PRT1->PORT_SEL),
+    &(HSIOM_PRT2->PORT_SEL),
+    &(HSIOM_PRT3->PORT_SEL),
+    &(HSIOM_PRT4->PORT_SEL),
+    &(HSIOM_PRT5->PORT_SEL),
+    &(HSIOM_PRT6->PORT_SEL),
+
+    /* IO Pin registers */
+    &(GPIO_PRT0->PC),
+    &(GPIO_PRT0->PC2),
+    &(GPIO_PRT1->PC),
+    &(GPIO_PRT1->PC2),
+    &(GPIO_PRT2->PC),
+    &(GPIO_PRT2->PC2),
+    &(GPIO_PRT3->PC),
+    &(GPIO_PRT3->PC2),
+    &(GPIO_PRT4->PC),
+    &(GPIO_PRT4->PC2),
+    &(GPIO_PRT5->PC),
+    &(GPIO_PRT5->PC2),
+    &(GPIO_PRT6->PC),
+    &(GPIO_PRT6->PC2),
+};
+#endif /* 4100T Plus */
 
 #elif ( CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
 

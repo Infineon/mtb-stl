@@ -1,11 +1,11 @@
 /*******************************************************************************
 * File Name: SelfTest_IPC.c
-* Version 1.0.0
 *
-* Description: This file provides the source code for the IPC self tests.
+* Description:
+*  This file provides the source code for the IPC self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -40,9 +40,6 @@
 #include "cy_pdl.h"
 #include "SelfTest_IPC.h"
 #include "SelfTest_ErrorInjection.h"
-
-CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 8.6', 7, \
-'Only one defination will be used during compilation.')
 
 #if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
 
@@ -530,7 +527,6 @@ void IPC_Interrupt_User_7(void)
     relMask = Cy_IPC_Drv_ExtractReleaseMask(shadowIntr);
     common_fxn(ipcIntrPtr, notifyMask, relMask);
 }
-CY_MISRA_BLOCK_END('MISRA C-2012 Rule 8.6')
 
 /* ISR for IPC Interrupt Number 8 */
 void IPC_Interrupt_User_8(void)

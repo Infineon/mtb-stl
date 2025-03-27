@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_IO.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides constants and parameter values used for I/O self
 *  tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -55,17 +54,9 @@
 * configured in the resistive pull-up drive mode. Under normal conditions, the CPU reads a logical one because of 
 * the pull-up resistor. If the pin is connected to ground through a small resistance, the input level is recognized 
 * as a logical zero. To detect a sensor-to-VCC short, the sensor pin is configured in the resistive pull-down drive 
-* mode. The input level is zero under normal conditions.
+* mode. The input level is zero under normal conditions. If the pin is connected to VCC through a small resistance, 
+* the input level is recognized as a logical one.
 *
-* \section cpu_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_gpio_macros Macros
 * \defgroup group_gpio_functions Functions
@@ -94,9 +85,9 @@
 *
 *
 * \return
-*  "0" - pass test; <br>
-*  "1" - fail test (Shorts to VCC); <br>
-*  "2" - fail test (Shorts to GND);
+*  0 - Test passed <br>
+*  1 - Test failed (Shorts to VCC) <br>
+*  2 - Test failed (Shorts to GND)
 *
 *******************************************************************************/
 uint8_t SelfTest_IO(void);
@@ -156,6 +147,10 @@ uint8_t SelfTest_IO_GetPortError(void);
 #elif defined(CY_DEVICE_SERIES_PSOC_4100S)
 /* Number of IO ports: PORT0 - PORT4 */
 #define IO_PORTS                        (5u)
+
+#elif defined(CY_DEVICE_SERIES_PSOC_4100T_PLUS)
+/* Number of IO ports: PORT0 - PORT6 */
+#define IO_PORTS                        (7u)
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX) */
 
 

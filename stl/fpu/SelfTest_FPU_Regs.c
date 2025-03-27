@@ -1,11 +1,11 @@
 /*******************************************************************************
 * File Name: SelfTest_FPU_Regs.c
-* Version 1.0.0
 *
-* Description: This file provides the source code for the FPU register self tests.
+* Description:
+*  This file provides the source code for the FPU register self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -39,9 +39,6 @@
 
 #include "cy_pdl.h"
 #include "SelfTest_FPU_Regs.h"
-
-CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 8.6', 1, \
-'Only one defination will be used during compilation.')
 
 #if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
 
@@ -79,6 +76,5 @@ uint8_t SelfTest_FPU_Registers(void)
 
     return ret;
 }
-CY_MISRA_BLOCK_END('MISRA C-2012 Rule 8.6')
 
 #endif

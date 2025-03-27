@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_CPU.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values used
 *  for CPU register self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -53,29 +52,24 @@
 *
 * 1) CPU register Test:
 * The CPU registers test detects stuck-at faults in the CPU registers by using the checkerboard test.
-* This test ensures that the bits in the registers are not stuck at value '0' or '1'. It is a nondestructive test that performs the following major tasks: <br>
-// \verbatim
-  1)The contents of the CPU registers to be tested are saved on the stack before executing the routine. 
-  2)The registers are tested by successively writing the binary sequences 01010101 followed by 10101010 into the registers, and then 
-    reading the values from these registers for verification. 
-  3)The test returns an error code if the returned values do not match. 
-\endverbatim
-* 2) Program Counter Test: To test this registers, a checkerboard test is commonly used; the addresses 0x5555 and 0xAAAA must be allocated 
-* for this test. 0x5555 and 0xAAAA represent the checkerboard bit patterns. This functions that are in flash memory at different addresses are called. <br>
-
-* 3) Program Flow Test: For every critical execution code block, unique numbers are added 
-*    to or subtracted from complementary counters before block execution and immediately after execution. These procedures allow to see if the 
-*    code block is correctly called from the main program flow and to check if the block is correctly executed. As long as there are always the 
-*    same number of exit and entry points, the counter pair will always be complementary after each tested block.
-* \section group_profile_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
+* This test ensures that the bits in the registers are not stuck at value '0' or '1'. It is a nondestructive test that
+* performs the following major tasks: <br>
+*
+*      1) The contents of the CPU registers to be tested are saved on the stack before executing the routine.
+*      2) The registers are tested by successively writing the binary sequences 01010101 followed by 10101010 into the
+*      registers, and then reading the values from these registers for verification.
+*      3) The test returns an error code if the returned values do not match.
+*
+* 2) Program Counter Test: To test this registers, a checkerboard test is commonly used; the addresses 0x5555 and
+* 0xAAAA must be allocated for this test. 0x5555 and 0xAAAA represent the checkerboard bit patterns. This functions
+* that are in flash memory at different addresses are called. <br>
+*
+* 3) Program Flow Test: For every critical execution code block, unique numbers are added
+* to or subtracted from complementary counters before block execution and immediately after execution. These
+* procedures allow to see if the code block is correctly called from the main program flow and to check if the
+* block is correctly executed. As long as there are always the same number of exit and entry points, the counter
+* pair will always be complementary after each tested block.
+*
 *
 * \defgroup group_cpu_macros Macros
 * \defgroup group_cpu_functions Functions
@@ -107,8 +101,8 @@
 *
 *
 * \return
-* 0 - test pass <br> 
-* 1 - test fail.
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 *******************************************************************************/
 uint8_t SelfTest_PC(void);
@@ -122,8 +116,8 @@ uint8_t SelfTest_PC(void);
 *
 *
 * \return
-* 0 - test pass <br> 
-* 1 - test fail.
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 *******************************************************************************/
 uint8_t SelfTest_CPU_Registers(void);
@@ -143,8 +137,8 @@ uint8_t SelfTest_CPU_Registers(void);
 *
 *
 * \return
-* 0 - test pass <br> 
-* 1 - test fail.
+*  0 - Test passed <br>
+*  1 - Test failed
 *
 *******************************************************************************/
 uint8_t SelfTest_PROGRAM_FLOW(void);

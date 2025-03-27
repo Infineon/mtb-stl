@@ -1,13 +1,12 @@
 /*******************************************************************************
 * File Name: SelfTest_WDT.h
-* Version 1.0.0
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
 *  used for watchdog timer self tests.
 *
 *******************************************************************************
-* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -46,16 +45,6 @@
 * If the WDT works, it generates a reset. After the reset, the function analyzes the reset source. If the watchdog
 * is the source of the reset, the function returns; otherwise, the infinite loop executes
 *
-*
-* \section group_profile_wdt_changelog Changelog
-* <table class="doxtable">
-*   <tr><th>Version</th><th>Changes</th><th>Reason for Change</th></tr>
-*   <tr>
-*     <td>1.00</td>
-*     <td>Initial Version.</td>
-*     <td>Initial Version.</td>
-*   </tr>
-* </table>
 *
 * \defgroup group_wdt_macros Macros
 * \defgroup group_wdt_functions Functions
@@ -132,17 +121,14 @@ Note : This value differ for CAT1A, CAT1B(PSoC C3), CAT1C and CAT2 devices. */
 * Function Name: SelfTest_WDT
 ****************************************************************************//**
 *
-*  This function perform Watchdog test. Function runs WDT and wait defined
-*  period of time. If the PSoC was not reset function return ERROR status.
-*  If the PSoC was reset bit "1" in CyResetStatus must be set to "1". If
-*  this bit was set function return OK status.
+* This function perform Watchdog test. Function runs WDT and wait defined
+* period of time. If the PSoC was not reset function return ERROR status.
+* If the PSoC was reset bit "1" in CyResetStatus must be set to "1". If
+* this bit was set function return OK status.
 *
-* \note
-* This function provides watchdog reset or stops software execution if
-* watchdog fails
 *
 * \return
-*  0 - Test passed
+*  0 - Test passed <br>
 *  1 - Test failed
 *
 *******************************************************************************/
