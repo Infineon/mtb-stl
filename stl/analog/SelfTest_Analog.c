@@ -776,6 +776,67 @@ uint8_t SelfTests_ADC(uint32_t group, uint32_t channel, int16_t expected_res, in
 
 #endif
 
+#if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
+#if defined(CLASSB_SELF_TEST_ADC)
+uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t trig_in)
+{
+    (void)group;
+    int16_t adc_res = 0;
+    uint32_t result_status = 0;
+
+    uint16_t guardCnt;
+    uint8_t ret = ERROR_STATUS;
+
+    /* Start the HPPASS autonomous controller (AC) from state 0, didn't wait for HPPASS block ready */
+    if(CY_HPPASS_SUCCESS != Cy_HPPASS_AC_Start(0U, 0U))
+    {
+        CY_ASSERT(0);
+    }
+
+    /* Check SAR ADC busy status */
+    while(Cy_HPPASS_SAR_IsBusy());
+    Cy_SysLib_Delay(100u);
+    /* Start ADC conversion */
+    /* Trigger SAR ADC */
+    Cy_HPPASS_SetFwTrigger((trig_in));
+
+    /* Wait for end of conversion using guard interval > ADC conversion time */
+    guardCnt = 0u;
+
+    do
+    {
+        guardCnt++;
+        result_status = Cy_HPPASS_SAR_Result_GetStatus();
+    } while(!(result_status & (1UL << channel)) && (guardCnt < ADC_TEST_CON_TIME_uS));
+
+    /* Check if timeout */
+    if (guardCnt < ADC_TEST_CON_TIME_uS)
+    {
+        /* Get channel data */
+        adc_res = Cy_HPPASS_SAR_Result_ChannelRead(channel);
+
+        #if ERROR_IN_ADC
+        adc_res += 2*ANALOG_ADC_ACURACCY;
+        #endif
+        ret = OK_STATUS;
+    }
+
+    /* Clear result status */
+    Cy_HPPASS_SAR_Result_ClearStatus(1UL << channel);
+
+    /* Check that measured results are in range */
+    if (ret == OK_STATUS)
+    {
+        if ((adc_res < (expected_res - accuracy)) || (adc_res > (expected_res + accuracy)))
+        {
+            ret = ERROR_STATUS;
+        }
+    }
+
+    return ret;
+}
+#endif /* CLASSB_SELF_TEST_ADC defined */
+#endif
 
 
 /*****************************************************************************
@@ -1025,7 +1086,7 @@ uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChanne
 
 #ifdef CLASSB_SELF_TEST_DAC
 /*******************************************************************************
-* Function Name: SelfTests_DAC
+* Function Name: SelfTests_DAC_TrigIn
 ********************************************************************************
 *
 * Performs DAC test and verifies that input of DAC and output from ADC are same.
@@ -1043,8 +1104,8 @@ uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChanne
 *
 *******************************************************************************/
 /** DAC conversion time in test mode, uS */
-#define DAC_TEST_CON_TIME_uS            (1000u)
-uint8_t SelfTests_DAC(uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val, int16_t expected_res, int16_t accuracy)
+#define DAC_TEST_CON_TIME_uS            (900u)
+uint8_t SelfTests_DAC_TrigIn(uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val, int16_t expected_res, int16_t accuracy, uint32_t adc_trig_in, uint32_t dac_trig_in)
 {
     int16_t adc_res = 0;
     uint32_t result_status = 0;
@@ -1070,7 +1131,7 @@ uint8_t SelfTests_DAC(uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val
     Cy_HPPASS_DAC_Start(dac_slice, 0);
 
     /* Start DAC conversion */
-    Cy_HPPASS_SetFwTrigger(CY_HPPASS_TRIG_1_MSK);
+    Cy_HPPASS_SetFwTrigger(dac_trig_in);
 
     /* Wait for end of conversion using guard interval > ADC conversion time */
     guardCnt_DAC = 0u;
@@ -1083,7 +1144,7 @@ uint8_t SelfTests_DAC(uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val
     Cy_HPPASS_DAC_Stop(dac_slice);
 
     /* Start ADC conversion */
-    Cy_HPPASS_SetFwTrigger(CY_HPPASS_TRIG_2_MSK);
+    Cy_HPPASS_SetFwTrigger(adc_trig_in);
 
     /* Wait for end of conversion using guard interval > ADC conversion time */
     guardCnt_ADC = 0u;

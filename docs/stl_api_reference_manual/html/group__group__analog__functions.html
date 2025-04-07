@@ -95,6 +95,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga4b667d77b973335906304f6a2fff7efd"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#ga4b667d77b973335906304f6a2fff7efd">SelfTests_Opamp</a> (SAR_Type *sar_base, int16_t expected_res, int16_t accuracy, uint32_t opamp_in_channel, bool count_to_mV)</td></tr>
 <tr class="memdesc:ga4b667d77b973335906304f6a2fff7efd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs OPAMP test and verify measured voltage is in accuracy range.  <a href="group__group__analog__functions.html#ga4b667d77b973335906304f6a2fff7efd">More...</a><br /></td></tr>
 <tr class="separator:ga4b667d77b973335906304f6a2fff7efd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6399ffe7c5bfe92031ba16b3405ae4ca"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#ga6399ffe7c5bfe92031ba16b3405ae4ca">SelfTests_ADC_TrigIn</a> (uint32_t group, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t trig_in)</td></tr>
+<tr class="memdesc:ga6399ffe7c5bfe92031ba16b3405ae4ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs ADC test and verify measured voltage is in accuracy range.  <a href="group__group__analog__functions.html#ga6399ffe7c5bfe92031ba16b3405ae4ca">More...</a><br /></td></tr>
+<tr class="separator:ga6399ffe7c5bfe92031ba16b3405ae4ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac4e7d0584933af065af68efc7158793e"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#gac4e7d0584933af065af68efc7158793e">SelfTests_ADC</a> (SAR_Type *base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV)</td></tr>
 <tr class="memdesc:gac4e7d0584933af065af68efc7158793e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs ADC test and verify measured voltage is in accuracy range.  <a href="group__group__analog__functions.html#gac4e7d0584933af065af68efc7158793e">More...</a><br /></td></tr>
 <tr class="separator:gac4e7d0584933af065af68efc7158793e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -104,9 +107,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga017cdc43bcf6ac462143e5c2c02e4b41"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#ga017cdc43bcf6ac462143e5c2c02e4b41">SelfTests_DAC</a> (CTDAC_Type *dacBase, SAR_Type *adcBase, uint32_t adcChannel)</td></tr>
 <tr class="memdesc:ga017cdc43bcf6ac462143e5c2c02e4b41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs DAC test and verifies that input of DAC and output from ADC are same.  <a href="group__group__analog__functions.html#ga017cdc43bcf6ac462143e5c2c02e4b41">More...</a><br /></td></tr>
 <tr class="separator:ga017cdc43bcf6ac462143e5c2c02e4b41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae404d6facf9ecd58e5a8071c1a5ddc9e"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#gae404d6facf9ecd58e5a8071c1a5ddc9e">SelfTests_DAC</a> (uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val, int16_t expected_res, int16_t accuracy)</td></tr>
-<tr class="memdesc:gae404d6facf9ecd58e5a8071c1a5ddc9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs DAC test and verifies that input of DAC and output from ADC are same.  <a href="group__group__analog__functions.html#gae404d6facf9ecd58e5a8071c1a5ddc9e">More...</a><br /></td></tr>
-<tr class="separator:gae404d6facf9ecd58e5a8071c1a5ddc9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga15bc86d564d908382fd8b77aa7a4b57f"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__analog__functions.html#ga15bc86d564d908382fd8b77aa7a4b57f">SelfTests_DAC_TrigIn</a> (uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val, int16_t expected_res, int16_t accuracy, uint32_t adc_trig_in, uint32_t dac_trig_in)</td></tr>
+<tr class="memdesc:ga15bc86d564d908382fd8b77aa7a4b57f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs DAC test and verifies that input of DAC and output from ADC are same.  <a href="group__group__analog__functions.html#ga15bc86d564d908382fd8b77aa7a4b57f">More...</a><br /></td></tr>
+<tr class="separator:ga15bc86d564d908382fd8b77aa7a4b57f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ga4b667d77b973335906304f6a2fff7efd" name="ga4b667d77b973335906304f6a2fff7efd"></a>
@@ -166,6 +169,66 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
  1 - Test failed </dd></dl>
+
+</div>
+</div>
+<a id="ga6399ffe7c5bfe92031ba16b3405ae4ca" name="ga6399ffe7c5bfe92031ba16b3405ae4ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6399ffe7c5bfe92031ba16b3405ae4ca">&#9670;&nbsp;</a></span>SelfTests_ADC_TrigIn()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTests_ADC_TrigIn </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>channel</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>expected_res</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>accuracy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>trig_in</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Performs ADC test and verify measured voltage is in accuracy range. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">group</td><td>Group instance. </td></tr>
+    <tr><td class="paramname">channel</td><td>channel no. where the input voltage needs to be read </td></tr>
+    <tr><td class="paramname">expected_res</td><td>if count_to_mV = 1 =&gt; Expected result in mV, else Expected result in counts. </td></tr>
+    <tr><td class="paramname">accuracy</td><td>Accuracy in count ANALOG_ADC_ACURACCY </td></tr>
+    <tr><td class="paramname">trig_in</td><td>Trigger input.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test Passed <br  />
+ 1 - Test Failed </dd></dl>
 
 </div>
 </div>
@@ -284,7 +347,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ga017cdc43bcf6ac462143e5c2c02e4b41" name="ga017cdc43bcf6ac462143e5c2c02e4b41"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga017cdc43bcf6ac462143e5c2c02e4b41">&#9670;&nbsp;</a></span>SelfTests_DAC() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga017cdc43bcf6ac462143e5c2c02e4b41">&#9670;&nbsp;</a></span>SelfTests_DAC()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -331,14 +394,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="gae404d6facf9ecd58e5a8071c1a5ddc9e" name="gae404d6facf9ecd58e5a8071c1a5ddc9e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gae404d6facf9ecd58e5a8071c1a5ddc9e">&#9670;&nbsp;</a></span>SelfTests_DAC() <span class="overload">[2/2]</span></h2>
+<a id="ga15bc86d564d908382fd8b77aa7a4b57f" name="ga15bc86d564d908382fd8b77aa7a4b57f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga15bc86d564d908382fd8b77aa7a4b57f">&#9670;&nbsp;</a></span>SelfTests_DAC_TrigIn()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t SelfTests_DAC </td>
+          <td class="memname">uint8_t SelfTests_DAC_TrigIn </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>adc_channel</em>, </td>
@@ -365,7 +428,19 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>accuracy</em>&#160;</td>
+          <td class="paramname"><em>accuracy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>adc_trig_in</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>dac_trig_in</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -383,6 +458,8 @@ Functions</h2></td></tr>
     <tr><td class="paramname">dac_val</td><td>Value to be loaded in DAC register </td></tr>
     <tr><td class="paramname">expected_res</td><td>Channel Expected result in ADC </td></tr>
     <tr><td class="paramname">accuracy</td><td>Error tolerance </td></tr>
+    <tr><td class="paramname">adc_trig_in</td><td>ADC trigger input. </td></tr>
+    <tr><td class="paramname">dac_trig_in</td><td>DAC trigger input.</td></tr>
   </table>
   </dd>
 </dl>

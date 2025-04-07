@@ -42,14 +42,8 @@
 * \addtogroup group_motif
 * \{
 *
-* To meet Class B requirement, Motif must be tested for Multi channel pattern mode in conjunction with Hall sensor
-* mode:
-*
-*      1) Multi channel pattern mode in conjunction with Hall sensor mode are performed using Motif module.
-*      2) First initialize the MOTIF module in Hall sensor mode and input PWMs.
-*      3) HALL lookup table(HLUT) and MCP lookup table(MLUT) are initialized in Device Configurator.
-*      4) Checks the difference between output modulation values from MOTIF and MCP values.
-*
+* MOTIF self test implements the Quadrature Decoder mode and validate the
+* functionality.
 *
 * \defgroup group_motif_structure Data structure
 * \defgroup group_motif_functions Functions
@@ -60,29 +54,56 @@
 #include "SelfTest_common.h"
 
 #if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)) || defined (CY_DOXYGEN)
+/***************************************
+* MACROs
+***************************************/
+/** \cond INTERNAL */
+#define EMU_SIG_NUM (3U)
+/** \endcond */
 
 /***************************************
 * Data Structure
 ***************************************/
-/**
-* \addtogroup group_motif_structure
-* \{
-*/
-
-/** MOTIF configuration structure */
-
-typedef struct stl_motif_tcpwm_config
+/** \addtogroup group_motif_structure
+ * \{
+ */
+/** TCPWM configuration sub-structure */
+typedef struct
 {
-    TCPWM_Type* Hall_0_base;  /**< Hall Input 0 TCPWM Base address */
-    uint32_t    Hall_0_Num ;  /**< Hall Input 0 TCPWM counter number */
-    cy_stc_tcpwm_pwm_config_t const * Hall_0_in_config;  /**< Hall Input 0 TCPWM config structure */
-    TCPWM_Type* Hall_1_base;  /**< Hall Input 1 TCPWM Base address */
-    uint32_t    Hall_1_Num ;  /**< Hall Input 1 TCPWM counter number */
-    cy_stc_tcpwm_pwm_config_t const * Hall_1_in_config;  /**< Hall Input 1 TCPWM config structure */
-    TCPWM_Type* Hall_2_base;  /**< Hall Input 2 TCPWM Base address */
-    uint32_t    Hall_2_Num ;  /**< Hall Input 2 TCPWM counter number */
-    cy_stc_tcpwm_pwm_config_t const * Hall_2_in_config;  /**< Hall Input 2 TCPWM config structure */
-}stl_motif_tcpwm_config_t;
+    uint32_t                          idx; /**< PWM counter index */
+    cy_stc_tcpwm_pwm_config_t const * cfg; /**< PWM configuration structure */
+
+} stl_motif_tcpwm_cfg_t;
+
+/** TCPWM counter configuration sub-structure */
+typedef struct
+{
+    uint32_t                              idx;    /**< TCPWM counter index */
+    cy_stc_tcpwm_counter_config_t const * cfg;    /**< TCPWM counter configuration structure */
+
+} stl_motif_tcpwm_counter_cfg_t;
+
+/** MOTIF self test configuration structure */
+
+typedef struct
+{
+    /*MOTIF Module configuration structure*/
+    TCPWM_MOTIF_GRP_MOTIF_Type * motif_base; /**< MOTIF base */
+    cy_stc_tcpwm_motif_quaddec_config_t const * motif_config; /**< MOTIF config */
+
+    /*TCPWM configuration to capture q-clk ticks*/
+    TCPWM_Type * qclk_base;                    /**< TCPWM counter base */
+    stl_motif_tcpwm_counter_cfg_t qclk;        /**< TCPWM counter configuration */
+
+    /*TCPWM counter configuration to emulate input signals*/
+    TCPWM_Type * sgen_base[EMU_SIG_NUM];       /**< PWM base */
+    stl_motif_tcpwm_cfg_t sgen[EMU_SIG_NUM];   /**< PWM configuration */
+
+    uint32_t ref_count;                        /**< Reference tcpwm count */
+    uint32_t margin_count;                     /**< Allowed margin */
+    uint32_t delay;                            /**< Delay */
+
+}stl_motif_cfg_handle_t;
 
 /** \} group_motif_structure */
 
@@ -98,42 +119,28 @@ typedef struct stl_motif_tcpwm_config
 * Function Name: SelfTest_Motif_Init
 ****************************************************************************//**
 *
-*  This function perform self test on Motif module.
-*  The MOTIF unit is a flexible and powerful component for motor control systems
-*  that use Rotary Encoders, Hall Sensors as feedback loop.
-*  This API initializes the MOTIF module in Hall sensor mode and
-*  input PWMs which simulates HALL sensor output
-*
-* \param base
-* Pointer to the base address of the TCPWM MOTIF group instance.
-*
-* \param config
-* Pointer to the configuration structure for the Hall sensor mode.
-*
-* \param input_config
-* Pointer to the structure containing the PWM input configurations
-* for simulating Hall sensor outputs.
+*  Initialize the Motif self test configuration. Initialization includes
+*  - Generate the emulated signals for Phase-A, Phase-B and Index using TCPWM.
+*  These signals are input to the MOTIF module.
+*  - Configure the TCPWM counter to capture the Q-CLK resolution.
+*  - Configure the MOTIF module.
+* \param hPtr
+* Pointer to the motif self test configuration handler.
 *
 *******************************************************************************/
-
-void SelfTest_Motif_Init(TCPWM_MOTIF_GRP_MOTIF_Type *base ,cy_stc_tcpwm_motif_hall_sensor_config_t const *config, stl_motif_tcpwm_config_t *input_config);
+void SelfTest_Motif_Init(stl_motif_cfg_handle_t *hPtr);
 
 /*******************************************************************************
 * Function Name: SelfTest_Motif_Start
 ****************************************************************************//**
 *
-*  This function starts the Motif module and Modulation output from motif
-*  is started with existing values. It reports the status of the interrupts
-*  and clears the triggered interrupts.
-*  It compares the defined Multi-Channel Mode Pattern with output modulation value, returns
-*  the result OK_STATUS if values match or returns ERROR_STATUS
-*  if the values do not match.
+*  This function starts the Motif and capture the count between two quadrature
+*  clock edges.
+*  Captured value compares with the reference value and returns
+*  the result.
 *
-* \param base
-* Pointer to the base address of the TCPWM MOTIF group instance.
-*
-* \param input_config
-* Pointer to the structure containing the PWM input configurations.
+* \param hPtr
+* Pointer to the motif self test configuration handler.
 *
 * \return
 *  "0" "OK_STATUS" - Test passed <br>
@@ -141,16 +148,14 @@ void SelfTest_Motif_Init(TCPWM_MOTIF_GRP_MOTIF_Type *base ,cy_stc_tcpwm_motif_ha
 *
 *******************************************************************************/
 
-uint8_t SelfTest_Motif_Start(TCPWM_MOTIF_GRP_MOTIF_Type *base , stl_motif_tcpwm_config_t *input_config);
+uint8_t SelfTest_Motif_Start(stl_motif_cfg_handle_t *hPtr);
+
 
 /** \} group_motif_functions */
 
 #endif
 /** \} group_motif */
 
-
-
 #endif /* MOTIF_H */
 
 /* [] END OF FILE */
-

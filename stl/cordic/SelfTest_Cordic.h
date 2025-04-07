@@ -72,10 +72,7 @@
 * This function perform self test on Cordic IP.
 *
 * The CORDIC block accelerates calculation of trigonometric functions. 
-* Sine and Cosine trignometric functions are performed in this API,then returns 
-* the result OK_STATUS after successfully performing the tests or returns 
-* ERROR_STATUS if the test fails.
-*
+* Sine and Cosine trignometric functions are performed in this API.
 *
 * \return
 *  "0" "OK_STATUS" - Test passed <br>

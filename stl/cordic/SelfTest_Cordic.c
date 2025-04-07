@@ -99,7 +99,7 @@ static uint8_t sine_cordic(void)
     res = Q31_TO_FLOAT(result_q31);
     
     /* Checks the difference between results from CORDIC and fixed output are within tolerance */
-    if(fabs(res - OUT_SIN) < tolerance )
+    if(fabsf(res - OUT_SIN) < tolerance )
     {
         return OK_STATUS;
     }
@@ -140,7 +140,7 @@ static uint8_t cosine_cordic(void)
     res = Q31_TO_FLOAT(result_q31);
     
     /* Checks the difference between results from CORDIC and fixed output are within tolerance */
-    if(fabs(res - OUT_COS) < tolerance )
+    if(fabsf(res - OUT_COS) < tolerance )
     {
         return OK_STATUS;
     }
@@ -155,9 +155,7 @@ static uint8_t cosine_cordic(void)
 *
 *  This function perform self test on Cordic IP.
 *  The CORDIC block accelerates calculation of trigonometric functions. 
-*  Sine and Cosine trignometric functions are performed in this API,then returns 
-*  the result OK_STATUS after successfully performing the tests or returns ERROR_STATUS  
-*  if the test fails.
+*  Sine and Cosine trignometric functions are performed in this API.
 *
 *******************************************************************************/
 
@@ -167,9 +165,7 @@ uint8_t SelfTest_Cordic(void)
 
     /* Enable the CORDIC */
     Cy_CORDIC_Enable(MXCORDIC);
-    
-    /* Enable global interrupts */
-    __enable_irq();
+
     if (OK_STATUS != sine_cordic()) /* Sine function */
     {
         return ERROR_STATUS;

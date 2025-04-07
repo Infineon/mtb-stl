@@ -42,92 +42,88 @@
 
 #if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
 
-#define MOTIF0 TCPWM0_MOTIF_GRP1_MOTIF0
-
 #ifndef SELTTEST_MOTIF_H
 #define SELTTEST_MOTIF_H
 #include "SelfTest_ErrorInjection.h"
 
-/* Inputs values */
-int input0[6] = {1,0,0,0,1,1};
-int input1[6] = {0,0,1,1,1,0};
-int input2[6] = {1,1,1,0,0,0};
+/*******************************************************************************
+* Function Name: SelfTest_MotifCfgSigGen
+****************************************************************************//**
+*
+*  This function configure the TCPWM to generate the Encoder pulses (Phase-A,
+*  Phase-B and Index). Generated pulses are internally connected to MOTIF
+*  module.
+*
+* \param hPtr
+* Pointer to the motif self test configuration handler.
+*
+*******************************************************************************/
+static inline void SelfTest_MotifCfgSigGen(stl_motif_cfg_handle_t * hPtr)
+{
+    for(uint8_t i = 0u; i < EMU_SIG_NUM; i++)
+    {
+        /*Configure TCPWM to generate encoder input pulses*/
+        Cy_TCPWM_PWM_Init(hPtr->sgen_base[i], hPtr->sgen[i].idx, hPtr->sgen[i].cfg);
+        Cy_TCPWM_PWM_Enable(hPtr->sgen_base[i], hPtr->sgen[i].idx);
+    }
 
+    /* Start test signals.*/
+    Cy_TCPWM_TriggerStart_Single(
+            hPtr->sgen_base[(EMU_SIG_NUM-1u)],
+            hPtr->sgen[(EMU_SIG_NUM-1u)].idx);
+}
 
 /*******************************************************************************
 * Function Name: SelfTest_Motif_Init
-********************************************************************************
-*
-*  This function perform self test on Motif module.
-*  The MOTIF unit is a flexible and powerful component for motor control systems
-*  that use Rotary Encoders, Hall Sensors as feedback loop.
-*  This API initializes the MOTIF module in Hall sensor mode and
-*  input PWMs which simulates HALL sensor output
-*
 *******************************************************************************/
-
-void SelfTest_Motif_Init(TCPWM_MOTIF_GRP_MOTIF_Type *base ,cy_stc_tcpwm_motif_hall_sensor_config_t const *config, stl_motif_tcpwm_config_t *input_config)
+void SelfTest_Motif_Init(stl_motif_cfg_handle_t * hPtr)
 {
-    /* Init and start PWM for phase A*/
-    Cy_TCPWM_PWM_Init(input_config->Hall_0_base, input_config->Hall_0_Num , input_config->Hall_0_in_config);
-    Cy_TCPWM_PWM_Enable(input_config->Hall_0_base, input_config->Hall_0_Num);
-    Cy_TCPWM_TriggerStart_Single(input_config->Hall_0_base, input_config->Hall_0_Num);
+    /* Configure emulated signals generation*/
+    SelfTest_MotifCfgSigGen(hPtr);
 
-    /* Init and start PWM for phase B*/
-    Cy_TCPWM_PWM_Init(input_config->Hall_1_base, input_config->Hall_1_Num, input_config->Hall_1_in_config);
-    Cy_TCPWM_PWM_Enable(input_config->Hall_1_base, input_config->Hall_1_Num);
-    Cy_TCPWM_TriggerStart_Single(input_config->Hall_1_base, input_config->Hall_1_Num);
+    /* Initialize the TCPWM to capture the count between two quadrature clock */
+    Cy_TCPWM_Counter_Init(
+            hPtr->qclk_base,
+            hPtr->qclk.idx,
+            hPtr->qclk.cfg);
 
-    /* Init and start PWM for phase C*/
-    Cy_TCPWM_PWM_Init(input_config->Hall_2_base, input_config->Hall_2_Num , input_config->Hall_2_in_config);
-    Cy_TCPWM_PWM_Enable(input_config->Hall_2_base, input_config->Hall_2_Num);
-    Cy_TCPWM_TriggerStart_Single(input_config->Hall_2_base, input_config->Hall_2_Num);
+    Cy_TCPWM_Counter_Enable(hPtr->qclk_base, hPtr->qclk.idx);
 
-    /* MOTIF module initialization in Hall sensor Mode */
-    Cy_TCPWM_MOTIF_Hall_Sensor_Init(base, config);
+    /* Initialize and enable the MOTIF module in quadrature decoder mode */
+    Cy_TCPWM_MOTIF_Quaddec_Init(
+            hPtr->motif_base,
+            hPtr->motif_config);
+
+    /* Enable the MOTIF */
+    Cy_TCPWM_MOTIF_Enable(hPtr->motif_base);
 }
-
 
 /*******************************************************************************
 * Function Name: SelfTest_Motif_Start
-********************************************************************************
-*
-*  This function starts the Motif module and Modulation output from motif
-*  is started with existing values. It reports the status of the interrupts
-*  and clears the triggered interrupts.
-*  It compares the defined Multi-Channel Mode Pattern with output modulation value, returns
-*  the result OK_STATUS if values match or returns ERROR_STATUS
-*  if the values do not match.
-*
 *******************************************************************************/
-
-uint8_t SelfTest_Motif_Start(TCPWM_MOTIF_GRP_MOTIF_Type *base, stl_motif_tcpwm_config_t *input_config)
+uint8_t SelfTest_Motif_Start(stl_motif_cfg_handle_t *hPtr)
 {
-    uint32_t res_arr[6] = {0x2A33332A,0,0xCC8A8ACC,0x8ACC8ACC,0,0x332A332A};
     uint8_t result = OK_STATUS;
-    uint32_t cnt1 = 0;
-    Cy_TCPWM_MOTIF_Start(base);
 
-    for(int i=1; i<=6; i++)
+    uint32_t cap_time = 0u;
+
+    /* Start MOTIF */
+    Cy_TCPWM_MOTIF_Start(hPtr->motif_base);
+
+    /*Delay to generate the falling edge of Q-CLK ticks*/
+    Cy_SysLib_Delay(hPtr->delay);
+
+    /*Capture the tcpwm count between two q-clock*/
+    cap_time = Cy_TCPWM_Counter_GetCapture(
+            hPtr->qclk_base,
+            hPtr->qclk.idx);
+
+    if((cap_time < (hPtr->ref_count - hPtr->margin_count)) ||
+            (cap_time > (hPtr->ref_count + hPtr->margin_count)))
     {
-        uint32_t interrupt_status = Cy_TCPWM_MOTIF_GetInterruptStatus(base);
-        Cy_TCPWM_MOTIF_ClearInterrupt(base,interrupt_status);
-
-        /* Get the counter value. This is started when motif is started and motif output is ticking. */
-        cnt1 = Cy_TCPWM_MOTIF_HALL_Get_Output_Modulation_Value(base);
-        if (cnt1 != res_arr[i-1])
-        {
-            result = ERROR_STATUS;
-        }
-        CyDelay(100U);
-        #if (ERROR_IN_MOTIF)
-        Cy_TCPWM_PWM_Configure_LineSelect(input_config->Hall_0_base, input_config->Hall_1_Num, (cy_en_line_select_config_t)input0[i], (cy_en_line_select_config_t)input0[i]);
-        #else
-        Cy_TCPWM_PWM_Configure_LineSelect(input_config->Hall_0_base, input_config->Hall_0_Num, (cy_en_line_select_config_t)input0[i], (cy_en_line_select_config_t)input0[i]);
-        #endif
-        Cy_TCPWM_PWM_Configure_LineSelect(input_config->Hall_1_base, input_config->Hall_1_Num, (cy_en_line_select_config_t)input1[i], (cy_en_line_select_config_t)input1[i]);
-        Cy_TCPWM_PWM_Configure_LineSelect(input_config->Hall_2_base, input_config->Hall_2_Num, (cy_en_line_select_config_t)input2[i], (cy_en_line_select_config_t)input2[i]);
+        result = ERROR_STATUS;
     }
+
     return result;
 }
 

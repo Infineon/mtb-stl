@@ -386,6 +386,35 @@
     uint8_t SelfTests_Opamp(SAR_Type* sar_base, int16_t expected_res, int16_t accuracy, uint32_t opamp_in_channel, bool count_to_mV);
 #endif /* End Testing Opamp */
 
+
+/*******************************************************************************
+* Function Name: SelfTests_ADC_TrigIn
+****************************************************************************//**
+*
+* Performs ADC test and verify measured voltage is in accuracy range.
+*
+* \param group
+* Group instance.
+* \param channel
+* channel no. where the input voltage needs to be read
+* \param expected_res
+* if count_to_mV = 1 => Expected result in mV, else Expected result in counts.
+* \param accuracy
+* Accuracy in count ANALOG_ADC_ACURACCY
+* \param trig_in
+* Trigger input.
+*
+* \return
+*  0 - Test Passed <br>
+*  1 - Test Failed
+*
+*******************************************************************************/
+#if defined(CLASSB_SELF_TEST_ADC)
+    #if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
+        uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t trig_in);
+    #endif
+#endif /* End Testing ADC */
+
 /*******************************************************************************
 * Function Name: SelfTests_ADC
 ****************************************************************************//**
@@ -480,7 +509,7 @@ uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChanne
 
 #if defined(CLASSB_SELF_TEST_DAC) || defined (CY_DOXYGEN)
 /*******************************************************************************
-* Function Name: SelfTests_DAC
+* Function Name: SelfTests_DAC_TrigIn
 ****************************************************************************//**
 *
 * Performs DAC test and verifies that input of DAC and output from ADC are same.
@@ -495,6 +524,11 @@ uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChanne
 * Channel Expected result in ADC
 * \param accuracy
 * Error tolerance
+* \param adc_trig_in
+* ADC trigger input.
+* \param dac_trig_in
+* DAC trigger input.
+*
 * \return
 *  0 - Test passed <br>
 *  1 - Test failed
@@ -503,7 +537,7 @@ uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChanne
 * Applicable only to CAT1B devices
 *
 *******************************************************************************/
-uint8_t SelfTests_DAC(uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val, int16_t expected_res, int16_t accuracy);
+uint8_t SelfTests_DAC_TrigIn(uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val, int16_t expected_res, int16_t accuracy, uint32_t adc_trig_in, uint32_t dac_trig_in);
 #endif
 /** \} group_analog_functions */
 

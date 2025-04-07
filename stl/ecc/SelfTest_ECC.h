@@ -97,8 +97,7 @@
 /** Error injection mode */
 typedef enum
 {
-    CY_ECC_C_ERROR = 1,  /**< Correctable ECC error injection.*/
-    CY_ECC_NC_ERROR = 2, /**< Non correctable error injection.*/
+    CY_ECC_NC_ERROR = 1, /**< Non correctable error injection.*/
 } cy_en_ecc_error_mode_t;
 /** \}group_ecc_enums */
 
@@ -113,8 +112,8 @@ typedef enum
 * Function Name: SelfTest_ECC
 ****************************************************************************//**
 *
-* This function performs the ECC hardware self test to detect and correct the single
-* bit error and reports fault for double bit error.
+* This function performs the ECC hardware self test for Flash memory
+* to report fault for double bit error.
 *
 * \param eccErrorMode 
 * Error injection mode \ref cy_en_ecc_error_mode_t
@@ -147,8 +146,7 @@ uint8_t SelfTest_ECC(cy_en_ecc_error_mode_t eccErrorMode);
 *  1 - Test failed
 *
 * \note
-* This API is applicable to CAT1B devices.
-* Only Non-Correctable ECC fault is supported on CAT1B devices for flash memory
+* This API is applicable to CAT1B devices
 *
 *******************************************************************************/
 uint8_t SelfTest_ECC_Flash(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode);
@@ -158,8 +156,8 @@ uint8_t SelfTest_ECC_Flash(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode);
 * Function Name: SelfTest_ECC_Ram
 ****************************************************************************//**
 *
-* This function performs the ECC hardware self test to RAM block to detect and correct the single
-* bit error and reports fault for double bit error.
+* This function performs the ECC hardware self test for Ram memory
+* to report fault for double bit error.
 *
 * \param addr 
 * Ram address.

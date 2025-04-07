@@ -106,7 +106,6 @@ void configureECC(cy_en_ecc_error_mode_t eccErrorMode)
 {
     uint32_t index;
     uint32_t data[(CY_FLASH_SIZE_ROW/4U)];
-    cy_en_flashdrv_status_t res;
     for(index = 0; index < (CY_FLASH_SIZE_ROW/4U); index++)
     {
         data[index] = (uint32_t)0x5A5A5A5A;
@@ -121,27 +120,22 @@ void configureECC(cy_en_ecc_error_mode_t eccErrorMode)
     FLASHC_FLASH_CTL |= FLASHC_FLASH_CTL_MAIN_ECC_INJ_EN_Msk;
 
     /* Configure error injection */
-    if (eccErrorMode == CY_ECC_C_ERROR)
-    {
-        res = Cy_Flashc_InjectECC(CY_FLASH_MAIN_REGION,CY_FLASH_ADDR, CY_ECC_C_ERROR_PARITY);
-    }
     if (eccErrorMode == CY_ECC_NC_ERROR)
     {
-        res = Cy_Flashc_InjectECC(CY_FLASH_MAIN_REGION,CY_FLASH_ADDR, CY_ECC_NC_ERROR_PARITY);
+        (void)Cy_Flashc_InjectECC(CY_FLASH_MAIN_REGION,CY_FLASH_ADDR, CY_ECC_NC_ERROR_PARITY);
     }
 
     /* Write operation */
-    res = Cy_Flash_StartEraseSector((uint32_t)CY_FLASH_ADDR);
+    (void)Cy_Flash_StartEraseSector((uint32_t)CY_FLASH_ADDR);
     while(Cy_Flash_IsOperationComplete() != CY_FLASH_DRV_SUCCESS)
     {
     }
-    res = Cy_Flash_ProgramRow(CY_FLASH_ADDR , (const uint32_t *)data);
+    (void)Cy_Flash_ProgramRow(CY_FLASH_ADDR , (const uint32_t *)data);
 
     /* Read operation */
     flashAddrPtr = (uint32_t *) CY_FLASH_ADDR ;
     readVal = *flashAddrPtr;
     (void) readVal;
-    (void) res;
 }
 #endif
 
@@ -151,8 +145,7 @@ void configureECC(cy_en_ecc_error_mode_t eccErrorMode)
 ********************************************************************************
 *
 * Summary:
-*  This function performs the ECC hardware self test to detect, correct the single
-*  bit error and reports fault for double bit error.
+*  This function performs the ECC hardware self test to report fault for double bit error.
 *
 * Parameters:
 *  Error injection mode
@@ -192,11 +185,7 @@ uint8_t SelfTest_ECC(cy_en_ecc_error_mode_t eccErrorMode)
     source = CY_SYSFAULT_MPU_0;
     #endif
     /*Verify result */
-    if ((eccErrorMode == CY_ECC_C_ERROR)  && (source == CY_ECC_C_FAULT))
-    {
-        ret = OK_STATUS;
-    }
-    else if ((eccErrorMode == CY_ECC_NC_ERROR)  && (source == CY_ECC_NC_FAULT))
+    if ((eccErrorMode == CY_ECC_NC_ERROR)  && (source == CY_ECC_NC_FAULT))
     {
         ret = OK_STATUS;
     }
@@ -218,8 +207,8 @@ uint8_t SelfTest_ECC(cy_en_ecc_error_mode_t eccErrorMode)
 ********************************************************************************
 *
 * Summary:
-*  This function performs the ECC hardware self test to detect, correct the single
-*  bit error and reports fault for double bit error.
+*  This function performs the ECC hardware self test for Flash memory
+*  to report fault for double bit error
 *
 * Parameters:
 * addr - Aligned flash row address.
@@ -229,8 +218,6 @@ uint8_t SelfTest_ECC(cy_en_ecc_error_mode_t eccErrorMode)
 *  0 - Test passed <br>
 *  1 - Test failed
 *
-* Note :
-*  Only Non-Correctable ECC fault is supported on CAT1B devices for flash memory.
 *
 *******************************************************************************/
 uint8_t SelfTest_ECC_Flash(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode)
@@ -275,11 +262,7 @@ uint8_t SelfTest_ECC_Flash(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode)
     source = CY_SYSFAULT_MPU_0;
     #endif
     /*Verify result */
-    if ((eccErrorMode == CY_ECC_C_ERROR)  && (source == CY_ECC_C_FAULT))
-    {
-        ret = OK_STATUS;
-    }
-    else if ((eccErrorMode == CY_ECC_NC_ERROR)  && (source == CY_ECC_NC_FAULT))
+    if ((eccErrorMode == CY_ECC_NC_ERROR)  && (source == CY_ECC_NC_FAULT))
     {
         ret = OK_STATUS;
     }
@@ -301,8 +284,8 @@ uint8_t SelfTest_ECC_Flash(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode)
 ********************************************************************************
 *
 * Summary:
-*  This function performs the ECC hardware self test to RAM block to detect, correct the single
-*  bit error and reports fault for double bit error.
+*  This function performs the ECC hardware self test for Ram memory
+*  to report fault for double bit error
 *
 * Parameters:
 *  addr -Ram address.
@@ -330,14 +313,8 @@ uint8_t SelfTest_ECC_Ram(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode)
     /* ECC configuration */
     RAMC0->ECC_CTL = 0x00000000;
     CY_SET_REG32(addr, 0x5A5A5A5A);
-   if (eccErrorMode == CY_ECC_C_ERROR)
-    {
-        CY_SET_REG32(addr, 0x5A5A5A5E);
-    }
-   else
-   {
-        CY_SET_REG32(addr, 0x7A7A7A7A);
-   }
+    CY_SET_REG32(addr, 0x7A7A7A7A);
+
 
     /* Sram Error EN =1 */
     RAMC0->ECC_CTL |= 0x01;
@@ -353,11 +330,7 @@ uint8_t SelfTest_ECC_Ram(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode)
     readVal = *ptr;
 
     source = Cy_SysFault_GetErrorSource(FAULT_STRUCT0);
-    if ((eccErrorMode == CY_ECC_C_ERROR)  && (source == CY_ECC_C_RAM_FAULT))
-    {
-        ret = OK_STATUS;
-    }
-    else if ((eccErrorMode == CY_ECC_NC_ERROR)  && (source == CY_ECC_NC_RAM_FAULT))
+    if ((eccErrorMode == CY_ECC_NC_ERROR)  && (source == CY_ECC_NC_RAM_FAULT))
     {
         ret = OK_STATUS;
     }
