@@ -96,11 +96,14 @@ Functions</h2></td></tr>
 <tr class="memdesc:gac9407fb23d7ee9997f0440bfd3d41cef"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs I/O tests to detect pin shorts to Ground or Vcc.  <a href="group__group__gpio__functions.html#gac9407fb23d7ee9997f0440bfd3d41cef">More...</a><br /></td></tr>
 <tr class="separator:gac9407fb23d7ee9997f0440bfd3d41cef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9a3c617645a0c312fcf0df4587846059"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__gpio__functions.html#ga9a3c617645a0c312fcf0df4587846059">SelfTest_IO_GetPinError</a> (void)</td></tr>
-<tr class="memdesc:ga9a3c617645a0c312fcf0df4587846059"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function returns a PIN number that cause an error in SelfTest_IO function.  <a href="group__group__gpio__functions.html#ga9a3c617645a0c312fcf0df4587846059">More...</a><br /></td></tr>
+<tr class="memdesc:ga9a3c617645a0c312fcf0df4587846059"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function returns a pin number that causes an error in the SelfTest_IO function.  <a href="group__group__gpio__functions.html#ga9a3c617645a0c312fcf0df4587846059">More...</a><br /></td></tr>
 <tr class="separator:ga9a3c617645a0c312fcf0df4587846059"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga17d1d166b7644efa442dc572c45c8b3f"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__gpio__functions.html#ga17d1d166b7644efa442dc572c45c8b3f">SelfTest_IO_GetPortError</a> (void)</td></tr>
-<tr class="memdesc:ga17d1d166b7644efa442dc572c45c8b3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function returns a PORT number that cause an error in SelfTest_IO function.  <a href="group__group__gpio__functions.html#ga17d1d166b7644efa442dc572c45c8b3f">More...</a><br /></td></tr>
+<tr class="memdesc:ga17d1d166b7644efa442dc572c45c8b3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function returns a port number that causes an error in the SelfTest_IO function.  <a href="group__group__gpio__functions.html#ga17d1d166b7644efa442dc572c45c8b3f">More...</a><br /></td></tr>
 <tr class="separator:ga17d1d166b7644efa442dc572c45c8b3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga035291e6e21a34fd43c499ca3c3de7d7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__gpio__functions.html#ga035291e6e21a34fd43c499ca3c3de7d7">SelfTest_IO_SetPinMask</a> (const uint8_t *pinMaskArr)</td></tr>
+<tr class="memdesc:ga035291e6e21a34fd43c499ca3c3de7d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Summary: This function sets a custom pin mask to be used in the SelfTest_IO function.  <a href="group__group__gpio__functions.html#ga035291e6e21a34fd43c499ca3c3de7d7">More...</a><br /></td></tr>
+<tr class="separator:ga035291e6e21a34fd43c499ca3c3de7d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="gac9407fb23d7ee9997f0440bfd3d41cef" name="gac9407fb23d7ee9997f0440bfd3d41cef"></a>
@@ -120,7 +123,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>This function performs I/O tests to detect pin shorts to Ground or Vcc. </p>
-<p >Not all pins maybe compatible with this test based on applications specifics. The users must fill up the "PinToTest" table corresponding to their needs.</p>
+<p >Not all pins may be compatible with this test based on the applications specifics. By default, this function uses the "PinToTest" array to determine which pins to test. To set a custom pin mask, use the <a class="el" href="group__group__gpio__functions.html#ga035291e6e21a34fd43c499ca3c3de7d7" title="Summary: This function sets a custom pin mask to be used in the SelfTest_IO function.">SelfTest_IO_SetPinMask()</a> function.</p>
 <dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
  1 - Test failed (Shorts to VCC) <br  />
  2 - Test failed (Shorts to GND) </dd></dl>
@@ -143,8 +146,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This function returns a PIN number that cause an error in SelfTest_IO function. </p>
-<dl class="section return"><dt>Returns</dt><dd>PIN number that cause an error </dd></dl>
+<p>This function returns a pin number that causes an error in the SelfTest_IO function. </p>
+<dl class="section return"><dt>Returns</dt><dd>The pin number that causes an error. </dd></dl>
 
 </div>
 </div>
@@ -164,8 +167,29 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This function returns a PORT number that cause an error in SelfTest_IO function. </p>
+<p>This function returns a port number that causes an error in the SelfTest_IO function. </p>
 <dl class="section return"><dt>Returns</dt><dd>PORT number that cause an error </dd></dl>
+
+</div>
+</div>
+<a id="ga035291e6e21a34fd43c499ca3c3de7d7" name="ga035291e6e21a34fd43c499ca3c3de7d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga035291e6e21a34fd43c499ca3c3de7d7">&#9670;&nbsp;</a></span>SelfTest_IO_SetPinMask()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SelfTest_IO_SetPinMask </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>pinMaskArr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Summary: This function sets a custom pin mask to be used in the SelfTest_IO function. </p>
+<p >Parameters: pinMaskArr - The custom pin mask array. The length of the array should be equal to the IO_PORTS value. Each element of the array is a mask of the GPIO port pins, to be tested in the SelfTest_IO function. The port sequence is the same as in the PORT_Regs array. Pass the NULL value to use the default pin mask. </p>
 
 </div>
 </div>

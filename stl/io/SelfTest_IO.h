@@ -2,7 +2,7 @@
 * File Name: SelfTest_IO.h
 *
 * Description:
-*  This file provides constants and parameter values used for I/O self
+*  This file provides constants and parameter values used for the I/O self
 *  tests.
 *
 *******************************************************************************
@@ -39,28 +39,29 @@
 *******************************************************************************/
 
 /**
-* \addtogroup group_io
-* \{
-*
-* Digital I/Os are arranged into ports, with up to eight pins per port. Some of 
-* the I/O pins are multiplexed with special functions (USB, debug port, crystal oscillator). 
-* Special functions are enabled using control registers associated with the specific functions.
-* The test goal is to ensure that I/O pins are not shorted to GND or Vcc.
-*
-* \section group_io_more_information More Information
-*
-* In normal operating conditions, the pin-to-ground and pin-to-VCC resistances are very high. To detect any shorts, 
-* resistance values are compared with the internal pull-up resistors. To detect a pin-to-ground short, the pin is 
-* configured in the resistive pull-up drive mode. Under normal conditions, the CPU reads a logical one because of 
-* the pull-up resistor. If the pin is connected to ground through a small resistance, the input level is recognized 
-* as a logical zero. To detect a sensor-to-VCC short, the sensor pin is configured in the resistive pull-down drive 
-* mode. The input level is zero under normal conditions. If the pin is connected to VCC through a small resistance, 
-* the input level is recognized as a logical one.
-*
-*
-* \defgroup group_gpio_macros Macros
-* \defgroup group_gpio_functions Functions
-*/
+ * \addtogroup group_io
+ * \{
+ *
+ * Digital I/Os are arranged into ports with up-to-eight pins per port. Some of
+ * the I/O pins are multiplexed with special functions (USB, debug port, crystal oscillator).
+ * Special functions are enabled using control registers associated with the specific functions.
+ * The test goal is to ensure that I/O pins are not shorted to GND or Vcc.
+ *
+ * \section group_io_more_information More Information
+ *
+ * In normal operating conditions, the pin-to-ground and pin-to-VCC resistances are very high. To
+ * detect any shorts, resistance values are compared with the internal pull-up resistors. To detect
+ * a pin-to-ground short, the pin is configured in the resistive pull-up Drive mode. Under normal
+ * conditions, the CPU reads a logical 1 because of the pull-up resistor. If the pin is connected
+ * to ground through a small resistance, the input level is recognized as a logical 0. To detect
+ * a sensor-to-VCC short, the sensor pin is configured in the resistive pull-down drive mode. The
+ * input level is zero under normal conditions. If the pin is connected to VCC through a
+ * small resistance, the input level is recognized as a logical one.
+ *
+ *
+ * \defgroup group_gpio_macros Macros
+ * \defgroup group_gpio_functions Functions
+ */
 
 #if !defined(SELFTEST_IO_H)
     #define SELFTEST_IO_H
@@ -71,17 +72,18 @@
 ***************************************/
 
 /**
-* \addtogroup group_gpio_functions
-* \{
-*/
+ * \addtogroup group_gpio_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_IO
 ****************************************************************************//**
 *
 *  This function performs I/O tests to detect pin shorts to Ground or Vcc.
-*  Not all pins maybe compatible with this test based on applications specifics.
-*  The users must fill up the "PinToTest" table corresponding to their needs.
+*  Not all pins may be compatible with this test based on the applications specifics.
+*  By default, this function uses the "PinToTest" array to determine which pins
+*  to test. To set a custom pin mask, use the SelfTest_IO_SetPinMask() function.
 *
 *
 * \return
@@ -98,11 +100,11 @@ uint8_t SelfTest_IO(void);
 * Function Name: SelfTest_IO_GetPinError
 ****************************************************************************//**
 *
-*  This function returns a PIN number that cause an error in SelfTest_IO function.
+*  This function returns a pin number that causes an error in the SelfTest_IO function.
 *
 *
 * \return
-* PIN number that cause an error
+* The pin number that causes an error.
 *
 *******************************************************************************/
 uint8_t SelfTest_IO_GetPinError(void);
@@ -112,7 +114,7 @@ uint8_t SelfTest_IO_GetPinError(void);
 * Function Name: SelfTest_IO_GetPortError
 ****************************************************************************//**
 *
-*  This function returns a PORT number that cause an error in SelfTest_IO function.
+*  This function returns a port number that causes an error in the SelfTest_IO function.
 *
 *
 * \return
@@ -120,6 +122,23 @@ uint8_t SelfTest_IO_GetPinError(void);
 *
 *******************************************************************************/
 uint8_t SelfTest_IO_GetPortError(void);
+
+
+/*******************************************************************************
+* Function Name: SelfTest_IO_SetPinMask
+***************************************************************************//**
+*
+* Summary:
+*  This function sets a custom pin mask to be used in the SelfTest_IO function.
+*
+* Parameters:
+*  pinMaskArr - The custom pin mask array. The length of the array should be equal
+*  to the IO_PORTS value. Each element of the array is a mask of the GPIO port pins,
+*  to be tested in the SelfTest_IO function. The port sequence is the same
+*  as in the PORT_Regs array. Pass the NULL value to use the default pin mask.
+*
+*******************************************************************************/
+void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr);
 
 /** \} group_gpio_functions */
 
@@ -131,69 +150,89 @@ uint8_t SelfTest_IO_GetPortError(void);
 #if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX)
 
 /** \addtogroup group_gpio_macros
-* \{
-*/
-/** Number of IO ports. This may differ depending on the device used(CAT1A, CAT1B(PSoC C3), CAT1C, CAT2). */
-/* Number of IO ports: PORT0 - PORT12 */
+ * \{
+ */
+/** The number of IO ports. This may differ depending on the device used(CAT1A, CAT1B(PSoC C3), CAT1C,
+ *  CAT2). */
+/* The number of IO ports: PORT0 - PORT12 */
 #define IO_PORTS                        (12u)
 /** \} group_gpio_macros */
 
 /** \cond INTERNAL */
 
-#elif defined(CY_DEVICE_SERIES_PSOC_4500S) || defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS)
-/* Number of IO ports: PORT0 - PORT7 */
+#elif defined(CY_DEVICE_SERIES_PSOC_4500S)
+/* The number of IO ports: PORT0 - PORT7 */
+#define IO_PORTS                        (8u)
+
+#elif defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS)
+/* The number of IO ports: PORT0 - PORT7 */
 #define IO_PORTS                        (8u)
 
 #elif defined(CY_DEVICE_SERIES_PSOC_4100S)
-/* Number of IO ports: PORT0 - PORT4 */
+/* The number of IO ports: PORT0 - PORT4 */
+#define IO_PORTS                        (5u)
+
+#elif defined(CY_DEVICE_SERIES_PSOC_4000T)
+/* The number of IO ports: PORT0 - PORT4 */
+#define IO_PORTS                        (5u)
+
+#elif defined(CY_DEVICE_SERIES_PSOC_4000S)
+/* The number of IO ports: PORT0 - PORT4 */
+#define IO_PORTS                        (5u)
+
+#elif defined(CY_DEVICE_SERIES_PSOC_4700S)
+/* The number of IO ports: PORT0 - PORT4 */
 #define IO_PORTS                        (5u)
 
 #elif defined(CY_DEVICE_SERIES_PSOC_4100T_PLUS)
-/* Number of IO ports: PORT0 - PORT6 */
+/* The number of IO ports: PORT0 - PORT6 */
 #define IO_PORTS                        (7u)
+
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX) */
 
-
 #elif CY_CPU_CORTEX_M4
-/* Number of IO ports: PORT0 - PORT14 */
+/* The number of IO ports: PORT0 - PORT14 */
 #define IO_PORTS                        (15u)
 
 #elif CY_CPU_CORTEX_M7
-/* Number of IO ports: PORT0 - PORT14 */
+/* The number of IO ports: PORT0 - PORT14 */
 #define IO_PORTS                        (33u)
 #elif CY_CPU_CORTEX_M33
-/* Number of IO ports: PORT0 - PORT9 */
+/* The number of IO ports: PORT0 - PORT9 */
 #define IO_PORTS                        (10u)
-#endif
+#endif /* if CY_CPU_CORTEX_M0P */
 
 /** \endcond */
 
 /** \addtogroup group_gpio_macros
-* \{
-*/
-/** Number of IO pins per port */
+ * \{
+ */
+/** The number of IO pins per port */
 #define IO_PINS                         (8u)
 
-/** Pins bit mask */
+/** The pins bit mask */
 #define IO_PINS_MASK                    (IO_PINS - 1u)
 
-#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M0P) && (CY_CPU_CORTEX_M0P)))
-/** Optimal delay cycle value needed to setup the GPIO drive mode
- *  in Release configuration. This may differ depending on the device used(CAT1A, CAT1B(PSoC C3), CAT1C, CAT2).*/
+#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || \
+    (defined(CY_CPU_CORTEX_M0P) && (CY_CPU_CORTEX_M0P)))
+/** The optimal delay cycle value needed to set up the GPIO Drive mode
+ *  in Release configuration. This may differ depending on the device used(CAT1A, CAT1B(PSoC C3),
+ *  CAT1C, CAT2).*/
 #define DELAY_DRIVE_MODE_SETUP          (10u)
 /** \} group_gpio_macros */
 
 /** \cond INTERNAL */
 
 #elif CY_CPU_CORTEX_M7
-/* Optimal delay cycle value needed for setup the GPIO drive mode
+/* The optimal delay cycle value needed to set up the GPIO Drive mode
  * in Release configuration */
 #define DELAY_DRIVE_MODE_SETUP          (500u)
 #elif CY_CPU_CORTEX_M33
-/* Optimal delay cycle value needed for setup the GPIO drive mode
+/* The optimal delay cycle value needed to set up the GPIO Drive mode
  * in Release configuration */
 #define DELAY_DRIVE_MODE_SETUP          (500u)
-#endif
+#endif /* if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) ||
+             (defined(CY_CPU_CORTEX_M0P) && (CY_CPU_CORTEX_M0P))) */
 
 /** \endcond */
 

@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('group__group__i2c__functions.html','')
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:gaba4f2020b2a24b277135ee7a69d26963"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__i2c__functions.html#gaba4f2020b2a24b277135ee7a69d26963">SelfTest_I2C_SCB</a> (CySCB_Type *master_base, cy_stc_scb_i2c_context_t *master_context, CySCB_Type *slave_base, cy_stc_scb_i2c_context_t *slave_context, uint8_t *slave_read_buf, uint8_t *slave_write_buf)</td></tr>
-<tr class="memdesc:gaba4f2020b2a24b277135ee7a69d26963"><td class="mdescLeft">&#160;</td><td class="mdescRight">I2C master under test sends data to I2C slave for self-test.  <a href="group__group__i2c__functions.html#gaba4f2020b2a24b277135ee7a69d26963">More...</a><br /></td></tr>
+<tr class="memdesc:gaba4f2020b2a24b277135ee7a69d26963"><td class="mdescLeft">&#160;</td><td class="mdescRight">I2C master under test sends data to I2C slave for self test.  <a href="group__group__i2c__functions.html#gaba4f2020b2a24b277135ee7a69d26963">More...</a><br /></td></tr>
 <tr class="separator:gaba4f2020b2a24b277135ee7a69d26963"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -147,20 +147,20 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>I2C master under test sends data to I2C slave for self-test. </p>
-<p >Slave read the data and write the complement[1's] to the slave read buffer Master read back the data from slave and check the data is corrupted.</p>
+<p>I2C master under test sends data to I2C slave for self test. </p>
+<p >Slave reads the data and writes the complement[1's] to the slave read buffer. Master reads back the data from the slave and checks the dataforis corruption.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">master_base</td><td>The pointer to the master I2C SCB instance </td></tr>
-    <tr><td class="paramname">master_context</td><td>The pointer to the master I2C SCB context </td></tr>
-    <tr><td class="paramname">slave_base</td><td>The pointer to the slave I2C SCB instance </td></tr>
-    <tr><td class="paramname">slave_context</td><td>The pointer to the slave I2C SCB context </td></tr>
-    <tr><td class="paramname">slave_read_buf</td><td>The pointer to slave read buffer </td></tr>
-    <tr><td class="paramname">slave_write_buf</td><td>The pointer to slave write buffer</td></tr>
+    <tr><td class="paramname">master_base</td><td>The pointer to the master I2C SCB instance. </td></tr>
+    <tr><td class="paramname">master_context</td><td>The pointer to the master I2C SCB context. </td></tr>
+    <tr><td class="paramname">slave_base</td><td>The pointer to the slave I2C SCB instance. </td></tr>
+    <tr><td class="paramname">slave_context</td><td>The pointer to the slave I2C SCB context. </td></tr>
+    <tr><td class="paramname">slave_read_buf</td><td>The pointer to slave read buffe. </td></tr>
+    <tr><td class="paramname">slave_write_buf</td><td>The pointer to slave write buffer.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>During call, function transmits from 0x01 to 0xFF. Clear I2C Master status, read buffer and write buffer</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>During a call, the function transmits from 0x01 to 0xFF. Clears I2C Master status, reads and writes the buffer</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>1 - Test failed <br  />
  2 - Still testing <br  />
  3 - Test completed OK </dd></dl>

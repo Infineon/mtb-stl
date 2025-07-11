@@ -42,22 +42,21 @@
 #include "SelfTest_ErrorInjection.h"
 
 #if (defined(CY_IP_M0S8TCPWM) || defined(CY_IP_MXTCPWM))
-uint8_t SelfTest_PWM_GateKill(TCPWM_Type *base, uint32_t cntNum)
+uint8_t SelfTest_PWM_GateKill(TCPWM_Type* base, uint32_t cntNum)
 {
-
     uint32_t pwm_count;
     uint32_t ref_pwm_count;
 
     ref_pwm_count = Cy_TCPWM_Counter_GetCounter(base, cntNum);
-    
+
     Cy_SysLib_Delay(10);
 
     pwm_count = Cy_TCPWM_Counter_GetCounter(base, cntNum);
 
-#if ERROR_IN_PWM_GATEKILL
+    #if ERROR_IN_PWM_GATEKILL
     pwm_count += 10;
-#endif
-    if(pwm_count == ref_pwm_count)
+    #endif
+    if (pwm_count == ref_pwm_count)
     {
         return OK_STATUS;
     }
@@ -66,6 +65,8 @@ uint8_t SelfTest_PWM_GateKill(TCPWM_Type *base, uint32_t cntNum)
         return ERROR_STATUS;
     }
 }
+
+
 #endif /* (defined(CY_IP_M0S8TCPWM) || defined(CY_IP_MXTCPWM)) */
 
 /* [] END OF FILE */

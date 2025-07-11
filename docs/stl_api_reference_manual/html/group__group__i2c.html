@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('group__group__i2c.html',''); initResiz
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
 <p >This test requires connecting the I2C Master and Slave externally. </p>
-<p >1) Master periodically sends an I2C data (from 0x00 to 0xFF one by one) addressing slave [0x08]. <br  />
+<p >1) Master periodically sends I2C data (from 0x00 to 0xFF one by one) addressing the slave [0x08]. <br  />
  2) Slave reads the data, complements, and writes to slave read buffer. <br  />
  3) Master reads the data from slave and compares it with the complement of data sent in last interaction.</p>
 <h1><a class="anchor" id="group_i2c_more_information"></a>

@@ -3,7 +3,7 @@
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
-*  used for FLASH self tests.
+*  used for Flash self tests.
 *
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
@@ -38,25 +38,27 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_flash
-* \{
-*
-* To complete a full diagnostic of the flash memory, a checksum of all used flash needs to be calculated.
-* The current library uses a Fletcher's 64-bit checksum. The stl_Flash.h file defines the flash size that needs to be monitored.
-*
-* \section group_flash_more_information More Information
-*
-* The proposed checksum flash test reads each ROM or flash location and accumulates the values in a 64-bit variable to calculate
-* a running checksum of the entire user flash memory. The actual 64-bit checksum of flash is stored in the last 8 bytes of flash
-* itself. When the test reaches the end of flash minus 8 bytes (0x7FF8 on 32-KB devices), it stops. Custom linker files are used
-* to place the checksum in the desired location. The calculated checksum value is then compared with the actual value stored in 
-* the last 8 bytes of flash. A mismatch indicates flash failure. The checksum can also be stored in SFLASH, EEPROM, 
-* or any other external flash. 
-*
-*
-* \defgroup group_flash_macros Macros
-* \defgroup group_flash_functions Functions
-*/
+ * \addtogroup group_flash
+ * \{
+ *
+ * To complete a full diagnostic of the Flash memory, a checksum of all used Flash needs to be
+ * calculated. The current library uses a Fletcher's 64-bit checksum. The stl_Flash.h file defines
+ * the Flash size that needs to be monitored.
+ *
+ * \section group_flash_more_information More Information
+ *
+ * The proposed checksum Flash test reads each ROM or Flash location and accumulates the values in a
+ * 64-bit variable to calculate a running checksum of the entire user Flash memory. The actual
+ * 64-bit checksum of Flash is stored in the last 8 bytes of Flash itself. When the test reaches the
+ * end of Flash minus 8 bytes (0x7FF8 on 32-KB devices), it stops. Custom linker files are used to
+ * place the checksum in the desired location. The calculated checksum value is then compared with
+ * the actual value stored in the last 8 bytes of Flash. A mismatch indicates Flash failure. The
+ * checksum can also be stored in SFLASH, EEPROM, or any other external Flash.
+ *
+ *
+ * \defgroup group_flash_macros Macros
+ * \defgroup group_flash_functions Functions
+ */
 
 
 #if !defined(SELFTEST_FLASH_H)
@@ -64,16 +66,18 @@
 
 #include "cy_pdl.h"
 #include "SelfTest_common.h"
- 
+
+
 /** \cond INTERNAL */
 #define FLASH_TEST_FLETCHER64      (0u)
 #define FLASH_TEST_CRC32           (1u)
 /** \endcond */
 
 /** \addtogroup group_flash_macros
-* \{
-*/
-/** Supports two self test modes: <br> 1) FLASH_TEST_CHECKSUM  - performs a Checksum calculation on flash  <br> 2) FLASH_TEST_CRC - Performs a CRC calculation on flash  */
+ * \{
+ */
+/** Supports two self test modes: <br> 1) FLASH_TEST_CHECKSUM  - performs a Checksum calculation on
+ *  Flash  <br> 2) FLASH_TEST_CRC - Performs a CRC calculation on Flash  */
 #define FLASH_TEST_MODE            (FLASH_TEST_FLETCHER64)
 
 /** \} group_flash_macros */
@@ -82,19 +86,19 @@
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_flash_functions
-* \{
-*/
+ * \addtogroup group_flash_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_FlashCheckSum
 ****************************************************************************//**
 *
-*  This function checks for data corruption in flash memory using a checksum calculation.
+*  This function checks for data corruption in Flash memory using a checksum calculation.
 *
 *
-* \param DoubleWordsToTest 
-* Number of 32-bit Double Words of flash to be calculated per each function call. <br>
+* \param DoubleWordsToTest
+* Number of 32-bit Double Words of Flash to be calculated per each function call. <br>
 *
 * \return
 *  1 - Test failed <br>
@@ -109,22 +113,23 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest);
 * Function Name: SelfTest_Flash_init
 ****************************************************************************//**
 *
-*  This function checks the checksum of the flash for the given range of flash with
+* This function checks the checksum of the Flash for the given range of Flash with
 * the expected/reference checksum passed along with this API.
 *
 *
-* \param StartAddressOfFlash 
-* Start address of the flash from where the checksum needs to be calculated.<br>
-* \param EndAddressOfFlash 
-* End address of the flash till where the checksum needs to be calculated. <br>
-* \param flash_ExpectedCheckSum 
+* \param StartAddressOfFlash
+* Start address of the Flash from where the checksum needs to be calculated.<br>
+* \param EndAddressOfFlash
+* End address of the Flash till where the checksum needs to be calculated. <br>
+* \param flash_ExpectedCheckSum
 * Expected checksum. Must be stored outside the range of check. <br>
 *
 * \note
 * This function needs to be called prior to \ref SelfTest_FlashCheckSum else the test will fail
 *
 *******************************************************************************/
-void SelfTest_Flash_init(uint32_t StartAddressOfFlash,uint32_t EndAddressOfFlash, uint64_t flash_ExpectedCheckSum);
+void SelfTest_Flash_init(uint32_t StartAddressOfFlash, uint32_t EndAddressOfFlash,
+                         uint64_t flash_ExpectedCheckSum);
 /** \} group_flash_functions */
 
 
@@ -133,14 +138,14 @@ void SelfTest_Flash_init(uint32_t StartAddressOfFlash,uint32_t EndAddressOfFlash
 * Initial Parameter Constants
 ***************************************/
 /** \addtogroup group_flash_macros
-* \{
-*/
+ * \{
+ */
 /** Initial value for Counter of Iteration in Fletcher32 Checksum algorithm */
 #define ITER_COUNT_INIT_VALUE          (uint32_t)(1u)
 
-/** The magic value 359 is the largest number of sums that can be performed without numeric overflow. 
-   Given the possible initial starting value of sum1 = 0x1fffe. Any smaller value is also permissible; 256 may be convenient in many
-   cases.  */
+/** The magic value 359 is the largest number of sums that can be performed without numeric
+ * overflow. Given the possible initial starting value of sum1 = 0x1fffe. Any smaller value is also
+ * permissible; 256 may be convenient in many cases.  */
 #define LARGEST_NUM_OF_SUMS            (uint32_t)(359u)
 
 /** Init value for checksum calculation */
@@ -152,8 +157,9 @@ void SelfTest_Flash_init(uint32_t StartAddressOfFlash,uint32_t EndAddressOfFlash
 /** No of bytes to store the checksum*/
 #define FLASH_RESERVED_CHECKSUM_SIZE    (8u)
 
-/** Define last Flash address which is used for checksum calculation. Last two bytes used for flash checksum storing, So need to subtract "8" */
-#if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
+/** Define last Flash address which is used for checksum calculation. Last two bytes used for Flash
+ *  checksum storing, So need to subtract "8" */
+#if (defined (CY_IP_M0S8CPUSSV3) || defined(CY_IP_M4CPUSS) || defined (CY_DOXYGEN))
 #define FLASH_END_ADDR                \
     (uint32_t)(CY_FLASH_BASE + CY_FLASH_SIZE - FLASH_RESERVED_CHECKSUM_SIZE)
 
@@ -161,7 +167,7 @@ void SelfTest_Flash_init(uint32_t StartAddressOfFlash,uint32_t EndAddressOfFlash
 
 /** \cond INTERNAL */
 
-#elif CY_CPU_CORTEX_M7
+#elif defined (CY_IP_M7CPUSS)
 #if  defined(CY_DEVICE_SERIES_XMC7200)
 #define CY_FLASH_BASE      0x10080000UL
 #define CY_FLASH_SIZE      0x007B0000UL
@@ -172,9 +178,9 @@ void SelfTest_Flash_init(uint32_t StartAddressOfFlash,uint32_t EndAddressOfFlash
 
 #define FLASH_END_ADDR                \
     (uint32_t)(CY_FLASH_BASE + CY_FLASH_SIZE - FLASH_RESERVED_CHECKSUM_SIZE)
-#endif
+#endif /* if (defined (CY_IP_M0S8CPUSSV3) || defined(CY_IP_M4CPUSS) || defined (CY_DOXYGEN)) */
 
-#if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
+#if defined (CY_IP_M33SYSCPUSS)
 #define CY_FLASH_NSC_SIZE 0x00000100UL
 #define FLASH_END_ADDR         \
     (uint32_t)(CY_FLASH_BASE + (CY_FLASH_SIZE/2UL) - (CY_FLASH_NSC_SIZE +FLASH_RESERVED_CHECKSUM_SIZE))

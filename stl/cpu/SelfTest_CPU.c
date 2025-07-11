@@ -48,15 +48,15 @@ static volatile uint32_t CPU_SelfTestC;
 static uint16_t counter1;
 static uint16_t counter2;
 static bool Program_flow_test;
-/* Definition of section for SelfTest_PC5555() and SelfTest_PCAAAA() functions (GCC Compiler,)
- *   custom linkers files are required to place at correct location
+/* The definition of the section for the SelfTest_PC5555() and SelfTest_PCAAAA() functions (GCC Compiler).
+ *   Custom linkers files are required to placed at correct location
  */
 
 #if defined(__GNUC__)
 static uint8_t SelfTest_PC5555(void) __attribute__((noinline, section(SELF_TEST_SECTION_PC5555)));
 static uint8_t SelfTest_PCAAAA(void) __attribute__((noinline, section(SELF_TEST_SECTION_PCAAAA)));
 #elif defined(__ICCARM__)
-/* Place the functions in required location in flash using linker file. (IAR compilers) */
+/* Place the functions in the required location in flash using the linker file. (IAR compilers) */
 #pragma default_function_attributes  = @ "PC5555"
 static uint8_t SelfTest_PC5555(void);
 #pragma default_function_attributes =
@@ -70,7 +70,7 @@ static uint8_t SelfTest_PCAAAA(void);
  *******************************************************************************
  *
  * Summary:
- *  This function performs checkerboard test for all CPU registers except the PC
+ *  This function performs the checkerboard test for all CPU registers except the PC
  *  register.
  *
  * Parameters:
@@ -109,11 +109,11 @@ uint8_t SelfTest_CPU_Registers(void)
  *******************************************************************************
  *
  * Summary:
- *  This function performs the test of the PC register. Function calls
- *  SelfTest_PC5555() and SelfTest_PCAAAA() which are placed at addresses in
- *  flash that most closely match the 0x5555... pattern and 0xAAAA... pattern.
- *  These functions must return unique values to SelfTestA, SelfTestB and
- *  SelfTestC variables if PC is working correctly.
+ *  This function performs the test of the PC register. The function calls
+ *  SelfTest_PC5555() and SelfTest_PCAAAA(), which are placed at addresses in
+ *  flash that match the 0x5555... and 0xAAAA... patterns most closely.
+ *  These functions must return unique values to SelfTestA, SelfTestB, and
+ *  SelfTestC variables if the PC is working correctly.
  *
  * Parameters:
  *  None.
@@ -175,19 +175,18 @@ uint8_t SelfTest_PC(void)
 }
 
 
-
 /*******************************************************************************
  * Function Name: SelfTest_PROGRAM_FLOW
  *******************************************************************************
  *
  * Summary:
- *  This function performs the test of the Program Flow. For every critical 
- *  execution code block, unique numbers are added to or subtracted from 
- *  complementary counters before block execution and immediately after execution. 
+ *  This function performs the test of the Program Flow. For every critical
+ *  execution code block, unique numbers are added to or subtracted from
+ *  complementary counters before the block execution and immediately after execution.
  *  These procedures allow to see if the code block is correctly called from the main
- *  program flow and to check if the block is correctly executed. As long as there are 
- *  always the same number of exit and entry points, the counter pair will always be 
- *  complementary after each tested block 
+ *  program flow and check if the block is correctly executed. As long as there is
+ *  always the same number of exit and entry points, the counter pair will always be
+ *  complementary after each tested block.
  *
  * Parameters:
  *  None.
@@ -213,9 +212,9 @@ uint8_t SelfTest_PROGRAM_FLOW(void)
     counter1 += (uint16_t)0x0010;
     returned_value = SelfTest_PC5555();
     counter2 -= (uint16_t)0x0010;
-    counter1 += (uint16_t)0x0030; 
+    counter1 += (uint16_t)0x0030;
     returned_value = SelfTest_PCAAAA();
-    
+
     #if ERROR_IN_PROGRAM_FLOW
     /* Return error value */
     counter2 -= 0x0060;
@@ -226,7 +225,7 @@ uint8_t SelfTest_PROGRAM_FLOW(void)
 
     if ((uint16_t)(counter1 ^ counter2) == (uint16_t)0xFFFF)
     {
-        ret = OK_STATUS;    
+        ret = OK_STATUS;
     }
     (void)returned_value;
     return ret;
@@ -238,11 +237,11 @@ uint8_t SelfTest_PROGRAM_FLOW(void)
 ********************************************************************************
 *
 * Summary:
-*  This function performs a test for the PC register. Function is placed at the
-*  largest value in flash that resembles the pattern 0xAAAA... This function
-*  must return value 0xAA and write unique value to SelfTestA, SelfTestB and
-*  SelfTestC variables if PC is working correctly. Also this function executes
-*  a cycle loop for additional checking if the PC is working.
+*  This function performs the test for the PC register. The function is placed at the
+*  largest value in flash, which resembles pattern 0xAAAA... This function
+*  must return value 0xAA and write a unique value to SelfTestA, SelfTestB, and
+*  SelfTestC variables if the PC is working correctly. Also, this function executes
+*  a cycle loop for additional check if the PC is working.
 *
 * Parameters:
 *  None.
@@ -257,7 +256,7 @@ uint8_t SelfTest_PROGRAM_FLOW(void)
 *******************************************************************************/
 static uint8_t SelfTest_PCAAAA(void)
 {
-    if(Program_flow_test)
+    if (Program_flow_test)
     {
         counter1 += (uint16_t)0x0040;
     }
@@ -287,11 +286,11 @@ static uint8_t SelfTest_PCAAAA(void)
  *******************************************************************************
  *
  * Summary:
- *  This function performs a test for the PC register. Function is placed at the
- *  largest value in flash that resembles the pattern 0x5555... This function
- *  must return value 0x55 and  write unique value to SelfTestA, SelfTestB and
- *  SelfTestC variables if PC is working correctly. Also this function executes
- *  a cycle loop for additional checking if the PC is working.
+ *  This function performs the test for the PC register. The function is placed at the
+ *  largest value in flash, which resembles pattern 0x5555... This function
+ *  must return value 0x55 and  write a unique value to SelfTestA, SelfTestB, and
+ *  SelfTestC variables if the PC is working correctly. Also this function executes
+ *  a cycle loop for additional check if the PC is working.
  *
  * Parameters:
  *  None.

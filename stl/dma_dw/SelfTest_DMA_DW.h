@@ -38,77 +38,81 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_dma
-* \{
-*
-* The DMA test performs test on DMA block using DW transfers.
-*
-* \section group_dma_more_information More Information
-*
-*      The DMA blocks are tested using the following procedure:
-*
-*      1) A destination block of size 64 bytes is set to 0 with DW transfers using 16 x 32-bit transfers from a fixed
-*         address.
-*      2) The destination block is verified to be all 0.
-*      3) The same destination block is filled with 00 00 ff by using an 8-bit DMA from a fixed address with an
-*         increment of 3 and a length of 22 (64+(3-1))/3.
-*      4) The destination block is verified to contain the correct pattern (shown below with lowest address first):
-*         ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000…
-*
-*
-* \defgroup group_dma_functions Functions
-*/
+ * \addtogroup group_dma
+ * \{
+ *
+ * The DMA test performs test on DMA block using DW transfers.
+ *
+ * \section group_dma_more_information More Information
+ *
+ *      The DMA block test procedure:
+ *
+ *      1) A destination 64-byte block is set to 0 with DW transfers using 16 x 32-bit
+ *         transfers from a fixed address.
+ *      2) The destination block is verified to be all 0.
+ *      3) The same destination block is filled with 00 00 ff by using an 8-bit DMA from a fixed
+ *         address with increment 3 and length 22 (64+(3-1))/3.
+ *      4) The destination block is verified to contain the correct pattern (shown below with the lowest
+ *         address first):
+ *         ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000…
+ *
+ *
+ * \defgroup group_dma_functions Functions
+ */
 
 #if !defined(SELFTEST_DMA_DW_H)
     #define SELFTEST_DMA_DW_H
 
 #include "SelfTest_common.h"
 #include <string.h>
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7 || CY_CPU_CORTEX_M33)
+#if (defined (CY_IP_M4CPUSS_DMA) || defined (CY_IP_MXDW) || defined (CY_IP_M7CPUSS_DMA) || \
+    defined (CY_DOXYGEN))
 /***************************************
 * Function Prototypes
 ***************************************/
 
 /**
-* \addtogroup group_dma_functions
-* \{
-*/
+ * \addtogroup group_dma_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_DMA_DW
 ****************************************************************************//**
 *
-* This function writes a pattern (66 bytes) to the destination using the DMA and
+* This function writes a pattern (66 bytes) to the destination using the DMA, and
 * the destination block is verified to contain the correct pattern.
 *
 *
 * \param base
-* The pointer to the hardware DMA block <br>
+* The pointer to the hardware DMA block.<br>
 * \param channel
-* A channel number
+* The channel number.
 * \param descriptor0
-* This is the descriptor to be associated with the channel (transfer 0's to destination).
+* The descriptor to associate with the channel (transfer 0's to destination).
 * \param descriptor1
-* This is the descriptor to be associated with the channel (transfer pattern to destination).
+* The descriptor to associate with the channel (transfer pattern to destination).
 * \param des0_config
-* This is a configuration structure that has all initialization information for the descriptor.
+* The configuration structure with all initialization information for the descriptor.
 * \param des1_config
-* This is a configuration structure that has all initialization information for the descriptor.
+* The configuration structure with all initialization information for the descriptor.
 * \param channelConfig
-* The structure that has the initialization information for the channel.
+* The structure that contains the initialization information for the channel.
 * \param trigLine
 * The input of the trigger mux.
-* -> Bit 30 represents if the signal is an input/output. When this bit is set, the trigger activation is for an output
-* trigger from the trigger multiplexer. When this bit is reset, the trigger activation is for an input trigger to the trigger multiplexer. <br>
+* -> Bit 30 represents if the signal is an input/output. When this bit is set, the trigger
+*  activation is for an output trigger from the trigger multiplexer. When this bit is reset,
+*  the trigger activation is for an input trigger to the trigger multiplexer. <br>
 * -> Bits 12:8 represent the trigger group selection. <br>
-* -> In case of output trigger line (bit 30 is set): For PERI_ver1: <br>
+* -> For the output trigger line (bit 30 is set): For PERI_ver1: <br>
 * -> Bits 6:0 select the output trigger number in the trigger group. For PERI_ver2: <br>
-* -> Bits 7:0 select the output trigger number in the trigger group. In case of input trigger line (bit 30 is unset): <br>
+* -> Bits 7:0 select the output trigger number in the trigger group. In case of input trigger line
+*  (bit 30 is unset): <br>
 * -> Bits 7:0 select the input trigger signal for the trigger multiplexer  <br>
 *
 *
 * \note
-* Only applicable for CAT1A, CAT1B(PSoC C3) and CAT1C devices
+* Applicable only for CAT1A, CAT1B(PSoC C3) and CAT1C devices.
 *
 *
 * \return
@@ -118,28 +122,37 @@
 *******************************************************************************/
 
 
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
+#if (defined (CY_IP_M4CPUSS_DMA) || defined (CY_IP_MXDW) || defined (CY_DOXYGEN))
 
     #if defined(CY_DEVICE_PSOC6ABLE2)
-        uint8_t SelfTest_DMA_DW(DW_Type * base, uint32_t channel, cy_stc_dma_descriptor_t * descriptor0, cy_stc_dma_descriptor_t * descriptor1,
-                                const cy_stc_dma_descriptor_config_t * des0_config,const cy_stc_dma_descriptor_config_t * des1_config,
-                                cy_stc_dma_channel_config_t const * channelConfig, en_trig_input_grp0_t trigLine);
+uint8_t SelfTest_DMA_DW(DW_Type* base, uint32_t channel, cy_stc_dma_descriptor_t* descriptor0,
+                        cy_stc_dma_descriptor_t* descriptor1,
+                        const cy_stc_dma_descriptor_config_t* des0_config,
+                        const cy_stc_dma_descriptor_config_t* des1_config,
+                        cy_stc_dma_channel_config_t const* channelConfig,
+                        en_trig_input_grp0_t trigLine);
     #else
-        uint8_t SelfTest_DMA_DW(DW_Type * base, uint32_t channel, cy_stc_dma_descriptor_t * descriptor0, cy_stc_dma_descriptor_t * descriptor1,
-                                const cy_stc_dma_descriptor_config_t * des0_config,const cy_stc_dma_descriptor_config_t * des1_config,
-                                cy_stc_dma_channel_config_t const * channelConfig, en_trig_output_pdma0_tr_t trigLine);
-    #endif
+uint8_t SelfTest_DMA_DW(DW_Type* base, uint32_t channel, cy_stc_dma_descriptor_t* descriptor0,
+                        cy_stc_dma_descriptor_t* descriptor1,
+                        const cy_stc_dma_descriptor_config_t* des0_config,
+                        const cy_stc_dma_descriptor_config_t* des1_config,
+                        cy_stc_dma_channel_config_t const* channelConfig,
+                        en_trig_output_pdma0_tr_t trigLine);
+    #endif /* if defined(CY_DEVICE_PSOC6ABLE2) */
 
 
 
 
 
 
-#elif CY_CPU_CORTEX_M7
-uint8_t SelfTest_DMA_DW(DW_Type * base, uint32_t channel, cy_stc_dma_descriptor_t * descriptor0, cy_stc_dma_descriptor_t * descriptor1,
-                        const cy_stc_dma_descriptor_config_t * des0_config,const cy_stc_dma_descriptor_config_t * des1_config,
-                        cy_stc_dma_channel_config_t const * channelConfig, en_trig_output_pdma0_tr_0_t trigLine);
-#endif
+#elif defined (CY_IP_M7CPUSS_DMA)
+uint8_t SelfTest_DMA_DW(DW_Type* base, uint32_t channel, cy_stc_dma_descriptor_t* descriptor0,
+                        cy_stc_dma_descriptor_t* descriptor1,
+                        const cy_stc_dma_descriptor_config_t* des0_config,
+                        const cy_stc_dma_descriptor_config_t* des1_config,
+                        cy_stc_dma_channel_config_t const* channelConfig,
+                        en_trig_output_pdma0_tr_0_t trigLine);
+#endif /* if (defined (CY_IP_M4CPUSS_DMA) || defined (CY_IP_MXDW) || defined (CY_DOXYGEN)) */
 
 
 /** \} group_dma_functions */
@@ -150,8 +163,9 @@ uint8_t SelfTest_DMA_DW(DW_Type * base, uint32_t channel, cy_stc_dma_descriptor_
 ***************************************/
 
 
-#endif
+#endif /* if (defined (CY_IP_M4CPUSS_DMA) || defined (CY_IP_MXDW) || defined (CY_IP_M7CPUSS_DMA) ||
+          defined (CY_DOXYGEN)) */
 
 /** \} group_dma */
-#endif
+#endif /* if !defined(SELFTEST_DMA_DW_H) */
 /* [] END OF FILE */

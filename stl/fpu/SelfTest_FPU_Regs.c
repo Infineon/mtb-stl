@@ -40,14 +40,14 @@
 #include "cy_pdl.h"
 #include "SelfTest_FPU_Regs.h"
 
-#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
+#if (defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U))
 
 /*******************************************************************************
  * Function Name: SelfTest_FPU_REG
  *******************************************************************************
  *
  * Summary:
- *  This function performs checkerboard test for all FPU registers.
+ *  This function performs the checkerboard test for all FPU registers.
  *
  * Parameters:
  *  None.
@@ -60,21 +60,22 @@ uint8_t SelfTest_FPU_Registers(void)
 {
     uint8_t ret;
 
-    /* Enable global interrupts */
+    /* Enable the global interrupts */
     __disable_irq();
     #if defined(__GNUC__)
-        ret = SelfTest_FPU_Regs_GCC();
+    ret = SelfTest_FPU_Regs_GCC();
     #elif defined(__ICCARM__)
-        ret = SelfTest_FPU_Regs_IAR();
+    ret = SelfTest_FPU_Regs_IAR();
     #elif defined (__ARMCC_VERSION)
-        ret = SelfTest_FPU_Regs_ARM();
+    ret = SelfTest_FPU_Regs_ARM();
     #else
     ret = ERROR_STATUS;
     #endif
-    /* Enable global interrupts */
+    /* Enable the global interrupts */
     __enable_irq();
 
     return ret;
 }
 
-#endif
+
+#endif /* if (defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) */

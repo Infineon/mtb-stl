@@ -2,14 +2,8 @@
 * File Name: SelfTest_IPC.h
 *
 * Description:
-*  This file provides constants and parameter values used for IPC self
+*  This file provides constants and parameter values used for the IPC self
 *  tests.
-*
-*
-* Hardware Dependency:
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -43,30 +37,30 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_ipc
-* \{
-*
-* This module performs check on each free IPC channel with all free IPC interrupts.
-*      Following steps are performed: <br>
-*      1) Acquire the IPC channel. <br>
-*      2) Write some message. <br>
-*      3) Acquire notification event to a specify IPC interrupt. <br>
-*      4) Read the written data in ISR. <br>
-*      5) Release an specific IPC channel from the locked state. 
-*
-* \section group_ipc_more_information More Information
-*
-*      For PSoC6 following channels and interrupts are checked:
-*      Free Channels    : 8 - 15
-*      Free Interrupts : 7 - 15
-*
-*      For XMC Dual CM7 device channels and interrupts are checked:
-*      Free Channels   : 4 - 7
-*      Free Interrupts : 1 - 7
-*
-*
-* \defgroup group_ipc_functions Functions
-*/
+ * \addtogroup group_ipc
+ * \{
+ *
+ * This module performs a check on each free IPC channel with all free IPC interrupts.
+ *      Procedure: <br>
+ *      1) Acquire the IPC channel. <br>
+ *      2) Write a message. <br>
+ *      3) Acquire the notification event to a specify the IPC interrupt. <br>
+ *      4) Read the written data in ISR. <br>
+ *      5) Release a specific IPC channel from the locked state.
+ *
+ * \section group_ipc_more_information More Information
+ *
+ *      For PSOC6, the following channels and interrupts are checked:
+ *      Free Channels    : 8 - 15
+ *      Free Interrupts : 7 - 15
+ *
+ *      For XMC Dual CM7, the following channels and interrupts are checked:
+ *      Free Channels   : 4 - 7
+ *      Free Interrupts : 1 - 7
+ *
+ *
+ * \defgroup group_ipc_functions Functions
+ */
 
 
 #if !defined(SELFTEST_IPC_H)
@@ -75,25 +69,26 @@
 #include "cy_pdl.h"
 #include "SelfTest_common.h"
 
-#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
+#if (defined (CY_IP_M4CPUSS) || defined (CY_IP_M7CPUSS) || defined (CY_IP_MXIPC) || \
+    defined (CY_DOXYGEN))
 /***************************************
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_ipc_functions
-* \{
-*/
+ * \addtogroup group_ipc_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_IPC
 ****************************************************************************//**
 *
-* This function performs check on each free IPC channel with all free IPC interrupts.
+* This function performs a check on each free IPC channel with all free IPC interrupts.
 *
 * \return
 *  0 - Test passed <br>
 *  1 - Test failed
-* 
+*
 *
 *******************************************************************************/
 uint8_t SelfTest_IPC(void);
@@ -159,16 +154,16 @@ uint8_t SelfTest_IPC(void);
 #define IPC_CH_15               CH15_INDEX
 
 
-#define IPC_INT_0               INT0_INDEX 
-#define IPC_INT_1               INT1_INDEX 
-#define IPC_INT_2               INT2_INDEX 
+#define IPC_INT_0               INT0_INDEX
+#define IPC_INT_1               INT1_INDEX
+#define IPC_INT_2               INT2_INDEX
 #define IPC_INT_3               INT3_INDEX
 #define IPC_INT_4               INT4_INDEX
 #define IPC_INT_5               INT5_INDEX
 #define IPC_INT_6               INT6_INDEX
 #define IPC_INT_7               INT7_INDEX
 #define IPC_INT_8               INT8_INDEX
-#define IPC_INT_9               INT9_INDEX 
+#define IPC_INT_9               INT9_INDEX
 #define IPC_INT_10              INT10_INDEX
 #define IPC_INT_11              INT11_INDEX
 #define IPC_INT_12              INT12_INDEX
@@ -181,7 +176,7 @@ uint8_t SelfTest_IPC(void);
 
 #define IPC_INT_REL_MASK(i)      ((uint32_t)0x1U << (uint32_t)i)
 
-#define GET_IPC_CH_REL_MASK(i)   ((uint32_t)0x1U << (uint32_t)i) 
+#define GET_IPC_CH_REL_MASK(i)   ((uint32_t)0x1U << (uint32_t)i)
 
 #define GET_IPC_CH_NOTIFY_MASK(i)         ((uint32_t)0x1U << (uint32_t)(i))
 
@@ -189,17 +184,17 @@ uint8_t SelfTest_IPC(void);
 
 #define IPC_PRIORITY           (1u)      /* IPC1 interrupt priority */
 
-#if CY_CPU_CORTEX_M33
+#if defined (CY_IP_M33SYSCPUSS)
 #define IPC1_INTERRUPT          cpuss_interrupts_ipc_dpslp_0_IRQn
 #define IPC2_INTERRUPT          cpuss_interrupts_ipc_dpslp_1_IRQn
 #else
-#define IPC1_INTERRUPT          cpuss_interrupts_ipc_1_IRQn 
+#define IPC1_INTERRUPT          cpuss_interrupts_ipc_1_IRQn
 #define IPC2_INTERRUPT          cpuss_interrupts_ipc_2_IRQn
 #define IPC3_INTERRUPT          cpuss_interrupts_ipc_3_IRQn
 #define IPC4_INTERRUPT          cpuss_interrupts_ipc_4_IRQn
 #define IPC5_INTERRUPT          cpuss_interrupts_ipc_5_IRQn
 #define IPC6_INTERRUPT          cpuss_interrupts_ipc_6_IRQn
-#define IPC7_INTERRUPT          cpuss_interrupts_ipc_7_IRQn 
+#define IPC7_INTERRUPT          cpuss_interrupts_ipc_7_IRQn
 #define IPC8_INTERRUPT          cpuss_interrupts_ipc_8_IRQn
 #define IPC9_INTERRUPT          cpuss_interrupts_ipc_9_IRQn
 #define IPC10_INTERRUPT         cpuss_interrupts_ipc_10_IRQn
@@ -208,10 +203,11 @@ uint8_t SelfTest_IPC(void);
 #define IPC13_INTERRUPT         cpuss_interrupts_ipc_13_IRQn
 #define IPC14_INTERRUPT         cpuss_interrupts_ipc_14_IRQn
 #define IPC15_INTERRUPT         cpuss_interrupts_ipc_15_IRQn
-#endif
+#endif /* if defined (CY_IP_M33SYSCPUSS) */
 
 
-#endif
+#endif /* if (defined (CY_IP_M4CPUSS) || defined (CY_IP_M7CPUSS) || defined (CY_IP_MXIPC) || defined
+             (CY_DOXYGEN)) */
 
 /** \endcond */
 /** \} group_ipc */

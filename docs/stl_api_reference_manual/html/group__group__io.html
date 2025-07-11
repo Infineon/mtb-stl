@@ -89,11 +89,11 @@ $(document).ready(function(){initNavTree('group__group__io.html',''); initResiza
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
-<p >Digital I/Os are arranged into ports, with up to eight pins per port. </p>
+<p >Digital I/Os are arranged into ports with up-to-eight pins per port. </p>
 <p >Some of the I/O pins are multiplexed with special functions (USB, debug port, crystal oscillator). Special functions are enabled using control registers associated with the specific functions. The test goal is to ensure that I/O pins are not shorted to GND or Vcc.</p>
 <h1><a class="anchor" id="group_io_more_information"></a>
 More Information</h1>
-<p >In normal operating conditions, the pin-to-ground and pin-to-VCC resistances are very high. To detect any shorts, resistance values are compared with the internal pull-up resistors. To detect a pin-to-ground short, the pin is configured in the resistive pull-up drive mode. Under normal conditions, the CPU reads a logical one because of the pull-up resistor. If the pin is connected to ground through a small resistance, the input level is recognized as a logical zero. To detect a sensor-to-VCC short, the sensor pin is configured in the resistive pull-down drive mode. The input level is zero under normal conditions. If the pin is connected to VCC through a small resistance, the input level is recognized as a logical one. </p>
+<p >In normal operating conditions, the pin-to-ground and pin-to-VCC resistances are very high. To detect any shorts, resistance values are compared with the internal pull-up resistors. To detect a pin-to-ground short, the pin is configured in the resistive pull-up Drive mode. Under normal conditions, the CPU reads a logical 1 because of the pull-up resistor. If the pin is connected to ground through a small resistance, the input level is recognized as a logical 0. To detect a sensor-to-VCC short, the sensor pin is configured in the resistive pull-down drive mode. The input level is zero under normal conditions. If the pin is connected to VCC through a small resistance, the input level is recognized as a logical one. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>

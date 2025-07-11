@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('group__group__dma__functions.html','')
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga30295a8e87d000e1531b7c020ea033c8"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__dma__functions.html#ga30295a8e87d000e1531b7c020ea033c8">SelfTest_DMA_DW</a> (DW_Type *base, uint32_t channel, cy_stc_dma_descriptor_t *descriptor0, cy_stc_dma_descriptor_t *descriptor1, const cy_stc_dma_descriptor_config_t *des0_config, const cy_stc_dma_descriptor_config_t *des1_config, cy_stc_dma_channel_config_t const *channelConfig, en_trig_output_pdma0_tr_t trigLine)</td></tr>
-<tr class="memdesc:ga30295a8e87d000e1531b7c020ea033c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function writes a pattern (66 bytes) to the destination using the DMA and the destination block is verified to contain the correct pattern.  <a href="group__group__dma__functions.html#ga30295a8e87d000e1531b7c020ea033c8">More...</a><br /></td></tr>
+<tr class="memdesc:ga30295a8e87d000e1531b7c020ea033c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function writes a pattern (66 bytes) to the destination using the DMA, and the destination block is verified to contain the correct pattern.  <a href="group__group__dma__functions.html#ga30295a8e87d000e1531b7c020ea033c8">More...</a><br /></td></tr>
 <tr class="separator:ga30295a8e87d000e1531b7c020ea033c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -159,20 +159,20 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This function writes a pattern (66 bytes) to the destination using the DMA and the destination block is verified to contain the correct pattern. </p>
+<p>This function writes a pattern (66 bytes) to the destination using the DMA, and the destination block is verified to contain the correct pattern. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">base</td><td>The pointer to the hardware DMA block <br  />
+    <tr><td class="paramname">base</td><td>The pointer to the hardware DMA block.<br  />
  </td></tr>
-    <tr><td class="paramname">channel</td><td>A channel number </td></tr>
-    <tr><td class="paramname">descriptor0</td><td>This is the descriptor to be associated with the channel (transfer 0's to destination). </td></tr>
-    <tr><td class="paramname">descriptor1</td><td>This is the descriptor to be associated with the channel (transfer pattern to destination). </td></tr>
-    <tr><td class="paramname">des0_config</td><td>This is a configuration structure that has all initialization information for the descriptor. </td></tr>
-    <tr><td class="paramname">des1_config</td><td>This is a configuration structure that has all initialization information for the descriptor. </td></tr>
-    <tr><td class="paramname">channelConfig</td><td>The structure that has the initialization information for the channel. </td></tr>
+    <tr><td class="paramname">channel</td><td>The channel number. </td></tr>
+    <tr><td class="paramname">descriptor0</td><td>The descriptor to associate with the channel (transfer 0's to destination). </td></tr>
+    <tr><td class="paramname">descriptor1</td><td>The descriptor to associate with the channel (transfer pattern to destination). </td></tr>
+    <tr><td class="paramname">des0_config</td><td>The configuration structure with all initialization information for the descriptor. </td></tr>
+    <tr><td class="paramname">des1_config</td><td>The configuration structure with all initialization information for the descriptor. </td></tr>
+    <tr><td class="paramname">channelConfig</td><td>The structure that contains the initialization information for the channel. </td></tr>
     <tr><td class="paramname">trigLine</td><td>The input of the trigger mux. -&gt; Bit 30 represents if the signal is an input/output. When this bit is set, the trigger activation is for an output trigger from the trigger multiplexer. When this bit is reset, the trigger activation is for an input trigger to the trigger multiplexer. <br  />
  -&gt; Bits 12:8 represent the trigger group selection. <br  />
- -&gt; In case of output trigger line (bit 30 is set): For PERI_ver1: <br  />
+ -&gt; For the output trigger line (bit 30 is set): For PERI_ver1: <br  />
  -&gt; Bits 6:0 select the output trigger number in the trigger group. For PERI_ver2: <br  />
  -&gt; Bits 7:0 select the output trigger number in the trigger group. In case of input trigger line (bit 30 is unset): <br  />
  -&gt; Bits 7:0 select the input trigger signal for the trigger multiplexer <br  />
@@ -180,7 +180,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>Only applicable for CAT1A, CAT1B(PSoC C3) and CAT1C devices</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Applicable only for CAT1A, CAT1B(PSoC C3) and CAT1C devices.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
  1 - Test failed </dd></dl>
 

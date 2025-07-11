@@ -3,7 +3,7 @@
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
-*  used for FLASH self tests.
+*  used for Flash self tests.
 *
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
@@ -51,25 +51,25 @@
 ***************************************/
 
 
-#if CY_CPU_CORTEX_M0P
+#if defined(CY_IP_M0S8CPUSSV3)
 /* CPU Subsystem Configuration register */
-/* is used to map Vector table to FLASH*/
+/* is used to map Vector table to Flash*/
 /* CPUSS Vector Table */
 #define REG_CPUSS_VTOR             (SCB->VTOR)
 
 /* System Request Register */
-/* is used to map Reset Vector to FLASH */
+/* is used to map Reset Vector to Flash */
 #define REG_CPUSS_SYSREQ_REG       (CPUSS_SYSREQ)
 
-/* Map reset vector to point to flash */
+/* Map reset vector to point to Flash */
 #define REG_MEM_MAP_VECTOR           ((uint32_t)1u << 27u)
 
-#endif
+#endif /* if defined(CY_IP_M0S8CPUSSV3) */
 
 /* Check whether the init function was called or not*/
 static bool init_fxn_called = false;
 
-/* Pointer to currently calculating flash addr*/
+/* The pointer to the currently calculating Flash addr*/
 static uint32_t* flash_Pointer_FourBytes;
 
 /* Flash start addr*/
@@ -79,7 +79,7 @@ static uint32_t flash_start_address;
 static uint32_t flash_end_address;
 
 #if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
-/* Variable that stores the running checksum of the FLASH */
+/* Variable that stores the running checksum of the Flash */
 uint64_t flash_CheckSum = CHECKSUM_INIT_VALUE;
 static uint64_t sumA = CHECKSUM_INIT_VALUE;
 static uint32_t IterationCounter = ITER_COUNT_INIT_VALUE;
@@ -92,7 +92,7 @@ static uint64_t expected_flash_shecksum = 0ULL;
 static void SelfTest_Fletcher64_CheckSum_Formula(uint32_t endAdress);
 
 #elif (FLASH_TEST_MODE == FLASH_TEST_CRC32)
-/* Variable that store the running CRC checksum of the FLASH */
+/* Variable that store the running CRC checksum of the Flash */
 uint32_t flash_CheckSum = CRC32_INIT_VALUE;
 /* Expected checksum*/
 static uint32_t expected_flash_shecksum = 0ULL;
@@ -103,37 +103,37 @@ static uint32_t expected_flash_shecksum = 0ULL;
 /*******************************************************************************
  * Function Name: SelfTest_Flash_init()
  *******************************************************************************
-*
-*  This function checks the checksum of the flash for the given range of flash with
-* the expected/reference checksum passed along with this API.
-*
-*
-* \param StartAddressOfFlash 
-* Start address of the flash from where the checksum needs to be calculated.<br>
-* \param EndAddressOfFlash 
-* End address of the flash till where the checksum needs to be calculated. <br>
-* \param flash_ExpectedCheckSum 
-* Expected checksum. Must be stored outside the range of check. <br>
-*
-* \note
-* This function needs to be called prior to \ref SelfTest_FlashCheckSum else the test will fail.
-*
+ *
+ * This function checks the checksum of the Flash for the given range of Flash with
+ * the expected/reference checksum passed along with this API.
+ *
+ *
+ * \param StartAddressOfFlash
+ * The start address of the Flash from which to calculate the checksum.<br>
+ * \param EndAddressOfFlash
+ * The end address of the Flash until which to calculate the checksum. <br>
+ * \param flash_ExpectedCheckSum
+ * The expected checksum. Must be stored outside the check range. <br>
+ *
+ * \note
+ * This function must be called prior to \ref SelfTest_FlashCheckSum, else the test will fail.
+ *
  ******************************************************************************/
 
-void SelfTest_Flash_init(uint32_t StartAddressOfFlash,uint32_t EndAddressOfFlash, uint64_t flash_ExpectedCheckSum)
+void SelfTest_Flash_init(uint32_t StartAddressOfFlash, uint32_t EndAddressOfFlash,
+                         uint64_t flash_ExpectedCheckSum)
 {
     flash_start_address = StartAddressOfFlash;
-    /* Set pointer to access Flash memory to start address */
+    /* Set a pointer to access Flash memory to the start address */
     flash_Pointer_FourBytes = (uint32_t*)flash_start_address;
     flash_end_address = EndAddressOfFlash;
     #if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
-        expected_flash_shecksum = flash_ExpectedCheckSum;
+    expected_flash_shecksum = flash_ExpectedCheckSum;
     #elif (FLASH_TEST_MODE == FLASH_TEST_CRC32)
-        expected_flash_shecksum = (uint32_t)flash_ExpectedCheckSum;
+    expected_flash_shecksum = (uint32_t)flash_ExpectedCheckSum;
     #endif
     init_fxn_called = true;
 }
-
 
 
 /*******************************************************************************
@@ -141,12 +141,12 @@ void SelfTest_Flash_init(uint32_t StartAddressOfFlash,uint32_t EndAddressOfFlash
  *******************************************************************************
  *
  * Summary:
- *  This function checks for data corruption in flash memory using a checksum
+ *  This function checks for data corruption in Flash memory using the checksum
  *  calculation.
  *
  * Parameters:
- *  uint32 DoubleWordsToTest - number of 32-bit Double Words of flash to be
- *  calculated per each function call.
+ *  uint32 DoubleWordsToTest - The number of 32-bit Double Words of Flash to
+ *  calculate per each function call.
  *
  * Return:
  *  Result of test:   "1" - fail test; "2" - Test in progress;
@@ -161,27 +161,27 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
         return ERROR_STATUS;
     }
 
-#if CY_CPU_CORTEX_M0P
+    #if defined(CY_IP_M0S8CPUSSV3)
     /* Variable to save CPUSS_CONFIG or CM0P_VTOR and CPUSS_SYSREQ registers */
     uint32_t regCPUSS_VECTORTABLE;
 
     uint32_t regCPUSS_SYSREQ;
-#endif
-    /* End address of current tested block */
+    #endif
+    /* The end address of the current tested block. */
     uint32_t endAdressOfTest;
 
     /* Function result */
     uint8_t ret = PASS_STILL_TESTING_STATUS;
 
-#if CY_CPU_CORTEX_M0P
+    #if defined(CY_IP_M0S8CPUSSV3)
     /* Enable global interrupts */
     __enable_irq();
-#endif
+    #endif
 
     /* Check if we are in the last permitted byte of Flash */
     if ((uint32_t)flash_Pointer_FourBytes == flash_end_address)
     {
-        /* Set pointer to access Flash memory to start address */
+        /* Set a pointer to access Flash memory to the start address */
         flash_Pointer_FourBytes = (uint32_t*)flash_start_address;
 
 
@@ -189,7 +189,7 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
         /* Set init values for Iteration Counter in Fletcher64 Checksum algorithm */
         IterationCounter = ITER_COUNT_INIT_VALUE;
 
-        /* Set init values for checksum calculation */
+        /* Set init values for the checksum calculation */
 
         flash_CheckSum = CHECKSUM_INIT_VALUE;
         sumA = CHECKSUM_INIT_VALUE;
@@ -198,34 +198,34 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
         #endif
     }
 
-    /* Calculate end address of current tested block */
+    /* Calculate the end address of the current tested block. */
     endAdressOfTest =
         (uint32_t)((uint32_t)flash_Pointer_FourBytes + (DoubleWordsToTest * sizeof(uint32_t)));
 
-    /* Check if Flash byte address is in Flash range */
+    /* Check if Flash byte address is in the Flash range */
     if (endAdressOfTest > flash_end_address)
     {
         endAdressOfTest = flash_end_address;
     }
 
-#if CY_CPU_CORTEX_M0P
-    /* Disable global interrupts */
+    #if defined(CY_IP_M0S8CPUSSV3)
+    /* Disable the global interrupts */
     __disable_irq();
 
     /* Save CPU registers */
     regCPUSS_VECTORTABLE = REG_CPUSS_VTOR;
 
-    /* Map Vector table to FLASH*/
+    /* Map the Vector table to Flash*/
     REG_CPUSS_VTOR = 0u;
 
     regCPUSS_SYSREQ = CPUSS_SYSREQ;
 
-    /* Map Reset vector to FLASH */
+    /* Map the Reset vector to Flash */
     REG_CPUSS_SYSREQ_REG = REG_MEM_MAP_VECTOR;
-#endif
+    #endif /* if defined(CY_IP_M0S8CPUSSV3) */
 
     #if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
-    /* Calculating checksum for all bytes in Flash block */
+    /* Calculates the checksum for all bytes in Flash block */
     SelfTest_Fletcher64_CheckSum_Formula(endAdressOfTest);
     #elif (FLASH_TEST_MODE == FLASH_TEST_CRC32)
     flash_CheckSum = SelfTests_CRC32_ACC(flash_CheckSum, (uint32_t)flash_Pointer_FourBytes,
@@ -233,15 +233,15 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
     flash_Pointer_FourBytes = (uint32_t*)endAdressOfTest;
     #endif
 
-#if CY_CPU_CORTEX_M0P   
+    #if defined(CY_IP_M0S8CPUSSV3)
     /* Restore CPU registers */
     REG_CPUSS_VTOR = regCPUSS_VECTORTABLE;
 
     CPUSS_SYSREQ = regCPUSS_SYSREQ;
 
-    /* Enable global interrupts */
+    /* Enable the global interrupts */
     __enable_irq();
-#endif
+    #endif
 
     /* Check if we are in the last permitted byte of Flash */
     if ((uint32_t)flash_Pointer_FourBytes == flash_end_address)
@@ -275,30 +275,29 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
  *******************************************************************************
  *
  * Summary:
- *  This is function for Checksum calculation. In current example used optimized
- *  Fletcher-64 algorithm. But Checksum algorithm can be replaced by any in this
+ *  This is the function for Checksum calculation. In the current example, optimized
+ *  Fletcher-64 algorithm is used. But Checksum algorithm can be replaced by any in this
  *  function.
  *
  * Theory:
  *     Fletcher Checksum
  *     *    Use two running one's complement checksums
- *      -    For fair comparison, each running sum is half width
+ *      -    For a fair comparison, each running sum is half-width.
  *      -    E.g., 16-bit Fletcher Checksum is two 8-bit running sums
  *      -    Initialize: A = CHECKSUM_INIT_VALUE; B = CHECKSUM_INIT_VALUE;
- *      -    For each byte in data word: A = A + Byte i; B = B + A;
+ *      -    For each byte in the data word: A = A + Byte i; B = B + A;
  *      -    Result is A concatenated with B (16-bit result)
  *     *    Significant improvement comes from the running sum B
  *      -    B = Byte N-1 + 2*Byte N-2 + 3*Byte N-3 + ...
- *      -    Makes checksum order-dependent (switched byte order detected)
+ *      -    Makes the checksum order-dependent (switched byte order detected)
  *      -    Gives HD=3 until the B value rolls over
  *
- * Also, theory and examples: http://en.wikipedia.org/wiki/Fletcher's_checksum
  *
  * Parameters:
- *  uint32_t endAdress - number of last byte for block checksum calculation.
+ *  uint32_t endAdress - The number of the last byte for the block checksum calculation.
  *
  * Global Variables Used:
- *  uint32_t *flash_Pointer_FourBytes - pointer to current byte of Flash.
+ *  uint32_t *flash_Pointer_FourBytes - The pointer to the current byte of Flash.
  *  sumA - Fletcher64 A variable.
  *  flash_CheckSum - Fletcher64 B variable.
  *  IterationCounter - Byte N counter for Fletcher64.
@@ -314,25 +313,25 @@ static void SelfTest_Fletcher64_CheckSum_Formula(uint32_t endAdress)
     uint32_t tlen;
 
     /* Calculate Fletcher64 Checksum for Flash Block with size doubleWords. */
-    /* Maximum defined size is FLASH_DOUBLE_WORDS_TO_TEST, but can be less in case when last block
+    /* The maximum defined size is FLASH_DOUBLE_WORDS_TO_TEST, but can be less for the last block
        of Flash */
     while (doubleWords != 0u)
     {
-        /* Calculate length of Checksum block according value LARGEST_NUM_OF_SUMS */
+        /* Calculate the length of Checksum block according value LARGEST_NUM_OF_SUMS */
         tlen = (doubleWords > (LARGEST_NUM_OF_SUMS)) ? (LARGEST_NUM_OF_SUMS) : doubleWords;
         doubleWords -= tlen;
 
         /* Calculate Fletcher64 Checksum for one block with size LARGEST_NUM_OF_SUMS or less */
         do
         {
-            /* Calculate sum of A = A + Byte i */
+            /* Calculate the sum of A = A + Byte i */
             sumA = sumA + *flash_Pointer_FourBytes;
 
             /* B = B + A */
             flash_CheckSum = flash_CheckSum + sumA;
 
             /* Increase Fletcher64 Iteration Counter */
-            /* and pointer to Flash current byte (+4 bytes because DoubleWord) */
+            /* and the pointer to Flash current byte (+4 bytes because DoubleWord) */
             IterationCounter++;
             flash_Pointer_FourBytes++;
             --tlen;

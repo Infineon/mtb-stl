@@ -43,7 +43,7 @@
 
 #if defined (CY_IP_MXCORDIC)
 
-/* Multiplier for Q format conversion */
+/* Multiplier for the Q format conversion */
 #define Q31_MULTIPLIER (2147483648L) /* 1<<31 */
 /* Macros for the conversion of formats */
 #define DEG_RAD_MULTIPLIER        (3.141592654/180)
@@ -62,21 +62,20 @@ static uint8_t cosine_cordic(void);
 
 
 /*******************************************************************************
- * Function Name: sine
- *********************************************************************************
- * Summary:
- * This is the function for calculating the sine. It calculates the sine 
- * using CORDIC BLOCK. 
- * Then it compares the results from CORDIC and fixed output,
- * if difference between results are within tolerance then returns OK_STATUS or returns ERROR_STATUS.
- *
- * Parameters:
- *  void
- *
- * Return:
- *  uint8_t 
- *
- *******************************************************************************/
+* Function Name: sine
+*********************************************************************************
+* Summary:
+* This function calculates the sine using CORDIC BLOCK
+* and compares the results from teh CORDIC and fixed output.
+* If the difference between the results is within the tolerance, the function returns OK_STATUS or ERROR_STATUS.
+*
+* Parameters:
+*  void
+*
+* Return:
+*  uint8_t
+*
+*******************************************************************************/
 
 static uint8_t sine_cordic(void)
 {
@@ -85,43 +84,46 @@ static uint8_t sine_cordic(void)
     CY_CORDIC_Q31_t result_q31 = 0;
     float32_t tolerance = 0.0001f;
 
-    #if(!ERROR_IN_CORDIC)
-        /* Converting the angle in degree to radian and radian in Q31 format */
-        CY_CORDIC_Q31_t  angle_q31 = FLOAT_DEG_TO_RAD_Q31(angle_deg);
+    #if (!ERROR_IN_CORDIC)
+    /* Convert the angle into the degree to the radian and the radian into the Q31 format. */
+    CY_CORDIC_Q31_t  angle_q31 = FLOAT_DEG_TO_RAD_Q31(angle_deg);
     #else
-        CY_CORDIC_Q31_t  angle_q31 = FLOAT_DEG_TO_RAD_Q31(60);
+    CY_CORDIC_Q31_t  angle_q31 = FLOAT_DEG_TO_RAD_Q31(60);
     #endif
-    
-    /* Calculating sine using CORDIC */
-    result_q31 = Cy_CORDIC_Sin(MXCORDIC,angle_q31);
-    
-    /* Converting the result in Q31 format to float */
+
+    /* Calculate the sine using CORDIC. */
+    result_q31 = Cy_CORDIC_Sin(MXCORDIC, angle_q31);
+
+    /* Convert the result into the Q31 format to float. */
     res = Q31_TO_FLOAT(result_q31);
-    
-    /* Checks the difference between results from CORDIC and fixed output are within tolerance */
-    if(fabsf(res - OUT_SIN) < tolerance )
+
+    /* Check if the difference between the results from CORDIC and fixed output is within the tolerance. */
+    if (fabsf(res - OUT_SIN) < tolerance)
     {
         return OK_STATUS;
     }
-    else return ERROR_STATUS;
+    else
+    {
+        return ERROR_STATUS;
+    }
 }
 
+
 /*******************************************************************************
- * Function Name: cosine
- *********************************************************************************
- * Summary:
- * This is the function for calculating the cosine. It calculates the cosine 
- * using CORDIC BLOCK. 
- * Then it compares the results from CORDIC and fixed output,
- * if difference between results are within tolerance then returns OK_STATUS or returns ERROR_STATUS.
- *
- * Parameters:
- *  void
- *
- * Return:
- *  uint8_t
- *
- *******************************************************************************/
+* Function Name: cosine
+*********************************************************************************
+* Summary:
+* This function calculates the cosine using CORDIC BLOCK and compares the results
+* from the CORDIC and fixed output. If the difference between the results is within
+* the tolerance, the function returns OK_STATUS or ERROR_STATUS.
+*
+* Parameters:
+*  void
+*
+* Return:
+*  uint8_t
+*
+*******************************************************************************/
 
 static uint8_t cosine_cordic(void)
 {
@@ -130,57 +132,54 @@ static uint8_t cosine_cordic(void)
     int32_t angle_deg = IN_SIN_COS;
     float32_t tolerance = 0.0001f;
 
-    /* Converting the angle in degree to radian and radian in Q31 format */
+    /* Convert the angle into the degree to the radian and the radian into the Q31 format. */
     CY_CORDIC_Q31_t angle_q31 = FLOAT_DEG_TO_RAD_Q31(angle_deg);
 
-    /* Calculating sine using CORDIC */
-    result_q31 = Cy_CORDIC_Cos(MXCORDIC,angle_q31);
+    /* Calculate the sine using CORDIC. */
+    result_q31 = Cy_CORDIC_Cos(MXCORDIC, angle_q31);
 
-    /* Converting the result in Q31 format to float */
+    /* Convert the result into the Q31 format to float. */
     res = Q31_TO_FLOAT(result_q31);
-    
-    /* Checks the difference between results from CORDIC and fixed output are within tolerance */
-    if(fabsf(res - OUT_COS) < tolerance )
+
+    /* Check if the difference between the results from the CORDIC and fixed output is within the tolerance. */
+    if (fabsf(res - OUT_COS) < tolerance)
     {
         return OK_STATUS;
     }
-    else return ERROR_STATUS;
+    else
+    {
+        return ERROR_STATUS;
+    }
 }
 
-#endif /* CY_IP_MXCORDIC */
 
 /*******************************************************************************
 * Function Name: SelfTest_Cordic
 ********************************************************************************
 *
-*  This function perform self test on Cordic IP.
-*  The CORDIC block accelerates calculation of trigonometric functions. 
+*  This function performs the self test on Cordic IP.
+*  The CORDIC block accelerates the calculation of trigonometric functions.
 *  Sine and Cosine trignometric functions are performed in this API.
 *
 *******************************************************************************/
 
 uint8_t SelfTest_Cordic(void)
 {
-#if defined (CY_IP_MXCORDIC)
-
-    /* Enable the CORDIC */
+    /* Enable CORDIC */
     Cy_CORDIC_Enable(MXCORDIC);
 
     if (OK_STATUS != sine_cordic()) /* Sine function */
     {
         return ERROR_STATUS;
     }
-    if (OK_STATUS !=  cosine_cordic()) /* Cosine function */
+    if (OK_STATUS != cosine_cordic())  /* Cosine function */
     {
         return ERROR_STATUS;
     }
     return OK_STATUS;
-#else
-    return ERROR_STATUS;
-#endif /* CY_IP_MXCORDIC */
 }
 
 
+#endif /* CY_IP_MXCORDIC */
 
 /* [] END OF FILE */
-

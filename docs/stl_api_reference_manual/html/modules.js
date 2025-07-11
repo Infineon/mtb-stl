@@ -1,6 +1,7 @@
 var modules =
 [
     [ "Analog                    (Analog STL module)", "group__group__analog.html", "group__group__analog" ],
+    [ "CAN                       (CAN STL module)", "group__group__can.html", "group__group__can" ],
     [ "CAN-FD                    (CAN-FD STL module)", "group__group__canfd.html", "group__group__canfd" ],
     [ "Clock                     (Clock STL module)", "group__group__clock.html", "group__group__clock" ],
     [ "CORDIC                    (CORDIC STL module)", "group__group__cordic.html", "group__group__cordic" ],

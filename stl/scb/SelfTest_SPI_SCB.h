@@ -38,17 +38,17 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_spi
-* \{
-*
-* This test implements the SPI internal data loopback test. The test is a success
-* if the transmitted byte is equal to the received byte and returns 2. Each function 
-* call increments the test byte. After 256 function calls, when the test finishes 
-* testing all 256 values and they are all a success, the function returns 3. 
-*
-*
-* \defgroup group_spi_functions Functions
-*/
+ * \addtogroup group_spi
+ * \{
+ *
+ * This test implements the SPI internal data loopback test. The test is a success
+ * if the transmitted byte is equal to the received byte and returns 2. Each function
+ * call increments the test byte. After 256 function calls, when the test completes
+ * testing all 256 values and they are all a success, the function returns 3.
+ *
+ *
+ * \defgroup group_spi_functions Functions
+ */
 
 #if !defined(SELFTEST_SPI_SCB_H)
     #define SELFTEST_SPI_SCB_H
@@ -59,24 +59,24 @@
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_spi_functions
-* \{
-*/
+ * \addtogroup group_spi_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_SPI_SCB
 ****************************************************************************//**
 *
-*  Test internal loopback of SPI (transmitted byte must be equal to received)
+*  This function tests an internal loopback of SPI (transmitted byte must be equal to received).
 *
 *
-* \param base 
-* The pointer to SCB hardware to configure
+* \param base
+* The pointer to SCB hardware to configure.
 *
 *
 * \note
-*  SmartIO should be used for internal loopback.
-*  During call the function transmits and receives bytes from 0x01 to 0xFF
+*  Use SmartIO for internal loopback.
+*  During a call, the function transmits and receives bytes from 0x01 to 0xFF.
 *
 *
 * \return
@@ -97,7 +97,7 @@ uint8_t SelfTest_SPI_SCB(CySCB_Type* base);
 ***************************************/
 
 /* SPI data transmit guard interval
- * using guard interval > (spi_bitrate * spi_data_bits * spi_tx_buf_size) */
+ * using the guard interval > (spi_bitrate * spi_data_bits * spi_tx_buf_size) */
 #define SPI_TXRX_DATA_TIME              (32u)
 
 #define SPI_SCB_TRANSMIT_BYTE_ERROR     (100u)

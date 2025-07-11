@@ -62,32 +62,15 @@
 #include "SelfTest_PWM.h"
 #include "SelfTest_PWM_GateKill.h"
 #include "SelfTest_Timer_Counter.h"
-
-#if (defined(CY_CPU_CORTEX_M4) || defined(CY_CPU_CORTEX_M7))
+#include "SelfTest_CAN.h"
 #include "SelfTest_FPU_Regs.h"
 #include "SelfTest_DMA_DW.h"
 #include "SelfTest_IPC.h"
-#endif
-
-#if defined(CY_CPU_CORTEX_M33)
 #include "SelfTest_Motif.h"
-#include "SelfTest_FPU_Regs.h"
-#include "SelfTest_DMA_DW.h"
-#include "SelfTest_IPC.h"
 #include "SelfTest_Cordic.h"
 #include "SelfTest_ECC.h"
-#endif
-
-#if defined(CY_CPU_CORTEX_M7)
 #include "SelfTest_WWDT.h"
-#include "SelfTest_ECC.h"
-#endif
-
-#if defined(CY_CPU_CORTEX_M7) || defined(CY_CPU_CORTEX_M33) || defined(CY_DEVICE_PSOC6A256K) || defined(CY_DEVICE_PSOC6A512K)
 #include "SelfTest_CANFD.h"
-#endif
 
-#include "UART_Debug.h"
-
-#endif
+#endif /* if !defined(SELFTEST_H) */
 /* [] END OF FILE */

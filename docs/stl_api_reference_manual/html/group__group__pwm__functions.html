@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('group__group__pwm__functions.html','')
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:gaa75c9b5fed959145e2e8a62ab486db94"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pwm__functions.html#gaa75c9b5fed959145e2e8a62ab486db94">SelfTest_PWM</a> (GPIO_PRT_Type *pinbase, uint32_t pinNum)</td></tr>
-<tr class="memdesc:gaa75c9b5fed959145e2e8a62ab486db94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs PWM test and verify that the duty cycle set is actually achieved in output.  <a href="group__group__pwm__functions.html#gaa75c9b5fed959145e2e8a62ab486db94">More...</a><br /></td></tr>
+<tr class="memdesc:gaa75c9b5fed959145e2e8a62ab486db94"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs the PWM test and verifies that the duty cycle set is actually achieved in the output.  <a href="group__group__pwm__functions.html#gaa75c9b5fed959145e2e8a62ab486db94">More...</a><br /></td></tr>
 <tr class="separator:gaa75c9b5fed959145e2e8a62ab486db94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2272e56875fe5dce88cd2de954f37e0b"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pwm__functions.html#ga2272e56875fe5dce88cd2de954f37e0b">SelfTest_PWM_init</a> (TCPWM_Type *base, uint32_t cntNum, cy_stc_tcpwm_pwm_config_t const *config, IRQn_Type intr_src)</td></tr>
 <tr class="memdesc:ga2272e56875fe5dce88cd2de954f37e0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize Timer interrupt for the Self test.  <a href="group__group__pwm__functions.html#ga2272e56875fe5dce88cd2de954f37e0b">More...</a><br /></td></tr>
@@ -126,11 +126,11 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Performs PWM test and verify that the duty cycle set is actually achieved in output. </p>
+<p>This function performs the PWM test and verifies that the duty cycle set is actually achieved in the output. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pinbase</td><td>The pointer to a GPIO port instance to which the PWM pin is connected to</td></tr>
-    <tr><td class="paramname">pinNum</td><td>The GPIO pin number to which the PWM pin is connected to</td></tr>
+    <tr><td class="paramname">pinbase</td><td>The pointer to the GPIO port instance to which the PWM pin is connected.</td></tr>
+    <tr><td class="paramname">pinNum</td><td>The GPIO pin number to which the PWM pin is connected.</td></tr>
   </table>
   </dd>
 </dl>
@@ -181,9 +181,9 @@ Functions</h2></td></tr>
 <p>Initialize Timer interrupt for the Self test. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">base</td><td>The pointer to a TCPWM instance</td></tr>
-    <tr><td class="paramname">cntNum</td><td>The Counter instance number in the selected TCPWM</td></tr>
-    <tr><td class="paramname">config</td><td>The pointer to configuration structure</td></tr>
+    <tr><td class="paramname">base</td><td>The pointer to a TCPWM instance.</td></tr>
+    <tr><td class="paramname">cntNum</td><td>The Counter instance number in the selected TCPWM.</td></tr>
+    <tr><td class="paramname">config</td><td>The pointer to the configuration structure.</td></tr>
     <tr><td class="paramname">intr_src</td><td>Interrupt source</td></tr>
   </table>
   </dd>

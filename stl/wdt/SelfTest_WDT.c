@@ -3,7 +3,7 @@
 *
 * Description:
 *  This file provides the source code for the watchdog timer
-*  Class B support tests.
+*  Class B self tests.
 *
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
@@ -42,17 +42,17 @@
 #include "SelfTest_WDT.h"
 #include "SelfTest_ErrorInjection.h"
 
-#if CY_CPU_CORTEX_M0P
+#if defined(CY_IP_S8SRSSLT)
 
 /*****************************************************************************
 * Function Name: SelfTest_WDT
 ******************************************************************************
 *
 * Summary:
-*  This function perform Watchdog test. Function runs WDT and wait defined
-*  period of time. If the PSoC was not reset function return ERROR status.
-*  If the PSoC was reset bit "1" in CyResetStatus must be set to "1". If
-*  this bit was set function return OK status.
+*  This function performs the Watchdog test. the function runs WDT and waits for a defined
+*  period of time. If the PSOC was not reset, the function returns the ERROR status.
+*  If the PSOC was reset, bit 1 in CyResetStatus must be set to 1. If
+*  this bit was set, the function returns the OK status.
 *
 * Parameters:
 * NONE
@@ -62,8 +62,8 @@
 *  1 - test failed
 *
 * Note:
-* This function provides watchdog reset or stops software execution if
-* watchdog fails
+* This function provides a watchdog reset or stops the software execution if
+* the watchdog fails.
 *
 *****************************************************************************/
 uint8_t SelfTest_WDT(void)
@@ -75,12 +75,12 @@ uint8_t SelfTest_WDT(void)
     /* If MCU was reset by WDT */
     if ((Cy_SysLib_GetResetReason() & CY_SYSLIB_RESET_HWWDT) != 0u)
     {
-        /* If WDT cause a reset return OK status */
+        /* If WDT caused a reset, return the OK status */
         ret = OK_STATUS;
     }
     else
     {
-        /* Check if intentional error should be made for testing */
+        /* Check if an intentional error should be made for testing */
         /* if "yes" - WDT will not run */
         #if (ERROR_IN_WDT == 0)
         /* Initializing WDT */
@@ -92,16 +92,16 @@ uint8_t SelfTest_WDT(void)
             CY_ASSERT(0);
         }
 
-        /* Clear match event interrupt, if any */
+        /* Clear the match event interrupt, if any */
         Cy_WDT_ClearInterrupt();
 
         /* Enable ILO */
         Cy_SysClk_IloEnable();
 
-        /* Waiting for proper start-up of ILO */
+        /* Wait for the proper start-up of ILO */
         Cy_SysLib_Delay(ILO_START_UP_TIME);
 
-        /* Write match value if periodic interrupt mode selected */
+        /* Write the match value if periodic Interrupt mode selected */
         Cy_WDT_SetMatch(WDT_PERIOD);
         if (Cy_WDT_GetMatch() != WDT_PERIOD)
         {
@@ -137,7 +137,8 @@ uint8_t SelfTest_WDT(void)
     return ret;
 }
 
-#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7 ||CY_CPU_CORTEX_M33 )
+
+#elif (defined (CY_IP_MXS40SRSS) || defined (CY_IP_MXS40SSRSS))
 
 uint8_t SelfTest_WDT(void)
 {
@@ -159,29 +160,29 @@ uint8_t SelfTest_WDT(void)
         /* Step 1- Unlock WDT */
         Cy_WDT_Unlock();
 
-#if CY_CPU_CORTEX_M4
+        #if (defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION < 2))
         /* Step 2- Write the ignore bits - operate with only 14 bits */
         Cy_WDT_SetIgnoreBits(IGNORE_BITS);
 
         /* Step 3- Write match value */
         Cy_WDT_SetMatch(WDT_PERIOD);
 
-#elif CY_CPU_CORTEX_M7
+        #elif (defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 2))
         Cy_WDT_SetUpperLimit(WDT_PERIOD); /* Reset after 3 seconds */
         Cy_WDT_SetUpperAction(CY_WDT_LOW_UPPER_LIMIT_ACTION_RESET);
-#elif CY_CPU_CORTEX_M33
+        #elif defined (CY_IP_MXS40SSRSS)
         /* Step 2- Write the match bits - operate with only 14 bits */
         Cy_WDT_SetMatchBits(MATCH_BITS);
         /* Step 3- Write match value */
         Cy_WDT_SetMatch(WDT_PERIOD);
-#endif
+        #endif /* if (defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION < 2)) */
 
         /* Step 4- Clear match event interrupt, if any */
         Cy_WDT_ClearInterrupt();
-#if (ERROR_IN_WDT == 0)
+        #if (ERROR_IN_WDT == 0)
         /* Step 5- Enable WDT */
         Cy_WDT_Enable();
-#endif
+        #endif
         /* Step 6- Lock WDT configuration */
         Cy_WDT_Lock();
 
@@ -199,6 +200,7 @@ uint8_t SelfTest_WDT(void)
     return ret;
 }
 
-#endif
+
+#endif /* if defined(CY_IP_S8SRSSLT) */
 
 /* [] END OF FILE */

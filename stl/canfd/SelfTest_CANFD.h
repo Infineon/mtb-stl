@@ -38,21 +38,20 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_canfd
-* \{
-*
-* The CAN-FD block is tested using the internal loopback capability.
-* CAN-FD is configure to accept message IDs in the range 0x50 to 0x55
-* and a message with message ID 0x60 is transmitted and RX fifo is 
-* verified to be empty. Similarly, a message with message ID 0x50 is 
-* transmitted and the message received in RX FIFO is verified. 
-*
-*
-* \note
-* Only applicable to CAT1C devices
-*
-* \defgroup group_canfd_functions Functions
-*/
+ * \addtogroup group_canfd
+ * \{
+ *
+ * The CAN-FD block is tested using the internal loopback capability.
+ * CAN-FD is configure to accept message IDs in the range 0x50 to 0x55
+ * and a message with message ID 0x60 is transmitted and RX fifo is
+ * verified to be empty. Similarly, a message with message ID 0x52 is
+ * transmitted and the message received in RX FIFO is verified.
+ *
+ * \note
+ * Only applicable to CAT1C and CAT2 devices
+ *
+ * \defgroup group_canfd_functions Functions
+ */
 
 #if !defined(SELFTEST_CANFD_H)
     #define SELFTEST_CANFD_H
@@ -60,7 +59,7 @@
 #include "cy_canfd.h"
 #include "SelfTest_common.h"
 
-#if ((defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) ||  (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))  || ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) && defined (CY_DEVICE_PSOC6A256K)) || ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) && defined (CY_DEVICE_PSOC6A512K)))
+#if (defined (CY_IP_MXTTCANFD) || defined (CY_DOXYGEN))
 
 #include "cycfg.h"
 
@@ -73,9 +72,9 @@
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_canfd_functions
-* \{
-*/
+ * \addtogroup group_canfd_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_CANFD
@@ -83,23 +82,23 @@
 *
 * This function configure the CANFD channel in an internal loopback and then
 * it is configure to accept message IDs in the range 0x50 to 0x55
-* and a message with message ID 0x60 is transmitted and RX fifo is 
-* verified to be empty. Similarly, a message with message ID 0x50 is 
-* transmitted and the message received in RX FIFO is verified. 
+* and a message with message ID 0x60 is transmitted and RX fifo is
+* verified to be empty. Similarly, a message with message ID 0x50 is
+* transmitted and the message received in RX FIFO is verified.
 *
 *
-* \param base 
+* \param base
 * The pointer to a CAN FD instance
-* \param chan 
+* \param chan
 * The CAN FD channel number
-* \param config 
+* \param config
 * The pointer to the CAN FD configuration structure
-* \param context 
+* \param context
 * The pointer to the context structure allocated
 * by the user. The structure is used during the CAN FD operation for internal
-* configuration and data retention. User must not modify anything in this
-* structure
-* \param test_mode 
+* configuration and data retention. The user must not modify anything in this
+* structure.
+* \param test_mode
 * internal: will not drive the pin <br>
 * external: will drive the external pins along with loopback
 *
@@ -108,13 +107,13 @@
 *  1 - Test failed
 *
 *******************************************************************************/
-uint8_t SelfTest_CANFD(CANFD_Type *base, uint32_t chan,
-                                   const cy_stc_canfd_config_t *config,
-                                   cy_stc_canfd_context_t *context,
-                                   cy_stc_canfd_test_mode_t test_mode);
+uint8_t SelfTest_CANFD(CANFD_Type* base, uint32_t chan,
+                       const cy_stc_canfd_config_t* config,
+                       cy_stc_canfd_context_t* context,
+                       cy_stc_canfd_test_mode_t test_mode);
 /** \} group_canfd_functions */
 
-#endif
+#endif /* if (defined (CY_IP_MXTTCANFD) || defined (CY_DOXYGEN)) */
 
 /** \} group_canfd */
-#endif  /* SELFTEST_CANFD_H */
+#endif /* SELFTEST_CANFD_H */

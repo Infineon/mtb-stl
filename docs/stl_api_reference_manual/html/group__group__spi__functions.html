@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('group__group__spi__functions.html','')
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:gac8aeb4e0d88fb0a5d1e1e51a8d63170e"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__spi__functions.html#gac8aeb4e0d88fb0a5d1e1e51a8d63170e">SelfTest_SPI_SCB</a> (CySCB_Type *base)</td></tr>
-<tr class="memdesc:gac8aeb4e0d88fb0a5d1e1e51a8d63170e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test internal loopback of SPI (transmitted byte must be equal to received)  <a href="group__group__spi__functions.html#gac8aeb4e0d88fb0a5d1e1e51a8d63170e">More...</a><br /></td></tr>
+<tr class="memdesc:gac8aeb4e0d88fb0a5d1e1e51a8d63170e"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function tests an internal loopback of SPI (transmitted byte must be equal to received).  <a href="group__group__spi__functions.html#gac8aeb4e0d88fb0a5d1e1e51a8d63170e">More...</a><br /></td></tr>
 <tr class="separator:gac8aeb4e0d88fb0a5d1e1e51a8d63170e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -113,14 +113,14 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Test internal loopback of SPI (transmitted byte must be equal to received) </p>
+<p>This function tests an internal loopback of SPI (transmitted byte must be equal to received). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">base</td><td>The pointer to SCB hardware to configure</td></tr>
+    <tr><td class="paramname">base</td><td>The pointer to SCB hardware to configure.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>SmartIO should be used for internal loopback. During call the function transmits and receives bytes from 0x01 to 0xFF</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Use SmartIO for internal loopback. During a call, the function transmits and receives bytes from 0x01 to 0xFF.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>1 - Test failed <br  />
  2 - Still testing <br  />
  3 - Test completed <br  />

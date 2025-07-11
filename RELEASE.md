@@ -1,4 +1,4 @@
-# ModusToolbox Safety Test Library 3.2.1
+# ModusToolbox Safety Test Library 3.3.0
 
 
 Refer to the [README.md](./README.md) for a complete description of the ModusToolbox Safety Test Library.
@@ -45,7 +45,7 @@ Refer to the [README.md](./README.md) for a complete description of the ModusToo
     | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, ADC, Comparator, OP-AMP, Timer Counter, PWM, PWM Gatekill, CANFD |
 
 ### CAT2
-* Device Families Supported: PSOC 4100S Max, PSOC 4500S, PSOC4100T Plus, PSOC4100S Plus
+* Device Families Supported: PSOC 4000S, PSOC 4000T, PSOC 4100S, PSOC 4100S Plus, PSOC 4100S Max, PSOC 4100T Plus, PSOC 4500S, PSOC 4700S
 
 * Compilers Supported: GCC_ARM, ARM, IAR
 
@@ -56,11 +56,22 @@ Refer to the [README.md](./README.md) for a complete description of the ModusToo
     | System platform    | Interrupt, Clock, Startup Configuration Registers, WDT, DMAC |
     | CPU                | CPU Registers, Program Counter, Program Flow |
     | Memory             | Flash, RAM, Stack |
-    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, Timer Counter, PWM, PWM Gatekill |
+    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, Timer Counter, PWM, PWM Gatekill, CAN, CANFD |
 
 * Note: To perform SRAM tests, update CY_SRAM_BASE, CY_SRAM_SIZE, CY_STACK_SIZE according to the device being tested.
 
 ## What Changed?
+
+### v3.3.0
+* Updated user documentation
+* Added support of the following device families:
+    * PSOC 4000T
+    * PSOC 4000S
+    * PSOC 4100S
+    * PSOC 4700S
+* Added support of CAT2 devices for the following tests:
+    * CAN
+    * CANFD
 
 ### v3.2.0
 * Updated user documentation
@@ -77,10 +88,10 @@ This version of the ModusToolbox Safety Test Library was validated for the compa
 
 | Software and Tools                                      | Version |
 | :---                                                    | :----:  |
-| ModusToolbox Software Environment                       | 3.4.0   |
+| ModusToolbox Software Environment                       | 3.5.0   |
 | CAT1 Peripheral Driver Library                          | 3.14.0  |
-| CAT2 Peripheral Driver Library                          | 2.15.0  |
-| GCC Compiler                                            | 11.3.1  |
+| CAT2 Peripheral Driver Library                          | 2.17.0  |
+| GCC Compiler                                            | 14.2.1  |
 | IAR Compiler                                            | 9.50.2  |
 | ARM Compiler                                            | 6.22    |
 

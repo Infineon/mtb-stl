@@ -1,9 +1,9 @@
 /*******************************************************************************
 * File Name: SelfTest_Timer_Counter.c
 *
-* Description: 
+* Description:
 *  This file provides the source code for the APIs to perform
-*  Timer counter source testing according to the Class B library.
+*  the Timer counter self tests according to the Class B library.
 *
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
@@ -57,10 +57,10 @@ static uint32_t cntNum1;
 *******************************************************************************
 *
 * Summary:
-*  Handle Interrupt Service Routine.
+*  Handles Interrupt Service Routine.
 *
 ******************************************************************************/
-void SelfTest_TIMER_COUNTER_ISR(void)
+static void SelfTest_TIMER_COUNTER_ISR(void)
 {
     Cy_TCPWM_Counter_Disable(base1, cntNum1);
     uint32_t interrupts = Cy_TCPWM_GetInterruptStatusMasked(base1, cntNum1);
@@ -75,7 +75,7 @@ void SelfTest_TIMER_COUNTER_ISR(void)
 *******************************************************************************
 *
 * Summary:
-* Initialize the counter and Timer interrupt for the Self test.
+* Initializes the counter and Timer interrupt for the self test.
 *
 * \param base
 * The pointer to a TCPWM instance.
@@ -84,12 +84,13 @@ void SelfTest_TIMER_COUNTER_ISR(void)
 * The Counter instance number in the selected TCPWM.
 *
 * \param config
-* The pointer to configuration structure. See \ref cy_stc_tcpwm_counter_config_t.
+* The pointer to the configuration structure. See \ref cy_stc_tcpwm_counter_config_t.
 *
 * \param intsrc
 * Interrupt source
 ******************************************************************************/
-void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum, cy_stc_tcpwm_counter_config_t const *config, IRQn_Type intsrc)
+void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum,
+                                 cy_stc_tcpwm_counter_config_t const* config, IRQn_Type intsrc)
 {
     base1 = base;
     cntNum1 = cntNum;
@@ -97,31 +98,32 @@ void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum, cy_stc_tcpwm
     #if defined (CY_IP_M7CPUSS)
     const cy_stc_sysint_t intrCfg =
     {
-        /* Bit 0-15 of intrSrc is used to store system interrupt value and bit 16-31 to store CPU IRQ value */
-        .intrSrc = (((uint32_t)NvicMux3_IRQn << 16U) | ((uint32_t)intsrc)),
+        /* Bit 0-15 of intrSrc is used to store the system interrupt value and bit 16-31 to store CPU.
+         * IRQ value */
+        .intrSrc      = (((uint32_t)NvicMux3_IRQn << 16U) | ((uint32_t)intsrc)),
         .intrPriority = 3UL
     };
     #else
     const cy_stc_sysint_t intrCfg =
     {
-        .intrSrc = intsrc,
+        .intrSrc      = intsrc,
         .intrPriority = 3UL
     };
-    #endif
+    #endif /* if defined (CY_IP_M7CPUSS) */
 
-    if(CY_TCPWM_SUCCESS != Cy_TCPWM_Counter_Init(base, cntNum, config))
+    if (CY_TCPWM_SUCCESS != Cy_TCPWM_Counter_Init(base, cntNum, config))
     {
         CY_ASSERT(0U);
     }
 
-    if(CY_SYSINT_SUCCESS != Cy_SysInt_Init(&intrCfg, SelfTest_TIMER_COUNTER_ISR))
+    if (CY_SYSINT_SUCCESS != Cy_SysInt_Init(&intrCfg, SelfTest_TIMER_COUNTER_ISR))
     {
         CY_ASSERT(0U);
     }
 
     /* Enable Interrupt */
     #if defined (CY_IP_M7CPUSS)
-    NVIC_EnableIRQ((IRQn_Type) NvicMux3_IRQn);
+    NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);
     #else
     NVIC_EnableIRQ(intrCfg.intrSrc);
     #endif
@@ -137,7 +139,7 @@ void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum, cy_stc_tcpwm
 ******************************************************************************
 *
 * Summary:
-*  Performs Timer Counter test by checking that the counter is incrementing.
+*  Performs the Timer Counter test. Checks if the counter is incrementing.
 *
 *
 * Return:
@@ -160,11 +162,11 @@ uint8_t SelfTest_Counter_Timer(void)
     Cy_TCPWM_Counter_Enable(base1, cntNum1);
 
     #if (ERROR_IN_TIMER_COUNTER == 0U)
-        #if defined(CY_IP_M0S8TCPWM)
-        Cy_TCPWM_TriggerReloadOrIndex(base1, 1UL << cntNum1);
-        #else
-        Cy_TCPWM_TriggerReloadOrIndex_Single(base1, cntNum1);
-        #endif
+    #if defined(CY_IP_M0S8TCPWM)
+    Cy_TCPWM_TriggerReloadOrIndex(base1, 1UL << cntNum1);
+    #else
+    Cy_TCPWM_TriggerReloadOrIndex_Single(base1, cntNum1);
+    #endif
     #endif
 
     do
@@ -174,15 +176,16 @@ uint8_t SelfTest_Counter_Timer(void)
         delay_cnt++;
     } while ((int_occur == 0U) && (TIMER_COUNTER_TIMEOUT > delay_cnt));
 
-    if(TIMER_COUNTER_TIMEOUT > delay_cnt)
+    if (TIMER_COUNTER_TIMEOUT > delay_cnt)
     {
-        if((TIMER_COUNTER_COUNT_LOW < counterVal) && (TIMER_COUNTER_COUNT_HIGH > counterVal))
+        if ((TIMER_COUNTER_COUNT_LOW < counterVal) && (TIMER_COUNTER_COUNT_HIGH > counterVal))
         {
             ret = OK_STATUS;
         }
     }
     return ret;
 }
+
 
 #endif /* (defined(CY_IP_MXTCPWM) || defined(CY_IP_M0S8TCPWM)) */
 

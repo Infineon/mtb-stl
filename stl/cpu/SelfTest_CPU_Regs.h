@@ -2,7 +2,7 @@
 * File Name: SelfTest_CPU_Regs.h
 *
 * Description:
-* This file provides constants and parameter values used for CPU register self
+* This file provides constants and parameter values used for the CPU register self
 * tests.
 *
 *******************************************************************************

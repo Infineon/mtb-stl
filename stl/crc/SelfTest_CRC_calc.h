@@ -38,19 +38,19 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_crc
-* \{
-*
-* The CRC test implements the CRC16 implementation according to CCITT standards.
-*
-* \section group_crc_more_information More Information
-*
-* This api's are used by the various modules for calculating CRC.
-*
-*
-* \defgroup group_crc_macros Macros
-* \defgroup group_crc_functions Functions
-*/
+ * \addtogroup group_crc
+ * \{
+ *
+ * The CRC test implements the CRC16 implementation according to CCITT standards.
+ *
+ * \section group_crc_more_information More Information
+ *
+ * These functions are used by the various modules for calculating the CRC.
+ *
+ *
+ * \defgroup group_crc_macros Macros
+ * \defgroup group_crc_functions Functions
+ */
 
 #if !defined(SELFTEST_CRC_CALC_H)
     #define SELFTEST_CRC_CALC_H
@@ -58,8 +58,8 @@
 #include "cy_pdl.h"
 
 /** \addtogroup group_crc_macros
-* \{
-*/
+ * \{
+ */
 
 /** CRC mask */
 #define CRC_MASK    0x00FFu
@@ -72,25 +72,25 @@
 /** \} group_crc_macros */
 
 /**
-* \addtogroup group_crc_functions
-* \{
-*/
+ * \addtogroup group_crc_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTests_CRC16_CCITT
 ****************************************************************************//**
 *
-* This function calculates CRC of memory area defined in parameters "BaseAdress"
-* and "len"
+* This function calculates the CRC of the memory area defined in the parameters "BaseAdress"
+* and "len".
 *
 * \param BaseAdress
-* Address from which CRC needs to calculate
+* The address from which to calculate the CRC.
 *
 * \param len
-* Length of area for CRC calculation
+* The length of the area for CRC calculation.
 *
 * \return
-*  Calculated CRC value
+*  The calculated CRC value.
 *
 *******************************************************************************/
 uint16_t SelfTests_CRC16_CCITT(uint32_t BaseAdress, uint16_t len);
@@ -100,20 +100,20 @@ uint16_t SelfTests_CRC16_CCITT(uint32_t BaseAdress, uint16_t len);
 * Function Name: SelfTests_CRC16_CCITT_ACC
 ****************************************************************************//**
 *
-* This function calculates CRC of area defined in parameters "BaseAdress"
-* and "len"
+* This function calculates the CRC of the area defined in the parameters "BaseAdress"
+* and "len".
 *
 * \param crc
-* Current CRC
+* The current CRC.
 *
 * \param BaseAdress
-* Address from which CRC needs to calculate
+* The address from which to calculate the CRC.
 *
 * \param len
-* Length of area for CRC calculation
+* The length of the area for CRC calculation.
 *
 * \return
-* Calculated CRC value
+* The calculated CRC value.
 *
 *
 *******************************************************************************/
@@ -126,13 +126,13 @@ uint16_t SelfTests_CRC16_CCITT_ACC(uint16_t crc, uint32_t BaseAdress, uint16_t l
 * This function calculates CRC of one byte "val"
 *
 * \param crc
-* Current CRC
+* The current CRC.
 *
 * \param val
-* Value for which CRC needs to calculate
+* The value to calculate the CRC for.
 *
 * \return
-* Calculated CRC value
+* The calculated CRC value.
 *
 *
 *******************************************************************************/
@@ -146,13 +146,13 @@ uint16_t SelfTests_CRC16_CCITT_Byte(uint16_t crc, uint8_t val);
 * and "len"
 *
 * \param BaseAdress
-* Address from which CRC needs to calculate
+* The address from which to calculate the CRC.
 *
 * \param len
-* Length of area for CRC calculation
+* The length of the area for CRC calculation.
 *
 * \return
-* Calculated CRC value
+* The calculated CRC value.
 *
 *
 *******************************************************************************/
@@ -166,16 +166,16 @@ uint32_t SelfTests_CRC32(uint32_t BaseAdress, uint32_t len);
 * and "len"
 *
 * \param crc
-* Current CRC
+* The current CRC.
 *
 * \param BaseAdress
-* Address from which CRC needs to calculate
+* The address from which to calculate the CRC.
 *
 * \param len
-* Length of area for CRC calculation
+* The length of the area for CRC calculation.
 *
 * \return
-* Calculated CRC value
+* The calculated CRC value.
 *
 *
 *******************************************************************************/
@@ -188,13 +188,13 @@ uint32_t SelfTests_CRC32_ACC(uint32_t crc, uint32_t BaseAdress, uint32_t len);
 *  This function calculates CRC of one byte "val"
 *
 * \param crc
-* Current CRC
+* The current CRC.
 *
 * \param val
-* Value to calculate CRC
+* The value to calculate the CRC for.
 *
 * \return
-* Calculated CRC value
+* The calculated CRC value.
 *
 *
 *******************************************************************************/

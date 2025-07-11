@@ -96,7 +96,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:ga34d7d4b4a5f70eeadfb5ae1732d3f2d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs the test of the PC register.  <a href="group__group__cpu__functions.html#ga34d7d4b4a5f70eeadfb5ae1732d3f2d3">More...</a><br /></td></tr>
 <tr class="separator:ga34d7d4b4a5f70eeadfb5ae1732d3f2d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf9794ed35baff6feb7f1c8cffee33a21"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__cpu__functions.html#gaf9794ed35baff6feb7f1c8cffee33a21">SelfTest_CPU_Registers</a> (void)</td></tr>
-<tr class="memdesc:gaf9794ed35baff6feb7f1c8cffee33a21"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs checkerboard test for all CPU registers except the PC register.  <a href="group__group__cpu__functions.html#gaf9794ed35baff6feb7f1c8cffee33a21">More...</a><br /></td></tr>
+<tr class="memdesc:gaf9794ed35baff6feb7f1c8cffee33a21"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs the checkerboard test for all CPU registers except the PC register.  <a href="group__group__cpu__functions.html#gaf9794ed35baff6feb7f1c8cffee33a21">More...</a><br /></td></tr>
 <tr class="separator:gaf9794ed35baff6feb7f1c8cffee33a21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga55418c75ccf2833d23c15e1b4f730b57"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__cpu__functions.html#ga55418c75ccf2833d23c15e1b4f730b57">SelfTest_PROGRAM_FLOW</a> (void)</td></tr>
 <tr class="memdesc:ga55418c75ccf2833d23c15e1b4f730b57"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function tests the program flow.  <a href="group__group__cpu__functions.html#ga55418c75ccf2833d23c15e1b4f730b57">More...</a><br /></td></tr>
@@ -120,7 +120,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>This function performs the test of the PC register. </p>
-<p >Function calls SelfTest_PC5555() and SelfTest_PCAAAA() which are placed at addresses in flash that most closely match the 0x5555... pattern and 0xAAAA... pattern. These functions must return unique values to SelfTestA, SelfTestB and SelfTestC variables if PC is working correctly.</p>
+<p >The function calls SelfTest_PC5555() and SelfTest_PCAAAA(), which are placed at addresses in Flash that match the 0x5555... and 0xAAAA... pattern most closely. These functions must return unique values to SelfTestA, SelfTestB, and SelfTestC variables if PC is working correctly.</p>
 <dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
  1 - Test failed </dd></dl>
 
@@ -142,7 +142,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This function performs checkerboard test for all CPU registers except the PC register. </p>
+<p>This function performs the checkerboard test for all CPU registers except the PC register. </p>
 <dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
  1 - Test failed </dd></dl>
 
@@ -165,7 +165,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>This function tests the program flow. </p>
-<p >For every critical execution code block, this function adds to or subtracts from complementary counters before the block execution and immediately after execution. This procedure allows verification of whether the code block is correctly called from the main program flow and to check if the block is correctly executed. Provided there are the same number of exit and entry points, the counter pair will always be complementary after each tested block.</p>
+<p >For every critical execution code block, this function adds to or subtracts from complementary counters before the block execution and immediately after execution. This procedure allows verification of whether the code block is correctly called from the main program flow and to check if the block is correctly executed. Provided there are the same numbers of exit and entry points, the counter pair will always be complementary after each tested block.</p>
 <dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
  1 - Test failed </dd></dl>
 

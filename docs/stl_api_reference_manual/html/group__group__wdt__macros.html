@@ -93,19 +93,19 @@ $(document).ready(function(){initNavTree('group__group__wdt__macros.html',''); i
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:gabfd81fe656b5b7eff16ce10e1aa376c2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__wdt__macros.html#gabfd81fe656b5b7eff16ce10e1aa376c2">WDT_PERIOD</a>&#160;&#160;&#160;(900u)</td></tr>
-<tr class="memdesc:gabfd81fe656b5b7eff16ce10e1aa376c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">To set the period of WDT.  <a href="group__group__wdt__macros.html#gabfd81fe656b5b7eff16ce10e1aa376c2">More...</a><br /></td></tr>
+<tr class="memdesc:gabfd81fe656b5b7eff16ce10e1aa376c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">To set the WDT period.  <a href="group__group__wdt__macros.html#gabfd81fe656b5b7eff16ce10e1aa376c2">More...</a><br /></td></tr>
 <tr class="separator:gabfd81fe656b5b7eff16ce10e1aa376c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae8369c3720313b7e9d405de288fef24e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__wdt__macros.html#gae8369c3720313b7e9d405de288fef24e">IGNORE_BITS</a>&#160;&#160;&#160;(3U)</td></tr>
-<tr class="memdesc:gae8369c3720313b7e9d405de288fef24e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the desired number of ignore bits.  <a href="group__group__wdt__macros.html#gae8369c3720313b7e9d405de288fef24e">More...</a><br /></td></tr>
+<tr class="memdesc:gae8369c3720313b7e9d405de288fef24e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the desired number of ignore bits.  <a href="group__group__wdt__macros.html#gae8369c3720313b7e9d405de288fef24e">More...</a><br /></td></tr>
 <tr class="separator:gae8369c3720313b7e9d405de288fef24e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7b77b8c0c406269a0a17303cc728ae58"><td class="memItemLeft" align="right" valign="top"><a id="ga7b77b8c0c406269a0a17303cc728ae58" name="ga7b77b8c0c406269a0a17303cc728ae58"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>WDT_DATA_TIME</b>&#160;&#160;&#160;(3000u)</td></tr>
 <tr class="memdesc:ga7b77b8c0c406269a0a17303cc728ae58"><td class="mdescLeft">&#160;</td><td class="mdescRight">WDT guard interval <br  />
- Note : This value differ for CAT1A, CAT1B(PSoC C3), CAT1C and CAT2 devices. <br /></td></tr>
+ Note : This value differs for CAT1A, CAT1B(PSoC C3), CAT1C, and CAT2 devices. <br /></td></tr>
 <tr class="separator:ga7b77b8c0c406269a0a17303cc728ae58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3b22073cb4cdb84253052b08d545de75"><td class="memItemLeft" align="right" valign="top"><a id="ga3b22073cb4cdb84253052b08d545de75" name="ga3b22073cb4cdb84253052b08d545de75"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>ILO_START_UP_TIME</b>&#160;&#160;&#160;(2U)</td></tr>
-<tr class="memdesc:ga3b22073cb4cdb84253052b08d545de75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Waiting time, in milliseconds, for proper start-up of ILO. <br /></td></tr>
+<tr class="memdesc:ga3b22073cb4cdb84253052b08d545de75"><td class="mdescLeft">&#160;</td><td class="mdescRight">The waiting time in milliseconds, for the proper start-up of ILO. <br /></td></tr>
 <tr class="separator:ga3b22073cb4cdb84253052b08d545de75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
@@ -121,11 +121,11 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>To set the period of WDT. </p>
+<p>To set the WDT period. </p>
 <p ><br  />
- For CAT1A, and CAT2 WDT gets reset when this Limit is hit 3rd time. <br  />
- For CAT1C device, the Upper Limit is set to this value and will get reset it WDT is not served before Upper Limit. <br  />
- Note : This value differ for CAT1A, CAT1B(PSoC C3), CAT1C and CAT2 devices. </p>
+ For CAT1A, and CAT2, WDT does a reset when this Limit is hit for the 3rd time. <br  />
+ For CAT1C, the Upper Limit is set to this value and will do a reset it WDT is not served before Upper Limit. <br  />
+ Note : This value differs for CAT1A, CAT1B(PSoC C3), CAT1C, and CAT2 devices. </p>
 
 </div>
 </div>
@@ -141,7 +141,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set the desired number of ignore bits. </p>
+<p>Sets the desired number of ignore bits. </p>
 <p >To make WDT counter (32/16 - IGNORE_BITS) bits up counter. </p>
 
 </div>

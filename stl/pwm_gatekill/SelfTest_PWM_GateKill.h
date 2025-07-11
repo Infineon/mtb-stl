@@ -2,7 +2,7 @@
 * File Name: SelfTest_PWM_Gatekill.h
 *
 * Description:
-*  This file provides the constants and parameter values for the PWM 
+*  This file provides the constants and parameter values for the PWM
 *  Gatekill self tests.
 *
 *******************************************************************************
@@ -38,27 +38,27 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_pwm_gatekill
-* \{
-*
-* The "Gate Kill" function is used in motor controllers and multi-level power 
-* converters. When an over-voltage or over-current state is detected, the Gate Kill
-* shuts down the output drivers in less than 50 nanoseconds.
-*
-* \section group_pwm_gatekill_more_information More Information
-*
-* The test is carried out as mentioned below:
-*
-*      1) The Low power comparator/ SAR ADC Range Voilation Intr output is routed to Kill
-*      signal of TCPWM indicating over-voltage/over-current condition if voltage on +ve
-*      terminal is > -ve.
-*      2) If over-voltage or over-current condition it will Kill PWM output.
-*      3) The TCPWM base and CntNum is passed to check whether the counter is stopped or not.
-*      4) If counter is not incrementing/decrementing the PWM output is inactive.
-*
-*
-* \defgroup group_pwm_gatekill_functions Functions
-*/
+ * \addtogroup group_pwm_gatekill
+ * \{
+ *
+ * The Gate Kill function is used in motor controllers and multi-level power
+ * converters. When an over-voltage or over-current state is detected, the Gate Kill
+ * shuts down the output drivers in less than 50 nanoseconds.
+ *
+ * \section group_pwm_gatekill_more_information More Information
+ *
+ * The test procedure:
+ *
+ *      1) The Low power comparator/ SAR ADC Range Voilation Intr output is routed to Kill
+ *      signal of TCPWM indicating over-voltage/over-current condition if the voltage on +ve
+ *      terminal is > -ve.
+ *      2) Under over-voltage or over-current condition it will Kill the PWM output.
+ *      3) The TCPWM base and CntNum is passed to check whether the counter is stopped or not.
+ *      4) If the counter is not incrementing/decrementing, the PWM output is inactive.
+ *
+ *
+ * \defgroup group_pwm_gatekill_functions Functions
+ */
 
 #if !defined(SELFTEST_PWM_GATEKILL_H)
     #define SELFTEST_PWM_GATEKILL_H
@@ -71,22 +71,22 @@
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_pwm_gatekill_functions
-* \{
-*/
+ * \addtogroup group_pwm_gatekill_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_PWM_GateKill
 ****************************************************************************//**
 *
 * The TCPWM base and CntNum is passed to check whether the counter is stopped or
-* not. If counter is not incrementing/decrementing the PWM output is inactive. 
+* not. If the counter is not incrementing/decrementing, the PWM output is inactive.
 *
 *
-* \param base 
-* The pointer to a TCPWM instance <br>
-* \param cntNum 
-* The Counter instance number in the selected TCPWM
+* \param base
+* The pointer to a TCPWM instance. <br>
+* \param cntNum
+* The Counter instance number in the selected TCPWM.
 *
 *
 * \return
@@ -94,7 +94,7 @@
 *  1 - Test failed
 *
 *******************************************************************************/
-uint8_t SelfTest_PWM_GateKill(TCPWM_Type *base, uint32_t cntNum);
+uint8_t SelfTest_PWM_GateKill(TCPWM_Type* base, uint32_t cntNum);
 
 /** \} group_pwm_gatekill_functions */
 

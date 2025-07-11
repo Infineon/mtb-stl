@@ -2,7 +2,7 @@
 * File Name: SelfTest_Motif.h
 *
 * Description:
-*  This file provides constants and parameter values used for Motif
+*  This file provides constants and parameter values used for the Motif
 *  self tests.
 *
 *******************************************************************************
@@ -39,21 +39,21 @@
 *******************************************************************************/
 
 /**
-* \addtogroup group_motif
-* \{
-*
-* MOTIF self test implements the Quadrature Decoder mode and validate the
-* functionality.
-*
-* \defgroup group_motif_structure Data structure
-* \defgroup group_motif_functions Functions
-*/
+ * \addtogroup group_motif
+ * \{
+ *
+ * The MOTIF self test implements the Quadrature Decoder mode and validates the
+ * functionality.
+ *
+ * \defgroup group_motif_structure Data structure
+ * \defgroup group_motif_functions Functions
+ */
 
 #if !defined(MOTIF_H)
     #define MOTIF_H
 #include "SelfTest_common.h"
 
-#if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)) || defined (CY_DOXYGEN)
+#if (defined (CY_IP_MXS40TCPWM) || defined (CY_DOXYGEN))
 /***************************************
 * MACROs
 ***************************************/
@@ -64,23 +64,22 @@
 /***************************************
 * Data Structure
 ***************************************/
-/** \addtogroup group_motif_structure
+/**
+ * \addtogroup group_motif_structure
  * \{
  */
 /** TCPWM configuration sub-structure */
 typedef struct
 {
     uint32_t                          idx; /**< PWM counter index */
-    cy_stc_tcpwm_pwm_config_t const * cfg; /**< PWM configuration structure */
-
+    cy_stc_tcpwm_pwm_config_t const* cfg;  /**< PWM configuration structure */
 } stl_motif_tcpwm_cfg_t;
 
 /** TCPWM counter configuration sub-structure */
 typedef struct
 {
     uint32_t                              idx;    /**< TCPWM counter index */
-    cy_stc_tcpwm_counter_config_t const * cfg;    /**< TCPWM counter configuration structure */
-
+    cy_stc_tcpwm_counter_config_t const* cfg;     /**< TCPWM counter configuration structure */
 } stl_motif_tcpwm_counter_cfg_t;
 
 /** MOTIF self test configuration structure */
@@ -88,22 +87,21 @@ typedef struct
 typedef struct
 {
     /*MOTIF Module configuration structure*/
-    TCPWM_MOTIF_GRP_MOTIF_Type * motif_base; /**< MOTIF base */
-    cy_stc_tcpwm_motif_quaddec_config_t const * motif_config; /**< MOTIF config */
+    TCPWM_MOTIF_GRP_MOTIF_Type* motif_base;    /**< MOTIF base */
+    cy_stc_tcpwm_motif_quaddec_config_t const* motif_config; /**< MOTIF config */
 
     /*TCPWM configuration to capture q-clk ticks*/
-    TCPWM_Type * qclk_base;                    /**< TCPWM counter base */
+    TCPWM_Type* qclk_base;                     /**< TCPWM counter base */
     stl_motif_tcpwm_counter_cfg_t qclk;        /**< TCPWM counter configuration */
 
     /*TCPWM counter configuration to emulate input signals*/
-    TCPWM_Type * sgen_base[EMU_SIG_NUM];       /**< PWM base */
+    TCPWM_Type* sgen_base[EMU_SIG_NUM];        /**< PWM base */
     stl_motif_tcpwm_cfg_t sgen[EMU_SIG_NUM];   /**< PWM configuration */
 
     uint32_t ref_count;                        /**< Reference tcpwm count */
     uint32_t margin_count;                     /**< Allowed margin */
     uint32_t delay;                            /**< Delay */
-
-}stl_motif_cfg_handle_t;
+} stl_motif_cfg_handle_t;
 
 /** \} group_motif_structure */
 
@@ -111,15 +109,15 @@ typedef struct
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_motif_functions
-* \{
-*/
+ * \addtogroup group_motif_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_Motif_Init
 ****************************************************************************//**
 *
-*  Initialize the Motif self test configuration. Initialization includes
+*  This function initializes the MOTIF self test configuration. Initialization includes
 *  - Generate the emulated signals for Phase-A, Phase-B and Index using TCPWM.
 *  These signals are input to the MOTIF module.
 *  - Configure the TCPWM counter to capture the Q-CLK resolution.
@@ -128,7 +126,7 @@ typedef struct
 * Pointer to the motif self test configuration handler.
 *
 *******************************************************************************/
-void SelfTest_Motif_Init(stl_motif_cfg_handle_t *hPtr);
+void SelfTest_Motif_Init(stl_motif_cfg_handle_t* hPtr);
 
 /*******************************************************************************
 * Function Name: SelfTest_Motif_Start
@@ -148,13 +146,15 @@ void SelfTest_Motif_Init(stl_motif_cfg_handle_t *hPtr);
 *
 *******************************************************************************/
 
-uint8_t SelfTest_Motif_Start(stl_motif_cfg_handle_t *hPtr);
+uint8_t SelfTest_Motif_Start(stl_motif_cfg_handle_t* hPtr);
 
 
 /** \} group_motif_functions */
 
-#endif
+#endif /* if (defined (CY_IP_MXS40TCPWM) || defined (CY_DOXYGEN)) */
 /** \} group_motif */
+
+
 
 #endif /* MOTIF_H */
 

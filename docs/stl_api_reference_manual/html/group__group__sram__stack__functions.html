@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('group__group__sram__stack__functions.h
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga1bb789336c6379968fe9c8565f62d567"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__sram__stack__functions.html#ga1bb789336c6379968fe9c8565f62d567">SelfTest_SRAM_Stack</a> (uint8_t *stackBase, uint32_t stackSize, uint8_t *altStackBase)</td></tr>
-<tr class="memdesc:ga1bb789336c6379968fe9c8565f62d567"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function perform self test on Stack.  <a href="group__group__sram__stack__functions.html#ga1bb789336c6379968fe9c8565f62d567">More...</a><br /></td></tr>
+<tr class="memdesc:ga1bb789336c6379968fe9c8565f62d567"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs the self test on Stack.  <a href="group__group__sram__stack__functions.html#ga1bb789336c6379968fe9c8565f62d567">More...</a><br /></td></tr>
 <tr class="separator:ga1bb789336c6379968fe9c8565f62d567"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -129,13 +129,13 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This function perform self test on Stack. </p>
-<p >It can detect stuck-at faults and direct coupling faults. The RAM tests are destructible in nature so this function copies the stack in use to the provided RAM area. Once the test is completed, stack is copied back to its original location. Because of RAM destructible behavior, it is advisable to disable interrupts before starting the test.</p>
+<p>This function performs the self test on Stack. </p>
+<p >It can detect stuck-at faults and direct coupling faults. The RAM tests are destructible in nature, so this function copies the stack in use to the provided RAM area. Once the test is completed, the stack is copied back to its original location. Because of the RAM destructible behavior, it is advisable to disable the interrupts before starting the test.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">stackBase</td><td>The pointer to the Stack Base </td></tr>
-    <tr><td class="paramname">stackSize</td><td>The size of Stack </td></tr>
-    <tr><td class="paramname">altStackBase</td><td>The pointer to start of the RAM area to be used as alternate Stack Base. RAM address from altStackBase to (altStackBase - stackSize) is used to store/restore the Stack under test. The existing content of this area will be destructed and this area must not overlap with the Stack under test. The platform might set stack limit using __set_MSPLIM, ensure that the alternate stack is within the stack limit set by the platform</td></tr>
+    <tr><td class="paramname">stackBase</td><td>The pointer to the Stack Base. </td></tr>
+    <tr><td class="paramname">stackSize</td><td>The size of Stack. </td></tr>
+    <tr><td class="paramname">altStackBase</td><td>The pointer to the start of the RAM area to use as an alternate Stack Base. RAM address from altStackBase to (altStackBase - stackSize) is used to store/restore the Stack under test. The existing content of this area will be destructed and this area must not overlap with the Stack under test. The platform might set stack limit using __set_MSPLIM, ensure that the alternate stack is within the stack limit set by the platform</td></tr>
   </table>
   </dd>
 </dl>

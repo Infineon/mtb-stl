@@ -96,12 +96,12 @@ $(document).ready(function(){initNavTree('group__group__regs.html',''); initResi
  </p>
 <h1><a class="anchor" id="group_regs_more_information"></a>
 More Information</h1>
-<p >Two test modes are implemented in the functions: </p><pre class="fragment"> 1) Store duplicates of startup configuration registers in flash memory after device startup.
-  Periodically, the configuration registers are compared with stored duplicates. Corrupted
-  registers can be restored from flash after checking.
- 2) Compare the calculated CRC with the CRC previously stored in flash if the CRC status semaphore
-  is set. If the status semaphore is not set, the CRC must be calculated and stored in flash, and
-  the status semaphore must be set.
+<p >Two test modes are implemented in the functions: </p><pre class="fragment"> 1) Store duplicates of startup configuration registers in Flash memory after the device startup.
+    Periodically, the configuration registers are compared with the stored duplicates. Corrupted
+    registers can be restored from Flash after checking.
+ 2) Compare the calculated CRC with the CRC previously stored in Flash if the CRC status
+    semaphore is set. If the status semaphore is not set, the CRC must be calculated and
+    stored in Flash, and the status semaphore must be set.
 </pre> <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>

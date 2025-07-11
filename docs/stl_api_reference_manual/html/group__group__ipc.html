@@ -89,20 +89,20 @@ $(document).ready(function(){initNavTree('group__group__ipc.html',''); initResiz
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
-<p >This module performs check on each free IPC channel with all free IPC interrupts. </p>
-<p >Following steps are performed: <br  />
+<p >This module performs a check on each free IPC channel with all free IPC interrupts. </p>
+<p >Procedure: <br  />
  1) Acquire the IPC channel. <br  />
- 2) Write some message. <br  />
- 3) Acquire notification event to a specify IPC interrupt. <br  />
+ 2) Write a message. <br  />
+ 3) Acquire the notification event to a specify the IPC interrupt. <br  />
  4) Read the written data in ISR. <br  />
- 5) Release an specific IPC channel from the locked state.</p>
+ 5) Release a specific IPC channel from the locked state.</p>
 <h1><a class="anchor" id="group_ipc_more_information"></a>
 More Information</h1>
-<pre class="fragment"> For PSoC6 following channels and interrupts are checked:
+<pre class="fragment"> For PSOC6, the following channels and interrupts are checked:
  Free Channels    : 8 - 15
  Free Interrupts : 7 - 15
 
- For XMC Dual CM7 device channels and interrupts are checked:
+ For XMC Dual CM7, the following channels and interrupts are checked:
  Free Channels   : 4 - 7
  Free Interrupts : 1 - 7
 </pre> <table class="memberdecls">

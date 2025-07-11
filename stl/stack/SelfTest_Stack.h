@@ -2,7 +2,7 @@
 * File Name: SelfTest_Stack.h
 *
 * Description:
-*  This file provides constants and parameter values used for Stack
+*  This file provides constants and parameter values used for the Stack
 *  self tests.
 *
 *******************************************************************************
@@ -38,18 +38,20 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_stack
-* \{
-*
-This Module checks for the stack overflow or underflow condition. The stack is a section of RAM used by the CPU to store information temporarily.
-The purpose of the stack overflow/Underflow test is to ensure that the stack does not overlap with the program or data memory during program execution. 
-This can occur, for example, if recursive functions are used.
-This library fills a block of memory above and below the stack with a fixed pattern and periodically tested the pattern for corruption. 
-*
-*
-* \defgroup group_stack_macros Macros
-* \defgroup group_stack_functions Functions
-*/
+ * \addtogroup group_stack
+ * \{
+ *
+ * This Module checks for the stack overflow or underflow condition. The stack is a section of RAM
+ * used by the CPU to store information temporarily. The purpose of the stack overflow/Underflow
+ * test is to ensure that the stack does not overlap with the program or data memory during program
+ * execution. This can occur, for example, if recursive functions are used. This library fills a
+ * block of memory above and below the stack with a fixed pattern and periodically tests the
+ * pattern for corruption.
+ *
+ *
+ * \defgroup group_stack_macros Macros
+ * \defgroup group_stack_functions Functions
+ */
 
 #if !defined(SELFTEST_STACK_H)
     #define SELFTEST_STACK_H
@@ -61,40 +63,41 @@ This library fills a block of memory above and below the stack with a fixed patt
 ***************************************/
 
 /**
-* \addtogroup group_stack_functions
-* \{
-*/
+ * \addtogroup group_stack_functions
+ * \{
+ */
 
 /*******************************************************************************
- * Function Name: SelfTests_Init_Stack_Range
- *****************************************************************************//**
- *
- * This function initializes the upper and lower 
- * stack area with 0xAA and 0x55 pattern.
- *
- * \param stack_address
- * The pointer to the stack
- * \param stack_length
- * The length of the stack
- * \param stack_pattern_blk_size
- * No of bytes to be used to fill the pattern. Must be 2^n where n=1 to n=8. 
- * (Recommended value for n = 3)
- *
- *
- *******************************************************************************/
+* Function Name: SelfTests_Init_Stack_Range
+*****************************************************************************//**
+*
+* This function initializes the upper and lower
+* stack area with the 0xAA and 0x55 patterns.
+*
+* \param stack_address
+* The pointer to the stack.
+* \param stack_length
+* The length of the stack
+* \param stack_pattern_blk_size
+* The number of bytes to fill the pattern. Must be 2^n where n=1 to n=8.
+* (Recommended value for n = 3)
+*
+*
+*******************************************************************************/
 
-void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length, uint8_t stack_pattern_blk_size);
+void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length,
+                                uint8_t stack_pattern_blk_size);
 /*******************************************************************************
  * Function Name: SelfTests_Stack_Check_Range
  *****************************************************************************//**
  *
- * This function performs stack self test. It checks upper and lower
- * stack area for 0xAA and 0x55 pattern.
+ * This function performs the stack self test. It checks the upper and lower
+ * stack area for the 0xAA and 0x55 patterns.
  *
  * \param stack_address
- * The pointer to the stack
+ * The pointer to the stack.
  * \param stack_length
- * The length of the stack
+ * The length of the stack.
  *
  * \return
  *  0 - Test passed <br>
@@ -107,8 +110,8 @@ uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_leng
 
 
 /** \addtogroup group_stack_macros
-* \{
-*/
+ * \{
+ */
 
 /***************************************
 * Initial Parameter Constants

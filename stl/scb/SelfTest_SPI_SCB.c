@@ -49,20 +49,20 @@ static uint8_t SelfTest_SPI_SCB_Byte(CySCB_Type* base, uint8_t transmitByte);
 ******************************************************************************
 *
 * Summary:
-*  Test internal loopback of SPI (transmitted byte must be equal to received)
+*  This function tests an internal loopback of SPI (transmitted byte must be equal to received).
 *
 * Parameters:
-*  CySCB_Type *base - pointer to SCB hardware to configure
-*  uint8 transmitByte - data to be transmitted over SPI
+*  CySCB_Type *base - The pointer to SCB hardware to configure.
+*  uint8 transmitByte - Data to transmit over SPI.
 *
 * Return:
 *  0 - test success
 *  1 - test failed
 *
 * Note:
-*  During call function transmits and receives only one byte.
-*  In next call function transmits incremented byte value in order to
-*  decrease function execution time
+*  During a call, the function transmits and receives only one byte.
+*  In the next call, the function transmits the incremented byte value in order to
+*  decrease the function execution time.
 *
 *****************************************************************************/
 static uint8_t SelfTest_SPI_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
@@ -70,11 +70,11 @@ static uint8_t SelfTest_SPI_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
     uint8_t guardCnt = 0u;
     uint8_t ret = OK_STATUS;
 
-    /* Check if intentional error should be made for testing */
+    /* Check if an intentional error should be made for testing */
     #if (ERROR_IN_SPI_SCB == 1u)
     if (transmitByte == SPI_SCB_TRANSMIT_BYTE_ERROR)
     {
-        /* Change value for SPI transferring to unexpected */
+        /* Change the value for SPI transferring to unexpected */
         transmitByte++;
     }
     #endif /* End (ERROR_IN_SPI_SCB) */
@@ -82,16 +82,16 @@ static uint8_t SelfTest_SPI_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
     /* Transmit byte */
     (void)Cy_SCB_SPI_Write(base, transmitByte);
 
-    /* Check if intentional error should be made for testing */
+    /* Check if an intentional error should be made for testing */
     #if (ERROR_IN_SPI_SCB == 1u)
     if (transmitByte == (SPI_SCB_TRANSMIT_BYTE_ERROR + 1u))
     {
-        /* Restore expected value */
+        /* Restore the expected value */
         transmitByte--;
     }
     #endif /* End (ERROR_IN_SPI_SCB) */
 
-    /* Wait while byte is sent */
+    /* Wait while a byte is sent */
     /* Use guard interval > (spi_bitrate * spi_data_bits * spi_tx_buf_size) */
     do
     {
@@ -106,7 +106,7 @@ static uint8_t SelfTest_SPI_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
     }
     else
     {
-        /* Check if received and transmitted values are the same */
+        /* Check if the received and transmitted values are the same */
         if (Cy_SCB_SPI_Read(base) != transmitByte)
         {
             /* If not - return ERROR status */
@@ -124,10 +124,10 @@ static uint8_t SelfTest_SPI_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
 ******************************************************************************
 *
 * Summary:
-*  Test internal loopback of SPI (transmitted byte must be equal to received)
+*  This function tests an internal loopback of SPI (transmitted byte must be equal to received).
 *
 * Parameters:
-*  CySCB_Type *base - pointer to SCB hardware to configure
+*  CySCB_Type *base - The pointer to SCB hardware to configure.
 *
 * Return:
 *  1 - test failed
@@ -137,7 +137,7 @@ static uint8_t SelfTest_SPI_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
 *  5 - RX Not empty
 *
 * Note:
-*  During call the function transmits and receives bytes from 0x01 to 0xFF
+*  During a call, the function transmits and receives bytes from 0x01 to 0xFF.
 *
 *****************************************************************************/
 uint8_t SelfTest_SPI_SCB(CySCB_Type* base)
@@ -149,8 +149,8 @@ uint8_t SelfTest_SPI_SCB(CySCB_Type* base)
     uint32_t rxSpiInterruptMask = 0u;
     uint32_t txSpiInterruptMask = 0u;
 
-    /* Wait for end of user transmitting and don't test if the buffer contains a data */
-    /* Use guard interval > (spi_bitrate * spi_data_bits * spi_tx_buf_size) */
+    /* Wait for the end of user transmitting. Do not test if the buffer contains data. */
+    /* Use a guard interval > (spi_bitrate * spi_data_bits * spi_tx_buf_size) */
     while ((0u != (Cy_SCB_SPI_GetNumInTxFifo(base) + Cy_SCB_GetTxSrValid(base))) &&
            (guardCnt < SPI_TXRX_DATA_TIME))
     {
@@ -168,7 +168,7 @@ uint8_t SelfTest_SPI_SCB(CySCB_Type* base)
         guardCnt = 0u;
 
         /* Wait until SPI Master deactivates slave select to ensure that the last
-         * data element has been completely transferred.
+         * data element was completely transferred.
          */
         while ((false != Cy_SCB_SPI_IsBusBusy(base)) && (guardCnt < SPI_TXRX_DATA_TIME))
         {
@@ -209,24 +209,24 @@ uint8_t SelfTest_SPI_SCB(CySCB_Type* base)
             if (ret == OK_STATUS)
             {
                 /* If "bResult" was not set - currently test passed */
-                /* Check if test was performed with all values from 0x00 to 0xFF */
+                /* Check if the test was performed with all values from 0x00 to 0xFF */
 
                 /* If test was performed with all values from 0x00 to 0xFF */
                 if (byteToTest == 0x00u)
                 {
-                    /* Return status, that test fully completed */
+                    /* Return the status that test fully completed */
                     ret = PASS_COMPLETE_STATUS;
                 }
                 else
                 {
-                    /* Return status, that error was not detected but test is not fully completed */
+                    /* Return the status that an error was not detected but the test is not fully completed */
                     ret = PASS_STILL_TESTING_STATUS;
                 }
             }
         }
     }
 
-    /* If something in the performance of the code went wrong */
+    /* If something in the code went wrong */
     /* Return ERROR status */
     return ret;
 }

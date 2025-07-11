@@ -3,7 +3,7 @@
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
-*  used for watchdog timer self tests.
+*  used for the windowed watchdog timer self tests.
 *
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
@@ -38,21 +38,23 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_wwdt
-* \{
-*
-* Window-selectable WDTs allow the watchdog timeout period to be adjusted,
-* providing more flexibility to meet different processor timing requirements. 
-* The windowed WDT provides a way to demand that the ClearWDT instruction be executed, for example, only in the last quarter of the watchdog timeout period.
-* Essentially, this enables better code flow monitoring to catch firmware bugs. For example, an application bug that results in the ClearWDT instruction 
-* repeatedly executing close to the beginning of the code flow could be interpreted as a normal operation in the non-windowed WDT mode.
-* The caveat to the windowed WDT mode is that the ClearWDT instruction must be called within a prescribed window, which limits the tolerance
-* of the clock source that drives the WDT.
-*
-*
-* \defgroup group_wwdt_macros Macros
-* \defgroup group_wwdt_functions Functions
-*/
+ * \addtogroup group_wwdt
+ * \{
+ *
+ * Window-selectable WDTs allow adjusting the watchdog timeout period
+ * to provide more flexibility for the different processor timing requirements.
+ * The windowed WDT provides a way to demand that the ClearWDT instruction be executed, for example,
+ * only in the last quarter of the watchdog timeout period. Essentially, this enables better code
+ * flow monitoring to catch firmware bugs. For example, an application bug that results in the
+ * ClearWDT instruction repeatedly executing close to the beginning of the code flow could be
+ * interpreted as a normal operation in the non-windowed WDT mode. The caveat to the windowed WDT
+ * mode is that the ClearWDT instruction must be called within a prescribed window, which limits the
+ * tolerance of the clock source, which drives the WDT.
+ *
+ *
+ * \defgroup group_wwdt_macros Macros
+ * \defgroup group_wwdt_functions Functions
+ */
 
 #if !defined(SELFTEST_WWDT_H)
     #define SELFTEST_WWDT_H
@@ -61,16 +63,16 @@
 #include "SelfTest_common.h"
 
 
-#if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
+#if ((defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 2)) || defined (CY_DOXYGEN))
 
 /** \addtogroup group_wwdt_macros
-* \{
-*/
-/** LOWER period before which if WDT is served, will reset the system or carries out no action */
+ * \{
+ */
+/** The LOWER period before which if WDT is served it will reset the system or does nothing. */
 #define WDT_LOWER_LIMIT                     (50000u)
-/** Warning period. If WDT reaches this value then an interrupt will get generated.  */
+/** The warning period. If WDT reaches this value, an interrupt will be generated.  */
 #define WDT_WARN_LIMIT                      (80000u)
-/** Upper period. If WDT reaches this value the system will get reset or carries out no action */
+/** The upper period. If WDT reaches this value, the system will reset or does nothing. */
 #define WDT_UPPER_LIMIT                     (100000U)
 
 /** \} group_wwdt_macros */
@@ -87,29 +89,29 @@
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_wwdt_functions
-* \{
-*/
+ * \addtogroup group_wwdt_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_Windowed_WDT
 ****************************************************************************//**
 *
-* This function checks the WDT in window mode. It: <br>
-* 1) Services the WDT before the LOWER limit which causes the device to reset. <br>
-* 2) Check the occurance of interrupt at WARN LIMIT.
+* This function checks the WDT in Window mode. It: <br>
+* 1) Services the WDT before the LOWER limit, which causes the device to reset. <br>
+* 2) Checks the occurance of interrupt at WARN LIMIT.
 *
 *
 * \note
-* Only applicable for CAT1C devices
+* Applicable only for CAT1C devices.
 * \return
 *  0 - Test passed <br>
-*  1 - Test failed 
+*  1 - Test failed
 *
 *******************************************************************************/
 uint8_t SelfTest_Windowed_WDT(void);
 
-#endif
+#endif /* if ((defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 2)) || defined (CY_DOXYGEN)) */
 
 /** \} group_wwdt_functions */
 

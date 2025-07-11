@@ -4,12 +4,6 @@
 * Description:
 * This file provides constants and parameter values used for FPU register self
 * tests.
-*
-*
-* Hardware Dependency:
-*  CY8C624ABZI-S2D44
-*  CY8C6245LQI-S3D72
-*  XMC7200D-E272K8384
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
@@ -43,23 +37,24 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_fpu
-* \{
-*
-* The FPU registers test detects stuck-at faults in the FPU by using the checkerboard test.
-*
-* \section group_fpu_more_information More Information
-*
-* This test ensures that the bits in the registers are not stuck at value '0' or '1'. It is a destructive test that
-* performs the following major tasks:
-*
-*      1) The registers are tested by performing a write/read/compare test sequence using a checkerboard pattern
-*         (0x5555 5555, then 0xaaaa aaaaa). These binary sequences are valid floating point values.
-*      2) The test returns an error code if the returned values do not match.
-*
-*
-* \defgroup group_fpu_functions Functions
-*/
+ * \addtogroup group_fpu
+ * \{
+ *
+ * The FPU registers test detects stuck-at faults in the FPU by using the checkerboard test.
+ *
+ * \section group_fpu_more_information More Information
+ *
+ * This test ensures that the bits in the registers are not stuck at value '0' or '1'. It is a
+ * destructive test that performs the following major tasks:
+ *
+ *      1) The registers are tested by performing a write/read/compare test sequence using a
+ *         checkerboard pattern (0x5555 5555, then 0xaaaa aaaaa). These binary sequences are
+ *         valid floating point values.
+ *      2) The test returns an error code if the returned values do not match.
+ *
+ *
+ * \defgroup group_fpu_functions Functions
+ */
 
 #if !defined(SELFTEST_FPU_REGS_H)
 #define SELFTEST_FPU_REGS_H
@@ -67,7 +62,7 @@
 #include "cy_pdl.h"
 #include "SelfTest_common.h"
 
-#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)))
+#if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) || defined (CY_DOXYGEN))
 
 /** \cond INTERNAL */
 /***************************************
@@ -84,17 +79,17 @@ uint8_t SelfTest_FPU_Regs_ARM(void);
 
 
 /**
-* \addtogroup group_fpu_functions
-* \{
-*/
+ * \addtogroup group_fpu_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_FPU_Registers
 ****************************************************************************//**
 *
-* This function performs checkerboard test for all FPU registers (S0-S31).
+* This function performs the checkerboard test for all FPU registers (S0-S31).
 * \note
-* Only applicable for CAT1A, CAT1B(PSoC C3) and CAT1C devices
+* Applicable only for CAT1A, CAT1B(PSoC C3) and CAT1C devices.
 *
 * \return
 *  0 - Test passed <br>
@@ -104,7 +99,7 @@ uint8_t SelfTest_FPU_Regs_ARM(void);
 uint8_t SelfTest_FPU_Registers(void);
 /** \} group_fpu_functions */
 
-#endif 
+#endif /* if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) || defined (CY_DOXYGEN)) */
 
 /** \} group_fpu */
 

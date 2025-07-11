@@ -3,7 +3,7 @@
  *
  * Description:
  *  This file provides function prototypes, constants, and parameter values
- *  used for interrupt self test.
+ *  used for the interrupt self test.
  *
  *******************************************************************************
  * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
@@ -38,25 +38,27 @@
  * so agrees to indemnify Cypress against all liability.
  *******************************************************************************/
 /**
-* \addtogroup group_intr
-* \{
-*
-* To meet Class B requirement, interrupt must be checked for “incorrect frequency”. This test is a task which is highly system 
-* dependent and therefore the STL can only contribute the wrap up handle, which checks that a number of specific interrupts 
-* occurred at least and at most a predefined number of times. 
-*
-*
-*
-* \section group_intr_more_information More Information
-*
-* It is assumed that Interrupt_Test (interrupt test function) is called periodically, e.g. triggered by a timer or constantly in the 
-* main loop. Each specific interrupt handler which is to be supervised, must decrement a dedicated global variable (freq), 
-* InterruptTest() compares that variable to predefined upper and lower bounds, returns an error, if the limits are exceeded.
-*
-*
-* \defgroup group_intr_macros Macros
-* \defgroup group_intr_functions Functions
-*/
+ * \addtogroup group_intr
+ * \{
+ *
+ * To meet the Class B requirement, check the interrupt for “incorrect frequency”. This test is a
+ * highly system dependent and therefore the STL can only contribute the wrap up
+ * handle, which checks that a number of specific interrupts occurred at least and at most a
+ * predefined number of times.
+ *
+ *
+ *
+ * \section group_intr_more_information More Information
+ *
+ * It is assumed that Interrupt_Test (interrupt test function) is called periodically, e.g.
+ * triggered by a timer or constantly in the main loop. Each specific interrupt handler
+ * to be supervised must decrement a dedicated global variable (freq), InterruptTest(), compares
+ * that variable to predefined upper and lower bounds, returns an error, if the limits are exceeded.
+ *
+ *
+ * \defgroup group_intr_macros Macros
+ * \defgroup group_intr_functions Functions
+ */
 
 #if !defined(SELFTEST_INTERRUPT_H)
     #define SELFTEST_INTERRUPT_H
@@ -69,21 +71,21 @@
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_intr_functions
-* \{
-*/
+ * \addtogroup group_intr_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_Interrupt
 ****************************************************************************//**
 *
-*  This function performs the interrupt execution self test. This function checks interrupt
+*  This function performs the interrupt execution self test. This function checks the interrupt
 *  isr from Timer.
 *
 *
-* \param base 
+* \param base
 * The pointer to a TCPWM instance <br>
-* \param cntNum 
+* \param cntNum
 * The Counter instance number in the selected TCPWM
 *
 * \return
@@ -97,7 +99,7 @@ uint8_t SelfTest_Interrupt(TCPWM_Type* base, uint32_t cntNum);
 * Function Name: SelfTest_Interrupt_ISR_TIMER
 ****************************************************************************//**
 *
-* Handle Interrupt Service Routine. Source - Timer. 
+* Handle Interrupt Service Routine. Source - Timer.
 *
 *******************************************************************************/
 void SelfTest_Interrupt_ISR_TIMER(void);
@@ -109,23 +111,25 @@ void SelfTest_Interrupt_ISR_TIMER(void);
 ***************************************/
 
 /** \addtogroup group_intr_macros
-* \{
-*/
-#if CY_CPU_CORTEX_M0P
-/** Lower possible interrupt count. This value may differ depending on the device used (CAT1A, CAT1B(PSoC C3), CAT1C, or CAT2). */
+ * \{
+ */
+#if (defined (CY_IP_M0S8CPUSSV3) || defined (CY_DOXYGEN))
+/** Lower possible interrupt count. This value may differ depending on the device used (CAT1A,
+ *  CAT1B(PSoC C3), CAT1C, or CAT2). */
 #define NUMBER_OF_TIMER_TICKS_LO          (9u)
 
-/** Higher possible interrupt count. This value may differ depending on the device used (CAT1A, CAT1B(PSoC C3), CAT1C, or CAT2).  */
+/** Higher possible interrupt count. This value may differ depending on the device used (CAT1A,
+ *  CAT1B(PSoC C3), CAT1C, or CAT2).  */
 #define NUMBER_OF_TIMER_TICKS_HI          (15u)
 
-#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7 || CY_CPU_CORTEX_M33)
+#elif (defined (CY_IP_M4CPUSS) || defined (CY_IP_M7CPUSS) || defined (CY_IP_M33SYSCPUSS))
 /* If the input clock is of 25MHz*/
-/* lower possible int count */
+/* Lower possible int count */
 #define NUMBER_OF_TIMER_TICKS_LO          (22u)
 
 /* Higher possible int count */
 #define NUMBER_OF_TIMER_TICKS_HI          (27u)
-#endif
+#endif /* if (defined (CY_IP_M0S8CPUSSV3) || defined (CY_DOXYGEN)) */
 
 
 /** Interrupt test period */

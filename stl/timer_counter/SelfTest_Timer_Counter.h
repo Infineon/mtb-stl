@@ -38,22 +38,22 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_timer_counter
-* \{
-*
-* This test uses the timer function to ensure that the counter is 
-* incrementing correctly.
-* It involves initializing the counter and its corresponding
-* interrupt service routine (ISR).
-* The counter is configured to increment based on specified period and
-* compare values.
-* The ISR verifies the occurrence of the compare count interrupt,
-* indicating that the timer has reached its configured compare value.
-*
-*
-* \defgroup group_timer_counter_macros Macros
-* \defgroup group_timer_counter_functions Functions
-*/
+ * \addtogroup group_timer_counter
+ * \{
+ *
+ * This test uses the timer function to ensure that the counter is
+ * incrementing correctly.
+ * It involves initializing the counter and its corresponding
+ * interrupt service routine (ISR).
+ * The counter is configured to increment based on specified period and
+ * compare values.
+ * The ISR verifies the occurrence of the compare count interrupt,
+ * indicating that the timer has reached its configured compare value.
+ *
+ *
+ * \defgroup group_timer_counter_macros Macros
+ * \defgroup group_timer_counter_functions Functions
+ */
 
 
 #if !defined(SELFTEST_TIMER_COUNTER_H)
@@ -66,9 +66,9 @@
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_timer_counter_functions
-* \{
-*/
+ * \addtogroup group_timer_counter_functions
+ * \{
+ */
 /******************************************************************************
 * Function Name: SelfTest_Timer_Counter_init
 ***************************************************************************//**
@@ -89,7 +89,8 @@
 *
 *
 ******************************************************************************/
-void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum, cy_stc_tcpwm_counter_config_t const *config, IRQn_Type intsrc);
+void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum,
+                                 cy_stc_tcpwm_counter_config_t const* config, IRQn_Type intsrc);
 
 /*****************************************************************************
 * Function Name: SelfTest_Counter_Timer
@@ -114,8 +115,8 @@ uint8_t SelfTest_Counter_Timer(void);
 ***************************************/
 
 /** \addtogroup group_timer_counter_macros
-* \{
-*/
+ * \{
+ */
 /** TCPWM Period value */
 #define TIMER_COUNTER_TEST_PERIOD                      (65535U)
 
@@ -129,7 +130,7 @@ uint8_t SelfTest_Counter_Timer(void);
 #define TIMER_COUNTER_COUNT_HIGH                       (51200U)
 
 /** Higher possible clock cycles count*/
-#define TIMER_COUNTER_TIMEOUT                          (600U)
+#define TIMER_COUNTER_TIMEOUT                          (2500U)
 
 /** \} group_timer_counter_macros */
 

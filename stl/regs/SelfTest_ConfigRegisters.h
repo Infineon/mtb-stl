@@ -3,7 +3,7 @@
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values used
-*  for Startup Configuration Register self tests.
+*  for the Startup Configuration Register self tests.
 *
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
@@ -38,29 +38,30 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_regs
-* \{
-*
-* This test describes and shows an example of how to check the startup configuration registers: <br>
-* 1) Test digital clock configuration registers <br>
-* 2) Test analog configuration registers (set to default values after startup) <br>
-* 3) Test the GPIO configuration and HSIOM registers <br>
-*
-* \section group_regs_more_information More Information
-*
-* Two test modes are implemented in the functions:
-*
-*      1) Store duplicates of startup configuration registers in flash memory after device startup.
-*       Periodically, the configuration registers are compared with stored duplicates. Corrupted
-*       registers can be restored from flash after checking.
-*      2) Compare the calculated CRC with the CRC previously stored in flash if the CRC status semaphore
-*       is set. If the status semaphore is not set, the CRC must be calculated and stored in flash, and
-*       the status semaphore must be set.
-*
-*
-* \defgroup group_regs_macros Macros
-* \defgroup group_regs_functions Functions
-*/
+ * \addtogroup group_regs
+ * \{
+ *
+ * This test describes and shows an example of how to check the startup configuration registers:
+ * <br>
+ * 1) Test digital clock configuration registers <br>
+ * 2) Test analog configuration registers (set to default values after startup) <br>
+ * 3) Test the GPIO configuration and HSIOM registers <br>
+ *
+ * \section group_regs_more_information More Information
+ *
+ * Two test modes are implemented in the functions:
+ *
+ *      1) Store duplicates of startup configuration registers in Flash memory after the device startup.
+ *         Periodically, the configuration registers are compared with the stored duplicates. Corrupted
+ *         registers can be restored from Flash after checking.
+ *      2) Compare the calculated CRC with the CRC previously stored in Flash if the CRC status
+ *         semaphore is set. If the status semaphore is not set, the CRC must be calculated and
+ *         stored in Flash, and the status semaphore must be set.
+ *
+ *
+ * \defgroup group_regs_macros Macros
+ * \defgroup group_regs_functions Functions
+ */
 
 #if !defined(SELFTEST_CONFIGREGISTERS_H)
     #define SELFTEST_CONFIGREGISTERS_H
@@ -70,13 +71,14 @@
 * Initial Parameter Constants
 ***************************************/
 /** \addtogroup group_regs_macros
-* \{
-*/
+ * \{
+ */
 
 /* Supports two self test modes: */
-/** Stores duplicates of registers to FLASH and compares duplicates with registers. Registers can be restored in this mode. */
+/** Stores duplicates of registers to Flash and compares duplicates with registers. Registers can be
+ *  restored in this mode. */
 #define CFG_REGS_TO_FLASH_MODE           (1u)
-/** Calculates registers CRC and stores to FLASH; Recalculates CRC and compares with saved CRC. */
+/** Calculates the registers CRC and stores to Flash; recalculates CRC and compares with the saved CRC. */
 #define CFG_REGS_CRC_MODE                (0u)
 
 /** Select which mode to use (CFG_REGS_TO_FLASH_MODE or CFG_REGS_CRC_MODE) */
@@ -85,56 +87,59 @@
 
 #if (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE)
 
-/** First byte to store before storing CRC. */
+/** The first byte to store before storing CRC. */
     #define CRC_STARTUP_SEMAPHORE        (0x5Au)
 
-/** Number of bytes from end of FLASH */
+/** The number of bytes from the end of Flash. */
     #define CRC_STARTUP_SEMAPHORE_SHIFT  (13u)
 
-/** Number of bytes from end of FLASH */
+/** The number of bytes from the end of Flash. */
     #define CRC_STARTUP_LO               (12u)
 
 
-/* Define number for last row in FLASH */
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M0P) 
-/** Calculating offset address for last row of flash for storing the register data*/
+/* Define the number for the last row in Flash. */
+#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M0P)
+/** Calculates the offset address for the last row of Flash for storing the register data.*/
     #define LAST_ROW_IN_FLASH_OFFSET        ((CY_FLASH_SIZE - CY_FLASH_SIZEOF_ROW))
-/** Calculating the starting address of last row. This value may differ depending on device used. */
+/** Calculates the starting address of the last row. This value may differ depending on the device used. */
     #define LAST_ROW_IN_FLASH_ADDR          (CY_FLASH_BASE + (LAST_ROW_IN_FLASH_OFFSET))
 #else
-/** Base address of Code flash only for XMC */
+/** The base address of Code Flash only for XMC. */
     #define CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE      CY_FLASH_SM_SBM_BASE
-/** Size of Code flash only for XMC */
-    #define CONF_REG_FLASH_SMALL_SECTOR_SIZE           CY_FLASH_SM_SBM_SIZE 
-/** Calculating offset address for last row of flash for storing the register data*/
-    #define LAST_ROW_IN_FLASH_OFFSET        ((CONF_REG_FLASH_SMALL_SECTOR_SIZE - CY_FLASH_SIZEOF_ROW))
-/** Calculating the starting address of last row. This value may differ depending on device used. */
-    #define LAST_ROW_IN_FLASH_ADDR          (CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE + (LAST_ROW_IN_FLASH_OFFSET))
-#endif
+/** The size of Code Flash only for XMC. */
+    #define CONF_REG_FLASH_SMALL_SECTOR_SIZE           CY_FLASH_SM_SBM_SIZE
+/** Calculates the offset address for the last row of Flash for storing the register data.*/
+    #define LAST_ROW_IN_FLASH_OFFSET        \
+    ((CONF_REG_FLASH_SMALL_SECTOR_SIZE - CY_FLASH_SIZEOF_ROW))
+/** Calculates the starting address of the last row. This value may differ depending on the device used. */
+    #define LAST_ROW_IN_FLASH_ADDR          \
+    (CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE + (LAST_ROW_IN_FLASH_OFFSET))
+#endif /* if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M0P) */
 #else /* if (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE) */
 
 
 #if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
-/** Base address of Code flash only for XMC */
+/** Base address of Code Flash only for XMC .*/
     #define CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE      CY_FLASH_SM_SBM_BASE
-/** Size of Code flash only for XMC */
-    #define CONF_REG_FLASH_SMALL_SECTOR_SIZE           CY_FLASH_SM_SBM_SIZE 
-/** Number of flash rows to save configuration registers */
+/** The size of Code Flash only for XMC. */
+    #define CONF_REG_FLASH_SMALL_SECTOR_SIZE           CY_FLASH_SM_SBM_SIZE
+/** The number of Flash rows to save the configuration registers. */
     #define CONF_REG_NUMBER_OF_ROWS     0x02u
-/** Row number to store config register */
+/** The row number to store the config register. */
     #define CONF_REG_FIRST_ROW          \
     ((CONF_REG_FLASH_SMALL_SECTOR_SIZE / CY_FLASH_SIZEOF_ROW) - CONF_REG_NUMBER_OF_ROWS)
-/** Starting address of row to store config register */
-    #define CONF_REG_FIRST_ROW_ADDR     (CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE + (CONF_REG_FIRST_ROW * CY_FLASH_SIZEOF_ROW))
+/** The start address of the row to store the config register. */
+    #define CONF_REG_FIRST_ROW_ADDR     \
+    (CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE + (CONF_REG_FIRST_ROW * CY_FLASH_SIZEOF_ROW))
 #elif (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
-/** Number of flash rows to save configuration registers */
+/** The number of Flash rows to save the onfiguration registers. */
     #define CONF_REG_NUMBER_OF_ROWS     0x01u
-/** Row number to store config register */
+/** The row number to store the config register. */
     #define CONF_REG_FIRST_ROW          \
     ((CY_FLASH_SIZE / CY_FLASH_SIZEOF_ROW) - CONF_REG_NUMBER_OF_ROWS)
-/** Starting address of row to store config register */
+/** The start address of the row to store the config register. */
     #define CONF_REG_FIRST_ROW_ADDR     (CY_FLASH_BASE + (CONF_REG_FIRST_ROW * CY_FLASH_SIZEOF_ROW))
-#endif
+#endif /* if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) */
 #endif /* End (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE) */
 
 /** \} group_regs_macros */
@@ -144,17 +149,17 @@
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_regs_functions
-* \{
-*/
+ * \addtogroup group_regs_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTests_StartUp_ConfigReg
 ****************************************************************************//**
 *
-* This function call checks configuration registers by comparing the value
-* stored in flash with current the current configuration registers value.
-* If values are different function returns fail.
+* This function call checks the configuration registers by comparing the value
+* stored in Flash with the current configuration registers value.
+* If the values are different, the function returns a fail.
 *
 * \return
 *  0 - Test Passed <br>
@@ -169,7 +174,7 @@ uint8_t SelfTests_StartUp_ConfigReg(void);
 * Function Name: SelfTests_Init_StartUp_ConfigReg
 ****************************************************************************//**
 *
-* This function should be always called to initilize the AREF address depending on the device.
+* This function must be always called to initilize the AREF address depending on the device.
 *
 *
 * \note
@@ -187,25 +192,27 @@ void SelfTests_Init_StartUp_ConfigReg(void);
 
 
 /**
-* \addtogroup group_regs_functions
-* \{
-*/
+ * \addtogroup group_regs_functions
+ * \{
+ */
 /*******************************************************************************
 * Function Name: SelfTests_Save_StartUp_ConfigReg
 ****************************************************************************//**
 *
-*  
-*  This function stores configuration registers to FlashRowData array and writes this array to flash.
+*
+*  This function stores the configuration registers to the FlashRowData array and writes this array to
+*  Flash.
 *
 *
 * \note
-* To be used only if the STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE. <br>
-* This function should be called once after the initial PSoC power up and initialization before entering the main program
+* Used only if the STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE. <br>
+* This function must be called once after the initial PSOC power up and initialization before
+* entering the main program.
 *
 * \return
-*  0 - Writing to flash is successful <br>
-*  >=1 - Writing to flash is not successful. Refer to Flash Driver PDL documentation
-*  for error codes
+*  0 - Writing to Flash is successful. <br>
+*  >=1 - Writing to Flash is not successful. Refer to the Flash Driver PDL documentation
+*  for error codes.
 *
 *
 *******************************************************************************/

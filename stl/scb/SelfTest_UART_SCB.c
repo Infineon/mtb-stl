@@ -6,7 +6,7 @@
 *  according to Class B library.
 *
 * Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
+*  AN36847: PSOC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
 *  for ModusToolbox
 *
 *******************************************************************************
@@ -53,20 +53,20 @@ static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte);
 ******************************************************************************
 *
 * Summary:
-*  Test internal loopback of UART (transmitted byte must be equal to received)
+*  This function tests an internal loopback of UART (transmitted byte must be equal to received).
 *
 * Parameters:
-*  CySCB_Type *base - pointer to SCB hardware to configure
-*  uint8_transmitByte - data to be transmitted over UART
+*  CySCB_Type *base - The pointer to SCB hardware to configure.
+*  uint8_transmitByte - Data to transmit over UART.
 *
 * Return:
 *  0 - Test success
 *  1 - test failed
 *
 * Note:
-*  During call, function transmits and receives only one byte
-*  in future calls the function transmits next byte value
-*  to limit function execution time
+*  During a call, the function transmits and receives only one byte.
+*  In next calls, the function transmits the next byte value
+*  to limit the function execution time.
 *
 *****************************************************************************/
 static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
@@ -74,11 +74,11 @@ static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
     uint16_t guardCnt = 0u;
     uint8_t ret = OK_STATUS;
 
-    /* Check if intentional error should be made for testing */
+    /* Check if an intentional error should be made for testing */
     #if (ERROR_IN_UART_SCB == 1u)
     if (transmitByte == UART_SCB_TRANSMIT_BYTE_ERROR)
     {
-        /* Change value for UART transferring to unexpected  */
+        /* Change the value for UART transferring to unexpected  */
         transmitByte++;
     }
     #endif /* End (ERROR_IN_UART_SCB == 1u) */
@@ -86,16 +86,16 @@ static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
     /* Transmit byte */
     (void)Cy_SCB_UART_Put(base, transmitByte);
 
-    /* Check if intentional error should be made for testing */
+    /* Check if an intentional error should be made for testing */
     #if (ERROR_IN_UART_SCB == 1U)
     if (transmitByte == (UART_SCB_TRANSMIT_BYTE_ERROR + 1u))
     {
-        /* Restore expected value */
+        /* Restore the expected value */
         transmitByte--;
     }
     #endif /* End (ERROR_IN_UART_SCB == 1u) */
 
-    /* Wait while byte will be sent */
+    /* Wait until the byte is sent */
     do
     {
         guardCnt++;
@@ -127,7 +127,7 @@ static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
         }
         else
         {
-            /* Check if received and transmitted values are the same */
+            /* Check if the received and transmitted values are the same */
             if (transmitByte != ((uint8_t)Cy_SCB_UART_Get(base)))
             {
                 /* If not - return ERROR status */
@@ -146,10 +146,10 @@ static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
 ******************************************************************************
 *
 * Summary:
-*  Test loopback of UART (transmitted byte must be equal to received)
+*  This function tests a loopback of UART (transmitted byte must be equal to received).
 *
 * Parameters:
-*  CySCB_Type *base - pointer to SCB hardware to configure
+*  CySCB_Type *base - The pointer to SCB hardware to configure.
 *
 * Return:
 *  1 - test failed
@@ -160,8 +160,8 @@ static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
 *  6 - Error, UART is not enabled.
 *
 * Note:
-*  During call, function transmits and receives bytes from 0x01 to 0xFF.
-*  User is responsible for routing the loop back before the test.
+*  During a call, the function transmits and receives bytes from 0x01 to 0xFF.
+*  The user is responsible for the routing the loop back before the test.
 *
 *****************************************************************************/
 uint8_t SelfTest_UART_SCB(CySCB_Type* base)
@@ -178,13 +178,13 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base)
         ((SCB_CTRL(base) & SCB_CTRL_MODE_Msk) !=
          (((uint32_t)CY_SCB_CTRL_MODE_UART) << SCB_CTRL_MODE_Pos)))
     {
-        /* Return error if UART is not enabled */
+        /* Return an error if UART is not enabled */
         ret = ERROR_UART_NOT_ENABLE;
     }
     else
     {
-        /* Wait for end of user receiving */
-        /* Don't test if the buffer contains a data */
+        /* Wait for the end of user receiving */
+        /* Do not test if the buffer contains data */
         while ((0u != (Cy_SCB_UART_GetNumInRxFifo(base) + Cy_SCB_GetRxSrValid(base))) &&
                (guardCnt < UART_RX_DATA_TIME))
         {
@@ -199,7 +199,7 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base)
         }
         else
         {
-            /* Wait for end of user transmitting and don't test if the buffer contains data */
+            /* Wait for the end of user transmitting. Do not test if the buffer contains data. */
             do
             {
                 guardCnt++;
@@ -232,20 +232,20 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base)
                 Cy_SCB_SetRxInterruptMask(base, rxUartInterruptMask);
                 Cy_SCB_SetTxInterruptMask(base, txUartInterruptMask);
 
-                /* Check result of test */
+                /* Check the test result */
                 if (ret == OK_STATUS)
                 {
-                    /* If test was performed with all values from 0x00 to 0xFF */
+                    /* If the test was performed with all values from 0x00 to 0xFF */
                     if (byteToTest == UART_TEST_RANGE)
                     {
-                        /* Return status, that test fully completed */
+                        /* Return the status that the test is fully completed */
                         ret = PASS_COMPLETE_STATUS;
                     }
                     /* If not */
                     else
                     {
-                        /* Return status, that error was not detected but test is not fully
-                           completed */
+                        /* Return the status that an error was not detected but the test is not fully
+                           completed. */
                         ret = PASS_STILL_TESTING_STATUS;
                     }
                 }
@@ -260,13 +260,13 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base)
             }
         }
 
-        /* Need to clear buffer after MUX switch */
+        /* Clear the buffer after MUX switch */
         Cy_SysLib_DelayUs(100u);
         Cy_SCB_UART_ClearRxFifo(base);
         Cy_SCB_UART_ClearTxFifo(base);
     }
 
-    /* If something in the performance of the code went wrong Return ERROR status */
+    /* If something in the code performance went wrong Return ERROR status */
     return ret;
 }
 

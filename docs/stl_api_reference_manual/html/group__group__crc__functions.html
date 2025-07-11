@@ -93,10 +93,10 @@ $(document).ready(function(){initNavTree('group__group__crc__functions.html','')
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:gad0db35845ad16837ddcfd88790138011"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__crc__functions.html#gad0db35845ad16837ddcfd88790138011">SelfTests_CRC16_CCITT</a> (uint32_t BaseAdress, uint16_t len)</td></tr>
-<tr class="memdesc:gad0db35845ad16837ddcfd88790138011"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function calculates CRC of memory area defined in parameters "BaseAdress" and "len".  <a href="group__group__crc__functions.html#gad0db35845ad16837ddcfd88790138011">More...</a><br /></td></tr>
+<tr class="memdesc:gad0db35845ad16837ddcfd88790138011"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function calculates the CRC of the memory area defined in the parameters "BaseAdress" and "len".  <a href="group__group__crc__functions.html#gad0db35845ad16837ddcfd88790138011">More...</a><br /></td></tr>
 <tr class="separator:gad0db35845ad16837ddcfd88790138011"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga15a25822f7ab74d714f22462384691bb"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__crc__functions.html#ga15a25822f7ab74d714f22462384691bb">SelfTests_CRC16_CCITT_ACC</a> (uint16_t crc, uint32_t BaseAdress, uint16_t len)</td></tr>
-<tr class="memdesc:ga15a25822f7ab74d714f22462384691bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function calculates CRC of area defined in parameters "BaseAdress" and "len".  <a href="group__group__crc__functions.html#ga15a25822f7ab74d714f22462384691bb">More...</a><br /></td></tr>
+<tr class="memdesc:ga15a25822f7ab74d714f22462384691bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function calculates the CRC of the area defined in the parameters "BaseAdress" and "len".  <a href="group__group__crc__functions.html#ga15a25822f7ab74d714f22462384691bb">More...</a><br /></td></tr>
 <tr class="separator:ga15a25822f7ab74d714f22462384691bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga317a5be0354c0580ee0cac926fbfead1"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__crc__functions.html#ga317a5be0354c0580ee0cac926fbfead1">SelfTests_CRC16_CCITT_Byte</a> (uint16_t crc, uint8_t val)</td></tr>
 <tr class="memdesc:ga317a5be0354c0580ee0cac926fbfead1"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function calculates CRC of one byte "val".  <a href="group__group__crc__functions.html#ga317a5be0354c0580ee0cac926fbfead1">More...</a><br /></td></tr>
@@ -138,15 +138,15 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This function calculates CRC of memory area defined in parameters "BaseAdress" and "len". </p>
+<p>This function calculates the CRC of the memory area defined in the parameters "BaseAdress" and "len". </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">BaseAdress</td><td>Address from which CRC needs to calculate</td></tr>
-    <tr><td class="paramname">len</td><td>Length of area for CRC calculation</td></tr>
+    <tr><td class="paramname">BaseAdress</td><td>The address from which to calculate the CRC.</td></tr>
+    <tr><td class="paramname">len</td><td>The length of the area for CRC calculation.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Calculated CRC value </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The calculated CRC value. </dd></dl>
 
 </div>
 </div>
@@ -182,16 +182,16 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This function calculates CRC of area defined in parameters "BaseAdress" and "len". </p>
+<p>This function calculates the CRC of the area defined in the parameters "BaseAdress" and "len". </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">crc</td><td>Current CRC</td></tr>
-    <tr><td class="paramname">BaseAdress</td><td>Address from which CRC needs to calculate</td></tr>
-    <tr><td class="paramname">len</td><td>Length of area for CRC calculation</td></tr>
+    <tr><td class="paramname">crc</td><td>The current CRC.</td></tr>
+    <tr><td class="paramname">BaseAdress</td><td>The address from which to calculate the CRC.</td></tr>
+    <tr><td class="paramname">len</td><td>The length of the area for CRC calculation.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Calculated CRC value </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The calculated CRC value. </dd></dl>
 
 </div>
 </div>
@@ -224,12 +224,12 @@ Functions</h2></td></tr>
 <p>This function calculates CRC of one byte "val". </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">crc</td><td>Current CRC</td></tr>
-    <tr><td class="paramname">val</td><td>Value for which CRC needs to calculate</td></tr>
+    <tr><td class="paramname">crc</td><td>The current CRC.</td></tr>
+    <tr><td class="paramname">val</td><td>The value to calculate the CRC for.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Calculated CRC value </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The calculated CRC value. </dd></dl>
 
 </div>
 </div>
@@ -262,12 +262,12 @@ Functions</h2></td></tr>
 <p>This function calculates CRC of memory area defined in parameters "BaseAdress" and "len". </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">BaseAdress</td><td>Address from which CRC needs to calculate</td></tr>
-    <tr><td class="paramname">len</td><td>Length of area for CRC calculation</td></tr>
+    <tr><td class="paramname">BaseAdress</td><td>The address from which to calculate the CRC.</td></tr>
+    <tr><td class="paramname">len</td><td>The length of the area for CRC calculation.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Calculated CRC value </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The calculated CRC value. </dd></dl>
 
 </div>
 </div>
@@ -306,13 +306,13 @@ Functions</h2></td></tr>
 <p>This function calculates CRC of memory area defined in parameters "BaseAdress" and "len". </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">crc</td><td>Current CRC</td></tr>
-    <tr><td class="paramname">BaseAdress</td><td>Address from which CRC needs to calculate</td></tr>
-    <tr><td class="paramname">len</td><td>Length of area for CRC calculation</td></tr>
+    <tr><td class="paramname">crc</td><td>The current CRC.</td></tr>
+    <tr><td class="paramname">BaseAdress</td><td>The address from which to calculate the CRC.</td></tr>
+    <tr><td class="paramname">len</td><td>The length of the area for CRC calculation.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Calculated CRC value </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The calculated CRC value. </dd></dl>
 
 </div>
 </div>
@@ -345,12 +345,12 @@ Functions</h2></td></tr>
 <p>This function calculates CRC of one byte "val". </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">crc</td><td>Current CRC</td></tr>
-    <tr><td class="paramname">val</td><td>Value to calculate CRC</td></tr>
+    <tr><td class="paramname">crc</td><td>The current CRC.</td></tr>
+    <tr><td class="paramname">val</td><td>The value to calculate the CRC for.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Calculated CRC value </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The calculated CRC value. </dd></dl>
 
 </div>
 </div>

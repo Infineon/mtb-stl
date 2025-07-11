@@ -43,7 +43,7 @@
 #include "SelfTest_Interrupt.h"
 #include "SelfTest_ErrorInjection.h"
 
-/* This variable is used in isr_1 interrupt handler */
+/* This variable is used in the isr_1 interrupt handler */
 static volatile uint16_t selfTest_interrupt_counter = 0;
 static TCPWM_Type* base1;
 static uint32_t cntNum1;
@@ -88,42 +88,42 @@ uint8_t SelfTest_Interrupt(TCPWM_Type* base, uint32_t cntNum)
     cntNum1 = cntNum;
     uint8_t ret = OK_STATUS;
 
-    /* Stop and reset timer */
-    #if CY_CPU_CORTEX_M0P
-        uint32_t shiftedValue = (uint32_t)1U << cntNum;
-        Cy_TCPWM_TriggerStopOrKill(base, shiftedValue);
+    /* Stop and reset the timer */
+    #if defined(CY_IP_M0S8TCPWM)
+    uint32_t shiftedValue = (uint32_t)1U << cntNum;
+    Cy_TCPWM_TriggerStopOrKill(base, shiftedValue);
     #else
-        Cy_TCPWM_TriggerStopOrKill_Single(base, cntNum);
+    Cy_TCPWM_TriggerStopOrKill_Single(base, cntNum);
     #endif
     /* Reset interrupt counter */
     selfTest_interrupt_counter = 0u;
 
-    /* Check if intentional error should be made for testing */
+    /* Check if an intentional error should be made for testing */
     #if (ERROR_IN_INTERRUPT_HANDLING == 1)
 
     Cy_TCPWM_SetInterruptMask(base, cntNum, CY_TCPWM_INT_NONE);
 
     #endif /* End ERROR_IN_INTERRUPT_HANDLING */
 
-    #if CY_CPU_CORTEX_M0P
-        shiftedValue = (uint32_t)1U << cntNum;
-        Cy_TCPWM_TriggerStart(base, shiftedValue);
+    #if defined(CY_IP_M0S8TCPWM)
+    shiftedValue = (uint32_t)1U << cntNum;
+    Cy_TCPWM_TriggerStart(base, shiftedValue);
     #else
-        Cy_TCPWM_TriggerStart_Single(base, cntNum);
+    Cy_TCPWM_TriggerStart_Single(base, cntNum);
     #endif
 
     /* wait 1000uS */
     Cy_SysLib_DelayUs(INTERRUPT_TEST_TIME);
 
-    /* Stop and reset timer */
-    #if CY_CPU_CORTEX_M0P
-        shiftedValue = (uint32_t)1U << cntNum;
-        Cy_TCPWM_TriggerStopOrKill(base, shiftedValue);        
+    /* Stop and reset the timer */
+    #if defined(CY_IP_M0S8TCPWM)
+    shiftedValue = (uint32_t)1U << cntNum;
+    Cy_TCPWM_TriggerStopOrKill(base, shiftedValue);
     #else
-        Cy_TCPWM_TriggerStopOrKill_Single(base, cntNum);
+    Cy_TCPWM_TriggerStopOrKill_Single(base, cntNum);
     #endif
     /* If less than NUMBER_OF_TIMER_TICKS_LO ticks or greater than NUMBER_OF_TIMER_TICKS_HI - error
-       in test */
+       in the test */
     const uint32_t selfTest_interrupt_counter_val = selfTest_interrupt_counter;
 
     if ((selfTest_interrupt_counter_val < NUMBER_OF_TIMER_TICKS_LO) ||
@@ -134,5 +134,6 @@ uint8_t SelfTest_Interrupt(TCPWM_Type* base, uint32_t cntNum)
 
     return ret;
 }
+
 
 /* [] END OF FILE */

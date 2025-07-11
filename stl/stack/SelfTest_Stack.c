@@ -2,7 +2,7 @@
 * File Name: SelfTest_Stack.c
 *
 * Description:
-*  This file provides the source code to the API for runtime Stack self tests.
+*  This file provides the source code to the API for the runtime Stack self tests.
 *
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
@@ -49,7 +49,7 @@ static uint8_t cy_stack_pattern_block_size = 0;
  ********************************************************************************
  *
  * Summary:
- *  This function initializes the upper stack area with 0xAA and 0x55 pattern.
+ *  This function initializes the upper stack area with the 0xAA and 0x55 pattern.
  *
  * Parameters:
  * \param stack_address
@@ -62,38 +62,38 @@ static uint8_t cy_stack_pattern_block_size = 0;
  *
  **********************************************************************************/
 
-void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length, uint8_t stack_pattern_blk_size)
+void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length,
+                                uint8_t stack_pattern_blk_size)
 {
     uint8_t i;
     cy_stack_pattern_block_size = stack_pattern_blk_size;
-    /* Pointer to the last word in the stack*/
-   uint16_t* stack = (stack_address - (stack_length/sizeof(uint16_t)));
-   
-    /* Fill test stack block with predefined pattern */
+    /* The pointer to the last word in the stack*/
+    uint16_t* stack = (stack_address - (stack_length/sizeof(uint16_t)));
+
+    /* Fill the test stack block with a predefined pattern */
     for (i = 0u; i < (cy_stack_pattern_block_size / sizeof(uint16_t)); i++)
     {
         #if (ERROR_IN_STACK_OVERFLOW)
-            *stack = STACK_TEST_PATTERN + 1u;
-             stack++;
+        *stack = STACK_TEST_PATTERN + 1u;
+        stack++;
         #else
-            *stack = STACK_TEST_PATTERN;
-             stack++;
+        *stack = STACK_TEST_PATTERN;
+        stack++;
         #endif /* End (ERROR_IN_STACK) */
-        
     }
-    
-    /* Pointer to the first word in the stack*/
-    stack = (stack_address - (cy_stack_pattern_block_size / sizeof(uint16_t))); 
-    /* Fill test stack block with predefined pattern */
+
+    /* The pointer to the first word in the stack */
+    stack = (stack_address - (cy_stack_pattern_block_size / sizeof(uint16_t)));
+    /* Fill the test stack block with a predefined pattern */
     for (i = 0u; i < (cy_stack_pattern_block_size / sizeof(uint16_t)); i++)
     {
         #if (ERROR_IN_STACK_UNDERFLOW)
-            *stack = STACK_TEST_PATTERN + 1u;
-             stack++;
+        *stack = STACK_TEST_PATTERN + 1u;
+        stack++;
         #else
-            
-            *stack = STACK_TEST_PATTERN;
-             stack++; 
+
+        *stack = STACK_TEST_PATTERN;
+        stack++;
         #endif /* End (ERROR_IN_STACK) */
     }
 }
@@ -104,8 +104,8 @@ void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length, 
  ********************************************************************************
  *
  * Summary:
- *  This function performs stack self test. It checks upper stack area for 0xAA
- *  and 0x55 pattern.
+ *  This function performs the stack self test. It checks the upper stack area for the 0xAA
+ *  and 0x55 patterns.
  *
  * Parameters:
  * \param stack_address
@@ -123,8 +123,8 @@ uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_leng
     uint8_t i;
     uint8_t ret = OK_STATUS;
 
-    /* Pointer to the last word in the stack */
-   uint16_t* stack = (stack_address - (stack_length/sizeof(uint16_t)));
+    /* The pointer to the last word in the stack. */
+    uint16_t* stack = (stack_address - (stack_length/sizeof(uint16_t)));
 
     /* Check test stack block for pattern and return error if no pattern found */
     for (i = 0u; i < (cy_stack_pattern_block_size / sizeof(uint16_t)); i++)
@@ -150,6 +150,6 @@ uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_leng
     }
     return ret;
 }
+
+
 /* [] END OF FILE */
-
-

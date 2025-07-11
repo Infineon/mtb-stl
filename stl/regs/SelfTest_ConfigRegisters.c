@@ -2,7 +2,7 @@
 * File Name: SelfTest_ConfigRegisters.c
 *
 * Description:
-*  This file provides the source code to the APIs for configuration register self
+*  This file provides the source code to the APIs for the configuration register self
 *  tests.
 *
 *******************************************************************************
@@ -47,7 +47,7 @@
 #if CY_CPU_CORTEX_M0P
 
 #if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX)
-/* Table of register 32Bit registers to be tested */
+/* The table of register 32Bit registers to test. */
 static volatile uint32_t* regs32_ToTest[] =
 {
     /* Clock registers */
@@ -114,7 +114,7 @@ static volatile uint32_t* regs32_ToTest[] =
 };
 #endif /*  4100S MAX  */
 
-/* Table of register 32Bit registers to be tested */
+/* The table of register 32Bit registers to test */
 #if (defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS)) || \
     (defined(CY_DEVICE_SERIES_PSOC_4500S))
 static volatile uint32_t* regs32_ToTest[] =
@@ -255,18 +255,92 @@ static volatile uint32_t* regs32_ToTest[] =
 };
 #endif /* 4100T Plus */
 
-#elif ( CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
+#if defined(CY_DEVICE_SERIES_PSOC_4000T)
+static volatile uint32_t* regs32_ToTest[] =
+{
+    /* Clock registers */
+    &(SRSSLT->CLK_IMO_SELECT),
+    &(SRSSLT->CLK_IMO_TRIM1),
+    &(SRSSLT->CLK_IMO_TRIM2),
+    &(SRSSLT->CLK_IMO_TRIM3),
+    &(SRSSLT->CLK_IMO_CONFIG),
+    &(SRSSLT->CLK_ILO_CONFIG),
+    &(PERI->PCLK_CTL[2]),
+    &(PERI->PCLK_CTL[5]),
+    &(PERI->DIV_16_CTL[0]),
+    &(PERI->DIV_16_CTL[1]),
+
+    /* HSIOM registers */
+    &(HSIOM_PRT0->PORT_SEL),
+    &(HSIOM_PRT1->PORT_SEL),
+    &(HSIOM_PRT2->PORT_SEL),
+    &(HSIOM_PRT3->PORT_SEL),
+    &(HSIOM_PRT4->PORT_SEL),
+
+    /* IO Pin registers */
+    &(GPIO_PRT0->PC),
+    &(GPIO_PRT0->PC2),
+    &(GPIO_PRT1->PC),
+    &(GPIO_PRT1->PC2),
+    &(GPIO_PRT2->PC),
+    &(GPIO_PRT2->PC2),
+    &(GPIO_PRT3->PC),
+    &(GPIO_PRT3->PC2),
+    &(GPIO_PRT4->PC),
+    &(GPIO_PRT4->PC2),
+};
+#endif /* 4000T */
+
+#if defined(CY_DEVICE_SERIES_PSOC_4000S) || \
+    defined(CY_DEVICE_SERIES_PSOC_4700S)
+static volatile uint32_t* regs32_ToTest[] =
+{
+    /* Clock registers */
+    &(SRSSLT->CLK_IMO_SELECT),
+    &(SRSSLT->CLK_IMO_TRIM1),
+    &(SRSSLT->CLK_IMO_TRIM2),
+    &(SRSSLT->CLK_IMO_TRIM3),
+    &(SRSSLT->CLK_IMO_CONFIG),
+    &(SRSSLT->CLK_ILO_CONFIG),
+    &(PERI->PCLK_CTL[2]),
+    &(PERI->PCLK_CTL[5]),
+    &(PERI->DIV_16_CTL[0]),
+    &(PERI->DIV_16_CTL[1]),
+    &(WCO->WDT_CONFIG),
+
+    /* HSIOM registers */
+    &(HSIOM_PRT0->PORT_SEL),
+    &(HSIOM_PRT1->PORT_SEL),
+    &(HSIOM_PRT2->PORT_SEL),
+    &(HSIOM_PRT3->PORT_SEL),
+    &(HSIOM_PRT4->PORT_SEL),
+
+    /* IO Pin registers */
+    &(GPIO_PRT0->PC),
+    &(GPIO_PRT0->PC2),
+    &(GPIO_PRT1->PC),
+    &(GPIO_PRT1->PC2),
+    &(GPIO_PRT2->PC),
+    &(GPIO_PRT2->PC2),
+    &(GPIO_PRT3->PC),
+    &(GPIO_PRT3->PC2),
+    &(GPIO_PRT4->PC),
+    &(GPIO_PRT4->PC2),
+};
+#endif /* 4000S */
+
+#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M7)
 
 static volatile uint32_t* regs32_ToTest[] =
 {
-#if CY_CPU_CORTEX_M4
+    #if CY_CPU_CORTEX_M4
     /* Analog routing regs */
     /* This value will get changes by SelfTests_Init_StartUp_ConfigReg function during runtime. */
     (uint32_t*)(0x409F0E00),
-  
+
     /* Clock registers */
     &(SRSS->WDT_CTL),
-#endif
+    #endif
     /* SRSS_CLK_PATH_SELECT */
     &(SRSS->CLK_PATH_SELECT[0]),
     &(SRSS->CLK_PATH_SELECT[1]),
@@ -302,13 +376,13 @@ static volatile uint32_t* regs32_ToTest[] =
     &(SRSS->CLK_ROOT_SELECT[14]),
     &(SRSS->CLK_ROOT_SELECT[15]),
     &(SRSS->CLK_SELECT),
-#if CY_CPU_CORTEX_M4
+    #if CY_CPU_CORTEX_M4
     &(SRSS->CLK_TIMER_CTL),
     &(SRSS->CLK_ILO_CONFIG),
-#elif CY_CPU_CORTEX_M7
+    #elif CY_CPU_CORTEX_M7
     &(SRSS->CLK_ILO0_CONFIG),
     &(SRSS->CLK_ILO1_CONFIG),
-#endif
+    #endif
     &(SRSS->CLK_OUTPUT_SLOW),
     &(SRSS->CLK_OUTPUT_FAST),
     &(SRSS->CLK_ECO_CONFIG),
@@ -475,7 +549,7 @@ static volatile uint32_t* regs32_ToTest[] =
 
 #endif /*  PSoC6  */
 
-/* Buffer to store Flash row */
+/* The buffer to store Flash row. */
 #if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
 static uint32_t flashRowData[CY_FLASH_SIZEOF_ROW/(sizeof(uint32_t))];
 #else
@@ -485,9 +559,11 @@ static uint32_t flashRowData[(2*CY_FLASH_SIZEOF_ROW)/(sizeof(uint32_t))];
 #if (defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4))
 void SelfTests_Init_StartUp_ConfigReg(void)
 {
-   volatile uint32_t* pass_aref = &PASS_AREF_AREF_CTRL;
-   regs32_ToTest[0] = pass_aref;
+    volatile uint32_t* pass_aref = &PASS_AREF_AREF_CTRL;
+    regs32_ToTest[0] = pass_aref;
 }
+
+
 #endif
 
 
@@ -503,30 +579,30 @@ static uint8_t SelfTests_Check_StartUp_Cfg_CRC(uint32_t Current_CRC);
  *******************************************************************************
  *
  * Summary:
- *  This function stores configuration registers to FlashRowData array
- *  and writes this array to flash
+ *  This function stores the configuration registers to FlashRowData array
+ *  and writes this array to Flash.
  *
  * Parameters:
  *  None.
  *
  * Return:
- *  0 - writing to flash is successful
- *  >=1 - writing to flash is not successful. Refer to Flash Driver PDL documentation
+ *  0 - Writing to Flash is successful.
+ *  >=1 - Writing to Flash is not successful. Refer to the Flash Driver PDL documentation.
  *  for error codes.
  *
  ******************************************************************************/
 cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
 {
-    /* Fill flash row with "0" */
+    /* Fill Flash row with "0" */
     (void)memset(flashRowData, 0x00, sizeof(flashRowData));
-    
+
     #if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
-    uint32_t *flash_checksum_ptr = (uint32_t*)FLASH_END_ADDR;
+    uint32_t* flash_checksum_ptr = (uint32_t*)FLASH_END_ADDR;
     uint32_t no_of_data_to_copy = (FLASH_RESERVED_CHECKSUM_SIZE/sizeof(flashRowData[0]));
     #endif
-    
+
     #if defined(CY_DEVICE_PSOC6ABLE2)
-     /* Setting Regs which are affected by Flash delay for 1M device*/
+    /* Setting Regs affected by Flash delay for 1M device*/
     SRSS_CLK_OUTPUT_SLOW = _VAL2FLD(SRSS_CLK_OUTPUT_SLOW_SLOW_SEL0, 6);
     SRSS_CLK_CAL_CNT1 = _VAL2FLD(SRSS_CLK_CAL_CNT1_CAL_COUNTER1, 0);
     #endif
@@ -537,13 +613,14 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
         flashRowData[i] = CY_GET_REG32(regs32_ToTest[i]);
     }
 
-#if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
-    for(uint32_t i = 0;i <no_of_data_to_copy;i++)
+    #if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
+    for (uint32_t i = 0; i < no_of_data_to_copy; i++)
     {
-        flashRowData[(CY_FLASH_SIZEOF_ROW/(sizeof(uint32_t))) - no_of_data_to_copy + i] = flash_checksum_ptr[i];
+        flashRowData[(CY_FLASH_SIZEOF_ROW/(sizeof(uint32_t))) - no_of_data_to_copy + i] =
+            flash_checksum_ptr[i];
     }
     return Cy_Flash_WriteRow(CONF_REG_FIRST_ROW_ADDR, flashRowData);
-#elif CY_CPU_CORTEX_M7
+    #elif CY_CPU_CORTEX_M7
     uint16_t guardCnt = 0u;
     cy_en_flashdrv_status_t ret;
     Cy_Flashc_MainWriteEnable();
@@ -557,20 +634,20 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
     {
         return ret;
     }
-    if (sizeof(regs32_ToTest) > 512U)
+    uint32_t regsToTestSize = sizeof(regs32_ToTest);
+    if (regsToTestSize > 512U)
     {
         uint32_t addr_to_write = (uint32_t)(CONF_REG_FIRST_ROW_ADDR);
-        uint32_t *data_to_write = flashRowData;
-        for (uint32_t i = 0; i<2U; i++)
+        uint32_t* data_to_write = flashRowData;
+        for (uint32_t i = 0; i < 2U; i++)
         {
             ret = Cy_Flash_ProgramRow(addr_to_write, data_to_write);
-            if(ret != CY_FLASH_DRV_SUCCESS)
+            if (ret != CY_FLASH_DRV_SUCCESS)
             {
                 return ret;
             }
             addr_to_write = addr_to_write + 0x200U;
             data_to_write = &flashRowData[(i+1U)*128U];
-            
         }
     }
     else
@@ -579,7 +656,7 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
     }
     Cy_Flashc_MainWriteDisable();
     return ret;
-#endif
+    #endif /* if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33) */
 }
 
 
@@ -590,17 +667,17 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
  *
  * Summary:
  *  This function compares the calculated CRC (uint32_t Current_CRC) with the
- *  CRC previously stored in FLASH if the status semaphore for a stored CRC is
+ *  CRC previously stored in Flash if the status semaphore for a stored CRC is
  *  set.
- *  If status semaphore is not set, it calculates an new CRC
- *  (uint32_t Current_CRC) and stores it to FLASH and sets the status semaphore.
+ *  If the semaphore status is not set, it calculates a new CRC
+ *  (uint32_t Current_CRC) and stores it to Flash and sets the status semaphore.
  *
  * Parameters:
- *  uint32_t Current_CRC - CRC to compare with saved CRC
+ *  uint32_t Current_CRC - CRC to compare with the saved CRC.
  *
  * Return:
- *  0 - No error, CRC matched or FLASH write successful.
- *  Not 0 - Error detected, CRC didn't match or FLASH write fail.
+ *  0 - No error, CRC matched or Flash write is successful.
+ *  Not 0 - Error detected, CRC did not match or Flash write failed.
  *
  ******************************************************************************/
 static uint8_t SelfTests_Check_StartUp_Cfg_CRC(uint32_t Current_CRC)
@@ -609,52 +686,57 @@ static uint8_t SelfTests_Check_StartUp_Cfg_CRC(uint32_t Current_CRC)
     uint8_t  ret = ERROR_STATUS;
     cy_en_flashdrv_status_t status;
 
-    /* Pointer to FLASH base */
-#if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
+    /* The pointer to Flash base */
+    #if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
     regPointer = (uint8_t*)CY_FLASH_BASE;
-#else
+    #else
     regPointer = (uint8_t*)CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE;
-#endif
+    #endif
     /* Check if FLASH CRC semaphore is set */
-#if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
+    #if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
     if (regPointer[CY_FLASH_SIZE - CRC_STARTUP_SEMAPHORE_SHIFT] == CRC_STARTUP_SEMAPHORE)
-#else
-    if (regPointer[CONF_REG_FLASH_SMALL_SECTOR_SIZE - CRC_STARTUP_SEMAPHORE_SHIFT] == CRC_STARTUP_SEMAPHORE)
-#endif
+    #else
+    if (regPointer[CONF_REG_FLASH_SMALL_SECTOR_SIZE - CRC_STARTUP_SEMAPHORE_SHIFT] ==
+        CRC_STARTUP_SEMAPHORE)
+    #endif
     {
-        /* Check if intentional error should be made for testing */
+        /* Check if an intentional error should be made for testing */
         #if (ERROR_IN_STARTUP_CONF_REG)
 
-        /* Make artificial error in CRC */
+        /* Make an artificial error in CRC */
         Current_CRC++;
         #endif /* End (ERROR_IN_STARTUP_CONF_REG) */
-        /* if "yes" - check calculated FLASH CRC from CRC component with CRC stored in FLASH */
-#if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
+        /* if "yes" - check the calculated FLASH CRC from CRC component with CRC stored in Flash */
+        #if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4)
         if ((regPointer[CY_FLASH_SIZE - CRC_STARTUP_LO + 0u] == ((Current_CRC >> 0u) & 0xFFuL)) &&
             (regPointer[CY_FLASH_SIZE - CRC_STARTUP_LO + 1u] == ((Current_CRC >> 8u) & 0xFFuL)) &&
             (regPointer[CY_FLASH_SIZE - CRC_STARTUP_LO + 2u] == ((Current_CRC >> 16u) & 0xFFuL)) &&
             (regPointer[CY_FLASH_SIZE - CRC_STARTUP_LO + 3u] == ((Current_CRC >> 24u) & 0xFFuL)))
-#else
-        if ((regPointer[CONF_REG_FLASH_SMALL_SECTOR_SIZE - CRC_STARTUP_LO + 0u] == ((Current_CRC >> 0u) & 0xFFuL)) &&
-            (regPointer[CONF_REG_FLASH_SMALL_SECTOR_SIZE - CRC_STARTUP_LO + 1u] == ((Current_CRC >> 8u) & 0xFFuL)) &&
-            (regPointer[CONF_REG_FLASH_SMALL_SECTOR_SIZE - CRC_STARTUP_LO + 2u] == ((Current_CRC >> 16u) & 0xFFuL)) &&
-            (regPointer[CONF_REG_FLASH_SMALL_SECTOR_SIZE - CRC_STARTUP_LO + 3u] == ((Current_CRC >> 24u) & 0xFFuL)))
-#endif
+        #else
+        if ((regPointer[CONF_REG_FLASH_SMALL_SECTOR_SIZE - CRC_STARTUP_LO + 0u] ==
+             ((Current_CRC >> 0u) & 0xFFuL)) &&
+            (regPointer[CONF_REG_FLASH_SMALL_SECTOR_SIZE - CRC_STARTUP_LO + 1u] ==
+             ((Current_CRC >> 8u) & 0xFFuL)) &&
+            (regPointer[CONF_REG_FLASH_SMALL_SECTOR_SIZE - CRC_STARTUP_LO + 2u] ==
+             ((Current_CRC >> 16u) & 0xFFuL)) &&
+            (regPointer[CONF_REG_FLASH_SMALL_SECTOR_SIZE - CRC_STARTUP_LO + 3u] ==
+             ((Current_CRC >> 24u) & 0xFFuL)))
+        #endif /* if (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4) */
         {
             ret = PASS_COMPLETE_STATUS;
         }
     }
     else
     {
-        /* Read last row from FLASH */
+        /* Read last row from Flash */
         for (uint16_t i = 0; i < CY_FLASH_SIZEOF_ROW; i++)
         {
             ((uint8_t*)flashRowData)[i] = regPointer[LAST_ROW_IN_FLASH_OFFSET + i];
         }
 
 
-        /* If "no" - store calculated FLASH CRC and status byte to last bytes in FLASH with defined
-         * shift */
+        /* If "no" - store the calculated FLASH CRC and status byte to the last bytes in Flash with the defined
+         * shift. */
         for (uint8_t i = 0; i < sizeof(Current_CRC); i++)
         {
             ((uint8_t*)flashRowData)[CY_FLASH_SIZEOF_ROW  - CRC_STARTUP_LO +
@@ -664,17 +746,17 @@ static uint8_t SelfTests_Check_StartUp_Cfg_CRC(uint32_t Current_CRC)
         ((uint8_t*)flashRowData)[CY_FLASH_SIZEOF_ROW -
                                  CRC_STARTUP_SEMAPHORE_SHIFT] = CRC_STARTUP_SEMAPHORE;
 
-        /* Write array to last FLASH row */
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M0P)
+        /* Write the array to the last FLASH row */
+        #if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M0P)
         status = Cy_Flash_WriteRow(LAST_ROW_IN_FLASH_ADDR, flashRowData);
-#else
+        #else
         Cy_Flashc_MainWriteEnable();
         status = Cy_Flash_ProgramRow(LAST_ROW_IN_FLASH_ADDR, flashRowData);
         Cy_Flashc_MainWriteDisable();
-#endif
+        #endif
         if (CY_FLASH_DRV_SUCCESS == status)
         {
-            /* Return status that CRC is already stored */
+            /* Return the status that CRC is already stored */
             ret = CRC_SAVED_STATUS;
         }
     }
@@ -691,9 +773,9 @@ static uint8_t SelfTests_Check_StartUp_Cfg_CRC(uint32_t Current_CRC)
  *******************************************************************************
  *
  * Summary:
- *  This function call checks configuration registers by comparing the value
- *  stored in flash with current the current configuration registers value.
- *  If values are different function returns fail.
+ *  This function call checks the configuration registers by comparing the value
+ *  stored in Flash with the current configuration registers value.
+ *  If the values are different, the function returns a fail.
  *
  * Parameters:
  *  None.
@@ -710,19 +792,19 @@ uint8_t SelfTests_StartUp_ConfigReg(void)
     uint8_t ret = OK_STATUS;
     uint32_t tmp;
 
-    /* Set base address to flash where configuration registers stored */
+    /* Set the base address to Flash where configuration registers are stored */
     cfgRegPointer = (uint32_t*)(CONF_REG_FIRST_ROW_ADDR);
 
-    /* Compare register values with saved values */
+    /* Compare the register values with the saved values */
     uint32_t i = 0u;
-    while(((i < (sizeof(regs32_ToTest) / sizeof(regs32_ToTest[0u]))) && (ret == OK_STATUS)))
+    while (((i < (sizeof(regs32_ToTest) / sizeof(regs32_ToTest[0u]))) && (ret == OK_STATUS)))
     {
         tmp = cfgRegPointer[i];
 
-        /* Check if intentional error should be made for testing */
+        /* Check if an intentional error should be made for testing */
         #if (ERROR_IN_STARTUP_CONF_REG)
 
-        /* Make artificial error in configuration register */
+        /* Make an artificial error in the configuration register */
         tmp++;
         #endif /* End (ERROR_IN_STARTUP_CONF_REG) */
 
@@ -730,19 +812,19 @@ uint8_t SelfTests_StartUp_ConfigReg(void)
         {
             ret = ERROR_STATUS;
         }
-    i++;    
+        i++;
     }
 
-    /* Return OK status if no error detected */
+    /* Return the OK status if no error detected */
     return ret;
-    
+
     #elif (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE)
     uint32_t calculated_CRC;
 
-    /* Fill flash row with "0" */
+    /* Fill the Flash row with "0" */
     (void)memset(flashRowData, 0x00, sizeof(flashRowData));
 
-    /* Store 32Bit registers */
+    /* Store the 32Bit registers */
     for (uint32_t i = 0u; i < (sizeof(regs32_ToTest) / sizeof(regs32_ToTest[0u])); i++)
     {
         flashRowData[i] = CY_GET_REG32(regs32_ToTest[i]);
@@ -753,8 +835,10 @@ uint8_t SelfTests_StartUp_ConfigReg(void)
         SelfTests_CRC32((uint32_t)flashRowData,
                         (sizeof(regs32_ToTest) / sizeof(regs32_ToTest[0u])));
 
-    /* Compare calculated CRC with previously saved and return status of matches */
+    /* Compare the calculated CRC with the previously saved and return the status of matches */
     return SelfTests_Check_StartUp_Cfg_CRC(calculated_CRC);
     #endif /* End (STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE) */
 }
+
+
 /* [] END OF FILE */

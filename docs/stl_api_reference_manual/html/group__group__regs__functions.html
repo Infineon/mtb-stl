@@ -93,13 +93,13 @@ $(document).ready(function(){initNavTree('group__group__regs__functions.html',''
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga2a9a8a3ccf0d8a14a625f7b4d9b1918f"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__regs__functions.html#ga2a9a8a3ccf0d8a14a625f7b4d9b1918f">SelfTests_StartUp_ConfigReg</a> (void)</td></tr>
-<tr class="memdesc:ga2a9a8a3ccf0d8a14a625f7b4d9b1918f"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function call checks configuration registers by comparing the value stored in flash with current the current configuration registers value.  <a href="group__group__regs__functions.html#ga2a9a8a3ccf0d8a14a625f7b4d9b1918f">More...</a><br /></td></tr>
+<tr class="memdesc:ga2a9a8a3ccf0d8a14a625f7b4d9b1918f"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function call checks the configuration registers by comparing the value stored in Flash with the current configuration registers value.  <a href="group__group__regs__functions.html#ga2a9a8a3ccf0d8a14a625f7b4d9b1918f">More...</a><br /></td></tr>
 <tr class="separator:ga2a9a8a3ccf0d8a14a625f7b4d9b1918f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9128abb81630a5ff5beeb880a04ddbea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__regs__functions.html#ga9128abb81630a5ff5beeb880a04ddbea">SelfTests_Init_StartUp_ConfigReg</a> (void)</td></tr>
-<tr class="memdesc:ga9128abb81630a5ff5beeb880a04ddbea"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function should be always called to initilize the AREF address depending on the device.  <a href="group__group__regs__functions.html#ga9128abb81630a5ff5beeb880a04ddbea">More...</a><br /></td></tr>
+<tr class="memdesc:ga9128abb81630a5ff5beeb880a04ddbea"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function must be always called to initilize the AREF address depending on the device.  <a href="group__group__regs__functions.html#ga9128abb81630a5ff5beeb880a04ddbea">More...</a><br /></td></tr>
 <tr class="separator:ga9128abb81630a5ff5beeb880a04ddbea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaec89bb4971f81060db430a538539ec64"><td class="memItemLeft" align="right" valign="top">cy_en_flashdrv_status_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__regs__functions.html#gaec89bb4971f81060db430a538539ec64">SelfTests_Save_StartUp_ConfigReg</a> (void)</td></tr>
-<tr class="memdesc:gaec89bb4971f81060db430a538539ec64"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function stores configuration registers to FlashRowData array and writes this array to flash.  <a href="group__group__regs__functions.html#gaec89bb4971f81060db430a538539ec64">More...</a><br /></td></tr>
+<tr class="memdesc:gaec89bb4971f81060db430a538539ec64"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function stores the configuration registers to the FlashRowData array and writes this array to Flash.  <a href="group__group__regs__functions.html#gaec89bb4971f81060db430a538539ec64">More...</a><br /></td></tr>
 <tr class="separator:gaec89bb4971f81060db430a538539ec64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -119,8 +119,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This function call checks configuration registers by comparing the value stored in flash with current the current configuration registers value. </p>
-<p >If values are different function returns fail.</p>
+<p>This function call checks the configuration registers by comparing the value stored in Flash with the current configuration registers value. </p>
+<p >If the values are different, the function returns a fail.</p>
 <dl class="section return"><dt>Returns</dt><dd>0 - Test Passed <br  />
  1 - Test failed </dd></dl>
 
@@ -142,7 +142,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This function should be always called to initilize the AREF address depending on the device. </p>
+<p>This function must be always called to initilize the AREF address depending on the device. </p>
 <dl class="section note"><dt>Note</dt><dd>Applicable only for CAT1A devices</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>None </dd></dl>
 
@@ -164,11 +164,11 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This function stores configuration registers to FlashRowData array and writes this array to flash. </p>
-<dl class="section note"><dt>Note</dt><dd>To be used only if the STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE. <br  />
- This function should be called once after the initial PSoC power up and initialization before entering the main program</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>0 - Writing to flash is successful <br  />
- &gt;=1 - Writing to flash is not successful. Refer to Flash Driver PDL documentation for error codes </dd></dl>
+<p>This function stores the configuration registers to the FlashRowData array and writes this array to Flash. </p>
+<dl class="section note"><dt>Note</dt><dd>Used only if the STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE. <br  />
+ This function must be called once after the initial PSOC power up and initialization before entering the main program.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Writing to Flash is successful. <br  />
+ &gt;=1 - Writing to Flash is not successful. Refer to the Flash Driver PDL documentation for error codes. </dd></dl>
 
 </div>
 </div>

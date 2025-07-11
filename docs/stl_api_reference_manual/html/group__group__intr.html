@@ -89,11 +89,11 @@ $(document).ready(function(){initNavTree('group__group__intr.html',''); initResi
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
-<p >To meet Class B requirement, interrupt must be checked for “incorrect frequency”. </p>
-<p >This test is a task which is highly system dependent and therefore the STL can only contribute the wrap up handle, which checks that a number of specific interrupts occurred at least and at most a predefined number of times.</p>
+<p >To meet the Class B requirement, check the interrupt for “incorrect frequency”. </p>
+<p >This test is a highly system dependent and therefore the STL can only contribute the wrap up handle, which checks that a number of specific interrupts occurred at least and at most a predefined number of times.</p>
 <h1><a class="anchor" id="group_intr_more_information"></a>
 More Information</h1>
-<p >It is assumed that Interrupt_Test (interrupt test function) is called periodically, e.g. triggered by a timer or constantly in the main loop. Each specific interrupt handler which is to be supervised, must decrement a dedicated global variable (freq), InterruptTest() compares that variable to predefined upper and lower bounds, returns an error, if the limits are exceeded. </p>
+<p >It is assumed that Interrupt_Test (interrupt test function) is called periodically, e.g. triggered by a timer or constantly in the main loop. Each specific interrupt handler to be supervised must decrement a dedicated global variable (freq), InterruptTest(), compares that variable to predefined upper and lower bounds, returns an error, if the limits are exceeded. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>

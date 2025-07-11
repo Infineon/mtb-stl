@@ -89,16 +89,16 @@ $(document).ready(function(){initNavTree('group__group__pwm__gatekill.html','');
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
-<p >The "Gate Kill" function is used in motor controllers and multi-level power converters. </p>
+<p >The Gate Kill function is used in motor controllers and multi-level power converters. </p>
 <p >When an over-voltage or over-current state is detected, the Gate Kill shuts down the output drivers in less than 50 nanoseconds.</p>
 <h1><a class="anchor" id="group_pwm_gatekill_more_information"></a>
 More Information</h1>
-<p >The test is carried out as mentioned below: </p><pre class="fragment"> 1) The Low power comparator/ SAR ADC Range Voilation Intr output is routed to Kill
- signal of TCPWM indicating over-voltage/over-current condition if voltage on +ve
+<p >The test procedure: </p><pre class="fragment"> 1) The Low power comparator/ SAR ADC Range Voilation Intr output is routed to Kill
+ signal of TCPWM indicating over-voltage/over-current condition if the voltage on +ve
  terminal is &gt; -ve.
- 2) If over-voltage or over-current condition it will Kill PWM output.
+ 2) Under over-voltage or over-current condition it will Kill the PWM output.
  3) The TCPWM base and CntNum is passed to check whether the counter is stopped or not.
- 4) If counter is not incrementing/decrementing the PWM output is inactive.
+ 4) If the counter is not incrementing/decrementing, the PWM output is inactive.
 </pre> <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>

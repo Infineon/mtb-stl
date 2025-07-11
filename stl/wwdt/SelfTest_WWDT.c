@@ -3,7 +3,7 @@
 *
 * Description:
 *  This file provides the source code for the windowed watchdog timer
-*  Class B support tests.
+*  Class B self tests.
 *
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
@@ -42,7 +42,7 @@
 #include "SelfTest_WWDT.h"
 #include "SelfTest_ErrorInjection.h"
 
-#if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
+#if (defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 2))
 
 void WdtInterruptHandler(void);
 
@@ -51,17 +51,35 @@ static volatile uint32_t wwdt_count;
 static volatile uint32_t wwdt_intr_occured;
 
 /* WDT interrupt configuration structure */
-const cy_stc_sysint_t WDT_IRQ_cfg = {
-    .intrSrc = ((NvicMux3_IRQn << 16) | WDT_IRQ_INTC_NUMBER),
+static const cy_stc_sysint_t WDT_IRQ_cfg =
+{
+    .intrSrc      = ((NvicMux3_IRQn << 16) | WDT_IRQ_INTC_NUMBER),
     .intrPriority = 3
 };
 
+
+/*******************************************************************************
+* Function Name: SelfTest_Windowed_WDT
+****************************************************************************//**
+*
+* This function checks the WDT in window mode. It: <br>
+* 1) Services the WDT before the LOWER limit which causes the device to reset. <br>
+* 2) Check the occurance of interrupt at WARN LIMIT.
+*
+*
+* \note
+* Only applicable for CAT1C devices
+* \return
+*  0 - Test passed <br>
+*  1 - Test failed
+*
+*******************************************************************************/
 uint8_t SelfTest_Windowed_WDT(void)
 {
-        wwdt_intr_occured = 0U;
+    wwdt_intr_occured = 0U;
     /* Initialize WDT */
-    /* Check the reason for device restart */
-    if(CY_SYSLIB_RESET_HWWDT == Cy_SysLib_GetResetReason())
+    /* Check the reason for the device restart */
+    if (CY_SYSLIB_RESET_HWWDT == Cy_SysLib_GetResetReason())
     {
         Cy_SysLib_ClearResetReason();
         wwdt_intr_occured = 1U;
@@ -71,7 +89,7 @@ uint8_t SelfTest_Windowed_WDT(void)
         Cy_SysLib_ClearResetReason();
     }
 
-    /* Step 1- Unlock WDT */
+    /* Unlock WDT and set actions and limits */
     Cy_WDT_Unlock();
     Cy_WDT_SetDebugRun(CY_WDT_ENABLE);
     Cy_WDT_SetLowerLimit(WDT_LOWER_LIMIT);
@@ -81,20 +99,19 @@ uint8_t SelfTest_Windowed_WDT(void)
     Cy_WDT_SetWarnLimit(WDT_WARN_LIMIT);
     Cy_WDT_SetWarnAction(CY_WDT_WARN_ACTION_INT);
 
-    /* Step 4- Clear match event interrupt, if any */
+    /* Clear match event interrupt, if any */
     Cy_WDT_ClearInterrupt();
-    /* Step 5 - Enable interrupt */
+    /* Enable interrupt */
     cy_en_sysint_status_t sysint_status = Cy_SysInt_Init(&WDT_IRQ_cfg, WdtInterruptHandler);
     (void)sysint_status;
-    NVIC_EnableIRQ((IRQn_Type) NvicMux3_IRQn);
+    NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);
     Cy_WDT_UnmaskInterrupt();
 
-    /* Step 6- Enable WDT */
     Cy_WDT_Enable();
 
     Cy_SysLib_Delay(3000);
 
-    if(1U== wwdt_intr_occured)
+    if (1U == wwdt_intr_occured)
     {
         do
         {
@@ -113,45 +130,61 @@ uint8_t SelfTest_Windowed_WDT(void)
         do
         {
             wwdt_count = Cy_WDT_GetCount();
-#if (!ERROR_IN_WWDT_LOWER_LIMIT)
+            #if (!ERROR_IN_WWDT_LOWER_LIMIT)
             if (wwdt_count >= 3000U)
             {
                 Cy_WDT_SetService();
             }
-#endif
+            #endif
         } while (wwdt_count <= WDT_LOWER_LIMIT);
     }
-    
+
     Cy_WDT_Disable();
     Cy_WDT_Lock();
     return ERROR_STATUS;
 }
 
 
-uint32_t Wdt_IsWdtInterrutpSet(void)
+/*******************************************************************************
+* Function Name: Wdt_IsWdtInterrutpSet
+****************************************************************************//**
+*
+* Checks if the Watchdog Timer (WDT) interrupt is set.
+*
+* \return
+*  0 - WDT interrupt is not set <br>
+*  Non-zero - WDT interrupt is set
+*
+*******************************************************************************/
+static uint32_t Wdt_IsWdtInterrutpSet(void)
 {
-#if defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 2)
     return (SRSS_WDT_INTR & WDT_INTR_WDT_Msk);
-#else
-    return (SRSS_SRSS_INTR & SRSS_SRSS_INTR_WDT_MATCH_Msk);
-#endif
 }
 
+
+/*******************************************************************************
+* Function Name: WdtInterruptHandler
+****************************************************************************//**
+*
+* Interrupt Service Routine (ISR) for the Watchdog Timer (WDT).
+*
+*******************************************************************************/
 void WdtInterruptHandler(void)
 {
     /* Check if the interrupt is from WDT */
-    if(Wdt_IsWdtInterrutpSet() != 0UL)
+    if (Wdt_IsWdtInterrutpSet() != 0UL)
     {
-#if ERROR_IN_WWDT_INTR
+        #if ERROR_IN_WWDT_INTR
         wwdt_intr_occured+=2;
-#else
+        #else
         wwdt_intr_occured++;
-#endif
+        #endif
         /* Clear WDT Interrupt */
         Cy_WDT_ClearInterrupt();
     }
 }
 
-#endif
+
+#endif /* if (defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 2)) */
 
 /* [] END OF FILE */

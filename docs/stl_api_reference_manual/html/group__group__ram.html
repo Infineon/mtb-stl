@@ -89,20 +89,20 @@ $(document).ready(function(){initNavTree('group__group__ram.html',''); initResiz
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
-<p >To meet Class B requirement, SRAM test must be checked for “DC fault”. </p>
-<p >Either of the 2 methods can be used: </p><pre class="fragment"> 1) March/Checkerboard:  This test is destructive. The RAM area is written
-                      with  alternate “0” and “1” to memory, and verifies if the
-                      writen data is right by reading back.
- 2) GALPAT:              This test is destructive. This test initilizes the chosen
-                      range of memory uniformly (i.e. all 0 s or all 1 s). The first
-                      memory cell to be tested is then inverted and all the remaining
-                      cells are inspected to ensure that their contents are correct.
-                      After every read access to one of the remaining cells, the inverted
-                      cell is also checked. This procedure is repeated for each cell
-                      in the chosen memory range. A second run is carried out with the
-                      opposite initialisation. Any difference produces a failure message.
-                      It can detect stuck-at faults and direct coupling faults.
-</pre> <dl class="section note"><dt>Note</dt><dd>GALPAT test is time consuming. This tests can be implemented at startup procedure to test entire SRAM area </dd></dl>
+<p >To meet the Class B requirement, SRAM test must be checked for DC fault. </p>
+<p >Either of the two tests (both are destructive) can be used: </p><pre class="fragment"> 1) March/Checkerboard: The RAM area is written
+                        with  alternate “0” and “1” to memory, and verifies if the
+                        written data is correct by reading back.
+ 2) GALPAT:             This test initilizes the chosen
+                        range of memory uniformly (i.e. all 0 s or all 1 s). The first
+                        memory cell to be tested is then inverted and all the remaining
+                        cells are inspected for the correct contents.
+                        After every read access to one of the remaining cells, the inverted
+                        cell is also checked. This procedure is repeated for each cell
+                        in the chosen memory range. A second run is done with the
+                        opposite initialisation. Any difference produces a failure message.
+                        It can detect stuck-at faults and direct coupling faults.
+</pre> <dl class="section note"><dt>Note</dt><dd>GALPAT test is time consuming. These tests can be implemented at the startup procedure to test entire SRAM area </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>

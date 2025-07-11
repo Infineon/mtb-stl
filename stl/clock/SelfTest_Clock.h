@@ -38,26 +38,27 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_clock
-* \{
-*
-* The clock test implements independent time-slot monitoring and verifies the reliability 
-* of the internal main oscillator (IMO) system clock, specifically, that the system clock
-* is neither too fast nor too slow within the tolerance of the internal low-speed oscillator (ILO). 
-*
-*
-* \section group_clock_more_information More Information
-*
-* The ILO clock is accurate to ± 60 percent. If accuracy greater than 60 percent is required, the ILO may 
-* be trimmed to be more accurate using a precision system level signal or production test. If ILO trimming
-* is required, it is trimmed using the CLK_ILO_TRIM register. <br> 
-* If the WCO is available, it should be used for this test, since it is much more accurate. If the 
-* other oscillators (ECO, EXT_CLK, IMO) are safety critical, customers can use this test as a guideline.
-*
-*
-* \defgroup group_clock_macros Macros
-* \defgroup group_clock_functions Functions
-*/
+ * \addtogroup group_clock
+ * \{
+ *
+ * The clock test implements independent time-slot monitoring and verifies the reliability
+ * of the internal main oscillator (IMO) system clock, specifically, that the system clock
+ * is neither too fast nor too slow within the tolerance of the internal low-speed oscillator (ILO).
+ *
+ *
+ * \section group_clock_more_information More Information
+ *
+ * The ILO clock is accurate to ± 60 percent. If accuracy greater than 60 percent is required, the
+ * ILO may be trimmed to be more accurate using a precision system level signal or production test.
+ * If ILO trimming is required, it is trimmed using the CLK_ILO_TRIM register. <br>
+ * If the WCO is available, it should be used for this test, since it is much more accurate. If the
+ * other oscillators (ECO, EXT_CLK, IMO) are safety critical, customers can use this test as a
+ * guideline.
+ *
+ *
+ * \defgroup group_clock_macros Macros
+ * \defgroup group_clock_functions Functions
+ */
 
 #if !defined(SELFTEST_CLOCK_H)
     #define SELFTEST_CLOCK_H
@@ -68,27 +69,27 @@
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_clock_functions
-* \{
-*/
+ * \addtogroup group_clock_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_Clock
 ****************************************************************************//**
 *
-* Performs Clock test and verify measured clock frequency to be in accuracy range
+* Performs Clock test and verifies if the measured clock frequency is in the accuracy range.
 *
 *
-* \param base 
+* \param base
 * The pointer to a TCPWM instance <br>
-* \param cntNum 
+* \param cntNum
 * The Counter instance number in the selected TCPWM
 *
 * \return
 *  1 - Test failed <br>
 *  2 - Still testing <br>
 *  3 - Test completed <br>
-*  4 - Incorrect Usage 
+*  4 - Incorrect Usage
 *
 *******************************************************************************/
 uint8_t SelfTest_Clock(TCPWM_Type* base, uint32_t cntNum);
@@ -97,7 +98,7 @@ uint8_t SelfTest_Clock(TCPWM_Type* base, uint32_t cntNum);
 * Function Name: SelfTest_Clock_ISR_TIMER
 ****************************************************************************//**
 *
-* Handle Interrupt Service Routine. Source - Timer. 
+* Handle Interrupt Service Routine. Source - Timer.
 *
 *******************************************************************************/
 void SelfTest_Clock_ISR_TIMER(void);
@@ -113,14 +114,14 @@ void SelfTest_Clock_ISR_TIMER(void);
 ***************************************/
 
 /** \addtogroup group_clock_macros
-* \{
-*/
-/** Lower possible clock count for WDT depending on the accuracy of Oscillator */
+ * \{
+ */
+/** Lower possible clock count for WDT depending on the accuracy of oscillator */
 /* For PSoC 4100S Max, ILO = 40kHz */
-/* lower possible clock count = 40 * (1 - 50%) = 20 */
+/* Lower possible clock count = 40 * (1 - 50%) = 20 */
 #define CLOCK_TICKS_LO                      (20u)
 
-/** Higher possible clock count for WDT depending on the accuracy of Oscillator */
+/** Higher possible clock count for WDT depending on the accuracy of oscillator */
 /* Higher possible clock count = 40 * (1 + 100%) = 80 */
 #define CLOCK_TICKS_HI                      (80u)
 
@@ -128,7 +129,8 @@ void SelfTest_Clock_ISR_TIMER(void);
 #define CLOCK_TEST_TIME                     (1000u)
 
 /** Number of IMO clock cycles equivalent to CLOCK_TEST_TIME (Only for CAT2 devices). */
-/** For CAT1A, CAT1B(PSoC C3) and CAT1C this value is calculated during runtime depending on the Pheripheral clock and it's divider. */
+/** For CAT1A, CAT1B(PSoC C3) and CAT1C, this value is calculated during the runtime depending on the
+    Pheripheral clock and its divider. */
 #define CLOCK_TEST_TIME_TIMER_PERIOD        \
     (((CY_CFG_SYSCLK_IMO_FREQ_HZ/(1000000uL)) * (CLOCK_TEST_TIME)) / CLOCK_TEST_TIMER_CLK_DIV)
 
@@ -153,7 +155,7 @@ void SelfTest_Clock_ISR_TIMER(void);
 
 
 /* For PSoC6 and XMC  WCO = 32kHz */
-/* lower possible clock count = 32 * (1 - 0.015%) = 16 */
+/* Lower possible clock count = 32 * (1 - 0.015%) = 16 */
 #define CLOCK_TICKS_LO                      (31u)
 
 /* Higher possible clock count = 32 * (1 + 0.015%) = 80 */
@@ -172,7 +174,7 @@ void SelfTest_Clock_ISR_TIMER(void);
 
 /** \endcond */
 
-#endif
+#endif /* if CY_CPU_CORTEX_M0P */
 
 
 

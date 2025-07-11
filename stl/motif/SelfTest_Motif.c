@@ -2,7 +2,7 @@
 * File Name: SelfTest_Motif.c
 *
 * Description:
-*  This file provides the source code to the API for Motif self tests.
+*  This file provides the source code to the API for the Motif self tests.
 *
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
@@ -40,7 +40,7 @@
 #include "cy_pdl.h"
 #include "SelfTest_Motif.h"
 
-#if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
+#if defined (CY_IP_MXS40TCPWM)
 
 #ifndef SELTTEST_MOTIF_H
 #define SELTTEST_MOTIF_H
@@ -50,17 +50,17 @@
 * Function Name: SelfTest_MotifCfgSigGen
 ****************************************************************************//**
 *
-*  This function configure the TCPWM to generate the Encoder pulses (Phase-A,
+*  This function configures the TCPWM to generate Encoder pulses (Phase-A,
 *  Phase-B and Index). Generated pulses are internally connected to MOTIF
 *  module.
 *
 * \param hPtr
-* Pointer to the motif self test configuration handler.
+* The pointer to the motif self test configuration handler.
 *
 *******************************************************************************/
-static inline void SelfTest_MotifCfgSigGen(stl_motif_cfg_handle_t * hPtr)
+static inline void SelfTest_MotifCfgSigGen(stl_motif_cfg_handle_t* hPtr)
 {
-    for(uint8_t i = 0u; i < EMU_SIG_NUM; i++)
+    for (uint8_t i = 0u; i < EMU_SIG_NUM; i++)
     {
         /*Configure TCPWM to generate encoder input pulses*/
         Cy_TCPWM_PWM_Init(hPtr->sgen_base[i], hPtr->sgen[i].idx, hPtr->sgen[i].cfg);
@@ -69,39 +69,65 @@ static inline void SelfTest_MotifCfgSigGen(stl_motif_cfg_handle_t * hPtr)
 
     /* Start test signals.*/
     Cy_TCPWM_TriggerStart_Single(
-            hPtr->sgen_base[(EMU_SIG_NUM-1u)],
-            hPtr->sgen[(EMU_SIG_NUM-1u)].idx);
+        hPtr->sgen_base[(EMU_SIG_NUM-1u)],
+        hPtr->sgen[(EMU_SIG_NUM-1u)].idx);
 }
+
 
 /*******************************************************************************
 * Function Name: SelfTest_Motif_Init
+****************************************************************************//**
+*
+*  This function initializes the MOTIF self test configuration. Initialization includes
+*  - Generate the emulated signals for Phase-A, Phase-B and Index using TCPWM.
+*  These signals are input to the MOTIF module.
+*  - Configure the TCPWM counter to capture the Q-CLK resolution.
+*  - Configure the MOTIF module.
+* \param hPtr
+* Pointer to the motif self test configuration handler.
+*
 *******************************************************************************/
-void SelfTest_Motif_Init(stl_motif_cfg_handle_t * hPtr)
+void SelfTest_Motif_Init(stl_motif_cfg_handle_t* hPtr)
 {
     /* Configure emulated signals generation*/
     SelfTest_MotifCfgSigGen(hPtr);
 
-    /* Initialize the TCPWM to capture the count between two quadrature clock */
+    /* Initialize the TCPWM to capture the count between two quadrature clocks */
     Cy_TCPWM_Counter_Init(
-            hPtr->qclk_base,
-            hPtr->qclk.idx,
-            hPtr->qclk.cfg);
+        hPtr->qclk_base,
+        hPtr->qclk.idx,
+        hPtr->qclk.cfg);
 
     Cy_TCPWM_Counter_Enable(hPtr->qclk_base, hPtr->qclk.idx);
 
     /* Initialize and enable the MOTIF module in quadrature decoder mode */
     Cy_TCPWM_MOTIF_Quaddec_Init(
-            hPtr->motif_base,
-            hPtr->motif_config);
+        hPtr->motif_base,
+        hPtr->motif_config);
 
-    /* Enable the MOTIF */
+    /* Enable MOTIF */
     Cy_TCPWM_MOTIF_Enable(hPtr->motif_base);
 }
 
+
 /*******************************************************************************
 * Function Name: SelfTest_Motif_Start
+****************************************************************************//**
+*
+*  This function starts the Motif and capture the count between two quadrature
+*  clock edges.
+*  Captured value compares with the reference value and returns
+*  the result.
+*
+* \param hPtr
+* Pointer to the motif self test configuration handler.
+*
+* \return
+*  "0" "OK_STATUS" - Test passed <br>
+*  "1" "ERROR_STATUS" - Test failed
+*
 *******************************************************************************/
-uint8_t SelfTest_Motif_Start(stl_motif_cfg_handle_t *hPtr)
+uint8_t SelfTest_Motif_Start(stl_motif_cfg_handle_t* hPtr)
 {
     uint8_t result = OK_STATUS;
 
@@ -115,11 +141,11 @@ uint8_t SelfTest_Motif_Start(stl_motif_cfg_handle_t *hPtr)
 
     /*Capture the tcpwm count between two q-clock*/
     cap_time = Cy_TCPWM_Counter_GetCapture(
-            hPtr->qclk_base,
-            hPtr->qclk.idx);
+        hPtr->qclk_base,
+        hPtr->qclk.idx);
 
-    if((cap_time < (hPtr->ref_count - hPtr->margin_count)) ||
-            (cap_time > (hPtr->ref_count + hPtr->margin_count)))
+    if ((cap_time < (hPtr->ref_count - hPtr->margin_count)) ||
+        (cap_time > (hPtr->ref_count + hPtr->margin_count)))
     {
         result = ERROR_STATUS;
     }
@@ -127,7 +153,7 @@ uint8_t SelfTest_Motif_Start(stl_motif_cfg_handle_t *hPtr)
     return result;
 }
 
-#endif /* SELFTEST_MOTIF_H */
-#endif
-/* [] END OF FILE */
 
+#endif /* SELFTEST_MOTIF_H */
+#endif /* if defined (CY_IP_MXS40TCPWM) */
+/* [] END OF FILE */

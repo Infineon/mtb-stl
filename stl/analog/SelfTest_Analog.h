@@ -38,43 +38,43 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_analog
-* \{
-*
-* This module carries out 4 tests: <br>
-* 1) SAR ADC <br>
-* 2) OPAMP <br>
-* 3) LPCOMP <br>
-* 4) DAC
-*
-* \section group_analog_more_information More Information
-*
-* SAR ADC Test:
-* This test is to check the SAR ADC analog functions. Each ADC enabled by 
-* the test is connected to an reference voltage using the Programmable 
-* Analog block. If the measured value falls within the expected range,
-* the test passes.
-*
-* OPAMP Test:
-* The opamp is tested by generating the same output as the input 
-* (Unity Gain Buffer) and the result is read by the SAR ADC.
-* If it is as per expected the test passes.
-*
-* LPCOMP:
-* The inputs to the comparators can be connected to the internal reference voltage,
-* one side of each comparator is connected to Some Voltage and the other side is 
-* connected to ground. The results are checked. The inputs are switched and the 
-* result is checked again.
-*
-* DAC Test:
-* This test is to check the DAC analog functions. Performs DAC test and
-* verifies that input of DAC and output from ADC are same.
-* If it is as per expected then test passes.
-*
-*
-* \defgroup group_analog_macros Macros
-* \defgroup group_analog_functions Functions
-*/
+ * \addtogroup group_analog
+ * \{
+ *
+ * This module carries out 4 tests: <br>
+ * 1) SAR ADC <br>
+ * 2) OPAMP <br>
+ * 3) LPCOMP <br>
+ * 4) DAC
+ *
+ * \section group_analog_more_information More Information
+ *
+ * SAR ADC Test:
+ * This test is to check the SAR ADC analog functions. Each ADC enabled by
+ * the test is connected to an reference voltage using the Programmable
+ * Analog block. If the measured value falls within the expected range,
+ * the test passes.
+ *
+ * OPAMP Test:
+ * The opamp is tested by generating the same output as the input
+ * (Unity Gain Buffer) and the result is read by the SAR ADC.
+ * If it is as per expected the test passes.
+ *
+ * LPCOMP:
+ * The inputs to the comparators can be connected to the internal reference voltage,
+ * one side of each comparator is connected to Some Voltage and the other side is
+ * connected to ground. The results are checked. The inputs are switched and the
+ * result is checked again.
+ *
+ * DAC Test:
+ * This test is to check the DAC analog functions. Performs DAC test and
+ * verifies that input of DAC and output from ADC are same.
+ * If it is as per expected then test passes.
+ *
+ *
+ * \defgroup group_analog_macros Macros
+ * \defgroup group_analog_functions Functions
+ */
 
 #if !defined(SELFTEST_ANALOG_H)
     #define SELFTEST_ANALOG_H
@@ -83,42 +83,45 @@
 #include "cybsp.h"
 #include "SelfTest_common.h"
 
-/* Supports three self test modes: */
-/* ANALOG_TEST_VREF_EXTERNAL  - depends on a external three series resistor
+/* Supports three self-test modes: */
+/* ANALOG_TEST_VREF_EXTERNAL  - Depends on an external three-series resistor
  * voltage divider from VDDA to GND to supply a reference voltage for the self test.
  *
- * ANALOG_TEST_VREF_DUAL_MSC - uses the two internal MSCv3 blocks to route VREF(1.2V) and VDDA/2 to
- * the
- * AMUXBUS which the tests can use.
+ * ANALOG_TEST_VREF_DUAL_MSC - Uses the two internal MSCv3 blocks to route VREF(1.2V) and VDDA/2 to
+ * the AMUXBUS which the tests can use.
  *
  * ANALOG_TEST_VREF_CSD_IDAC - Uses a internal CSD IDAC to generate a voltage from a external pull
  * down resistor.
  * */
 
 /** \addtogroup group_analog_macros
-* \{
-*/
+ * \{
+ */
 #if (CY_CPU_CORTEX_M0P)
-    /** Test is carried out by using Vref from External*/
+/** The test is done by using Vref from External*/
     #define ANALOG_TEST_VREF                       (ANALOG_TEST_VREF_EXTERNAL)
-    /** Depends on a external three series resistor voltage divider from VDDA to GND to supply a reference voltage for the self test. */
+/** Depends on an external three-series resistor voltage divider from VDDA to GND to supply a
+ *  reference voltage for the self test. */
     #define ANALOG_TEST_VREF_EXTERNAL              (0u)
-    /** Uses the two internal MSCv3 blocks to route VREF(1.2V) and VDDA/2 to the AMUXBUS which the tests can use. Only for CAT2 device */
+/** Uses the two internal MSCv3 blocks to route VREF(1.2V) and VDDA/2 to the AMUXBUS, which the tests
+ *  can use. Only for CAT2 device */
     #define ANALOG_TEST_VREF_DUAL_MSC              (1u)
-    /** Uses a internal CSD IDAC to generate a voltage from a external pull down resistor. Only for CAT2 device */
+/** Uses an internal CSD IDAC to generate a voltage from an external pull-down resistor. Only for CAT2
+ *  device. */
     #define ANALOG_TEST_VREF_CSD_IDAC              (2u)
 #else
-    /** Test is carried out by using Vref from External*/
+/** The test is done by using Vref from External*/
     #define ANALOG_TEST_VREF                       (ANALOG_TEST_VREF_EXTERNAL)
-    /** Depends on a external three series resistor voltage divider from VDDA to GND to supply a reference voltage for the self test. */
+/** Depends on an external three-series resistor voltage divider from VDDA to GND to supply a
+ *  reference voltage for the self test. */
     #define ANALOG_TEST_VREF_EXTERNAL              (0u)
-#endif
+#endif /* if (CY_CPU_CORTEX_M0P) */
 
 
 /** \cond INTERNAL */
 #if (CY_CPU_CORTEX_M0P)
     #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_DUAL_MSC) && !defined(CY_IP_M0S8MSCV3) && \
-        (CY_IP_M0S8MSCV3_INSTANCES < 2u)
+    (CY_IP_M0S8MSCV3_INSTANCES < 2u)
     #error "Hardware does not support ANALOG_TEST_VREF_DUAL_MSC mode"
     #endif
 
@@ -142,77 +145,83 @@
 
 /* Definition of the analog components included in class B */
 #if (CY_CPU_CORTEX_M0P)
-    /** OP-AMP accuracy: 12% */
+/** OP-AMP accuracy: 12% */
     #define OPAMP_TEST_ACURACCY             12
 
-    #if defined(CY_DEVICE_SERIES_PSOC_4100T_PLUS)
-    /** Whether ADC is present or not*/
+    #if defined(CY_DEVICE_SERIES_PSOC_4000T)
+/* PSoC 4000T devices do not support analog tests */
+    #elif (defined(CY_DEVICE_SERIES_PSOC_4000S) || defined(CY_DEVICE_SERIES_PSOC_4700S))
+/** Whether Comparator is present or not */
+    #define CLASSB_SELF_TEST_COMP           1u
+    #elif defined(CY_DEVICE_SERIES_PSOC_4100T_PLUS)
+/** Whether ADC is present or not*/
     #define CLASSB_SELF_TEST_ADC            1u
-    /** Whether OPAMP is present or not */
+/** Whether OPAMP is present or not */
     #define CLASSB_SELF_TEST_OPAMP          1u
     #else
-    /** Whether ADC is present or not*/
+/** Whether ADC is present or not*/
     #define CLASSB_SELF_TEST_ADC            1u
-    /** Whether OPAMP is present or not */
+/** Whether OPAMP is present or not */
     #define CLASSB_SELF_TEST_OPAMP          1u
-    /** Whether Comparator is present or not */
+/** Whether Comparator is present or not */
     #define CLASSB_SELF_TEST_COMP           1u
     #endif /* CY_DEVICE_SERIES_PSOC_4100T_PLUS */
 
-#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33 )
-    /** Whether ADC is present or not */
+#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
+/** Whether ADC is present or not */
     #define CLASSB_SELF_TEST_ADC            1u
-    /** Whether Comparator is present or not */
+/** Whether Comparator is present or not */
     #define CLASSB_SELF_TEST_COMP           1u
     #if CY_CPU_CORTEX_M33
     #define CLASSB_SELF_TEST_DAC            1u
     #endif
     #if (defined(CY_DEVICE_PSOC6ABLE2) || defined(CY_DEVICE_PSOC6A256K))
-        /** Whether OP-AMP is present or not */
+/** Whether OP-AMP is present or not */
         #define OPAMP_TEST_ACURACCY             12
-        /** OP-AMP accuracy: 12% */
+/** OP-AMP accuracy: 12% */
         #define CLASSB_SELF_TEST_OPAMP          1u
     #endif
 
 #elif (CY_CPU_CORTEX_M7)
-    /** Whether ADC is present or not */
+/** Whether ADC is present or not */
     #define CLASSB_SELF_TEST_ADC            1u
-#endif
+#endif /* if (CY_CPU_CORTEX_M0P) */
+
 
 /** \cond INTERNAL */
 #if (CY_CPU_CORTEX_M0P)
-    /*****************************************************************************
-    * Defined parameters for Voltage References
-    *****************************************************************************/
+/*****************************************************************************
+* Defined parameters for Voltage References
+*****************************************************************************/
     #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_DUAL_MSC)
     #define INTERNAL_BANDGAP_VREF_MV        1200
 
     #define ANALOG_TEST_VREF1_MV            (INTERNAL_BANDGAP_VREF_MV)
     #define ANALOG_TEST_VREF2_MV            (CY_CFG_PWR_VDDA_MV/2)
 
-    /*****************************************************************************
-    * Defined parameters for MSC block as Voltage References
-    *****************************************************************************/
-    /* SW config to route output to AMUXBUS A */
+/*****************************************************************************
+* Defined parameters for MSC block as Voltage References
+*****************************************************************************/
+/* SW config to route the output to AMUXBUS A */
     #define MSC_SW_SEL_TOP_CSDBUS_TO_AMUXBUS_A      ((1UL << MSC_MODE_SW_SEL_TOP_AYA_CTL_Pos)|\
                                                     (1UL << MSC_MODE_SW_SEL_TOP_AYA_EN_Pos) |\
                                                     (1UL << MSC_MODE_SW_SEL_TOP_AYB_CTL_Pos)|\
                                                     (1UL << MSC_MODE_SW_SEL_TOP_AYB_EN_Pos))
 
-    /* SW config to route output to AMUXBUS B */
+/* SW config to route the output to AMUXBUS B */
     #define MSC_SW_SEL_TOP_CSDBUS_TO_AMUXBUS_B      ((3UL << MSC_MODE_SW_SEL_TOP_BYB_Pos)|\
                                                     (1UL << MSC_MODE_SW_SEL_TOP_MBCC_Pos))
 
     #define MSC_SW_SEL_SH_SO_TO_AMUXBUS_B           (1UL << MSC_MODE_SW_SEL_SH_SOMB_Pos)
 
-    /* SW config to use internal bandgap as vref to MSC block */
+/* SW config to use the internal bandgap as vref to MSC block */
     #define MSC_SW_SEL_TOP_BANDGAP_VREF_OUT         (1UL << MSC_MODE_SW_SEL_TOP_BGRF_Pos)
 
-    /* SW config to use vdda/2 as vref to MSC block */
+/* SW config to use vdda/2 as vref to MSC block */
     #define MSC_SW_SEL_TOP_VDDA_DIV2_OUT            (1UL << MSC_MODE_SW_SEL_TOP_RMF_Pos)
 
 
-    /* SW config to setup MSC as a voltage output */
+/* SW config to setup MSC as the voltage output */
     #define MSC_SW_SEL_TOP_VOLTAGE_OUT_SW_CONFIG    ((1UL << MSC_MODE_SW_SEL_TOP_CACB_Pos)|\
                                                     (1UL << MSC_MODE_SW_SEL_TOP_CACC_Pos)|\
                                                     (1UL << MSC_MODE_SW_SEL_TOP_CBCC_Pos))
@@ -226,10 +235,10 @@
 
     #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
 
-    /* Define external resistors values in Ohms */
+/* Define the external resistors values in Ohms */
     #define IDAC_RES1_VAL            4700u
     #define IDAC_RES2_VAL            4700u
-    /* 2.4uA IDAC resolution */
+/* 2.4uA IDAC resolution */
     #define IDAC_RANGE_2400_NA        2uL
 
     #define ANALOG_CSD_IDAC_VALUE1            42u
@@ -241,24 +250,24 @@
     #define ANALOG_TEST_VREF1_MV            ((ANALOG_CSD_IDAC_CURENT1_UA * IDAC_RES1_VAL) / 1000)
     #define ANALOG_TEST_VREF2_MV            ((ANALOG_CSD_IDAC_CURENT2_UA * IDAC_RES1_VAL) / 1000)
 
-    /*****************************************************************************
-    * Defined parameters for CSD IDAC
-    *****************************************************************************/
+/*****************************************************************************
+* Defined parameters for CSD IDAC
+*****************************************************************************/
 
     #define CSDV2_SENSE_PERIOD                  CSD_SENSE_PERIOD_LFSR_BITS_Msk
 
-    /* routing IDAC B to AMUXB config */
+/* Routing IDAC B to AMUXB config */
     #define CSDV2_SW_BYP_SEL_IDACB_TO_AMUXB     CSD_SW_BYP_SEL_SW_BYB_Msk
     #define CSDV2_REF_GEN_SEL_IDACB_TO_AMUXB    CSD_SW_REFGEN_SEL_SW_IBCB_Msk
     #define CSDV2_IDACB_CONFIG                  \
         (IDAC_RANGE_2400_NA << CSD_IDACB_RANGE_Pos) | CSD_IDACB_LEG1_EN_Msk
 
-    /* routing IDAC A to AMUXA config */
+/* Routing IDAC A to AMUXA config */
     #define CSDV2_SW_BYP_SEL_IDACA_TO_AMUXA     CSD_SW_BYP_SEL_SW_BYA_Msk
     #define CSDV2_IDACA_CONFIG                  \
         (IDAC_RANGE_2400_NA << CSD_IDACA_RANGE_Pos) | CSD_IDACA_LEG1_EN_Msk
     #endif /* CY_IP_M0S8CSDV2 == 1u */
-#endif
+#endif /* if (CY_CPU_CORTEX_M0P) */
 /** \endcond */
 
 #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_EXTERNAL)
@@ -294,7 +303,7 @@
 
 #if (CY_CPU_CORTEX_M0P)
     #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
-    /* IDAC does not need a AMUXBUS per channel*/
+/* IDAC does not need a AMUXBUS per channel*/
     #define ANALOG_ADC_CHNL_VREF2            ANALOG_ADC_CHNL_VREF1
     #else
     #define ANALOG_ADC_CHNL_VREF2           0x01u
@@ -323,57 +332,57 @@
 
 /** \cond INTERNAL */
 #if (CY_CPU_CORTEX_M0P)
-    /*****************************************************************************
-    * Defined parameters for Analog Calibration
-    *****************************************************************************/
+/*****************************************************************************
+* Defined parameters for Analog Calibration
+*****************************************************************************/
     #define ANALOG_ADC_CHNL_IDACA           0x00u
     #define ANALOG_ADC_CHNL_IDACB           0x01u
 
     #define IDAC_SETTLE_TIME                (10u)
 
 
-    /***************************************
-    * Function Prototypes
-    ***************************************/
+/***************************************
+* Function Prototypes
+***************************************/
     #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_DUAL_MSC)
-    void SelfTest_Init_MSCv3_Vdda_Div2_Amux_B(MSC_Type* base);
-    void SelfTest_Init_MSCv3_Vref_Amux_A(MSC_Type* base);
+void SelfTest_Init_MSCv3_Vdda_Div2_Amux_B(MSC_Type* base);
+void SelfTest_Init_MSCv3_Vref_Amux_A(MSC_Type* base);
     #endif /* CY_IP_M0S8MSCV3 == 1u */
     #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
-    void SelfTest_Init_CSDv2_IDACA_Amux_A(CSD_Type* base);
-    void SelfTest_Init_CSDv2_IDACB_Amux_B(CSD_Type* base);
-    void SelfTest_Init_CSDv2_Dual_IDAC_Out(CSD_Type* base);
-    void SelfTest_IDACA_SetValue(CSD_Type* base, uint8_t value);
-    void SelfTest_IDACB_SetValue(CSD_Type* base, uint8_t value);
-    uint8_t SelfTests_IDACB_Analog_Calibration(CSD_Type* csd_base, SAR_Type* sar_base);
-    uint8_t SelfTests_IDACA_Analog_Calibration(CSD_Type* csd_base, SAR_Type* sar_base);
+void SelfTest_Init_CSDv2_IDACA_Amux_A(CSD_Type* base);
+void SelfTest_Init_CSDv2_IDACB_Amux_B(CSD_Type* base);
+void SelfTest_Init_CSDv2_Dual_IDAC_Out(CSD_Type* base);
+void SelfTest_IDACA_SetValue(CSD_Type* base, uint8_t value);
+void SelfTest_IDACB_SetValue(CSD_Type* base, uint8_t value);
+uint8_t SelfTests_IDACB_Analog_Calibration(CSD_Type* csd_base, SAR_Type* sar_base);
+uint8_t SelfTests_IDACA_Analog_Calibration(CSD_Type* csd_base, SAR_Type* sar_base);
 
     #endif /* CY_IP_M0S8CSDV2 == 1u */
-#endif
+#endif /* if (CY_CPU_CORTEX_M0P) */
 /** \endcond */
 /** \} group_analog_macros */
 
 
 /**
-* \addtogroup group_analog_functions
-* \{
-*/
+ * \addtogroup group_analog_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTests_Opamp
 ****************************************************************************//**
 *
-* Performs OPAMP test and verify measured voltage is in accuracy range.
+* Performs OPAMP test and verifies if the measured voltage is in the accuracy range.
 *
 *
 * \param sar_base
-* The pointer to a SAR ADC instance
-* \param expected_res 
+* The pointer to a SAR ADC instance.
+* \param expected_res
 * If count_to_mV = 1 => Expected result in mV, else Expected result in counts.
 * \param accuracy
 * Accuracy in count ANALOG_OPAMP_ACURACCY
 * \param opamp_in_channel
-* Channel no. where the OPAMP output is been read
+* Channel number where the OPAMP output is read.
 * \param count_to_mV
 * 1 = convert the count to mV.(take more time)
 *
@@ -383,7 +392,8 @@
 *
 *******************************************************************************/
 #if defined(CLASSB_SELF_TEST_OPAMP)
-    uint8_t SelfTests_Opamp(SAR_Type* sar_base, int16_t expected_res, int16_t accuracy, uint32_t opamp_in_channel, bool count_to_mV);
+uint8_t SelfTests_Opamp(SAR_Type* sar_base, int16_t expected_res, int16_t accuracy,
+                        uint32_t opamp_in_channel, bool count_to_mV);
 #endif /* End Testing Opamp */
 
 
@@ -391,12 +401,12 @@
 * Function Name: SelfTests_ADC_TrigIn
 ****************************************************************************//**
 *
-* Performs ADC test and verify measured voltage is in accuracy range.
+* Performs ADC test and verifies if the measured voltage is in the accuracy range.
 *
 * \param group
 * Group instance.
 * \param channel
-* channel no. where the input voltage needs to be read
+* The channel number where the input voltage needs to be read.
 * \param expected_res
 * if count_to_mV = 1 => Expected result in mV, else Expected result in counts.
 * \param accuracy
@@ -411,7 +421,8 @@
 *******************************************************************************/
 #if defined(CLASSB_SELF_TEST_ADC)
     #if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
-        uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t trig_in);
+uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int16_t expected_res, int16_t accuracy,
+                             uint32_t trig_in);
     #endif
 #endif /* End Testing ADC */
 
@@ -419,48 +430,52 @@
 * Function Name: SelfTests_ADC
 ****************************************************************************//**
 *
-* Performs ADC test and verify measured voltage is in accuracy range.
+* Performs ADC test and verifies if the measured voltage is in the accuracy range.
 *
 *
-* \param base 
-* The pointer to a SAR ADC instance. For CAT1B, base is the group instance
+* \param base
+* The pointer to a SAR ADC instance. For CAT1B, the base is the group instance.
 * \param channel
-* Channel no. where the input voltage needs to be read
+* The channel number where the input voltage needs to be read.
 * \param expected_res
-* If count_to_mV = 1 => Expected result in mV, else Expected result in counts
+* If count_to_mV = 1, then the expected result in mV, else expected result in counts
 * \param accuracy
 * Accuracy in count ANALOG_ADC_ACURACCY
 * \param vbg_channel
-* Channel no. where the VBG voltage is connected. Only for CAT1C device
-* \param count_to_mV 
-* 1 = convert the count to mV.(take more time). Not applicable for CAT1B device
+* The channel number where the VBG voltage is connected. Only for CAT1C device.
+* \param count_to_mV
+* 1 = convert the count to mV.(take more time). Not applicable for CAT1B device.
 *
 * \return
 *  0 - Test passed <br>
 *  1 - Test failed
 *
 * \note
-* For CA1B devices, User needs to configure the trigger input same as channel number
+* For CA1B devices, the user needs to configure the trigger input the same as the channel number.
 *
 *******************************************************************************/
 #if defined(CLASSB_SELF_TEST_ADC)
     #if CY_CPU_CORTEX_M0P
-        uint8_t SelfTests_ADC(SAR_Type * base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV);
+uint8_t SelfTests_ADC(SAR_Type* base, uint32_t channel, int16_t expected_res, int16_t accuracy,
+                      uint32_t vbg_channel, bool count_to_mV);
     #elif CY_CPU_CORTEX_M4
-        uint8_t SelfTests_ADC(SAR_Type * base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV);
+uint8_t SelfTests_ADC(SAR_Type* base, uint32_t channel, int16_t expected_res, int16_t accuracy,
+                      uint32_t vbg_channel, bool count_to_mV);
     #elif CY_CPU_CORTEX_M7
-       uint8_t SelfTests_ADC(PASS_SAR_Type * base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV);
+uint8_t SelfTests_ADC(PASS_SAR_Type* base, uint32_t channel, int16_t expected_res, int16_t accuracy,
+                      uint32_t vbg_channel, bool count_to_mV);
     #elif CY_CPU_CORTEX_M33
-        uint8_t SelfTests_ADC(uint32_t base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV);
-    #endif
+uint8_t SelfTests_ADC(uint32_t base, uint32_t channel, int16_t expected_res, int16_t accuracy,
+                      uint32_t vbg_channel, bool count_to_mV);
+    #endif /* if CY_CPU_CORTEX_M0P */
 #endif /* End Testing ADC */
 
 /*******************************************************************************
 * Function Name: SelfTests_Comparator
 ****************************************************************************//**
 *
-* Performs Comparator test and verify that the higher voltage on +ve terminal 
-* compared to -ve terminal generates high output and vice verse.
+* Performs Comparator test and verifies if the higher voltage on +ve terminal
+* compared to -ve terminal generates a high output and vice verse.
 *
 *
 * \param lpcomp_base
@@ -485,15 +500,15 @@ uint8_t SelfTests_Comparator(LPCOMP_Type const* lpcomp_base, cy_en_lpcomp_channe
 * Function Name: SelfTests_DAC
 ****************************************************************************//**
 *
-* Performs DAC test and verifies that input of DAC and output from ADC are same.
+* Performs DAC test and verifies that the input of DAC and output from ADC are the same.
 * The digital input value to DAC maps to 1.5V
 *
 * \param dacBase
-* The pointer to a DAC instance
+* The pointer to a DAC instance.
 * \param adcBase
-* The pointer to a SAR ADC instance
+* The pointer to a SAR ADC instance.
 * \param adcChannel
-* Channel number of SAR ADC instance
+* The channel number of SAR ADC instance.
 *
 * \return
 *  0 - Test passed <br>
@@ -512,18 +527,18 @@ uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChanne
 * Function Name: SelfTests_DAC_TrigIn
 ****************************************************************************//**
 *
-* Performs DAC test and verifies that input of DAC and output from ADC are same.
+* Performs DAC test and verifies that the input of DAC and output from ADC are the same.
 *
-* \param adc_channel 
-* Pointer to the ADC channel
-* \param dac_slice 
-* Pointer to DAC slice
+* \param adc_channel
+* The pointer to the ADC channel.
+* \param dac_slice
+* The pointer to DAC slice.
 * \param dac_val
-* Value to be loaded in DAC register
+* The value to be loaded into DAC register.
 * \param expected_res
-* Channel Expected result in ADC
+* Channel expected result in ADC.
 * \param accuracy
-* Error tolerance
+* Error tolerance.
 * \param adc_trig_in
 * ADC trigger input.
 * \param dac_trig_in
@@ -534,10 +549,11 @@ uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChanne
 *  1 - Test failed
 *
 * \note
-* Applicable only to CAT1B devices
+* Applicable only to CAT1B devices.
 *
 *******************************************************************************/
-uint8_t SelfTests_DAC_TrigIn(uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val, int16_t expected_res, int16_t accuracy, uint32_t adc_trig_in, uint32_t dac_trig_in);
+uint8_t SelfTests_DAC_TrigIn(uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val,
+                             int16_t expected_res, int16_t accuracy, uint32_t adc_trig_in, uint32_t dac_trig_in);
 #endif
 /** \} group_analog_functions */
 

@@ -3,7 +3,7 @@
 *
 * Description:
 *  This file provides function prototypes, constants, and parameter values
-*  used for Ecc self tests.
+*  used for ECC self tests.
 *
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
@@ -38,19 +38,19 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_ecc
-* \{
-*
-* ECC self test to detect and correct the single
-* bit error and reports fault for double bit error.
-*
-* \section group_ecc_more_information More Information
-* ECC self test is supported on CAT1B, CAT1C devices.
-*
-*
-* \defgroup group_ecc_enums Enumerated Types 
-* \defgroup group_ecc_functions Functions
-*/
+ * \addtogroup group_ecc
+ * \{
+ *
+ * The ECC self test detects and corrects the single-
+ * bit error and reports a fault for the double-bit error.
+ *
+ * \section group_ecc_more_information More Information
+ * ECC self test is supported on CAT1B, CAT1C devices.
+ *
+ *
+ * \defgroup group_ecc_enums Enumerated Types
+ * \defgroup group_ecc_functions Functions
+ */
 #if !defined(SELFTEST_ECC_H)
     #define SELFTEST_ECC_H
 
@@ -58,12 +58,12 @@
 #include "SelfTest_common.h"
 #include "SelfTest_ErrorInjection.h"
 
-#if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))  || (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
+#if (defined (CY_IP_MXS40FAULT) || defined (CY_IP_MXFAULT) || defined (CY_DOXYGEN))
 #include "cy_sysfault.h"
 
 /** \cond INTERNAL */
 #define CY_FLASH_SIZE_ROW                512U
-#if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
+#if defined(CY_IP_M7CPUSS)
 #define CY_FLASH_ADDR ((CY_FLASH_SM_SBM_BASE + CY_FLASH_SM_SBM_SIZE) - CY_FLASH_SIZE_ROW)
 #define CY_ECC_NC_ERROR_PARITY    0x14
 #define CY_ECC_C_ERROR_PARITY     0x5D
@@ -72,7 +72,7 @@
 #define CY_ECC_NC_FAULT           CY_SYSFAULT_FLASHC_MAIN_NC_ECC
 #endif
 
-#if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
+#if defined(CY_IP_M33SYSCPUSS)
 #define CY_FLASH_ADDR (CY_FLASH_BASE + (CY_FLASH_SIZE/2))
 #define CY_ECC_NC_ERROR_PARITY    0xE1
 #define CY_ECC_C_ERROR_PARITY     0x16
@@ -85,19 +85,19 @@
 #define CY_RAM_ECC_NC_ERROR_PARITY 0x039
 #define CY_RAM_ECC_C_ERROR_PARITY  0x070
 #define CY_RAM_MEMORY_DATA         0x5A5A5A5A
-#endif
+#endif /* if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33)) */
 /** \endcond */
 
 /***************************************
 *       Enumerations
 ***************************************/
 /** \addtogroup group_ecc_enums
-* \{
-*/
+ * \{
+ */
 /** Error injection mode */
 typedef enum
 {
-    CY_ECC_NC_ERROR = 1, /**< Non correctable error injection.*/
+    CY_ECC_NC_ERROR = 1 /**< Non correctable error injection.*/
 } cy_en_ecc_error_mode_t;
 /** \}group_ecc_enums */
 
@@ -105,17 +105,17 @@ typedef enum
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_ecc_functions
-* \{
-*/
+ * \addtogroup group_ecc_functions
+ * \{
+ */
 /*******************************************************************************
 * Function Name: SelfTest_ECC
 ****************************************************************************//**
 *
 * This function performs the ECC hardware self test for Flash memory
-* to report fault for double bit error.
+* to report a fault for the double-bit error.
 *
-* \param eccErrorMode 
+* \param eccErrorMode
 * Error injection mode \ref cy_en_ecc_error_mode_t
 *
 * \return
@@ -123,7 +123,7 @@ typedef enum
 *  1 - Test failed
 *
 * \note
-* This API is applicable to CAT1C devices
+* This API is applicable only to CAT1C devices.
 *
 *******************************************************************************/
 uint8_t SelfTest_ECC(cy_en_ecc_error_mode_t eccErrorMode);
@@ -133,12 +133,12 @@ uint8_t SelfTest_ECC(cy_en_ecc_error_mode_t eccErrorMode);
 ****************************************************************************//**
 *
 * This function performs the ECC hardware self test to detect and correct the single
-* bit error and reports fault for double bit error.
+* bit error and report a fault for the double-bit error.
 *
-* \param addr 
+* \param addr
 * Aligned flash row address.
 *
-* \param eccErrorMode 
+* \param eccErrorMode
 * Error injection mode \ref cy_en_ecc_error_mode_t
 *
 * \return
@@ -146,7 +146,7 @@ uint8_t SelfTest_ECC(cy_en_ecc_error_mode_t eccErrorMode);
 *  1 - Test failed
 *
 * \note
-* This API is applicable to CAT1B devices
+* This API is applicable only to CAT1B devices.
 *
 *******************************************************************************/
 uint8_t SelfTest_ECC_Flash(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode);
@@ -157,12 +157,12 @@ uint8_t SelfTest_ECC_Flash(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode);
 ****************************************************************************//**
 *
 * This function performs the ECC hardware self test for Ram memory
-* to report fault for double bit error.
+* to report a fault for the double-bit error.
 *
-* \param addr 
+* \param addr
 * Ram address.
 *
-* \param eccErrorMode 
+* \param eccErrorMode
 * Error injection mode \ref cy_en_ecc_error_mode_t
 *
 * \return
@@ -170,7 +170,7 @@ uint8_t SelfTest_ECC_Flash(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode);
 *  1 - Test failed
 *
 * \note
-* This API is applicable to CAT1B devices
+* This API is applicable only to CAT1B devices.
 *
 *******************************************************************************/
 uint8_t SelfTest_ECC_Ram(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode);
@@ -178,7 +178,7 @@ uint8_t SelfTest_ECC_Ram(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode);
 
 /** \}group_ecc */
 
-#endif
+#endif /* if (defined (CY_IP_MXS40FAULT) || defined (CY_IP_MXFAULT) || defined (CY_DOXYGEN)) */
 #endif /* SELFTEST_ECC_H */
 
 /* [] END OF FILE */

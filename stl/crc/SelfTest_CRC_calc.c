@@ -2,7 +2,7 @@
 * File Name: SelfTest_CRC_calc.c
 *
 * Description:
-* This file provides the source code for CRC32 implementation.
+* This file provides the source code for the CRC32 implementation.
 *
 *******************************************************************************
 * Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
@@ -158,16 +158,14 @@ static const uint16_t CRC_16_Tab[256] =
  *******************************************************************************
  *
  * Summary:
- *  This function calculates CRC of one byte "val"
+ *  This function calculates CRC of one byte "val".
  *
  * Parameters:
- *  uint32 crc - current CRC
- *  uint8 val - value to calculate CRC
+ *  uint32 crc - The current CRC.
+ *  uint8 val - The value to calculate CRC.
  *
  * Return:
- *  uint32 calc_crc - calculated CRC value
- *
- * Note:
+ *  uint32 calc_crc - The calculated CRC value.
  *
  ******************************************************************************/
 uint32_t SelfTests_CRC32_Byte(uint32_t crc, uint8_t val)
@@ -187,16 +185,16 @@ uint32_t SelfTests_CRC32_Byte(uint32_t crc, uint8_t val)
  *******************************************************************************
  *
  * Summary:
- *  This function calculates CRC of area defined in parameters "BaseAdress"
- *  and "len"
+ *  This function calculates the CRC of the area defined in the parameters "BaseAdress"
+ *  and "len".
  *
  * Parameters:
- *  uint32 crc - current CRC
- *  uint32 BaseAdress - Address from which CRC needs to calculate
- *  uint32 len - length of area for CRC calculation
+ *  uint32 crc - The current CRC
+ *  uint32 BaseAdress - The address from which to calculate the CRC.
+ *  uint32 len - The length of the area for CRC calculation.
  *
  * Return:
- *  uint32 calc_crc - calculated CRC value
+ *  uint32 calc_crc - The calculated CRC value.
  *
  * Note:
  *
@@ -221,15 +219,15 @@ uint32_t SelfTests_CRC32_ACC(uint32_t crc, uint32_t BaseAdress, uint32_t len)
  *******************************************************************************
  *
  * Summary:
- *  This function calculates CRC of memory area defined in parameters
- *  "BaseAdress" and "len"
+ *  This function calculates the CRC of the memory area defined in the parameters
+ *  "BaseAdress" and "len".
  *
  * Parameters:
- *  uint32 BaseAdress - Address from which CRC needs to calculate
- *  uint32 len - length of area for CRC calculation
+ *  uint32 BaseAdress - Address from which CRC needs to calculate.
+ *  uint32 len - The length of area for CRC calculation.
  *
  * Return:
- *  uint32 calc_crc - calculated CRC value
+ *  uint32 calc_crc - The calculated CRC value.
  *
  * Note:
  *
@@ -248,11 +246,11 @@ uint32_t SelfTests_CRC32(uint32_t BaseAdress, uint32_t len)
  *  This function calculates CRC of one byte "val"
  *
  * Parameters:
- *  uint16 crc - current CRC
- *  uint8 val - Address from which CRC needs to calculate
+ *  uint16 crc - The current CRC.
+ *  uint8 val - The value to calculate the CRC for.
  *
  * Return:
- *  uint16 crc - calculated CRC value
+ *  uint16 crc - The calculated CRC value.
  *
  * Note:
  *
@@ -268,13 +266,13 @@ uint16_t SelfTests_CRC16_CCITT_Byte(uint16_t crc, uint8_t val)
  *******************************************************************************
  *
  * Summary:
- *  This function calculates CRC of area defined in parameters "BaseAdress"
- *  and "len"
+ *  This function calculates the CRC of the area defined in the parameters "BaseAdress"
+ *  and "len".
  *
  * Parameters:
- *  uint16 crc - current CRC
- *  uint32 BaseAdress - Address from which CRC needs to calculate
- *  uint16 len - length of area for CRC calculation
+ *  uint16 crc - The current CRC.
+ *  uint32 BaseAdress - The address from which to calculate the CRC.
+ *  uint16 len - The length of area for CRC calculation.
  *
  * Return:
  *  uint16 crc - calculated CRC value
@@ -304,15 +302,15 @@ uint16_t SelfTests_CRC16_CCITT_ACC(uint16_t crc, uint32_t BaseAdress, uint16_t l
  *******************************************************************************
  *
  * Summary:
- *  This function calculates CRC of memory area defined in parameters
- *  "BaseAdress" and "len"
+ *  This function calculates the CRC of the memory area defined in the parameters
+ *  "BaseAdress" and "len".
  *
  * Parameters:
- *  uint32 BaseAdress - Address from which CRC needs to calculate
- *  uint16 len - length of area for CRC calculation
+ *  uint32 BaseAdress - The address from which to calcuate the CRC.
+ *  uint16 len - The length of area for CRC calculation.
  *
  * Return:
- *  uint16 crc - calculated CRC value
+ *  uint16 crc - The calculated CRC value.
  *
  * Note:
  *

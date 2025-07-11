@@ -89,11 +89,11 @@ $(document).ready(function(){initNavTree('group__group__uart__data__tsf.html',''
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
-<p >The UART SCB Components are used to physically generate the signals. </p>
+<p >The UART SCB Components are used to physically generate signals. </p>
 <p >The software CRC-16 calculation is applied to every sent/received byte (except STX and the CRC itself). To detect an unsuccessful packet transaction, the timer is used.</p>
 <p >Three interrupts implemented in this project provide a fully interrupt-driven background process: <br  />
- 1) The transmit interrupt in the UART is configured for a FIFO not full event to take the new data from the RAM and place it into the TX buffer, and for a transmit complete event to start or stop the CRC calculation. <br  />
- 2) The receive interrupt in the UART is configured for a FIFO not empty event to analyze the received data, calculate the CRC, and store the received data into RAM. <br  />
+ 1) The transmit interrupt in the UART is configured for a FIFO not-full event to take the new data from the RAM and place it into the TX buffer, and for a transmit complete event to start or stop the CRC calculation. <br  />
+ 2) The receive interrupt in the UART is configured for a FIFO not-empty event to analyze the received data, calculate the CRC, and store the received data into RAM. <br  />
  3) The timer interrupt is used to detect the end of an unsuccessful transmission.</p>
 <h1><a class="anchor" id="group_uart_data_tsf_more_information"></a>
 More Information</h1>
@@ -102,15 +102,15 @@ More Information</h1>
 </div><!-- fragment --> <div class="fragment"><div class="line">|---|    &lt;--- Respond send ---    |---| </div>
 </div><!-- fragment --><p> Packet format: <br  />
  1) </p><div class="fragment"><div class="line">&lt;STX&gt;&lt;ADDR&gt;&lt;DL&gt;&lt;[Data bytes length equal DL]&gt;&lt;CRCH&gt;&lt;CRCL&gt; </div>
-</div><!-- fragment --> <pre class="fragment">  a) STX        - 0x02 begin packet marker. Unique byte of start packet
-  b) ADDR       - device address
-  c) DL         - data length in bytes [1..255]
-  d) CRCH       - MSB of CRC-16 that calculated from ADDR to last data byte
-  e) CRCL       - LSB of CRC-16    that calculated from ADDR to last data byte
+</div><!-- fragment --> <pre class="fragment">  a) STX        - 0x02 starts the packet marker. The unique byte of the start packet.
+  b) ADDR       - The device address.
+  c) DL         - The data length in bytes [1..255].
+  d) CRCH       - MSB of CRC-16 calculated from ADDR to the last data byte.
+  e) CRCL       - LSB of CRC-16 calculated from ADDR to the last data byte.
 </pre><p> 2) If there is a byte </p><div class="fragment"><div class="line">&lt;ADDR&gt; &lt;DL&gt; &lt;[Data]&gt; or &lt;[CRC]&gt; </div>
-</div><!-- fragment --><p> that equals STX then its exchanged with two byte sequence </p><div class="fragment"><div class="line">&lt;ESC&gt;&lt;STX+1&gt;. </div>
+</div><!-- fragment --><p> that equals STX, then it is exchanged with the two-byte sequence </p><div class="fragment"><div class="line">&lt;ESC&gt;&lt;STX+1&gt;. </div>
 </div><!-- fragment --><p >3) If there is a byte </p><div class="fragment"><div class="line">&lt;ADDR&gt; &lt;DL&gt; &lt;[Data]&gt; or &lt;[CRC]&gt; </div>
-</div><!-- fragment --><p> that equals ESC then its exchanged with two byte sequence </p><div class="fragment"><div class="line">&lt;ESC&gt;&lt;ESC+1&gt;. </div>
+</div><!-- fragment --><p> that equals ESC, then it is exchanged with the two-byte sequence </p><div class="fragment"><div class="line">&lt;ESC&gt;&lt;ESC+1&gt;. </div>
 </div><!-- fragment --> <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>

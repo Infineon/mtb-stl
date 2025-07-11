@@ -6,7 +6,7 @@
 *  for the UART self tests according to the Class B library.
 *
 * Related Document:
-*  AN36847: PSoC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
+*  AN36847: PSOC 4 IEC 60730 Class B and IEC 61508 SIL Safety Software Library
 *  for ModusToolbox
 *
 *******************************************************************************
@@ -42,18 +42,18 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_uart
-* \{
-*
-* This test implements the UART internal data loopback test. The test is a success
-* if the transmitted byte is equal to the received byte and returns 2. Each function
-* call increments the test byte. After 256 function calls, when the test finishes testing
-* all 256 values and they are all a success, the function returns 0. 256 bytes are tested
-* so that all of the cells in the 256 byte FIFO are used.
-*
-*
-* \defgroup group_uart_functions Functions
-*/
+ * \addtogroup group_uart
+ * \{
+ *
+ * This test implements the UART internal data loopback test. The test is a success
+ * if the transmitted byte is equal to the received byte and returns 2. Each function
+ * call increments the test byte. After 256 function calls, when the test finishes testing
+ * all 256 values and they are all a success, the function returns 0. 256 bytes are tested
+ * so that all of the cells in the 256 byte FIFO are used.
+ *
+ *
+ * \defgroup group_uart_functions Functions
+ */
 
 #if !defined(SELFTEST_UART_SCB_H)
     #define SELFTEST_UART_SCB_H
@@ -64,19 +64,19 @@
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_uart_functions
-* \{
-*/
+ * \addtogroup group_uart_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_UART_SCB
 ****************************************************************************//**
 *
-* Test loopback of UART (transmitted byte must be equal to received)
+* This function tests a loopback of UART (transmitted byte must be equal to received).
 *
 *
-* \param base 
-* Pointer to SCB hardware to configure
+* \param base
+* The pointer to SCB hardware to configure.
 *
 * \return
 *  1 - Test failed <br>
@@ -86,9 +86,9 @@
 *  5 - Error, RX not empty <br>
 *  6 - Error, UART is not enabled
 *
-* \note 
-*  During call, function transmits and receives bytes from 0x01 to 0xFF.
-*  User is responsible for routing the loop back before the test
+* \note
+*  During a call, the function transmits and receives bytes from 0x01 to 0xFF.
+*  The user is responsible for the routing the loop back before the test.
 *******************************************************************************/
 uint8_t SelfTest_UART_SCB(CySCB_Type* base);
 
@@ -99,7 +99,7 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base);
 * Initial Parameter Constants
 ***************************************/
 
-/* UART data transmit guard interval using guard interval > */
+/* UART data transmit guard interval using the guard interval > */
 /* (uart_bitrate * uart_data_bits(start data parity stop) * uart_tx_buf_size) */
 #define UART_TX_DATA_TIME               (400u)
 #define UART_RX_DATA_TIME               (400u)

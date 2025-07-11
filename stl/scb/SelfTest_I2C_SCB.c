@@ -2,7 +2,7 @@
 * File Name: SelfTest_I2C_SCB.c
 *
 * Description:
-*  This file provides the source code to do the I2C self tests
+*  This file provides the source code for the I2C self tests
 *  according to Class B library.
 *
 *******************************************************************************
@@ -71,8 +71,8 @@ static cy_stc_scb_i2c_master_xfer_config_t masterTransferCfg =
 ******************************************************************************
 *
 * Summary:
-*  I2C master under test sends data to I2C slave for self-test.
-*  Slave read the data and write the complement[1's] to the slave read buffer
+*  I2C master under test sends data to I2C slave for self test.
+*  Slave reads the data and writes the complement[1's] to the slave read buffer.
 *
 * Parameters:
 *  CySCB_Type* master_base - The pointer to the master I2C SCB instance.
@@ -83,7 +83,7 @@ static cy_stc_scb_i2c_master_xfer_config_t masterTransferCfg =
 *    I2C SCB context.
 *  uint8_t* slave_read_buf - The pointer to slave read buffer.
 *  uint8_t* slave_write_buf - The pointer to slave write buffer.
-*  uint8 transmitData - data to be transmitted over I2C
+*  uint8 transmitData - Data to transmit over I2C.
 *
 * Return:
 *  0 - test success
@@ -104,11 +104,11 @@ static uint8_t SelfTest_I2C_SCB_Write(CySCB_Type* master_base,
     uint16_t guardCnt = 0u;
     uint8_t txBuffer[PACKET_SIZE];
 
-    /* Check if intentional error should be made for testing */
+    /* Check if an intentional error should be made for testing */
     #if (ERROR_IN_I2C_SCB == 1u)
     if (transmitData == (I2C_SCB_TRANSMIT_BYTE_ERROR))
     {
-        /* Restore expected value */
+        /* Restore the expected value */
         transmitData--;
     }
     #endif /* End (ERROR_IN_UART_SCB == 1u) */
@@ -182,8 +182,8 @@ static uint8_t SelfTest_I2C_SCB_Write(CySCB_Type* master_base,
 ******************************************************************************
 *
 * Summary:
-*  Master reads the data from slave and check the data is valid by comparing
-*  with the complement of data, which is send by master in previous transaction.
+*  Master reads the data from slave and checks if the data is valid by comparing
+*  with the complement of data sent by master in previous transaction.
 *
 * Parameters:
 *  CySCB_Type* master_base - The pointer to the master I2C SCB instance.
@@ -193,7 +193,7 @@ static uint8_t SelfTest_I2C_SCB_Write(CySCB_Type* master_base,
 *  cy_stc_scb_i2c_context_t* slave_context - The pointer to the slave
 *    I2C SCB context.
 *  uint8_t* slave_read_buf - The pointer to slave read buffer.
-*  uint8 transmitData - data to be compared with received data from I2C slave
+*  uint8 transmitData - Data to compare with data received from I2C slave.
 *
 * Return:
 *  0 - test success
@@ -245,7 +245,7 @@ static uint8_t SelfTest_I2C_SCB_Read(CySCB_Type* master_base,
                 if (Cy_SCB_I2C_MasterGetTransferCount(master_base, master_context) == PACKET_SIZE)
                 {
                     uint8_t compTransmitData = ~transmitData;
-                    /* Check packet received to the 1's complement of packet sent */
+                    /* Check the packet received to the 1's complement of the sent packet */
                     if (byteReceivedMaster[0] == compTransmitData)
                     {
                         ret = OK_STATUS;
@@ -284,9 +284,9 @@ static uint8_t SelfTest_I2C_SCB_Read(CySCB_Type* master_base,
 ******************************************************************************
 *
 * Summary:
-*  I2C master under test sends data to I2C slave for self-test.
-*  Slave read the data and write the complement[1's] to the slave read buffer
-*  Master read back the data from slave and check the data is corrupted.
+*  I2C master under test sends data to I2C slave for self test.
+*  Slave reads the data and writes the complement[1's] to the slave read buffer.
+*  Master reads back the data from slave and checks the data for corruption.
 *
 * Parameters:
 *  CySCB_Type* master_base - The pointer to the master I2C SCB instance.
@@ -304,8 +304,8 @@ static uint8_t SelfTest_I2C_SCB_Read(CySCB_Type* master_base,
 *  3 - Test completed OK
 *
 * Note:
-*  During call, function transmits from 0x01 to 0xFF
-*  Clear I2C Master status, read buffer and write buffer
+*  During a call, the function transmits from 0x01 to 0xFF.
+*  Clears I2C Master status, reads and writes the buffer.
 *
 *****************************************************************************/
 uint8_t SelfTest_I2C_SCB(CySCB_Type* master_base, cy_stc_scb_i2c_context_t* master_context,
@@ -323,21 +323,21 @@ uint8_t SelfTest_I2C_SCB(CySCB_Type* master_base, cy_stc_scb_i2c_context_t* mast
     if (WRITE == i2cMode)
     {
         /* I2C Master sends data to test. The slave reads the data and
-         *  update the Slave Read buffer with 1's complement.
+         *  updates the Slave Read buffer with 1's complement.
          */
         ret = SelfTest_I2C_SCB_Write(master_base, master_context, slave_base, slave_context,
                                      slave_read_buf, slave_write_buf, byteToTest);
         if (OK_STATUS == ret)
         {
             i2cBusBusyWriteCount = 0u;
-            /* I2C Write complete, start slave read mode */
+            /* I2C Write complete, start slave Read mode */
             i2cMode = READ;
         }
         /* I2C Master Busy, update retry counter */
         else if (I2C_MASTER_BUSY_STATUS == ret)
         {
             i2cBusBusyWriteCount++;
-            /* retry counter expires */
+            /* Retry counter expires */
             if (i2cBusBusyWriteCount >= I2C_MASTER_BUSY_RETRY)
             {
                 ret = ERROR_STATUS;
@@ -351,13 +351,13 @@ uint8_t SelfTest_I2C_SCB(CySCB_Type* master_base, cy_stc_scb_i2c_context_t* mast
 
     if (READ == i2cMode)
     {
-        /* I2C Master reads the data from slave read buffer. Check the data is correct */
+        /* I2C Master reads the data from slave read buffer. Checks if the data is correct. */
         ret = SelfTest_I2C_SCB_Read(master_base, master_context, slave_base, slave_context,
                                     slave_read_buf, byteToTest);
         if (OK_STATUS == ret)
         {
             i2cBusBusyReadCount = 0u;
-            /* I2C Read completed, change to write mode and update the data to test*/
+            /* I2C Read completed, change to Write mode and update the data to test*/
             i2cMode = WRITE;
             byteToTest++;
         }
@@ -365,7 +365,7 @@ uint8_t SelfTest_I2C_SCB(CySCB_Type* master_base, cy_stc_scb_i2c_context_t* mast
         else if (I2C_MASTER_BUSY_STATUS == ret)
         {
             i2cBusBusyReadCount++;
-            /* retry counter expires */
+            /* Retry counter expires */
             if (i2cBusBusyReadCount >= I2C_MASTER_BUSY_RETRY)
             {
                 ret = ERROR_STATUS;
@@ -376,25 +376,25 @@ uint8_t SelfTest_I2C_SCB(CySCB_Type* master_base, cy_stc_scb_i2c_context_t* mast
             ret = ERROR_STATUS;
         }
     }
-    /* Check result of test */
+    /* Check the test result */
     if (ret == OK_STATUS)
     {
-        /* If test was performed with all values from 0x00 to 0xFF */
+        /* If the test was performed with all values from 0x00 to 0xFF */
         if (byteToTest == I2C_TEST_RANGE)
         {
             byteToTest = 0u;
-            /* Return status, that test fully completed */
+            /* Return the status that the test is fully completed */
             ret = PASS_COMPLETE_STATUS;
         }/* If not */
         else
         {
-            /* Return status, that error was not detected but test is not fully completed */
+            /* Return the status that an error was not detected but the test is not fully completed */
             ret = PASS_STILL_TESTING_STATUS;
         }
     }
     else if (I2C_MASTER_BUSY_STATUS == ret)
     {
-        /* Return status, that error was not detected but test is not fully completed */
+        /* Return the status that an error was not detected but the test is not fully completed */
         ret = PASS_STILL_TESTING_STATUS;
     }
     else

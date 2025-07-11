@@ -38,41 +38,46 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 /**
-* \addtogroup group_cordic
-* \{
-*
-* To meet Class B requirement, Cordic must be tested for sine and cosine trignometric functions: <br>
-*
-*      1) Sine and Cosine trignometric functions are performed using CORDIC IP.
-*      2) First Converting the angle in degree to radian and radian in Q31 format , then provided as input.
-*      3) Converting the result in Q31 format to float.
-*      4) Checks the difference between results from CORDIC and fixed output are within tolerance.
-*
-*
-* \defgroup group_cordic_functions Functions
-*/
+ * \addtogroup group_cordic
+ * \{
+ *
+ * To meet Class B requirement, Cordic must be tested for sine and cosine trignometric functions:
+ * <br>
+ *
+ *      1) Sine and Cosine calculations are performed using CORDIC IP.
+ *      2) First, converts the angle into the degree to the radian and the radian into the Q31 format, then provides
+ *         as the input.
+ *      3) Converts the result into the Q31 format to float.
+ *      4) Checks if the difference between the results from the CORDIC and fixed output is within the tolerance.
+ *
+ *
+ * \defgroup group_cordic_functions Functions
+ */
 
 #if !defined(SELFTEST_CORDIC_H)
     #define SELFTEST_CORDIC_H
 #include "SelfTest_common.h"
 #include "SelfTest_ErrorInjection.h"
 
+#if (defined (CY_IP_MXCORDIC) || defined (CY_DOXYGEN))
+
 /***************************************
 * Function Prototypes
 ***************************************/
 /**
-* \addtogroup group_cordic_functions
-* \{
-*/
+ * \addtogroup group_cordic_functions
+ * \{
+ */
 
 /*******************************************************************************
 * Function Name: SelfTest_Cordic
 ****************************************************************************//**
 *
-* This function perform self test on Cordic IP.
+* This function performs the self test on Cordic IP.
 *
-* The CORDIC block accelerates calculation of trigonometric functions. 
-* Sine and Cosine trignometric functions are performed in this API.
+* The CORDIC block accelerates the calculation of trigonometric functions.
+* Sine and Cosine are calculated in this function.
+*
 *
 * \return
 *  "0" "OK_STATUS" - Test passed <br>
@@ -84,10 +89,10 @@ uint8_t SelfTest_Cordic(void);
 
 /** \} group_cordic_functions */
 
-
-/** \} group_cordic */
+#endif /* if (defined (CY_IP_MXCORDIC) || defined (CY_DOXYGEN)) */
 
 #endif /* SELFTEST_CORDIC_H */
 
-/* [] END OF FILE */
+/** \} group_cordic */
 
+/* [] END OF FILE */

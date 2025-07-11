@@ -71,6 +71,7 @@
 #define ERROR_IN_WWDT_INTR                                  0u
 #define ERROR_IN_TIMER_COUNTER                              0u
 #define ERROR_IN_PWM                                        0u
+#define ERROR_IN_CAN                                        0u
 #define ERROR_IN_CANFD                                      0u
 #define ERROR_IN_PWM_GATEKILL                               0u
 #define ERROR_IN_DMA_DW                                     0u
