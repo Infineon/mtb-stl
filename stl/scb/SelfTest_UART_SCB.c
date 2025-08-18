@@ -145,31 +145,33 @@ static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
 * Function Name: SelfTest_UART_SCB
 ******************************************************************************
 *
-* Summary:
-*  This function tests a loopback of UART (transmitted byte must be equal to received).
+* This function tests a loopback of UART (transmitted byte must be equal to received).
 *
-* Parameters:
-*  CySCB_Type *base - The pointer to SCB hardware to configure.
+* This function should be called repeatedly while it returns the
+* PASS_STILL_TESTING_STATUS status. The test is complete when
+* PASS_COMPLETE_STATUS or any error status is returned.
 *
-* Return:
-*  1 - test failed
-*  2 - Still testing
-*  3 - Test completed OK
-*  4 - Error, TX not empty
-*  5 - Error, RX not empty
-*  6 - Error, UART is not enabled.
+* \param base
+* The pointer to SCB hardware to configure.
 *
-* Note:
-*  During a call, the function transmits and receives bytes from 0x01 to 0xFF.
+* \return
+*  - ERROR_STATUS - Test failed
+*  - PASS_STILL_TESTING_STATUS - Still testing
+*  - PASS_COMPLETE_STATUS - Test completed OK
+*  - ERROR_TX_NOT_EMPTY - Error, TX buffer is not empty
+*  - ERROR_RX_NOT_EMPTY - Error, RX buffer is not empty
+*  - ERROR_UART_NOT_ENABLE - Error, UART block is not enabled
+*
+* \note
+*  During a call, the function transmits and receives bytes from 0x00 to 0xFF.
 *  The user is responsible for the routing the loop back before the test.
-*
 *****************************************************************************/
 uint8_t SelfTest_UART_SCB(CySCB_Type* base)
 {
     /* Byte for transmitting/receiving */
     uint8_t ret;
     uint16_t guardCnt = 0u;
-    static uint8_t byteToTest = 5u;
+    static uint8_t byteToTest = 0u;
     uint32_t rxUartInterruptMask = 0u;
     uint32_t txUartInterruptMask = 0u;
 
@@ -225,8 +227,9 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base)
                 txUartInterruptMask = Cy_SCB_GetTxInterruptMask(base);
                 Cy_SCB_SetTxInterruptMask(base, 0x0u);
 
-                /* Transmit bytes from 0x01 to 0xFF*/
+                /* Transmit bytes from 0x00 to 0xFF */
                 ret = SelfTest_UART_SCB_Byte(base, byteToTest);
+                byteToTest++;
 
                 /* Enabled RX and TX interrupts after the test */
                 Cy_SCB_SetRxInterruptMask(base, rxUartInterruptMask);
@@ -236,7 +239,7 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base)
                 if (ret == OK_STATUS)
                 {
                     /* If the test was performed with all values from 0x00 to 0xFF */
-                    if (byteToTest == UART_TEST_RANGE)
+                    if (byteToTest == 0x00u)
                     {
                         /* Return the status that the test is fully completed */
                         ret = PASS_COMPLETE_STATUS;
@@ -249,14 +252,6 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base)
                         ret = PASS_STILL_TESTING_STATUS;
                     }
                 }
-
-                /* Increment index */
-                byteToTest++;
-
-                if (byteToTest >= UART_TEST_RANGE)
-                {
-                    byteToTest = 0u;
-                }
             }
         }
 
@@ -266,7 +261,6 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base)
         Cy_SCB_UART_ClearTxFifo(base);
     }
 
-    /* If something in the code performance went wrong Return ERROR status */
     return ret;
 }
 

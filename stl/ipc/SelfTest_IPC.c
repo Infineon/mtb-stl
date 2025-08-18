@@ -66,7 +66,7 @@ static uint32_t free_intr_end = 1;
 static volatile uint8_t ch_rx[16];
 
 /* Channels write message */
-#if (CY_IP_MXTCPWM_VERSION == 1)
+#if (defined (CY_IP_M4CPUSS) && (CY_IP_M4CPUSS_VERSION == 1))
 static uint32_t writeMesg0 = 0x100U;
 #else
 static uint32_t writeMesg0[2] = { 0x0, 0x100 };
@@ -83,7 +83,7 @@ static uint32_t readMesg0[2];
 static uint32_t readMesg1[2];
 #elif defined (CY_IP_M4CPUSS)
 
-    #if (CY_IP_MXTCPWM_VERSION == 1)
+#if (CY_IP_M4CPUSS_VERSION == 1)
 static uint32_t readMesg8;
 static uint32_t readMesg9;
 static uint32_t readMesg10;
@@ -92,7 +92,7 @@ static uint32_t readMesg12;
 static uint32_t readMesg13;
 static uint32_t readMesg14;
 static uint32_t readMesg15;
-    #else
+#else
 static uint32_t readMesg8[2];
 static uint32_t readMesg9[2];
 static uint32_t readMesg10[2];
@@ -101,7 +101,7 @@ static uint32_t readMesg12[2];
 static uint32_t readMesg13[2];
 static uint32_t readMesg14[2];
 static uint32_t readMesg15[2];
-    #endif /* if (CY_IP_MXTCPWM_VERSION == 1) */
+#endif /* if (CY_IP_M4CPUSS_VERSION == 1) */
 #endif /* if defined (CY_IP_M7CPUSS) */
 
 
@@ -180,7 +180,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type* ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress(IPC_CH_8);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
-                #if (CY_IP_MXTCPWM_VERSION == 1)
+                #if (CY_IP_M4CPUSS_VERSION == 1)
                 readMesg8 = Cy_IPC_Drv_ReadDataValue(ipcPtr);
                 #else
                 Cy_IPC_Drv_ReadDDataValue(ipcPtr, readMesg8);
@@ -193,7 +193,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type* ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress(IPC_CH_9);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
-                #if (CY_IP_MXTCPWM_VERSION == 1)
+                #if (CY_IP_M4CPUSS_VERSION == 1)
                 readMesg9 = Cy_IPC_Drv_ReadDataValue(ipcPtr);
                 #else
                 Cy_IPC_Drv_ReadDDataValue(ipcPtr, readMesg9);
@@ -207,7 +207,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type* ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress(IPC_CH_10);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
-                #if (CY_IP_MXTCPWM_VERSION == 1)
+                #if (CY_IP_M4CPUSS_VERSION == 1)
                 readMesg10 = Cy_IPC_Drv_ReadDataValue(ipcPtr);
                 #else
                 Cy_IPC_Drv_ReadDDataValue(ipcPtr, readMesg10);
@@ -221,7 +221,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type* ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress(IPC_CH_11);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
-                #if (CY_IP_MXTCPWM_VERSION == 1)
+                #if (CY_IP_M4CPUSS_VERSION == 1)
                 readMesg11 = Cy_IPC_Drv_ReadDataValue(ipcPtr);
                 #else
                 Cy_IPC_Drv_ReadDDataValue(ipcPtr, readMesg11);
@@ -235,7 +235,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type* ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress(IPC_CH_12);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
-                #if (CY_IP_MXTCPWM_VERSION == 1)
+                #if (CY_IP_M4CPUSS_VERSION == 1)
                 readMesg12 = Cy_IPC_Drv_ReadDataValue(ipcPtr);
                 #else
                 Cy_IPC_Drv_ReadDDataValue(ipcPtr, readMesg12);
@@ -249,7 +249,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type* ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress(IPC_CH_13);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
-                #if (CY_IP_MXTCPWM_VERSION == 1)
+                #if (CY_IP_M4CPUSS_VERSION == 1)
                 readMesg13 = Cy_IPC_Drv_ReadDataValue(ipcPtr);
                 #else
                 Cy_IPC_Drv_ReadDDataValue(ipcPtr, readMesg13);
@@ -263,7 +263,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type* ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress(IPC_CH_14);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
-                #if (CY_IP_MXTCPWM_VERSION == 1)
+                #if (CY_IP_M4CPUSS_VERSION == 1)
                 readMesg14 = Cy_IPC_Drv_ReadDataValue(ipcPtr);
                 #else
                 Cy_IPC_Drv_ReadDDataValue(ipcPtr, readMesg14);
@@ -277,7 +277,7 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type* ipcIntrPtr, uint32 notifyMas
             ipcPtr = Cy_IPC_Drv_GetIpcBaseAddress(IPC_CH_15);
             if (Cy_IPC_Drv_IsLockAcquired(ipcPtr))
             {
-                #if (CY_IP_MXTCPWM_VERSION == 1)
+                #if (CY_IP_M4CPUSS_VERSION == 1)
                 readMesg15 = Cy_IPC_Drv_ReadDataValue(ipcPtr);
                 #else
                 Cy_IPC_Drv_ReadDDataValue(ipcPtr, readMesg15);
@@ -285,6 +285,18 @@ static inline void common_fxn(IPC_INTR_STRUCT_Type* ipcIntrPtr, uint32 notifyMas
                 ch_rx[15] = 1;
             }
         }
+
+        #if (CY_IP_M4CPUSS_VERSION == 1)
+        /* Avoid "set but never used" compilation warning */
+        (void)readMesg8;
+        (void)readMesg9;
+        (void)readMesg10;
+        (void)readMesg11;
+        (void)readMesg12;
+        (void)readMesg13;
+        (void)readMesg14;
+        (void)readMesg15;
+        #endif
         #endif /* if defined (CY_IP_M7CPUSS) */
     }
 
@@ -814,7 +826,7 @@ uint8_t SelfTest_IPC(void)
             {
                 return ERROR_STATUS;
             }
-            #if (CY_IP_MXTCPWM_VERSION == 1)
+            #if (defined (CY_IP_M4CPUSS) && (CY_IP_M4CPUSS_VERSION == 1))
             Cy_IPC_Drv_WriteDataValue(Cy_IPC_Drv_GetIpcBaseAddress((uint32_t)channel), writeMesg0);
             #else
             Cy_IPC_Drv_WriteDDataValue(Cy_IPC_Drv_GetIpcBaseAddress(
@@ -860,7 +872,8 @@ uint8_t SelfTest_IPC(void)
             {
                 return ERROR_STATUS;
             }
-            #if (CY_IP_MXTCPWM_VERSION == 1)
+
+            #if (defined (CY_IP_M4CPUSS) && (CY_IP_M4CPUSS_VERSION == 1))
             writeMesg0++;
             #else
             writeMesg0[0]++;

@@ -1151,7 +1151,7 @@ uint8_t SelfTests_DAC_TrigIn(uint32_t adc_channel, uint32_t dac_slice, uint32_t 
     Cy_HPPASS_DAC_SetValue(dac_slice, dac_val);
 
     /* Start DAC*/
-    Cy_HPPASS_DAC_Start(dac_slice, 0);
+    Cy_HPPASS_DAC_Start(dac_slice, CY_HPPASS_DAC_HW);
 
     /* Start DAC conversion */
     Cy_HPPASS_SetFwTrigger(dac_trig_in);

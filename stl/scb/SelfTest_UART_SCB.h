@@ -74,20 +74,23 @@
 *
 * This function tests a loopback of UART (transmitted byte must be equal to received).
 *
+* This function should be called repeatedly while it returns the
+* PASS_STILL_TESTING_STATUS status. The test is complete when
+* PASS_COMPLETE_STATUS or any error status is returned.
 *
 * \param base
 * The pointer to SCB hardware to configure.
 *
 * \return
-*  1 - Test failed <br>
-*  2 - Still testing <br>
-*  3 - Test completed OK  <br>
-*  4 - Error, TX not empty <br>
-*  5 - Error, RX not empty <br>
-*  6 - Error, UART is not enabled
+*  - ERROR_STATUS - Test failed
+*  - PASS_STILL_TESTING_STATUS - Still testing
+*  - PASS_COMPLETE_STATUS - Test completed OK
+*  - ERROR_TX_NOT_EMPTY - Error, TX buffer is not empty
+*  - ERROR_RX_NOT_EMPTY - Error, RX buffer is not empty
+*  - ERROR_UART_NOT_ENABLE - Error, UART block is not enabled
 *
 * \note
-*  During a call, the function transmits and receives bytes from 0x01 to 0xFF.
+*  During a call, the function transmits and receives bytes from 0x00 to 0xFF.
 *  The user is responsible for the routing the loop back before the test.
 *******************************************************************************/
 uint8_t SelfTest_UART_SCB(CySCB_Type* base);
@@ -105,7 +108,7 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base);
 #define UART_RX_DATA_TIME               (400u)
 
 #define UART_SCB_TRANSMIT_BYTE_ERROR    (100u)
-#define UART_TEST_RANGE                 (0xF0u)
+#define UART_TEST_RANGE                 (0xFFu)
 
 /** \endcond */
 /** \} group_uart */

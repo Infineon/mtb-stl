@@ -42,8 +42,11 @@
 
 #if (defined (CY_IP_MXS40FAULT) || defined (CY_IP_MXFAULT))
 
+#if defined (CY_IP_MXS40FAULT)
 static uint32_t* flashAddrPtr = (uint32_t*)CY_FLASH_ADDR;
-static uint32_t readVal = 0;
+#endif
+
+static volatile uint32_t readVal = 0;
 static cy_en_SysFault_source_t source = (cy_en_SysFault_source_t)CY_SYSFAULT_NO_FAULT;
 
 #if defined(CY_IP_MXFAULT)

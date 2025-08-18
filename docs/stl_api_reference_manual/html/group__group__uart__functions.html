@@ -114,19 +114,23 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>This function tests a loopback of UART (transmitted byte must be equal to received). </p>
+<p >This function should be called repeatedly while it returns the PASS_STILL_TESTING_STATUS status. The test is complete when PASS_COMPLETE_STATUS or any error status is returned.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">base</td><td>The pointer to SCB hardware to configure.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>1 - Test failed <br  />
- 2 - Still testing <br  />
- 3 - Test completed OK <br  />
- 4 - Error, TX not empty <br  />
- 5 - Error, RX not empty <br  />
- 6 - Error, UART is not enabled</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>During a call, the function transmits and receives bytes from 0x01 to 0xFF. The user is responsible for the routing the loop back before the test. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>ERROR_STATUS - Test failed</li>
+<li>PASS_STILL_TESTING_STATUS - Still testing</li>
+<li>PASS_COMPLETE_STATUS - Test completed OK</li>
+<li>ERROR_TX_NOT_EMPTY - Error, TX buffer is not empty</li>
+<li>ERROR_RX_NOT_EMPTY - Error, RX buffer is not empty</li>
+<li>ERROR_UART_NOT_ENABLE - Error, UART block is not enabled</li>
+</ul>
+</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>During a call, the function transmits and receives bytes from 0x00 to 0xFF. The user is responsible for the routing the loop back before the test. </dd></dl>
 
 </div>
 </div>

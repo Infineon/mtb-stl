@@ -1,4 +1,4 @@
-# ModusToolbox Safety Test Library 3.3.0
+# ModusToolbox Safety Test Library 3.3.1
 
 
 Refer to the [README.md](./README.md) for a complete description of the ModusToolbox Safety Test Library.
@@ -61,6 +61,10 @@ Refer to the [README.md](./README.md) for a complete description of the ModusToo
 * Note: To perform SRAM tests, update CY_SRAM_BASE, CY_SRAM_SIZE, CY_STACK_SIZE according to the device being tested.
 
 ## What Changed?
+
+### v3.3.1
+* Fixed the return status for the SelfTest_UART_SCB() function for the case when the test is still in progress
+* Fixed build warnings for SAR ADC, ECC and IPC tests.
 
 ### v3.3.0
 * Updated user documentation
