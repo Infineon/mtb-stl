@@ -6,36 +6,33 @@
 *  tests.
 *
 *******************************************************************************
-* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
-* an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
+* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is
+* owned by Infineon Technologies AG or one of its affiliates ("Infineon")
+* and is protected by and subject to worldwide patent protection, worldwide
+* copyright laws, and international treaty provisions. Therefore, you may use
+* this Software only as provided in the license agreement accompanying the
+* software package from which you obtained this Software. If no license
+* agreement applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
 *
-* This software, including source code, documentation and related
-* materials ("Software") is owned by Cypress Semiconductor Corporation
-* or one of its affiliates ("Cypress") and is protected by and subject to
-* worldwide patent protection (United States and foreign),
-* United States copyright laws and international treaty provisions.
-* Therefore, you may use this Software only as provided in the license
-* agreement accompanying the software package from which you
-* obtained this Software ("EULA").
-* If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
-* non-transferable license to copy, modify, and compile the Software
-* source code solely for use in connection with Cypress's
-* integrated circuit products.  Any reproduction, modification, translation,
-* compilation, or representation of this Software except as specified
-* above is prohibited without the express written permission of Cypress.
-*
-* Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
-* reserves the right to make changes to the Software without notice. Cypress
-* does not assume any liability arising out of the application or use of the
-* Software or any product or circuit described in the Software. Cypress does
-* not authorize its products for use in any products where a malfunction or
-* failure of the Cypress product may reasonably be expected to result in
-* significant property damage, injury or death ("High Risk Product"). By
-* including Cypress's product in a High Risk Product, the manufacturer
-* of such system or application assumes all risk of such use and in doing
-* so agrees to indemnify Cypress against all liability.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE
+* IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING, BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF
+* THIRD-PARTY RIGHTS AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A
+* SPECIFIC USE/PURPOSE OR MERCHANTABILITY.
+* Infineon reserves the right to make changes to the Software without notice.
+* You are responsible for properly designing, programming, and testing the
+* functionality and safety of your intended application of the Software, as
+* well as complying with any legal requirements related to its use. Infineon
+* does not guarantee that the Software will be free from intrusion, data theft
+* or loss, or other breaches ("Security Breaches"), and Infineon shall have
+* no liability arising out of any Security Breaches. Unless otherwise
+* explicitly approved by Infineon, the Software may not be used in any
+* application where a failure of the Product or any consequences of the use
+* thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 
 /**
@@ -131,8 +128,7 @@ uint8_t SelfTest_IO_GetPortError(void);
 * Summary:
 *  This function sets a custom pin mask to be used in the SelfTest_IO function.
 *
-* Parameters:
-*  pinMaskArr - The custom pin mask array. The length of the array should be equal
+* \param pinMaskArr The custom pin mask array. The length of the array should be equal
 *  to the IO_PORTS value. Each element of the array is a mask of the GPIO port pins,
 *  to be tested in the SelfTest_IO function. The port sequence is the same
 *  as in the PORT_Regs array. Pass the NULL value to use the default pin mask.
@@ -146,7 +142,6 @@ void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr);
 /***************************************
 * Initial Parameter Constants
 ***************************************/
-#if CY_CPU_CORTEX_M0P
 #if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX)
 
 /** \addtogroup group_gpio_macros
@@ -190,17 +185,28 @@ void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr);
 
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX) */
 
-#elif CY_CPU_CORTEX_M4
+#if (defined(CY_DEVICE_SERIES_PSOC_61) || defined(CY_DEVICE_SERIES_PSOC_62) || \
+    defined(CY_DEVICE_SERIES_PSOC_63) || defined(CY_DEVICE_SERIES_PSOC_64))
 /* The number of IO ports: PORT0 - PORT14 */
 #define IO_PORTS                        (15u)
+#endif
 
-#elif CY_CPU_CORTEX_M7
+#if (defined(CY_DEVICE_SERIES_XMC7100) || defined(CY_DEVICE_SERIES_XMC7200))
 /* The number of IO ports: PORT0 - PORT14 */
 #define IO_PORTS                        (33u)
-#elif CY_CPU_CORTEX_M33
+#endif
+
+#if (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) || \
+    defined(CY_DEVICE_SERIES_PSC3P2) || defined(CY_DEVICE_SERIES_PSC3P5))
 /* The number of IO ports: PORT0 - PORT9 */
 #define IO_PORTS                        (10u)
-#endif /* if CY_CPU_CORTEX_M0P */
+#endif
+
+#if (defined(CY_DEVICE_SERIES_XMC5100) || defined(CY_DEVICE_SERIES_XMC5200) || defined(CY_DEVICE_SERIES_XMC5300))
+/* The number of IO ports: PORT0 - PORT23 */
+#define IO_PORTS                        (24u)
+#endif
+
 
 /** \endcond */
 
@@ -213,26 +219,31 @@ void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr);
 /** The pins bit mask */
 #define IO_PINS_MASK                    (IO_PINS - 1u)
 
-#if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) || \
-    (defined(CY_CPU_CORTEX_M0P) && (CY_CPU_CORTEX_M0P)))
+#if (defined(CY_DEVICE_SERIES_PSOC_61) || defined(CY_DEVICE_SERIES_PSOC_62) || \
+    defined(CY_DEVICE_SERIES_PSOC_63) || defined(CY_DEVICE_SERIES_PSOC_64) || defined (CY_DOXYGEN))
 /** The optimal delay cycle value needed to set up the GPIO Drive mode
  *  in Release configuration. This may differ depending on the device used(CAT1A, CAT1B(PSoC C3),
  *  CAT1C, CAT2).*/
-#define DELAY_DRIVE_MODE_SETUP          (10u)
+#define DELAY_DRIVE_MODE_SETUP              (10u)
 /** \} group_gpio_macros */
 
 /** \cond INTERNAL */
 
-#elif CY_CPU_CORTEX_M7
-/* The optimal delay cycle value needed to set up the GPIO Drive mode
- * in Release configuration */
-#define DELAY_DRIVE_MODE_SETUP          (500u)
-#elif CY_CPU_CORTEX_M33
-/* The optimal delay cycle value needed to set up the GPIO Drive mode
- * in Release configuration */
-#define DELAY_DRIVE_MODE_SETUP          (500u)
-#endif /* if ((defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4)) ||
-             (defined(CY_CPU_CORTEX_M0P) && (CY_CPU_CORTEX_M0P))) */
+#elif (defined(CY_DEVICE_SERIES_XMC7100) || defined(CY_DEVICE_SERIES_XMC7200))
+    #define DELAY_DRIVE_MODE_SETUP          (500u)
+
+#elif (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) || \
+    defined(CY_DEVICE_SERIES_PSC3P2) || defined(CY_DEVICE_SERIES_PSC3P5))
+    #define DELAY_DRIVE_MODE_SETUP          (500u)
+
+#elif (defined(CY_DEVICE_SERIES_XMC5100) || defined(CY_DEVICE_SERIES_XMC5200) || defined(CY_DEVICE_SERIES_XMC5300))
+    #define DELAY_DRIVE_MODE_SETUP          (500u)
+
+#else /* PSOC4 devices */
+    #define DELAY_DRIVE_MODE_SETUP          (10u)
+#endif /* if (defined(CY_DEVICE_SERIES_PSOC_61) || defined(CY_DEVICE_SERIES_PSOC_62) ||
+        *     defined(CY_DEVICE_SERIES_PSOC_63) || defined(CY_DEVICE_SERIES_PSOC_64))
+        */
 
 /** \endcond */
 

@@ -5,36 +5,33 @@
 *  This file provides the source code to the API for the runtime Stack self tests.
 *
 *******************************************************************************
-* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
-* an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
+* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is
+* owned by Infineon Technologies AG or one of its affiliates ("Infineon")
+* and is protected by and subject to worldwide patent protection, worldwide
+* copyright laws, and international treaty provisions. Therefore, you may use
+* this Software only as provided in the license agreement accompanying the
+* software package from which you obtained this Software. If no license
+* agreement applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
 *
-* This software, including source code, documentation and related
-* materials ("Software") is owned by Cypress Semiconductor Corporation
-* or one of its affiliates ("Cypress") and is protected by and subject to
-* worldwide patent protection (United States and foreign),
-* United States copyright laws and international treaty provisions.
-* Therefore, you may use this Software only as provided in the license
-* agreement accompanying the software package from which you
-* obtained this Software ("EULA").
-* If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
-* non-transferable license to copy, modify, and compile the Software
-* source code solely for use in connection with Cypress's
-* integrated circuit products.  Any reproduction, modification, translation,
-* compilation, or representation of this Software except as specified
-* above is prohibited without the express written permission of Cypress.
-*
-* Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
-* reserves the right to make changes to the Software without notice. Cypress
-* does not assume any liability arising out of the application or use of the
-* Software or any product or circuit described in the Software. Cypress does
-* not authorize its products for use in any products where a malfunction or
-* failure of the Cypress product may reasonably be expected to result in
-* significant property damage, injury or death ("High Risk Product"). By
-* including Cypress's product in a High Risk Product, the manufacturer
-* of such system or application assumes all risk of such use and in doing
-* so agrees to indemnify Cypress against all liability.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE
+* IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING, BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF
+* THIRD-PARTY RIGHTS AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A
+* SPECIFIC USE/PURPOSE OR MERCHANTABILITY.
+* Infineon reserves the right to make changes to the Software without notice.
+* You are responsible for properly designing, programming, and testing the
+* functionality and safety of your intended application of the Software, as
+* well as complying with any legal requirements related to its use. Infineon
+* does not guarantee that the Software will be free from intrusion, data theft
+* or loss, or other breaches ("Security Breaches"), and Infineon shall have
+* no liability arising out of any Security Breaches. Unless otherwise
+* explicitly approved by Infineon, the Software may not be used in any
+* application where a failure of the Product or any consequences of the use
+* thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 
 #include "cy_pdl.h"
@@ -49,16 +46,25 @@ static uint8_t cy_stack_pattern_block_size = 0;
  ********************************************************************************
  *
  * Summary:
- *  This function initializes the upper stack area with the 0xAA and 0x55 pattern.
+ *  This function initializes the upper and lower stack areas with the 0xAA and
+ *  0x55 pattern.
  *
  * Parameters:
  * \param stack_address
  * The pointer to the stack.
- * \param stack_address
+ * \param stack_length
  * The length of the stack.
+ * \param stack_pattern_blk_size
+ * The size of the pattern block (must be less than half of stack_length).
  *
  * Return:
  *  None.
+ *
+ * Note:
+ * Ensure sufficient stack space is available before calling this function.
+ * The stack must not be overflowed or near overflow. Guard zones provide
+ * backup protection but should not be the primary defense mechanism.
+ * Proper stack sizing and monitoring are essential for safe operation.
  *
  **********************************************************************************/
 
@@ -66,8 +72,12 @@ void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length,
                                 uint8_t stack_pattern_blk_size)
 {
     uint8_t i;
+
+    /* Validate that guard zones don't overlap */
+    CY_ASSERT(((uint16_t)stack_pattern_blk_size * 2U) <= stack_length);
+
     cy_stack_pattern_block_size = stack_pattern_blk_size;
-    /* The pointer to the last word in the stack*/
+    /* The pointer to the last word in the stack */
     uint16_t* stack = (stack_address - (stack_length/sizeof(uint16_t)));
 
     /* Fill the test stack block with a predefined pattern */
@@ -79,7 +89,7 @@ void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length,
         #else
         *stack = STACK_TEST_PATTERN;
         stack++;
-        #endif /* End (ERROR_IN_STACK) */
+        #endif /* #if (ERROR_IN_STACK_OVERFLOW) */
     }
 
     /* The pointer to the first word in the stack */
@@ -94,7 +104,7 @@ void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length,
 
         *stack = STACK_TEST_PATTERN;
         stack++;
-        #endif /* End (ERROR_IN_STACK) */
+        #endif /* #if (ERROR_IN_STACK_UNDERFLOW) */
     }
 }
 
@@ -104,17 +114,21 @@ void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length,
  ********************************************************************************
  *
  * Summary:
- *  This function performs the stack self test. It checks the upper stack area for the 0xAA
- *  and 0x55 patterns.
+ *  This function performs the stack self test. It checks the upper and lower
+ *  stack areas for the 0xAA and 0x55 patterns.
  *
  * Parameters:
  * \param stack_address
  * The pointer to the stack.
- * \param stack_address
+ * \param stack_length
  * The length of the stack.
  *
  * Return:
- *  Result of test:  "0" - pass test; "1" - fail test.
+ *  Result of test (bitmask):
+ *    0x00 (0) - Pass: both guard zones intact
+ *    0x01 (1) - Fail: stack overflow detected (bottom guard corrupted)
+ *    0x02 (2) - Fail: stack underflow detected (top guard corrupted)
+ *    0x03 (3) - Fail: both overflow and underflow detected
  *
  **********************************************************************************/
 
@@ -131,10 +145,10 @@ uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_leng
     {
         if (*stack != STACK_TEST_PATTERN)
         {
-            stack++;
             ret |= (uint8_t)(1U << 0);
             break;
         }
+        stack++;
     }
 
     stack = (stack_address - (cy_stack_pattern_block_size / sizeof(uint16_t)));
@@ -143,10 +157,10 @@ uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_leng
     {
         if (*stack != STACK_TEST_PATTERN)
         {
-            stack++;
             ret |= (uint8_t)(1U << 1);
             break;
         }
+        stack++;
     }
     return ret;
 }

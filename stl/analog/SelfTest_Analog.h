@@ -6,36 +6,33 @@
 *  for the analog component self tests according to Class B library.
 *
 *******************************************************************************
-* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
-* an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
+* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is
+* owned by Infineon Technologies AG or one of its affiliates ("Infineon")
+* and is protected by and subject to worldwide patent protection, worldwide
+* copyright laws, and international treaty provisions. Therefore, you may use
+* this Software only as provided in the license agreement accompanying the
+* software package from which you obtained this Software. If no license
+* agreement applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
 *
-* This software, including source code, documentation and related
-* materials ("Software") is owned by Cypress Semiconductor Corporation
-* or one of its affiliates ("Cypress") and is protected by and subject to
-* worldwide patent protection (United States and foreign),
-* United States copyright laws and international treaty provisions.
-* Therefore, you may use this Software only as provided in the license
-* agreement accompanying the software package from which you
-* obtained this Software ("EULA").
-* If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
-* non-transferable license to copy, modify, and compile the Software
-* source code solely for use in connection with Cypress's
-* integrated circuit products.  Any reproduction, modification, translation,
-* compilation, or representation of this Software except as specified
-* above is prohibited without the express written permission of Cypress.
-*
-* Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
-* reserves the right to make changes to the Software without notice. Cypress
-* does not assume any liability arising out of the application or use of the
-* Software or any product or circuit described in the Software. Cypress does
-* not authorize its products for use in any products where a malfunction or
-* failure of the Cypress product may reasonably be expected to result in
-* significant property damage, injury or death ("High Risk Product"). By
-* including Cypress's product in a High Risk Product, the manufacturer
-* of such system or application assumes all risk of such use and in doing
-* so agrees to indemnify Cypress against all liability.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE
+* IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING, BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF
+* THIRD-PARTY RIGHTS AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A
+* SPECIFIC USE/PURPOSE OR MERCHANTABILITY.
+* Infineon reserves the right to make changes to the Software without notice.
+* You are responsible for properly designing, programming, and testing the
+* functionality and safety of your intended application of the Software, as
+* well as complying with any legal requirements related to its use. Infineon
+* does not guarantee that the Software will be free from intrusion, data theft
+* or loss, or other breaches ("Security Breaches"), and Infineon shall have
+* no liability arising out of any Security Breaches. Unless otherwise
+* explicitly approved by Infineon, the Software may not be used in any
+* application where a failure of the Product or any consequences of the use
+* thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
  * \addtogroup group_analog
@@ -97,42 +94,32 @@
 /** \addtogroup group_analog_macros
  * \{
  */
-#if (CY_CPU_CORTEX_M0P)
 /** The test is done by using Vref from External*/
-    #define ANALOG_TEST_VREF                       (ANALOG_TEST_VREF_EXTERNAL)
+#define ANALOG_TEST_VREF                       (ANALOG_TEST_VREF_EXTERNAL)
 /** Depends on an external three-series resistor voltage divider from VDDA to GND to supply a
  *  reference voltage for the self test. */
-    #define ANALOG_TEST_VREF_EXTERNAL              (0u)
+#define ANALOG_TEST_VREF_EXTERNAL              (0u)
 /** Uses the two internal MSCv3 blocks to route VREF(1.2V) and VDDA/2 to the AMUXBUS, which the tests
  *  can use. Only for CAT2 device */
-    #define ANALOG_TEST_VREF_DUAL_MSC              (1u)
+#define ANALOG_TEST_VREF_DUAL_MSC              (1u)
 /** Uses an internal CSD IDAC to generate a voltage from an external pull-down resistor. Only for CAT2
  *  device. */
-    #define ANALOG_TEST_VREF_CSD_IDAC              (2u)
-#else
-/** The test is done by using Vref from External*/
-    #define ANALOG_TEST_VREF                       (ANALOG_TEST_VREF_EXTERNAL)
-/** Depends on an external three-series resistor voltage divider from VDDA to GND to supply a
- *  reference voltage for the self test. */
-    #define ANALOG_TEST_VREF_EXTERNAL              (0u)
-#endif /* if (CY_CPU_CORTEX_M0P) */
+#define ANALOG_TEST_VREF_CSD_IDAC              (2u)
 
 
 /** \cond INTERNAL */
-#if (CY_CPU_CORTEX_M0P)
-    #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_DUAL_MSC) && !defined(CY_IP_M0S8MSCV3) && \
+#if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_DUAL_MSC) && !defined(CY_IP_M0S8MSCV3) && \
     (CY_IP_M0S8MSCV3_INSTANCES < 2u)
-    #error "Hardware does not support ANALOG_TEST_VREF_DUAL_MSC mode"
-    #endif
+#error "Hardware does not support ANALOG_TEST_VREF_DUAL_MSC mode"
+#endif
 
-    #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC) && !defined(CY_IP_M0S8CSDV2)
-    #error "Hardware does not support ANALOG_TEST_VREF_CSD_IDAC mode"
-    #endif
+#if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC) && !defined(CY_IP_M0S8CSDV2)
+#error "Hardware does not support ANALOG_TEST_VREF_CSD_IDAC mode"
 #endif
 
 #ifdef CY_IP_MXS40PASS_CTDAC
-    #define DAC_INPUT 0x7D0 /* Maps to 1.5 V */
-    #define DAC_ADC_OUTPUT_DEVIATION 0.01 /* Devation of 1% between DAC input and ADC output */
+    #define DAC_INPUT 0x7D0U /* Maps to 1.5 V */
+    #define DAC_ADC_OUTPUT_DEVIATION_PCT 1U /* Deviation of 1% between DAC input and ADC output */
 #endif
 
 /** \endcond */
@@ -143,57 +130,34 @@
 /** ADC accuracy: 12% */
 #define ADC_TEST_ACC                    12
 
+/** OPAMP accuracy - the same as ADC accuracy */
+#define OPAMP_TEST_ACURACCY             12
+
 /* Definition of the analog components included in class B */
-#if (CY_CPU_CORTEX_M0P)
-/** OP-AMP accuracy: 12% */
-    #define OPAMP_TEST_ACURACCY             12
+#if defined (CY_IP_MXLPCOMP) || defined (CY_IP_MXS22LPCOMP) || \
+    defined (CY_IP_MXS40LPCOMP) || defined (CY_IP_M0S8LPCOMP)
+    #define CLASSB_SELF_TEST_COMP           1u
+#endif
 
-    #if defined(CY_DEVICE_SERIES_PSOC_4000T)
-/* PSoC 4000T devices do not support analog tests */
-    #elif (defined(CY_DEVICE_SERIES_PSOC_4000S) || defined(CY_DEVICE_SERIES_PSOC_4700S))
-/** Whether Comparator is present or not */
-    #define CLASSB_SELF_TEST_COMP           1u
-    #elif defined(CY_DEVICE_SERIES_PSOC_4100T_PLUS)
-/** Whether ADC is present or not*/
+#if defined(CY_IP_M0S8PASS4A_SAR) || defined(CY_IP_MXS40PASS_SAR) || \
+    defined (CY_IP_MXS40EPASS_ESAR) || defined(CY_IP_MXS40MCPASS)
     #define CLASSB_SELF_TEST_ADC            1u
-/** Whether OPAMP is present or not */
-    #define CLASSB_SELF_TEST_OPAMP          1u
-    #else
-/** Whether ADC is present or not*/
-    #define CLASSB_SELF_TEST_ADC            1u
-/** Whether OPAMP is present or not */
-    #define CLASSB_SELF_TEST_OPAMP          1u
-/** Whether Comparator is present or not */
-    #define CLASSB_SELF_TEST_COMP           1u
-    #endif /* CY_DEVICE_SERIES_PSOC_4100T_PLUS */
+#endif
 
-#elif (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
-/** Whether ADC is present or not */
-    #define CLASSB_SELF_TEST_ADC            1u
-/** Whether Comparator is present or not */
-    #define CLASSB_SELF_TEST_COMP           1u
-    #if CY_CPU_CORTEX_M33
+#if defined(CLASSB_SELF_TEST_ADC) && (defined(CY_IP_MXS40PASS_CTB) || defined(CY_IP_M0S8PASS4A_CTB))
+    #define CLASSB_SELF_TEST_OPAMP          1u
+#endif
+
+#if defined(CY_IP_MXS40MCPASS)
     #define CLASSB_SELF_TEST_DAC            1u
-    #endif
-    #if (defined(CY_DEVICE_PSOC6ABLE2) || defined(CY_DEVICE_PSOC6A256K))
-/** Whether OP-AMP is present or not */
-        #define OPAMP_TEST_ACURACCY             12
-/** OP-AMP accuracy: 12% */
-        #define CLASSB_SELF_TEST_OPAMP          1u
-    #endif
-
-#elif (CY_CPU_CORTEX_M7)
-/** Whether ADC is present or not */
-    #define CLASSB_SELF_TEST_ADC            1u
-#endif /* if (CY_CPU_CORTEX_M0P) */
+#endif
 
 
 /** \cond INTERNAL */
-#if (CY_CPU_CORTEX_M0P)
 /*****************************************************************************
 * Defined parameters for Voltage References
 *****************************************************************************/
-    #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_DUAL_MSC)
+#if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_DUAL_MSC)
     #define INTERNAL_BANDGAP_VREF_MV        1200
 
     #define ANALOG_TEST_VREF1_MV            (INTERNAL_BANDGAP_VREF_MV)
@@ -233,7 +197,7 @@
                                                     (1UL << MSC_MODE_SW_SEL_SH_BUF_EN_Pos))
     #endif /* ANALOG_TEST_VREF == ANALOG_TEST_VREF_DUAL_MSC */
 
-    #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
+#if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
 
 /* Define the external resistors values in Ohms */
     #define IDAC_RES1_VAL            4700u
@@ -266,8 +230,7 @@
     #define CSDV2_SW_BYP_SEL_IDACA_TO_AMUXA     CSD_SW_BYP_SEL_SW_BYA_Msk
     #define CSDV2_IDACA_CONFIG                  \
         (IDAC_RANGE_2400_NA << CSD_IDACA_RANGE_Pos) | CSD_IDACA_LEG1_EN_Msk
-    #endif /* CY_IP_M0S8CSDV2 == 1u */
-#endif /* if (CY_CPU_CORTEX_M0P) */
+#endif /* CY_IP_M0S8CSDV2 == 1u */
 /** \endcond */
 
 #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_EXTERNAL)
@@ -301,14 +264,14 @@
 *****************************************************************************/
 #define ANALOG_ADC_CHNL_VREF1           0x00u
 
-#if (CY_CPU_CORTEX_M0P)
-    #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
+
+#if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
 /* IDAC does not need a AMUXBUS per channel*/
-    #define ANALOG_ADC_CHNL_VREF2            ANALOG_ADC_CHNL_VREF1
+    #define ANALOG_ADC_CHNL_VREF2           ANALOG_ADC_CHNL_VREF1
     #else
     #define ANALOG_ADC_CHNL_VREF2           0x01u
-    #endif
 #endif
+
 /** \endcond */
 
 /** ADC Accuracy in counts */
@@ -330,25 +293,29 @@
 /** Expected COMP result when +ve terminal voltage < -ve terminal Voltage*/
 #define ANALOG_COMP_RESULT2                (0u)
 
+/** \} group_analog_macros */
+
 /** \cond INTERNAL */
-#if (CY_CPU_CORTEX_M0P)
 /*****************************************************************************
 * Defined parameters for Analog Calibration
 *****************************************************************************/
+#if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
     #define ANALOG_ADC_CHNL_IDACA           0x00u
     #define ANALOG_ADC_CHNL_IDACB           0x01u
 
     #define IDAC_SETTLE_TIME                (10u)
+#endif /* ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC */
 
 
 /***************************************
 * Function Prototypes
 ***************************************/
-    #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_DUAL_MSC)
+#if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_DUAL_MSC)
 void SelfTest_Init_MSCv3_Vdda_Div2_Amux_B(MSC_Type* base);
 void SelfTest_Init_MSCv3_Vref_Amux_A(MSC_Type* base);
-    #endif /* CY_IP_M0S8MSCV3 == 1u */
-    #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
+#endif /* ANALOG_TEST_VREF == ANALOG_TEST_VREF_DUAL_MSC */
+
+#if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
 void SelfTest_Init_CSDv2_IDACA_Amux_A(CSD_Type* base);
 void SelfTest_Init_CSDv2_IDACB_Amux_B(CSD_Type* base);
 void SelfTest_Init_CSDv2_Dual_IDAC_Out(CSD_Type* base);
@@ -356,11 +323,9 @@ void SelfTest_IDACA_SetValue(CSD_Type* base, uint8_t value);
 void SelfTest_IDACB_SetValue(CSD_Type* base, uint8_t value);
 uint8_t SelfTests_IDACB_Analog_Calibration(CSD_Type* csd_base, SAR_Type* sar_base);
 uint8_t SelfTests_IDACA_Analog_Calibration(CSD_Type* csd_base, SAR_Type* sar_base);
+#endif /* ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC */
 
-    #endif /* CY_IP_M0S8CSDV2 == 1u */
-#endif /* if (CY_CPU_CORTEX_M0P) */
 /** \endcond */
-/** \} group_analog_macros */
 
 
 /**
@@ -368,6 +333,7 @@ uint8_t SelfTests_IDACA_Analog_Calibration(CSD_Type* csd_base, SAR_Type* sar_bas
  * \{
  */
 
+#if defined(CLASSB_SELF_TEST_OPAMP) || defined (CY_DOXYGEN)
 /*******************************************************************************
 * Function Name: SelfTests_Opamp
 ****************************************************************************//**
@@ -391,12 +357,12 @@ uint8_t SelfTests_IDACA_Analog_Calibration(CSD_Type* csd_base, SAR_Type* sar_bas
 *  1 - Test failed
 *
 *******************************************************************************/
-#if defined(CLASSB_SELF_TEST_OPAMP)
 uint8_t SelfTests_Opamp(SAR_Type* sar_base, int16_t expected_res, int16_t accuracy,
                         uint32_t opamp_in_channel, bool count_to_mV);
 #endif /* End Testing Opamp */
 
 
+#if defined(CY_IP_MXS40MCPASS) || defined (CY_DOXYGEN)
 /*******************************************************************************
 * Function Name: SelfTests_ADC_TrigIn
 ****************************************************************************//**
@@ -419,11 +385,8 @@ uint8_t SelfTests_Opamp(SAR_Type* sar_base, int16_t expected_res, int16_t accura
 *  1 - Test Failed
 *
 *******************************************************************************/
-#if defined(CLASSB_SELF_TEST_ADC)
-    #if (defined(CY_CPU_CORTEX_M33) && (CY_CPU_CORTEX_M33))
 uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int16_t expected_res, int16_t accuracy,
                              uint32_t trig_in);
-    #endif
 #endif /* End Testing ADC */
 
 /*******************************************************************************
@@ -454,22 +417,19 @@ uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int16_t expected_
 * For CA1B devices, the user needs to configure the trigger input the same as the channel number.
 *
 *******************************************************************************/
-#if defined(CLASSB_SELF_TEST_ADC)
-    #if CY_CPU_CORTEX_M0P
+#if defined(CY_IP_M0S8PASS4A_SAR) || defined(CY_IP_MXS40PASS_SAR) || defined (CY_DOXYGEN)
 uint8_t SelfTests_ADC(SAR_Type* base, uint32_t channel, int16_t expected_res, int16_t accuracy,
                       uint32_t vbg_channel, bool count_to_mV);
-    #elif CY_CPU_CORTEX_M4
-uint8_t SelfTests_ADC(SAR_Type* base, uint32_t channel, int16_t expected_res, int16_t accuracy,
-                      uint32_t vbg_channel, bool count_to_mV);
-    #elif CY_CPU_CORTEX_M7
+#elif defined (CY_IP_MXS40EPASS_ESAR)
 uint8_t SelfTests_ADC(PASS_SAR_Type* base, uint32_t channel, int16_t expected_res, int16_t accuracy,
                       uint32_t vbg_channel, bool count_to_mV);
-    #elif CY_CPU_CORTEX_M33
-uint8_t SelfTests_ADC(uint32_t base, uint32_t channel, int16_t expected_res, int16_t accuracy,
+#elif defined(CY_IP_MXS40MCPASS)
+uint8_t SelfTests_ADC(uint32_t group, uint32_t channel, int16_t expected_res, int16_t accuracy,
                       uint32_t vbg_channel, bool count_to_mV);
-    #endif /* if CY_CPU_CORTEX_M0P */
-#endif /* End Testing ADC */
+#endif /* defined(CY_IP_M0S8PASS4A_SAR) || defined(CY_IP_MXS40PASS_SAR) || defined (CY_DOXYGEN) */
 
+
+#if defined(CLASSB_SELF_TEST_COMP) || defined (CY_DOXYGEN)
 /*******************************************************************************
 * Function Name: SelfTests_Comparator
 ****************************************************************************//**
@@ -490,12 +450,12 @@ uint8_t SelfTests_ADC(uint32_t base, uint32_t channel, int16_t expected_res, int
 *  1 - Test failed
 *
 *******************************************************************************/
-#if defined(CLASSB_SELF_TEST_COMP)
 uint8_t SelfTests_Comparator(LPCOMP_Type const* lpcomp_base, cy_en_lpcomp_channel_t lpcomp_channel,
                              uint8_t expected_res);
-#endif /* End  Testing AN cmp */
+#endif /* defined(CLASSB_SELF_TEST_COMP) || defined (CY_DOXYGEN) */
 
 
+#if defined(CY_IP_MXS40PASS_CTDAC) || defined (CY_DOXYGEN)
 /*******************************************************************************
 * Function Name: SelfTests_DAC
 ****************************************************************************//**
@@ -518,9 +478,8 @@ uint8_t SelfTests_Comparator(LPCOMP_Type const* lpcomp_base, cy_en_lpcomp_channe
 * Applicable only to CAT1A devices
 *
 *******************************************************************************/
-#if defined(CY_IP_MXS40PASS_CTDAC) || defined (CY_DOXYGEN)
 uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChannel);
-#endif
+#endif /* defined(CY_IP_MXS40PASS_CTDAC) || defined (CY_DOXYGEN) */
 
 #if defined(CLASSB_SELF_TEST_DAC) || defined (CY_DOXYGEN)
 /*******************************************************************************

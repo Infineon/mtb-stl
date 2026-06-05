@@ -1,4 +1,4 @@
-# ModusToolbox Safety Test Library 3.3.1
+# ModusToolbox Safety Test Library 3.4.0
 
 
 Refer to the [README.md](./README.md) for a complete description of the ModusToolbox Safety Test Library.
@@ -6,14 +6,17 @@ Refer to the [README.md](./README.md) for a complete description of the ModusToo
 ## What is Included?
 
 ### CAT1A
-* Devices Supported: Product families under PSOC™ 61 Programmable Line and Product families under PSOC™ 62 Performance Line
+* Devices Supported: 
+  - PSOC™ 61 Programmable Line 
+  - PSOC™ 62 Performance Line
+  - XMC5000
 
 * Compilers Supported: GCC_ARM, ARM, IAR
 
 * List of Self-Tests supported:
     | Group              | Module |
     | ------             | ------ |
-    | System platform    | Interrupt, Clock, IPC, Startup Configuration Registers, DMAC, DMA/DW, WDT |
+    | System platform    | Interrupt, Clock, IPC, Startup Configuration Registers, DMAC, DMA/DW, WDT, WWDT, ECC|
     | CPU                | CPU Registers, Program Counter, Program Flow, FPU Registers |
     | Memory             | Flash, RAM, Stack |
     | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, ADC, DAC, Comparator, OP-AMP, Timer Counter, PWM, PWM Gatekill, CANFD |
@@ -62,6 +65,10 @@ Refer to the [README.md](./README.md) for a complete description of the ModusToo
 
 ## What Changed?
 
+### v3.4.0
+* Updated user documentation
+* Added support of the XMC5000 device family.
+
 ### v3.3.1
 * Fixed the return status for the SelfTest_UART_SCB() function for the case when the test is still in progress
 * Fixed build warnings for SAR ADC, ECC and IPC tests.
@@ -92,8 +99,8 @@ This version of the ModusToolbox Safety Test Library was validated for the compa
 
 | Software and Tools                                      | Version |
 | :---                                                    | :----:  |
-| ModusToolbox Software Environment                       | 3.5.0   |
-| CAT1 Peripheral Driver Library                          | 3.14.0  |
+| ModusToolbox Software Environment                       | 3.7.0   |
+| CAT1 Peripheral Driver Library                          | 3.21.0  |
 | CAT2 Peripheral Driver Library                          | 2.17.0  |
 | GCC Compiler                                            | 14.2.1  |
 | IAR Compiler                                            | 9.50.2  |
@@ -109,4 +116,5 @@ For more information, refer to the following documents:
 * [Infineon Technologies AG](https://www.infineon.com)
 
 ---
-© 2025, Cypress Semiconductor Corporation (an Infineon company) or an affiliate of Cypress Semiconductor Corporation.
+(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+Technologies AG.  All rights reserved.

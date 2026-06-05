@@ -5,36 +5,33 @@
 *  This file provides the source code for the I/O self tests.
 *
 *******************************************************************************
-* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
-* an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
+* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is
+* owned by Infineon Technologies AG or one of its affiliates ("Infineon")
+* and is protected by and subject to worldwide patent protection, worldwide
+* copyright laws, and international treaty provisions. Therefore, you may use
+* this Software only as provided in the license agreement accompanying the
+* software package from which you obtained this Software. If no license
+* agreement applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
 *
-* This software, including source code, documentation and related
-* materials ("Software") is owned by Cypress Semiconductor Corporation
-* or one of its affiliates ("Cypress") and is protected by and subject to
-* worldwide patent protection (United States and foreign),
-* United States copyright laws and international treaty provisions.
-* Therefore, you may use this Software only as provided in the license
-* agreement accompanying the software package from which you
-* obtained this Software ("EULA").
-* If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
-* non-transferable license to copy, modify, and compile the Software
-* source code solely for use in connection with Cypress's
-* integrated circuit products.  Any reproduction, modification, translation,
-* compilation, or representation of this Software except as specified
-* above is prohibited without the express written permission of Cypress.
-*
-* Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
-* reserves the right to make changes to the Software without notice. Cypress
-* does not assume any liability arising out of the application or use of the
-* Software or any product or circuit described in the Software. Cypress does
-* not authorize its products for use in any products where a malfunction or
-* failure of the Cypress product may reasonably be expected to result in
-* significant property damage, injury or death ("High Risk Product"). By
-* including Cypress's product in a High Risk Product, the manufacturer
-* of such system or application assumes all risk of such use and in doing
-* so agrees to indemnify Cypress against all liability.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE
+* IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING, BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF
+* THIRD-PARTY RIGHTS AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A
+* SPECIFIC USE/PURPOSE OR MERCHANTABILITY.
+* Infineon reserves the right to make changes to the Software without notice.
+* You are responsible for properly designing, programming, and testing the
+* functionality and safety of your intended application of the Software, as
+* well as complying with any legal requirements related to its use. Infineon
+* does not guarantee that the Software will be free from intrusion, data theft
+* or loss, or other breaches ("Security Breaches"), and Infineon shall have
+* no liability arising out of any Security Breaches. Unless otherwise
+* explicitly approved by Infineon, the Software may not be used in any
+* application where a failure of the Product or any consequences of the use
+* thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 #include "cy_pdl.h"
 
@@ -51,7 +48,6 @@ static const uint8_t* pinMask = NULL;
 /* PIN 0 is represented by the LSB and PIN 7 by MSB                        */
 /* If the pin should be tested, set a corresponding bit to "1".            */
 
-#if CY_CPU_CORTEX_M0P
 #if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX)
 static const uint8_t PinToTest[] =
 {
@@ -222,7 +218,8 @@ static GPIO_PRT_Type* PORT_Regs[] =
 };
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4700S) */
 
-#elif CY_CPU_CORTEX_M4
+#if (defined(CY_DEVICE_SERIES_PSOC_61) || defined(CY_DEVICE_SERIES_PSOC_62) || \
+    defined(CY_DEVICE_SERIES_PSOC_63) || defined(CY_DEVICE_SERIES_PSOC_64))
 static const uint8_t PinToTest[] =
 {
     /* The below mask is based on the project setting and CY8CKIT-45S MAX kit hardware. */
@@ -262,9 +259,11 @@ static GPIO_PRT_Type* PORT_Regs[] =
     GPIO_PRT13,
     GPIO_PRT14,
 };
+#endif /* if (defined(CY_DEVICE_SERIES_PSOC_61) || defined(CY_DEVICE_SERIES_PSOC_62) ||
+        * defined(CY_DEVICE_SERIES_PSOC_63) || defined(CY_DEVICE_SERIES_PSOC_64))
+        */
 
-
-#elif CY_CPU_CORTEX_M7
+#if (defined(CY_DEVICE_SERIES_XMC7100) || defined(CY_DEVICE_SERIES_XMC7200))
 static const uint8_t PinToTest[] =
 {
     /* The below mask is based on the project setting and CY8CKIT-45S MAX kit hardware. */
@@ -340,10 +339,12 @@ static GPIO_PRT_Type* PORT_Regs[] =
     GPIO_PRT31,
     GPIO_PRT32,
 };
-#elif CY_CPU_CORTEX_M33
+#endif /* if (defined(CY_DEVICE_SERIES_XMC7100) || defined(CY_DEVICE_SERIES_XMC7200)) */
+
+#if (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) || \
+    defined(CY_DEVICE_SERIES_PSC3P2) || defined(CY_DEVICE_SERIES_PSC3P5))
 static const uint8_t PinToTest[] =
 {
-    /* The below mask is based on the project setting and CY8CKIT-45S MAX kit hardware. */
     0x00u,     /* PORT0 mask */
     0x00u,     /* PORT1 mask */
     0x00u,     /* PORT2 mask */
@@ -370,8 +371,72 @@ static GPIO_PRT_Type* PORT_Regs[] =
     GPIO_PRT8,
     GPIO_PRT9,
 };
+#endif /* if (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) ||
+        * defined(CY_DEVICE_SERIES_PSC3P2) || defined(CY_DEVICE_SERIES_PSC3P5))
+        */
 
-#endif /* if CY_CPU_CORTEX_M0P */
+#if (defined(CY_DEVICE_SERIES_XMC5100) || defined(CY_DEVICE_SERIES_XMC5200) || defined(CY_DEVICE_SERIES_XMC5300))
+static const uint8_t PinToTest[] =
+{
+    /* The below mask is based on the project setting and KIT_XMC52_EVK kit hardware. */
+    0x00u,     /* PORT0 mask */
+    0x00u,     /* PORT1 mask */
+    0x08u,     /* PORT2 mask */
+    0x03u,     /* PORT3 mask */
+    0x00u,     /* PORT4 mask */
+    0x0Fu,     /* PORT5 mask */
+    0x3Eu,     /* PORT6 mask */
+    0x3Eu,     /* PORT7 mask */
+    0x07u,     /* PORT8 mask */
+    0x00u,     /* PORT9 mask */
+    0x00u,     /* PORT10 mask */
+    0x07u,     /* PORT11 mask */
+    0x0Bu,     /* PORT12 mask */
+    0xFFu,     /* PORT13 mask */
+    0x0Fu,     /* PORT14 mask */
+    0x00u,     /* PORT15 mask */
+    0x00u,     /* PORT16 mask */
+    0x07u,     /* PORT17 mask */
+    0xFFu,     /* PORT18 mask */
+    0x06u,     /* PORT19 mask */
+    0x00u,     /* PORT20 mask */
+    0x23u,     /* PORT21 mask */
+    0x0Fu,     /* PORT22 mask */
+    0x08u,     /* PORT23 mask */
+};
+
+/* IO ports register addresses */
+static GPIO_PRT_Type* PORT_Regs[] =
+{
+    GPIO_PRT0,
+    GPIO_PRT1,
+    GPIO_PRT2,
+    GPIO_PRT3,
+    GPIO_PRT4,
+    GPIO_PRT5,
+    GPIO_PRT6,
+    GPIO_PRT7,
+    GPIO_PRT8,
+    GPIO_PRT9,
+    GPIO_PRT10,
+    GPIO_PRT11,
+    GPIO_PRT12,
+    GPIO_PRT13,
+    GPIO_PRT14,
+    GPIO_PRT15,
+    GPIO_PRT16,
+    GPIO_PRT17,
+    GPIO_PRT18,
+    GPIO_PRT19,
+    GPIO_PRT20,
+    GPIO_PRT21,
+    GPIO_PRT22,
+    GPIO_PRT23,
+};
+#endif /* if (defined(CY_DEVICE_SERIES_XMC5100) || defined(CY_DEVICE_SERIES_XMC5200) ||
+        * defined(CY_DEVICE_SERIES_XMC5300))
+        */
+
 /*******************************************************************************
  * Function Name: SelfTest_IO_GetPortError
  ********************************************************************************

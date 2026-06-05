@@ -6,36 +6,33 @@
 *  for the Startup Configuration Register self tests.
 *
 *******************************************************************************
-* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
-* an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
+* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is
+* owned by Infineon Technologies AG or one of its affiliates ("Infineon")
+* and is protected by and subject to worldwide patent protection, worldwide
+* copyright laws, and international treaty provisions. Therefore, you may use
+* this Software only as provided in the license agreement accompanying the
+* software package from which you obtained this Software. If no license
+* agreement applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
 *
-* This software, including source code, documentation and related
-* materials ("Software") is owned by Cypress Semiconductor Corporation
-* or one of its affiliates ("Cypress") and is protected by and subject to
-* worldwide patent protection (United States and foreign),
-* United States copyright laws and international treaty provisions.
-* Therefore, you may use this Software only as provided in the license
-* agreement accompanying the software package from which you
-* obtained this Software ("EULA").
-* If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
-* non-transferable license to copy, modify, and compile the Software
-* source code solely for use in connection with Cypress's
-* integrated circuit products.  Any reproduction, modification, translation,
-* compilation, or representation of this Software except as specified
-* above is prohibited without the express written permission of Cypress.
-*
-* Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
-* reserves the right to make changes to the Software without notice. Cypress
-* does not assume any liability arising out of the application or use of the
-* Software or any product or circuit described in the Software. Cypress does
-* not authorize its products for use in any products where a malfunction or
-* failure of the Cypress product may reasonably be expected to result in
-* significant property damage, injury or death ("High Risk Product"). By
-* including Cypress's product in a High Risk Product, the manufacturer
-* of such system or application assumes all risk of such use and in doing
-* so agrees to indemnify Cypress against all liability.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE
+* IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING, BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF
+* THIRD-PARTY RIGHTS AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A
+* SPECIFIC USE/PURPOSE OR MERCHANTABILITY.
+* Infineon reserves the right to make changes to the Software without notice.
+* You are responsible for properly designing, programming, and testing the
+* functionality and safety of your intended application of the Software, as
+* well as complying with any legal requirements related to its use. Infineon
+* does not guarantee that the Software will be free from intrusion, data theft
+* or loss, or other breaches ("Security Breaches"), and Infineon shall have
+* no liability arising out of any Security Breaches. Unless otherwise
+* explicitly approved by Infineon, the Software may not be used in any
+* application where a failure of the Product or any consequences of the use
+* thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
  * \addtogroup group_regs
@@ -67,6 +64,7 @@
     #define SELFTEST_CONFIGREGISTERS_H
 #include "SelfTest_common.h"
 #include <string.h>
+
 /***************************************
 * Initial Parameter Constants
 ***************************************/
@@ -98,15 +96,15 @@
 
 
 /* Define the number for the last row in Flash. */
-#if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M0P)
+#if defined(SELFTEST_PSOC4_FAMILY) || defined(SELFTEST_PSOC6_FAMILY)
 /** Calculates the offset address for the last row of Flash for storing the register data.*/
     #define LAST_ROW_IN_FLASH_OFFSET        ((CY_FLASH_SIZE - CY_FLASH_SIZEOF_ROW))
 /** Calculates the starting address of the last row. This value may differ depending on the device used. */
     #define LAST_ROW_IN_FLASH_ADDR          (CY_FLASH_BASE + (LAST_ROW_IN_FLASH_OFFSET))
-#else
-/** The base address of Code Flash only for XMC. */
+#elif defined(SELFTEST_XMC7X_FAMILY) || defined(SELFTEST_PSC3_FAMILY) || defined(SELFTEST_XMC5X_FAMILY)
+/** The base address of Code Flash for XMC7X/XMC5X/PSC3. */
     #define CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE      CY_FLASH_SM_SBM_BASE
-/** The size of Code Flash only for XMC. */
+/** The size of Code Flash for XMC7X/XMC5X/PSC3. */
     #define CONF_REG_FLASH_SMALL_SECTOR_SIZE           CY_FLASH_SM_SBM_SIZE
 /** Calculates the offset address for the last row of Flash for storing the register data.*/
     #define LAST_ROW_IN_FLASH_OFFSET        \
@@ -114,14 +112,14 @@
 /** Calculates the starting address of the last row. This value may differ depending on the device used. */
     #define LAST_ROW_IN_FLASH_ADDR          \
     (CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE + (LAST_ROW_IN_FLASH_OFFSET))
-#endif /* if (CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M0P) */
-#else /* if (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE) */
+#endif /* defined(SELFTEST_PSOC4_FAMILY) || defined(SELFTEST_PSOC6_FAMILY) */
+#else /* if (STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE) */
 
 
-#if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7))
-/** Base address of Code Flash only for XMC .*/
+#if defined(SELFTEST_XMC7X_FAMILY)
+/** Base address of Code Flash only for XMC7X. */
     #define CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE      CY_FLASH_SM_SBM_BASE
-/** The size of Code Flash only for XMC. */
+/** The size of Code Flash only for XMC7X. */
     #define CONF_REG_FLASH_SMALL_SECTOR_SIZE           CY_FLASH_SM_SBM_SIZE
 /** The number of Flash rows to save the configuration registers. */
     #define CONF_REG_NUMBER_OF_ROWS     0x02u
@@ -131,16 +129,29 @@
 /** The start address of the row to store the config register. */
     #define CONF_REG_FIRST_ROW_ADDR     \
     (CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE + (CONF_REG_FIRST_ROW * CY_FLASH_SIZEOF_ROW))
-#elif (CY_CPU_CORTEX_M0P || CY_CPU_CORTEX_M4 || CY_CPU_CORTEX_M33)
-/** The number of Flash rows to save the onfiguration registers. */
+#elif defined(SELFTEST_PSOC4_FAMILY) || defined(SELFTEST_PSOC6_FAMILY) || defined(SELFTEST_PSC3_FAMILY)
+/** The number of Flash rows to save the configuration registers. */
     #define CONF_REG_NUMBER_OF_ROWS     0x01u
 /** The row number to store the config register. */
     #define CONF_REG_FIRST_ROW          \
     ((CY_FLASH_SIZE / CY_FLASH_SIZEOF_ROW) - CONF_REG_NUMBER_OF_ROWS)
 /** The start address of the row to store the config register. */
     #define CONF_REG_FIRST_ROW_ADDR     (CY_FLASH_BASE + (CONF_REG_FIRST_ROW * CY_FLASH_SIZEOF_ROW))
-#endif /* if (defined(CY_CPU_CORTEX_M7) && (CY_CPU_CORTEX_M7)) */
-#endif /* End (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE) */
+#elif defined(SELFTEST_XMC5X_FAMILY)
+/** Base address of Code Flash for XMC5000. */
+    #define CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE      CY_FLASH_SM_SBM_BASE
+/** The size of Code Flash for XMC5000. */
+    #define CONF_REG_FLASH_SMALL_SECTOR_SIZE           CY_FLASH_SM_SBM_SIZE
+/** The number of Flash rows to save the configuration registers. */
+    #define CONF_REG_NUMBER_OF_ROWS     0x02u
+/** The row number to store the config register. */
+    #define CONF_REG_FIRST_ROW          \
+    ((CONF_REG_FLASH_SMALL_SECTOR_SIZE / CY_FLASH_SIZEOF_ROW) - CONF_REG_NUMBER_OF_ROWS)
+/** The start address of the row to store the config register. */
+    #define CONF_REG_FIRST_ROW_ADDR     \
+    (CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE + (CONF_REG_FIRST_ROW * CY_FLASH_SIZEOF_ROW))
+#endif /* defined(SELFTEST_XMC7X_FAMILY) */
+#endif /* (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE) */
 
 /** \} group_regs_macros */
 
@@ -168,17 +179,17 @@
 *******************************************************************************/
 uint8_t SelfTests_StartUp_ConfigReg(void);
 
-#if (defined(CY_CPU_CORTEX_M4) && (CY_CPU_CORTEX_M4))
+#if defined(SELFTEST_PSOC6_FAMILY)
 
 /*******************************************************************************
 * Function Name: SelfTests_Init_StartUp_ConfigReg
 ****************************************************************************//**
 *
-* This function must be always called to initilize the AREF address depending on the device.
+* This function must be always called to initialize the AREF address depending on the device.
 *
 *
 * \note
-* Applicable only for CAT1A devices
+* Applicable only for PSOC6 devices
 *
 *
 * \return
@@ -223,6 +234,6 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void);
 
 /** \} group_regs */
 
-#endif /* SELFTEST_CONFIGREGISTERS */
+#endif /* SELFTEST_CONFIGREGISTERS_H */
 
 /* [] END OF FILE */

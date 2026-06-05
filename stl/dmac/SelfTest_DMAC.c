@@ -5,36 +5,33 @@
 *  This file provides the source code for DMAC self test.
 *
 *******************************************************************************
-* Copyright 2020-2025, Cypress Semiconductor Corporation (an Infineon company) or
-* an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
+* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is
+* owned by Infineon Technologies AG or one of its affiliates ("Infineon")
+* and is protected by and subject to worldwide patent protection, worldwide
+* copyright laws, and international treaty provisions. Therefore, you may use
+* this Software only as provided in the license agreement accompanying the
+* software package from which you obtained this Software. If no license
+* agreement applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
 *
-* This software, including source code, documentation and related
-* materials ("Software") is owned by Cypress Semiconductor Corporation
-* or one of its affiliates ("Cypress") and is protected by and subject to
-* worldwide patent protection (United States and foreign),
-* United States copyright laws and international treaty provisions.
-* Therefore, you may use this Software only as provided in the license
-* agreement accompanying the software package from which you
-* obtained this Software ("EULA").
-* If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
-* non-transferable license to copy, modify, and compile the Software
-* source code solely for use in connection with Cypress's
-* integrated circuit products.  Any reproduction, modification, translation,
-* compilation, or representation of this Software except as specified
-* above is prohibited without the express written permission of Cypress.
-*
-* Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
-* reserves the right to make changes to the Software without notice. Cypress
-* does not assume any liability arising out of the application or use of the
-* Software or any product or circuit described in the Software. Cypress does
-* not authorize its products for use in any products where a malfunction or
-* failure of the Cypress product may reasonably be expected to result in
-* significant property damage, injury or death ("High Risk Product"). By
-* including Cypress's product in a High Risk Product, the manufacturer
-* of such system or application assumes all risk of such use and in doing
-* so agrees to indemnify Cypress against all liability.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE
+* IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING, BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF
+* THIRD-PARTY RIGHTS AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A
+* SPECIFIC USE/PURPOSE OR MERCHANTABILITY.
+* Infineon reserves the right to make changes to the Software without notice.
+* You are responsible for properly designing, programming, and testing the
+* functionality and safety of your intended application of the Software, as
+* well as complying with any legal requirements related to its use. Infineon
+* does not guarantee that the Software will be free from intrusion, data theft
+* or loss, or other breaches ("Security Breaches"), and Infineon shall have
+* no liability arising out of any Security Breaches. Unless otherwise
+* explicitly approved by Infineon, the Software may not be used in any
+* application where a failure of the Product or any consequences of the use
+* thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 #include "SelfTest_DMAC.h"
 #include "SelfTest_ErrorInjection.h"
@@ -144,7 +141,7 @@ static uint8_t dmac_data_dst_1[66];
 * 3) Another destination block is filled with 00 00 ff by using an 8-bit DMA transfers from a fixed
 *    address with an increment of 1 and a length of 64. <br>
 * 4) The destination block is verified to contain the correct pattern (shown below with lowest
-*    address first): ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000…
+*    address first): ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000ï¿½
 *
 *
 * \param base
@@ -189,13 +186,16 @@ uint8_t SelfTest_DMAC(DMAC_Type* base, uint32_t channel, cy_stc_dmac_descriptor_
                       cy_stc_dmac_channel_config_t const* channelConfig,
                       en_trig_output_mdma_t trigLine)
 {
-    uint8_t ret = 0;
+    uint8_t ret = ERROR_STATUS;
+    uint32_t interruptStatus;
+    uint32_t guardCnt = 0UL;
+
     (void)memset(dmac_data_dst_0, 0xAA, sizeof(dmac_data_dst_0));
     (void)memset(dmac_data_dst_1, 0, sizeof(dmac_data_dst_1));
 
     /* Init Descriptors */
-    cy_en_dmac_status_t dmac_status = Cy_DMAC_Descriptor_Init(descriptor0, des0_config);
-    dmac_status = Cy_DMAC_Descriptor_Init(descriptor1, des1_config);
+    (void)Cy_DMAC_Descriptor_Init(descriptor0, des0_config);
+    (void)Cy_DMAC_Descriptor_Init(descriptor1, des1_config);
 
     /* Set source and dest address */
     /* Descriptor 0*/
@@ -207,45 +207,47 @@ uint8_t SelfTest_DMAC(DMAC_Type* base, uint32_t channel, cy_stc_dmac_descriptor_
     Cy_DMAC_Enable(base);
 
 
-    dmac_status = Cy_DMAC_Channel_Init(base, channel, channelConfig);
+    (void)Cy_DMAC_Channel_Init(base, channel, channelConfig);
     #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
     SCB_CleanDCache_by_Addr(descriptor0, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
     SCB_CleanDCache_by_Addr(descriptor1, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
     #endif
     Cy_DMAC_Channel_Enable(base, channel);
 
-    cy_en_trigmux_status_t trigmux_status = Cy_TrigMux_SwTrigger((uint32_t)trigLine,
-                                                                 CY_TRIGGER_TWO_CYCLES);
+    (void)Cy_TrigMux_SwTrigger((uint32_t)trigLine, CY_TRIGGER_TWO_CYCLES);
 
-    uint32_t interruptStatus = Cy_DMAC_Channel_GetInterruptStatus(base, channel);
-    while (interruptStatus == 0UL)
+    /* Wait for DMA transfer completion with timeout */
+    do
     {
+        Cy_SysLib_DelayUs(1u);
+        guardCnt++;
         interruptStatus = Cy_DMAC_Channel_GetInterruptStatus(base, channel);
-    }
+    } while ((interruptStatus == 0UL) && (SELFTEST_DMAC_TIMEOUT > guardCnt));
+
     #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
     SCB_InvalidateDCache_by_Addr(descriptor0, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
     SCB_InvalidateDCache_by_Addr(descriptor1, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
     #endif
 
-    int32_t cmpRes;
-
-    #if (ERROR_IN_DMAC == 1u)
-    dmac_data_dst_0[0] = 1;
-    #endif /* End (ERROR_IN_DMA_DW == 1u) */
-
-    cmpRes = memcmp(dmac_data_src_0, dmac_data_dst_0, 64);
-    if (cmpRes != 0)
+    /* Check for timeout */
+    if (SELFTEST_DMAC_TIMEOUT > guardCnt)
     {
-        ret = 1;
-    }
+        int32_t cmpRes;
 
-    cmpRes = memcmp(dmac_data_src_1, dmac_data_dst_1, 64);
-    if (cmpRes != 0)
-    {
-        ret = 1;
+        #if (ERROR_IN_DMAC == 1u)
+        dmac_data_dst_0[0] = 1;
+        #endif /* End (ERROR_IN_DMAC == 1u) */
+
+        cmpRes = memcmp(dmac_data_src_0, dmac_data_dst_0, sizeof(dmac_data_dst_0));
+        if (cmpRes == 0)
+        {
+            cmpRes = memcmp(dmac_data_src_1, dmac_data_dst_1, sizeof(dmac_data_dst_1));
+            if (cmpRes == 0)
+            {
+                ret = OK_STATUS;
+            }
+        }
     }
-    (void)trigmux_status;
-    (void)dmac_status;
 
     return ret;
 }
@@ -345,7 +347,7 @@ static const cy_stc_dmac_descriptor_config_t dmac_pong_config =
 * 3) The same destination block is filled with 00 00 ff by using an 8-bit DMA transfers from a fixed
 *    address with an increment of 1 and a length of 64. <br>
 * 4) The destination block is verified to contain the correct pattern (shown below with lowest
-*    address first): ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000…
+*    address first): ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000ï¿½
 *
 * \param base
 * The pointer to the hardware DMAC block
