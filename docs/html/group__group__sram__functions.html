@@ -95,6 +95,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gab7add36c7dc17ded8d1d6390aca4be92"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__sram__functions.html#gab7add36c7dc17ded8d1d6390aca4be92">SelfTest_SRAM</a> (<a class="el" href="group__group__sram__enums.html#gaf9992282cd100677d9a1130aa4c8eb3b">stl_sram_test_mode_t</a> type, uint8_t *startAddr, uint32_t size, uint8_t *buffAddr, uint32_t buffSize)</td></tr>
 <tr class="memdesc:gab7add36c7dc17ded8d1d6390aca4be92"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs the self test on a block of RAM.  <a href="group__group__sram__functions.html#gab7add36c7dc17ded8d1d6390aca4be92">More...</a><br /></td></tr>
 <tr class="separator:gab7add36c7dc17ded8d1d6390aca4be92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9a47aed67d55700fb4cbbeeeef0a5f1d"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__sram__functions.html#ga9a47aed67d55700fb4cbbeeeef0a5f1d">SelfTest_SRAM_March_Full</a> (uint32_t startAddress, uint32_t endAddress, uint32_t blockSize, uint32_t backupAddress, <a class="el" href="group__group__sram__enums.html#ga547cf7de8d85224b7e7818b6d7d22907">stl_sram_march_mode_t</a> mode)</td></tr>
+<tr class="memdesc:ga9a47aed67d55700fb4cbbeeeef0a5f1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Full SRAM test using March algorithm (assembly implementation, no stack usage during the test).  <a href="group__group__sram__functions.html#ga9a47aed67d55700fb4cbbeeeef0a5f1d">More...</a><br /></td></tr>
+<tr class="separator:ga9a47aed67d55700fb4cbbeeeef0a5f1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaefe7875abe7e18ff92a3e54e033bf223"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__sram__functions.html#gaefe7875abe7e18ff92a3e54e033bf223">SelfTest_SRAM_March_Runtime</a> (uint32_t startAddress, uint32_t endAddress, uint32_t *currentAddress, uint32_t blockSize, uint32_t backupAddress, <a class="el" href="group__group__sram__enums.html#ga547cf7de8d85224b7e7818b6d7d22907">stl_sram_march_mode_t</a> mode)</td></tr>
+<tr class="memdesc:gaefe7875abe7e18ff92a3e54e033bf223"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runtime SRAM test using March algorithm (assembly implementation, no stack usage during the test).  <a href="group__group__sram__functions.html#gaefe7875abe7e18ff92a3e54e033bf223">More...</a><br /></td></tr>
+<tr class="separator:gaefe7875abe7e18ff92a3e54e033bf223"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="gab7add36c7dc17ded8d1d6390aca4be92" name="gab7add36c7dc17ded8d1d6390aca4be92"></a>
@@ -155,6 +161,160 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
  1 - Test failed </dd></dl>
+
+</div>
+</div>
+<a id="ga9a47aed67d55700fb4cbbeeeef0a5f1d" name="ga9a47aed67d55700fb4cbbeeeef0a5f1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9a47aed67d55700fb4cbbeeeef0a5f1d">&#9670;&nbsp;</a></span>SelfTest_SRAM_March_Full()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_SRAM_March_Full </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>startAddress</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>endAddress</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>blockSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>backupAddress</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__group__sram__enums.html#ga547cf7de8d85224b7e7818b6d7d22907">stl_sram_march_mode_t</a>&#160;</td>
+          <td class="paramname"><em>mode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Full SRAM test using March algorithm (assembly implementation, no stack usage during the test). </p>
+<p >Tests the entire RAM range from startAddress to endAddress. The backup area is tested first to ensure its integrity.</p>
+<p >This function is suitable for testing both variable RAM and stack regions because it does not use the stack during the March test execution.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">startAddress</td><td>Start of RAM region to test (must be 4-byte aligned).</td></tr>
+    <tr><td class="paramname">endAddress</td><td>End of RAM region to test (must be 4-byte aligned).</td></tr>
+    <tr><td class="paramname">blockSize</td><td>Size of each test block in bytes (must be 4-byte aligned).</td></tr>
+    <tr><td class="paramname">backupAddress</td><td>Backup area address. Must be outside the tested region and at least blockSize bytes.</td></tr>
+    <tr><td class="paramname">mode</td><td>March algorithm to use, see <a class="el" href="group__group__sram__enums.html#ga547cf7de8d85224b7e7818b6d7d22907">stl_sram_march_mode_t</a></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Interrupts should be disabled before calling this function. </dd>
+<dd>
+Ensure no active DMA transfers to/from the test region during test. </dd>
+<dd>
+All addresses and sizes MUST be 4-byte aligned. Unaligned values may cause HardFault or test beyond intended memory region. </dd>
+<dd>
+No runtime parameter validation is performed. Ensure all parameters are valid before calling this function. </dd>
+<dd>
+On devices with D-cache (XMC7000 series), disable the data cache before calling this function. </dd>
+<dd>
+This function is compiler-specific. Supported compilers: GCC_ARM, ARM, and IAR. </dd></dl>
+
+</div>
+</div>
+<a id="gaefe7875abe7e18ff92a3e54e033bf223" name="gaefe7875abe7e18ff92a3e54e033bf223"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaefe7875abe7e18ff92a3e54e033bf223">&#9670;&nbsp;</a></span>SelfTest_SRAM_March_Runtime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_SRAM_March_Runtime </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>startAddress</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>endAddress</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>currentAddress</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>blockSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>backupAddress</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__group__sram__enums.html#ga547cf7de8d85224b7e7818b6d7d22907">stl_sram_march_mode_t</a>&#160;</td>
+          <td class="paramname"><em>mode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Runtime SRAM test using March algorithm (assembly implementation, no stack usage during the test). </p>
+<p >Tests one block per call for periodic runtime testing. Maintains test progress via currentAddress pointer.</p>
+<p >When currentAddress equals startAddress, the backup area is tested. After testing the last block, currentAddress wraps back to startAddress.</p>
+<p >This function is suitable for testing both variable RAM and stack regions because it does not use the stack during the March test execution.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">startAddress</td><td>Start of RAM region to test (must be 4-byte aligned).</td></tr>
+    <tr><td class="paramname">endAddress</td><td>End of RAM region to test (must be 4-byte aligned).</td></tr>
+    <tr><td class="paramname">currentAddress</td><td>Pointer to current test position. Initialize to startAddress before first call. Updated by the function to track progress. Wraps to startAddress after full range is tested.</td></tr>
+    <tr><td class="paramname">blockSize</td><td>Size of each test block in bytes (must be 4-byte aligned).</td></tr>
+    <tr><td class="paramname">backupAddress</td><td>Backup area address. Must be outside the tested region and at least blockSize bytes.</td></tr>
+    <tr><td class="paramname">mode</td><td>March algorithm to use, see <a class="el" href="group__group__sram__enums.html#ga547cf7de8d85224b7e7818b6d7d22907">stl_sram_march_mode_t</a></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 - Test passed <br  />
+ 1 - Test failed</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Interrupts should be disabled before calling this function. </dd>
+<dd>
+Ensure no active DMA transfers to/from the test region during test. </dd>
+<dd>
+All addresses and sizes MUST be 4-byte aligned. Unaligned values may cause HardFault or test beyond intended memory region. </dd>
+<dd>
+No runtime parameter validation is performed. Ensure all parameters are valid before calling this function. </dd>
+<dd>
+On devices with D-cache (XMC7000 series), disable the data cache before calling this function. </dd>
+<dd>
+This function is compiler-specific. Supported compilers: GCC_ARM, ARM, and IAR. </dd></dl>
 
 </div>
 </div>

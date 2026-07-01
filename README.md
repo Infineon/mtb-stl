@@ -96,6 +96,78 @@ if (ERROR_STATUS == ret)
 }
 ```
 
+**SRAM March test (stack-free)** (March C- or March X algorithm with data preservation). These tests use assembly-based stack-free execution, enabling safe testing of both variable RAM and stack regions. The tests are non-destructive - original data is automatically backed up and restored.
+
+| Algorithm | Complexity | Use Case |
+|-----------|------------|----------|
+| March C- | 10n | Recommended for startup; detects stuck-at, transition, and all 2-cell coupling faults (CFid, CFin, CFst) |
+| March X | 6n | Recommended for runtime; detects stuck-at, transition, and inversion coupling faults (CFin). Faster with reduced coverage |
+
+The following is an example of a full SRAM test at startup using `SelfTest_SRAM_March_Full`:
+```c
+/* Memory configuration - all addresses must be 4-byte aligned
+ * Reserve BLOCK_SIZE bytes at end of SRAM for backup buffer */
+#define RAM_START       0x20000000
+#define RAM_END         0x20007F00  /* 32 KB - BLOCK_SIZE */
+#define BLOCK_SIZE      256         /* 256 bytes per block */
+#define BACKUP_BUFFER   0x20007F00  /* Last 256 bytes of 32 KB SRAM */
+
+/* Disable interrupts during test to prevent ISRs from accessing tested memory */
+__disable_irq();
+
+/* Run March C- test on entire memory region */
+uint8_t result = SelfTest_SRAM_March_Full(
+    RAM_START,
+    RAM_END,
+    BLOCK_SIZE,
+    BACKUP_BUFFER,
+    STL_SRAM_MARCH_C_MINUS  /* or STL_SRAM_MARCH_X for faster test */
+);
+
+__enable_irq();
+
+if (result != 0)
+{
+    /* Handle SRAM test failure - enter safe state */
+}
+```
+
+The following is an example of incremental runtime testing using `SelfTest_SRAM_March_Runtime`. This function tests one block per call, designed for periodic runtime testing without blocking system operation:
+```c
+/* Memory configuration - all addresses must be 4-byte aligned
+ * Reserve BLOCK_SIZE bytes at end of SRAM for backup buffer */
+#define RAM_START       0x20000000
+#define RAM_END         0x20007F00  /* 32 KB - BLOCK_SIZE */
+#define BLOCK_SIZE      256         /* 256 bytes per block */
+#define BACKUP_BUFFER   0x20007F00  /* Last 256 bytes of 32 KB SRAM */
+
+/* State variable - initialize to startAddress before first call */
+static uint32_t ram_test_position = RAM_START;
+
+/* Disable interrupts during test to prevent ISRs from accessing tested memory */
+__disable_irq();
+
+/* Call periodically (e.g., in main loop) */
+uint8_t result = SelfTest_SRAM_March_Runtime(
+    RAM_START,
+    RAM_END,
+    &ram_test_position,  /* Function updates and wraps automatically */
+    BLOCK_SIZE,
+    BACKUP_BUFFER,
+    STL_SRAM_MARCH_X     /* Fast algorithm for runtime */
+);
+
+__enable_irq();
+
+if (result != 0)
+{
+    /* Handle SRAM test failure - enter safe state */
+}
+/* ram_test_position automatically advances; wraps to RAM_START after last block */
+```
+
+> **Note:** The backup buffer must be located outside the test region and must be at least `BLOCK_SIZE` bytes. On the first call to `SelfTest_SRAM_March_Runtime`, the backup area itself is tested for integrity before testing the main memory region.
+
 **Flash integrity test** (CRC32 or Fletcher64). Call `SelfTest_Flash_init()` once before entering the test loop:
 
 > **Linker script requirement:** The test reads a pre-computed reference checksum from a fixed location at the very end of Flash and compares it against the computed value. A dedicated section must be reserved in the linker script so this location is always allocated and never overwritten by application code:

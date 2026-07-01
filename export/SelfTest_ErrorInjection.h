@@ -69,6 +69,7 @@
 #define ERROR_IN_DAC                                        0u
 #define ERROR_IN_SRAM_MARCH                                 0u
 #define ERROR_IN_SRAM_GALPAT                                0u
+#define ERROR_IN_SRAM_MARCH_STACKFREE                       0u
 #define ERROR_IN_MOTIF                                      0u
 #define ERROR_IN_CORDIC                                     0u
 #define ERROR_IN_ECC                                        0u

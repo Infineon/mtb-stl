@@ -6,7 +6,7 @@
 *  self tests.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -84,6 +84,16 @@ typedef enum
     SRAM_MARCH_TEST_MODE = 0,  /**< Selects March test algorithm for sram */
     SRAM_GALPAT_TEST_MODE = 1  /**< Selects Galpat test algorithm for sram */
 } stl_sram_test_mode_t;
+
+/** March algorithm selection for assembly-based SRAM tests */
+typedef enum
+{
+    STL_SRAM_MARCH_C_MINUS = 0, /**< March C- algorithm (10n complexity). Recommended for startup testing.
+                                     Detects stuck-at, transition, and all 2-cell coupling faults (CFid, CFin, CFst). */
+    STL_SRAM_MARCH_X       = 1  /**< March X algorithm (6n complexity). Recommended for runtime testing.
+                                     Detects stuck-at, transition, and inversion coupling faults (CFin).
+                                     Faster than March C- with reduced coupling fault coverage. */
+} stl_sram_march_mode_t;
 
 /** \} group_sram_enums */
 
@@ -169,6 +179,139 @@ uint8_t SelfTest_SRAM(stl_sram_test_mode_t type, uint8_t* startAddr, uint32_t si
 uint8_t SelfTest_SRAM_Stack(uint8_t* stackBase, uint32_t stackSize, uint8_t* altStackBase);
 
 /** \} group_sram_stack_functions */
+
+
+/**
+ * \addtogroup group_sram_functions
+ * \{
+ */
+
+/** \cond INTERNAL */
+/***************************************
+* Internal Function Prototypes (assembly implementations)
+***************************************/
+/* Assembly implementations available for ARM Compiler, IAR, and GCC_ARM */
+#if defined(__ARMCC_VERSION) || defined(__ICCARM__) || (defined(__GNUC__) && !defined(__clang__))
+uint8_t SelfTest_SRAM_March_Full_Asm(uint32_t startAddress,
+                                     uint32_t endAddress,
+                                     uint32_t blockSize,
+                                     uint32_t backupAddress,
+                                     stl_sram_march_mode_t mode);
+uint8_t SelfTest_SRAM_March_Runtime_Asm(uint32_t startAddress,
+                                        uint32_t endAddress,
+                                        uint32_t* currentAddress,
+                                        uint32_t blockSize,
+                                        uint32_t backupAddress,
+                                        stl_sram_march_mode_t mode);
+#endif /* End toolchain selection */
+/** \endcond */
+
+/*******************************************************************************
+* Function Name: SelfTest_SRAM_March_Full
+****************************************************************************//**
+*
+*  Full SRAM test using March algorithm (assembly implementation, no stack
+*  usage during the test). Tests the entire RAM range from startAddress to
+*  endAddress. The backup area is tested first to ensure its integrity.
+*
+*  This function is suitable for testing both variable RAM and stack regions
+*  because it does not use the stack during the March test execution.
+*
+* \param startAddress
+*  Start of RAM region to test (must be 4-byte aligned).
+*
+* \param endAddress
+*  End of RAM region to test (must be 4-byte aligned).
+*
+* \param blockSize
+*  Size of each test block in bytes (must be 4-byte aligned).
+*
+* \param backupAddress
+*  Backup area address. Must be outside the tested region and at least
+*  blockSize bytes.
+*
+* \param mode
+*  March algorithm to use, see \ref stl_sram_march_mode_t
+*
+* \return
+*  0 - Test passed <br>
+*  1 - Test failed
+*
+* \note Interrupts should be disabled before calling this function.
+* \note Ensure no active DMA transfers to/from the test region during test.
+* \note All addresses and sizes MUST be 4-byte aligned. Unaligned values may
+*       cause HardFault or test beyond intended memory region.
+* \note No runtime parameter validation is performed. Ensure all parameters
+*       are valid before calling this function.
+* \note On devices with D-cache (XMC7000 series), disable the data cache
+*       before calling this function.
+* \note This function is compiler-specific. Supported compilers: GCC_ARM, ARM, and IAR.
+*
+*******************************************************************************/
+uint8_t SelfTest_SRAM_March_Full(uint32_t startAddress,
+                                 uint32_t endAddress,
+                                 uint32_t blockSize,
+                                 uint32_t backupAddress,
+                                 stl_sram_march_mode_t mode);
+
+/*******************************************************************************
+* Function Name: SelfTest_SRAM_March_Runtime
+****************************************************************************//**
+*
+*  Runtime SRAM test using March algorithm (assembly implementation, no stack
+*  usage during the test). Tests one block per call for periodic runtime
+*  testing. Maintains test progress via currentAddress pointer.
+*
+*  When currentAddress equals startAddress, the backup area is tested.
+*  After testing the last block, currentAddress wraps back to startAddress.
+*
+*  This function is suitable for testing both variable RAM and stack regions
+*  because it does not use the stack during the March test execution.
+*
+* \param startAddress
+*  Start of RAM region to test (must be 4-byte aligned).
+*
+* \param endAddress
+*  End of RAM region to test (must be 4-byte aligned).
+*
+* \param currentAddress
+*  Pointer to current test position. Initialize to startAddress before first
+*  call. Updated by the function to track progress. Wraps to startAddress
+*  after full range is tested.
+*
+* \param blockSize
+*  Size of each test block in bytes (must be 4-byte aligned).
+*
+* \param backupAddress
+*  Backup area address. Must be outside the tested region and at least
+*  blockSize bytes.
+*
+* \param mode
+*  March algorithm to use, see \ref stl_sram_march_mode_t
+*
+* \return
+*  0 - Test passed <br>
+*  1 - Test failed
+*
+* \note Interrupts should be disabled before calling this function.
+* \note Ensure no active DMA transfers to/from the test region during test.
+* \note All addresses and sizes MUST be 4-byte aligned. Unaligned values may
+*       cause HardFault or test beyond intended memory region.
+* \note No runtime parameter validation is performed. Ensure all parameters
+*       are valid before calling this function.
+* \note On devices with D-cache (XMC7000 series), disable the data cache
+*       before calling this function.
+* \note This function is compiler-specific. Supported compilers: GCC_ARM, ARM, and IAR.
+*
+*******************************************************************************/
+uint8_t SelfTest_SRAM_March_Runtime(uint32_t startAddress,
+                                    uint32_t endAddress,
+                                    uint32_t* currentAddress,
+                                    uint32_t blockSize,
+                                    uint32_t backupAddress,
+                                    stl_sram_march_mode_t mode);
+
+/** \} group_sram_functions */
 
 /** \} group_ram */
 

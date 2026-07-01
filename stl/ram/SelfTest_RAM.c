@@ -5,7 +5,7 @@
 *  This file provides the source code to the API for the runtime SRAM self tests.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -780,6 +780,64 @@ uint8_t SRAM_Test_Read1_by_Inverting_1Byte(uint8_t* stPtr, uint8_t* endPtr, uint
         }
     } while(stPtrL < endPtr);
     return testStatus;
+}
+
+
+uint8_t SelfTest_SRAM_March_Full(uint32_t startAddress,
+                                 uint32_t endAddress,
+                                 uint32_t blockSize,
+                                 uint32_t backupAddress,
+                                 stl_sram_march_mode_t mode)
+{
+    uint8_t ret;
+
+    /* Verify 4-byte alignment */
+    CY_ASSERT(((startAddress | endAddress | blockSize | backupAddress) & 0x03uL) == 0u);
+
+    #if defined(__ARMCC_VERSION) || defined(__ICCARM__) || (defined(__GNUC__) && !defined(__clang__))
+    /* ARM Compiler, IAR, or GCC_ARM */
+    ret = SelfTest_SRAM_March_Full_Asm(startAddress, endAddress, blockSize, backupAddress, mode);
+    #else
+    /* Unsupported toolchain */
+    (void)startAddress;
+    (void)endAddress;
+    (void)blockSize;
+    (void)backupAddress;
+    (void)mode;
+    ret = ERROR_STATUS;
+    #endif
+
+    return ret;
+}
+
+
+uint8_t SelfTest_SRAM_March_Runtime(uint32_t startAddress,
+                                    uint32_t endAddress,
+                                    uint32_t* currentAddress,
+                                    uint32_t blockSize,
+                                    uint32_t backupAddress,
+                                    stl_sram_march_mode_t mode)
+{
+    uint8_t ret;
+
+    /* Verify 4-byte alignment */
+    CY_ASSERT(((startAddress | endAddress | blockSize | backupAddress) & 0x03uL) == 0u);
+
+    #if defined(__ARMCC_VERSION) || defined(__ICCARM__) || (defined(__GNUC__) && !defined(__clang__))
+    /* ARM Compiler, IAR, or GCC_ARM */
+    ret = SelfTest_SRAM_March_Runtime_Asm(startAddress, endAddress, currentAddress, blockSize, backupAddress, mode);
+    #else
+    /* Unsupported toolchain */
+    (void)startAddress;
+    (void)endAddress;
+    (void)currentAddress;
+    (void)blockSize;
+    (void)backupAddress;
+    (void)mode;
+    ret = ERROR_STATUS;
+    #endif // if defined(__ARMCC_VERSION) || defined(__ICCARM__) || (defined(__GNUC__) && !defined(__clang__))
+
+    return ret;
 }
 
 

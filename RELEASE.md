@@ -1,4 +1,4 @@
-# ModusToolbox Safety Test Library 3.4.0
+# ModusToolbox Safety Test Library 3.4.1
 
 
 Refer to the [README.md](./README.md) for a complete description of the ModusToolbox Safety Test Library.
@@ -64,6 +64,9 @@ Refer to the [README.md](./README.md) for a complete description of the ModusToo
 * Note: To perform SRAM tests, update CY_SRAM_BASE, CY_SRAM_SIZE, CY_STACK_SIZE according to the device being tested.
 
 ## What Changed?
+
+### v3.4.1
+* Added new SelfTest_SRAM_March_Full and SelfTest_SRAM_March_Runtime tests.
 
 ### v3.4.0
 * Updated user documentation

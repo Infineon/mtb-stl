@@ -100,6 +100,14 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:gaf9992282cd100677d9a1130aa4c8eb3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">SRAM test algorithm type selection enumeration.  <a href="group__group__sram__enums.html#gaf9992282cd100677d9a1130aa4c8eb3b">More...</a><br /></td></tr>
 <tr class="separator:gaf9992282cd100677d9a1130aa4c8eb3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga547cf7de8d85224b7e7818b6d7d22907"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__sram__enums.html#ga547cf7de8d85224b7e7818b6d7d22907">stl_sram_march_mode_t</a> { <br />
+&#160;&#160;<a class="el" href="group__group__sram__enums.html#gga547cf7de8d85224b7e7818b6d7d22907ae821ad2025372fbc3b4a5a681b454db4">STL_SRAM_MARCH_C_MINUS</a> = 0
+, <br />
+&#160;&#160;<a class="el" href="group__group__sram__enums.html#gga547cf7de8d85224b7e7818b6d7d22907a4f3e7b9184aff8e83705338e702b9031">STL_SRAM_MARCH_X</a> = 1
+<br />
+ }</td></tr>
+<tr class="memdesc:ga547cf7de8d85224b7e7818b6d7d22907"><td class="mdescLeft">&#160;</td><td class="mdescRight">March algorithm selection for assembly-based SRAM tests.  <a href="group__group__sram__enums.html#ga547cf7de8d85224b7e7818b6d7d22907">More...</a><br /></td></tr>
+<tr class="separator:ga547cf7de8d85224b7e7818b6d7d22907"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="gaf9992282cd100677d9a1130aa4c8eb3b" name="gaf9992282cd100677d9a1130aa4c8eb3b"></a>
@@ -119,6 +127,30 @@ Enumerations</h2></td></tr>
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggaf9992282cd100677d9a1130aa4c8eb3baaaa6d850256263b0d1047f2ebd5b1d68" name="ggaf9992282cd100677d9a1130aa4c8eb3baaaa6d850256263b0d1047f2ebd5b1d68"></a>SRAM_MARCH_TEST_MODE&#160;</td><td class="fielddoc"><p >Selects March test algorithm for sram. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ggaf9992282cd100677d9a1130aa4c8eb3ba6190cac2ae5469e96bb1f03031fb519f" name="ggaf9992282cd100677d9a1130aa4c8eb3ba6190cac2ae5469e96bb1f03031fb519f"></a>SRAM_GALPAT_TEST_MODE&#160;</td><td class="fielddoc"><p >Selects Galpat test algorithm for sram. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="ga547cf7de8d85224b7e7818b6d7d22907" name="ga547cf7de8d85224b7e7818b6d7d22907"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga547cf7de8d85224b7e7818b6d7d22907">&#9670;&nbsp;</a></span>stl_sram_march_mode_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__group__sram__enums.html#ga547cf7de8d85224b7e7818b6d7d22907">stl_sram_march_mode_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>March algorithm selection for assembly-based SRAM tests. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga547cf7de8d85224b7e7818b6d7d22907ae821ad2025372fbc3b4a5a681b454db4" name="gga547cf7de8d85224b7e7818b6d7d22907ae821ad2025372fbc3b4a5a681b454db4"></a>STL_SRAM_MARCH_C_MINUS&#160;</td><td class="fielddoc"><p >March C- algorithm (10n complexity). </p>
+<p >Recommended for startup testing. Detects stuck-at, transition, and all 2-cell coupling faults (CFid, CFin, CFst). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga547cf7de8d85224b7e7818b6d7d22907a4f3e7b9184aff8e83705338e702b9031" name="gga547cf7de8d85224b7e7818b6d7d22907a4f3e7b9184aff8e83705338e702b9031"></a>STL_SRAM_MARCH_X&#160;</td><td class="fielddoc"><p >March X algorithm (6n complexity). </p>
+<p >Recommended for runtime testing. Detects stuck-at, transition, and inversion coupling faults (CFin). Faster than March C- with reduced coupling fault coverage. </p>
 </td></tr>
 </table>
 
