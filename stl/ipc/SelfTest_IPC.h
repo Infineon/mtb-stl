@@ -5,7 +5,7 @@
 *  This file provides constants and parameter values used for the IPC self
 *  tests.
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -34,7 +34,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_ipc
+ * \defgroup group_ipc IPC (IPC STL module)
  * \{
  *
  * This module performs a check on each free IPC channel with all free IPC interrupts.
@@ -68,7 +68,6 @@
 
 #if (defined (CY_IP_M4CPUSS) || defined (CY_IP_M7CPUSS) || defined (CY_IP_MXIPC) || \
     defined (CY_DOXYGEN))
-
 /***************************************
 * Function Prototypes
 ***************************************/
@@ -84,8 +83,8 @@
 * This function performs a check on each free IPC channel with all free IPC interrupts.
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *
 *******************************************************************************/
@@ -185,6 +184,10 @@ uint8_t SelfTest_IPC(void);
 #if defined (CY_IP_M33SYSCPUSS)
 #define IPC1_INTERRUPT          cpuss_interrupts_ipc_dpslp_0_IRQn
 #define IPC2_INTERRUPT          cpuss_interrupts_ipc_dpslp_1_IRQn
+#if (CPUSS_IPC_IRQ_NR == 4U)
+#define IPC3_INTERRUPT          cpuss_interrupts_ipc_dpslp_2_IRQn
+#define IPC4_INTERRUPT          cpuss_interrupts_ipc_dpslp_3_IRQn
+#endif /* if (CPUSS_IPC_IRQ_NR == 4U) */
 #else
 #define IPC1_INTERRUPT          cpuss_interrupts_ipc_1_IRQn
 #define IPC2_INTERRUPT          cpuss_interrupts_ipc_2_IRQn
@@ -193,26 +196,21 @@ uint8_t SelfTest_IPC(void);
 #define IPC5_INTERRUPT          cpuss_interrupts_ipc_5_IRQn
 #define IPC6_INTERRUPT          cpuss_interrupts_ipc_6_IRQn
 #define IPC7_INTERRUPT          cpuss_interrupts_ipc_7_IRQn
-
-#if (CPUSS_IPC_IPC_NR > 8U)
 #define IPC8_INTERRUPT          cpuss_interrupts_ipc_8_IRQn
 #define IPC9_INTERRUPT          cpuss_interrupts_ipc_9_IRQn
 #define IPC10_INTERRUPT         cpuss_interrupts_ipc_10_IRQn
 #define IPC11_INTERRUPT         cpuss_interrupts_ipc_11_IRQn
-#endif
-
-#if (CPUSS_IPC_IPC_NR > 12U)
 #define IPC12_INTERRUPT         cpuss_interrupts_ipc_12_IRQn
 #define IPC13_INTERRUPT         cpuss_interrupts_ipc_13_IRQn
 #define IPC14_INTERRUPT         cpuss_interrupts_ipc_14_IRQn
 #define IPC15_INTERRUPT         cpuss_interrupts_ipc_15_IRQn
-#endif
 #endif /* if defined (CY_IP_M33SYSCPUSS) */
+
+/** \endcond */
 
 #endif /* if (defined (CY_IP_M4CPUSS) || defined (CY_IP_M7CPUSS) || defined (CY_IP_MXIPC) || defined
              (CY_DOXYGEN)) */
 
-/** \endcond */
 /** \} group_ipc */
 #endif /* End SELFTEST_IPC_H */
 /* [] END OF FILE */

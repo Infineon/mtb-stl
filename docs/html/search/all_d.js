@@ -1,6 +1,10 @@
 var searchData=
 [
-  ['ram_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_28ram_20stl_20module_29_0',['RAM                       (RAM STL module)',['../group__group__ram.html',1,'']]],
-  ['ref_5fcount_1',['ref_count',['../group__group__motif__structure.html#a80c32e55d25bdc7a20a0e45fd7ad43bf',1,'stl_motif_cfg_handle_t']]],
-  ['resources_2',['Resources',['../page_cypress_resources.html',1,'']]]
+  ['largest_5fnum_5fof_5fsums_0',['LARGEST_NUM_OF_SUMS',['../group__group__flash__macros.html#ga739ff6e13d879eb6027321f92523880f',1,'SelfTest_Flash.h']]],
+  ['library_20mtb_20stl_20iec_2060730_20class_20b_20compliance_20for_20industrial_20and_20home_20appliance_20safety_1',['ModusToolbox™ Safety Test Library (mtb-stl) - IEC 60730 Class B Compliance for Industrial and Home Appliance Safety',['../index.html',1,'']]],
+  ['library_20to_20the_20project_2',['1. Add mtb-stl library to the project',['../index.html#autotoc_md5',1,'']]],
+  ['license_3',['License',['../index.html#autotoc_md13',1,'']]],
+  ['linker_20script_20requirement_4',['Linker script requirement',['../stl_usage_memory_tests.html#autotoc_md32',1,'']]],
+  ['linker_20script_20requirement_20for_20selftest_5fpc_5',['Linker script requirement for &lt;span class=&quot;tt&quot;&gt;SelfTest_PC&lt;/span&gt;',['../stl_usage_getting_started.html#autotoc_md17',1,'']]],
+  ['lpcomp_20test_6',['LPCOMP test',['../stl_usage_analog_and_mixed_signal.html#autotoc_md64',1,'']]]
 ];

@@ -7,7 +7,7 @@
  *  number definitions from the Device Configurator generated code.
  *
  *******************************************************************************
- * (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+ * (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
  * Technologies AG. All rights reserved.
  * This software, associated documentation and materials ("Software") is
  * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -41,9 +41,9 @@
 #include "SelfTest_ErrorInjection.h"
 
 /* This variable is used in the isr_1 interrupt handler */
-static volatile uint16_t selfTest_interrupt_counter = 0;
-static TCPWM_Type* base1;
-static uint32_t cntNum1;
+static volatile uint16_t stlIntr_interruptCounter = 0;
+static TCPWM_Type* stlIntr_base1;
+static uint32_t stlIntr_cntNum1;
 /******************************************************************************
 * Function Name: SelfTest_Interrupt_ISR_TIMER
 *******************************************************************************
@@ -55,10 +55,10 @@ static uint32_t cntNum1;
 void SelfTest_Interrupt_ISR_TIMER(void)
 {
     /* Clear the terminal count interrupt */
-    Cy_TCPWM_ClearInterrupt(base1, cntNum1, CY_TCPWM_INT_ON_TC);
+    Cy_TCPWM_ClearInterrupt(stlIntr_base1, stlIntr_cntNum1, CY_TCPWM_INT_ON_TC);
 
     /* Increment the counter to indicate ISR is triggered */
-    selfTest_interrupt_counter++;
+    stlIntr_interruptCounter++;
 }
 
 
@@ -81,8 +81,8 @@ void SelfTest_Interrupt_ISR_TIMER(void)
  **********************************************************************************/
 uint8_t SelfTest_Interrupt(TCPWM_Type* base, uint32_t cntNum)
 {
-    base1 = base;
-    cntNum1 = cntNum;
+    stlIntr_base1 = base;
+    stlIntr_cntNum1 = cntNum;
     uint8_t ret = OK_STATUS;
 
     /* Stop and reset the timer */
@@ -97,7 +97,7 @@ uint8_t SelfTest_Interrupt(TCPWM_Type* base, uint32_t cntNum)
     Cy_SysLib_DelayUs(1u);
 
     /* Reset interrupt counter */
-    selfTest_interrupt_counter = 0u;
+    stlIntr_interruptCounter = 0u;
 
     /* Check if an intentional error should be made for testing */
     #if (ERROR_IN_INTERRUPT_HANDLING == 1)
@@ -125,7 +125,7 @@ uint8_t SelfTest_Interrupt(TCPWM_Type* base, uint32_t cntNum)
     #endif
     /* If less than NUMBER_OF_TIMER_TICKS_LO ticks or greater than NUMBER_OF_TIMER_TICKS_HI - error
        in the test */
-    const uint32_t selfTest_interrupt_counter_val = selfTest_interrupt_counter;
+    const uint32_t selfTest_interrupt_counter_val = stlIntr_interruptCounter;
 
     if ((selfTest_interrupt_counter_val < NUMBER_OF_TIMER_TICKS_LO) ||
         (selfTest_interrupt_counter_val > NUMBER_OF_TIMER_TICKS_HI))

@@ -24,7 +24,7 @@
  *  then it is exchanged with the two-byte sequence <ESC><ESC+1>.
  *
  ********************************************************************************
- * (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+ * (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
  * Technologies AG. All rights reserved.
  * This software, associated documentation and materials ("Software") is
  * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -53,7 +53,7 @@
  * thereof can reasonably be expected to result in personal injury.
  ********************************************************************************/
 /**
- * \addtogroup group_uart_data_tsf
+ * \defgroup group_uart_data_tsf UART Data Transfer (UART Data Transfer STL module)
  * \{
  *
  * The UART SCB Components are used to physically generate signals.
@@ -99,6 +99,8 @@
 #if !defined(UART_slave_message_H)
     #define UART_slave_message_H
 
+#include "SelfTest_common.h"
+
 
 /*******************************************************************************
 * Function Prototypes
@@ -115,6 +117,12 @@
 * Initializes the UART slave protocol unit. This function starts the required components and
 * initializes the control status structure.
 *
+* \note
+* This function enables the UART peripheral, clears TX/RX FIFOs, and sets the
+* interrupt masks used by the message protocol. Use a UART instance dedicated
+* to this protocol or reinitialize the application UART configuration after
+* calling \ref UartMesSlave_DeInit.
+*
 *
 * \param uart_base
 * The pointer to the slave UART SCB instance.
@@ -123,6 +131,17 @@
 *
 *******************************************************************************/
 void UartMesSlave_Init(CySCB_Type* uart_base, uint8_t address);
+
+/*******************************************************************************
+* Function Name: UartMesSlave_DeInit
+****************************************************************************//**
+*
+* De-initializes the UART slave protocol unit. Disables all TX/RX interrupts,
+* flushes the FIFOs, disables the UART peripheral, and resets the internal
+* control status structure.
+*
+*******************************************************************************/
+void UartMesSlave_DeInit(void);
 
 /*******************************************************************************
 * Function Name: UartMesSlave_Respond
@@ -136,10 +155,15 @@ void UartMesSlave_Init(CySCB_Type* uart_base, uint8_t address);
 * \param tlen
 *  The size of sent data in bytes.
 *
+* \note
+* This function starts interrupt-driven background transmission. Call it only
+* when \ref UartMesSlave_State reports that a response is expected, and do not
+* start another response while the state is UM_RESPOND. The \p txd buffer must
+* remain valid and unmodified until the response completes.
 *
 * \return
-*  0 - If the unit starts a response process <br>
-*  1 - If not (because of IDLE or RESPOND state)
+*  \ref UART_SLAVE_RESPOND_STARTED_STATUS (0) - The unit started a response process <br>
+*  \ref UART_SLAVE_RESPOND_NOT_STARTED_STATUS (1) - The unit did not start a response process
 *
 * \note
 *  Use UartMesSlave_State() to check this condition

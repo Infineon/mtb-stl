@@ -6,7 +6,7 @@
 *  the Timer counter self tests according to the Class B library.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -44,9 +44,9 @@
 /*******************************************************************************
 * Global Variables
 *******************************************************************************/
-static volatile uint8_t int_occur = 0U;
-static TCPWM_Type* base1;
-static uint32_t cntNum1;
+static volatile uint8_t stlTimerCounter_intOccur = 0U;
+static TCPWM_Type* stlTimerCounter_base1;
+static uint32_t stlTimerCounter_cntNum1;
 
 
 /******************************************************************************
@@ -59,11 +59,11 @@ static uint32_t cntNum1;
 ******************************************************************************/
 static void SelfTest_TIMER_COUNTER_ISR(void)
 {
-    Cy_TCPWM_Counter_Disable(base1, cntNum1);
-    uint32_t interrupts = Cy_TCPWM_GetInterruptStatusMasked(base1, cntNum1);
+    Cy_TCPWM_Counter_Disable(stlTimerCounter_base1, stlTimerCounter_cntNum1);
+    uint32_t interrupts = Cy_TCPWM_GetInterruptStatusMasked(stlTimerCounter_base1, stlTimerCounter_cntNum1);
     /* Clear the terminal count interrupt */
-    Cy_TCPWM_ClearInterrupt(base1, cntNum1, interrupts);
-    int_occur++;
+    Cy_TCPWM_ClearInterrupt(stlTimerCounter_base1, stlTimerCounter_cntNum1, interrupts);
+    stlTimerCounter_intOccur++;
 }
 
 
@@ -89,8 +89,8 @@ static void SelfTest_TIMER_COUNTER_ISR(void)
 void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum,
                                  cy_stc_tcpwm_counter_config_t const* config, IRQn_Type intsrc)
 {
-    base1 = base;
-    cntNum1 = cntNum;
+    stlTimerCounter_base1 = base;
+    stlTimerCounter_cntNum1 = cntNum;
 
     #if (defined (CY_IP_M7CPUSS) || defined (CY_M4CPUSS_V2_IRQ_MUXING))
     const cy_stc_sysint_t intrCfg =
@@ -108,15 +108,13 @@ void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum,
     };
     #endif /* if (defined (CY_IP_M7CPUSS) || defined (CY_M4CPUSS_V2_IRQ_MUXING)) */
 
-    if (CY_TCPWM_SUCCESS != Cy_TCPWM_Counter_Init(base, cntNum, config))
-    {
-        CY_ASSERT(0U);
-    }
-
-    if (CY_SYSINT_SUCCESS != Cy_SysInt_Init(&intrCfg, SelfTest_TIMER_COUNTER_ISR))
-    {
-        CY_ASSERT(0U);
-    }
+    #if defined (NDEBUG)
+    (void)Cy_TCPWM_Counter_Init(base, cntNum, config);
+    (void)Cy_SysInt_Init(&intrCfg, SelfTest_TIMER_COUNTER_ISR);
+    #else
+    CY_ASSERT(CY_TCPWM_SUCCESS == Cy_TCPWM_Counter_Init(base, cntNum, config));
+    CY_ASSERT(CY_SYSINT_SUCCESS == Cy_SysInt_Init(&intrCfg, SelfTest_TIMER_COUNTER_ISR));
+    #endif /* if defined(NDEBUG) */
 
     /* Enable Interrupt */
     #if (defined (CY_IP_M7CPUSS) || defined (CY_M4CPUSS_V2_IRQ_MUXING))
@@ -151,27 +149,27 @@ uint8_t SelfTest_Counter_Timer(void)
     uint16_t delay_cnt = 0U;
     uint32_t counterVal;
 
-    int_occur = 0U;
+    stlTimerCounter_intOccur = 0U;
 
-    Cy_TCPWM_Counter_SetCompare0(base1, cntNum1, TIMER_COUNTER_TEST_COMPARE);
-    Cy_TCPWM_Counter_SetPeriod(base1, cntNum1, TIMER_COUNTER_TEST_PERIOD);
-    Cy_TCPWM_Counter_SetCounter(base1, cntNum1, 0U);
-    Cy_TCPWM_Counter_Enable(base1, cntNum1);
+    Cy_TCPWM_Counter_SetCompare0(stlTimerCounter_base1, stlTimerCounter_cntNum1, TIMER_COUNTER_TEST_COMPARE);
+    Cy_TCPWM_Counter_SetPeriod(stlTimerCounter_base1, stlTimerCounter_cntNum1, TIMER_COUNTER_TEST_PERIOD);
+    Cy_TCPWM_Counter_SetCounter(stlTimerCounter_base1, stlTimerCounter_cntNum1, 0U);
+    Cy_TCPWM_Counter_Enable(stlTimerCounter_base1, stlTimerCounter_cntNum1);
 
     #if (ERROR_IN_TIMER_COUNTER == 0U)
     #if defined(CY_IP_M0S8TCPWM)
-    Cy_TCPWM_TriggerReloadOrIndex(base1, 1UL << cntNum1);
+    Cy_TCPWM_TriggerReloadOrIndex(stlTimerCounter_base1, 1UL << stlTimerCounter_cntNum1);
     #else
-    Cy_TCPWM_TriggerReloadOrIndex_Single(base1, cntNum1);
+    Cy_TCPWM_TriggerReloadOrIndex_Single(stlTimerCounter_base1, stlTimerCounter_cntNum1);
     #endif
     #endif
 
     do
     {
-        counterVal = Cy_TCPWM_Counter_GetCounter(base1, cntNum1);
-        Cy_SysLib_DelayUs(1);
+        counterVal = Cy_TCPWM_Counter_GetCounter(stlTimerCounter_base1, stlTimerCounter_cntNum1);
+        Cy_SysLib_DelayUs(1U);
         delay_cnt++;
-    } while ((int_occur == 0U) && (TIMER_COUNTER_TIMEOUT > delay_cnt));
+    } while ((stlTimerCounter_intOccur == 0U) && (TIMER_COUNTER_TIMEOUT > delay_cnt));
 
     if (TIMER_COUNTER_TIMEOUT > delay_cnt)
     {

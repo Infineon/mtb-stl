@@ -5,7 +5,7 @@
 *  This file provides the source code for the I/O self tests.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -37,10 +37,21 @@
 
 #include "SelfTest_IO.h"
 #include "SelfTest_ErrorInjection.h"
+#include <stdint.h>
+
+/* This is a temp WA as there is no API to convert GPIO base to HSIOM base. */
+/* The coresponding ticket is opened.                                       */
+#if ((defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS)) && \
+    defined(CY_PDL_TZ_ENABLED))
+#define GPIO2HSIOM_PTR(base)   ((HSIOM_SECURE_PRT_Type*)CY_HSIOM_SECURE_BASE + \
+(HSIOM_SECURE_PRT_SECTION_SIZE * (((uint32_t)(base) \
+- CY_GPIO_BASE) / GPIO_PRT_SECTION_SIZE)))
+#endif
+
 
 /* This variable is used to return the number of the pin, which causes an error in the test */
-static uint8_t errorPinNum = 0u;
-static const uint8_t* pinMask = NULL;
+static uint8_t stlIo_errorPinNum = 0u;
+static const uint8_t* stlIo_pinMask = NULL;
 
 /* The table of constants, which defines the pins to be tested             */
 /* PintToTest[0] represents PORT0, PintToTest[1] -> PORT1 ... etc.         */
@@ -49,7 +60,7 @@ static const uint8_t* pinMask = NULL;
 /* If the pin should be tested, set a corresponding bit to "1".            */
 
 #if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX)
-static const uint8_t PinToTest[] =
+static const uint8_t stlIo_pinToTest[] =
 {
     /* The below mask is based on the project setting and CY8CKIT-41S MAX kit hardware. */
     0x00u,            /* PORT0 mask */
@@ -68,7 +79,7 @@ static const uint8_t PinToTest[] =
 };
 
 /* IO ports register addresses */
-static GPIO_PRT_Type* PORT_Regs[] =
+static GPIO_PRT_Type* stlIo_portRegs[] =
 {
     GPIO_PRT0, GPIO_PRT1, GPIO_PRT2,  GPIO_PRT3, \
     GPIO_PRT4, GPIO_PRT5, GPIO_PRT6,  GPIO_PRT7, \
@@ -78,7 +89,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX) */
 
 #if defined(CY_DEVICE_SERIES_PSOC_4500S)
-static const uint8_t PinToTest[] =
+static const uint8_t stlIo_pinToTest[] =
 {
     /* The below mask is based on the project setting and CY8CKIT-45S MAX kit hardware. */
     0x06u,            /* PORT0 mask */
@@ -92,7 +103,7 @@ static const uint8_t PinToTest[] =
 };
 
 /* IO ports register addresses */
-static GPIO_PRT_Type* PORT_Regs[] =
+static GPIO_PRT_Type* stlIo_portRegs[] =
 {
     GPIO_PRT0, GPIO_PRT1, GPIO_PRT2, GPIO_PRT3, \
     GPIO_PRT4, GPIO_PRT5, GPIO_PRT6, GPIO_PRT7,
@@ -100,7 +111,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4500S) */
 
 #if defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS)
-static const uint8_t PinToTest[] =
+static const uint8_t stlIo_pinToTest[] =
 {
     /* The below mask is based on the project setting and CY8CKIT-149 kit hardware. */
     0x09u,            /* PORT0 mask */
@@ -114,7 +125,7 @@ static const uint8_t PinToTest[] =
 };
 
 /* IO ports register addresses */
-static GPIO_PRT_Type* PORT_Regs[] =
+static GPIO_PRT_Type* stlIo_portRegs[] =
 {
     GPIO_PRT0, GPIO_PRT1, GPIO_PRT2, GPIO_PRT3, \
     GPIO_PRT4, GPIO_PRT5, GPIO_PRT6, GPIO_PRT7,
@@ -122,7 +133,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS) */
 
 #if  defined(CY_DEVICE_SERIES_PSOC_4100S)
-static const uint8_t PinToTest[] =
+static const uint8_t stlIo_pinToTest[] =
 {
     /* The below mask is based on the project setting and CY8CKIT-041-41XX kit hardware. */
     0x4Fu,            /* PORT0 mask */
@@ -133,7 +144,7 @@ static const uint8_t PinToTest[] =
 };
 
 /* IO ports register addresses */
-static GPIO_PRT_Type* PORT_Regs[] =
+static GPIO_PRT_Type* stlIo_portRegs[] =
 {
     GPIO_PRT0, GPIO_PRT1, GPIO_PRT2, GPIO_PRT3, \
     GPIO_PRT4,
@@ -141,7 +152,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
 #endif /* if  defined(CY_DEVICE_SERIES_PSOC_4100S) */
 
 #if defined(CY_DEVICE_SERIES_PSOC_4100T_PLUS)
-static const uint8_t PinToTest[] =
+static const uint8_t stlIo_pinToTest[] =
 {
     /* The below mask is based on the project setting and CY8CPROTO-041TP kit hardware. */
     0x00u,            /* PORT0 mask */
@@ -154,7 +165,7 @@ static const uint8_t PinToTest[] =
 };
 
 /* IO ports register addresses */
-static GPIO_PRT_Type* PORT_Regs[] =
+static GPIO_PRT_Type* stlIo_portRegs[] =
 {
     GPIO_PRT0, GPIO_PRT1, GPIO_PRT2, GPIO_PRT3, \
     GPIO_PRT4, GPIO_PRT5, GPIO_PRT6,
@@ -162,7 +173,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4100T_PLUS) */
 
 #if defined(CY_DEVICE_SERIES_PSOC_4000T)
-static const uint8_t PinToTest[] =
+static const uint8_t stlIo_pinToTest[] =
 {
     /* The below mask is based on the project setting and CY8CPROTO-040T kit hardware. */
     0x1Fu,            /* PORT0 mask */
@@ -173,7 +184,7 @@ static const uint8_t PinToTest[] =
 };
 
 /* IO ports register addresses */
-static GPIO_PRT_Type* PORT_Regs[] =
+static GPIO_PRT_Type* stlIo_portRegs[] =
 {
     GPIO_PRT0, GPIO_PRT1, GPIO_PRT2, GPIO_PRT3, \
     GPIO_PRT4,
@@ -181,7 +192,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4000T) */
 
 #if defined(CY_DEVICE_SERIES_PSOC_4000S)
-static const uint8_t PinToTest[] =
+static const uint8_t stlIo_pinToTest[] =
 {
     /* The below mask is based on the project setting and CY8CKIT-145-40XX kit hardware. */
     0x00u,            /* PORT0 mask */
@@ -192,7 +203,7 @@ static const uint8_t PinToTest[] =
 };
 
 /* IO ports register addresses */
-static GPIO_PRT_Type* PORT_Regs[] =
+static GPIO_PRT_Type* stlIo_portRegs[] =
 {
     GPIO_PRT0, GPIO_PRT1, GPIO_PRT2, GPIO_PRT3, \
     GPIO_PRT4,
@@ -200,7 +211,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4000S) */
 
 #if defined(CY_DEVICE_SERIES_PSOC_4700S)
-static const uint8_t PinToTest[] =
+static const uint8_t stlIo_pinToTest[] =
 {
     /* The below mask is based on the project setting and CY8CKIT-148 kit hardware. */
     0x00u,            /* PORT0 mask */
@@ -211,16 +222,16 @@ static const uint8_t PinToTest[] =
 };
 
 /* IO ports register addresses */
-static GPIO_PRT_Type* PORT_Regs[] =
+static GPIO_PRT_Type* stlIo_portRegs[] =
 {
     GPIO_PRT0, GPIO_PRT1, GPIO_PRT2, GPIO_PRT3, \
     GPIO_PRT4,
 };
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4700S) */
 
-#if (defined(CY_DEVICE_SERIES_PSOC_61) || defined(CY_DEVICE_SERIES_PSOC_62) || \
-    defined(CY_DEVICE_SERIES_PSOC_63) || defined(CY_DEVICE_SERIES_PSOC_64))
-static const uint8_t PinToTest[] =
+#if (defined(CY_DEVICE_SERIES_PSOC_61) || defined(CY_DEVICE_SERIES_PSOC_62) || defined(CY_DEVICE_SERIES_PSOC_63) || \
+    defined(CY_DEVICE_SERIES_PSOC_64))
+static const uint8_t stlIo_pinToTest[] =
 {
     /* The below mask is based on the project setting and CY8CKIT-45S MAX kit hardware. */
     0x00u,     /* PORT0 mask */
@@ -241,7 +252,7 @@ static const uint8_t PinToTest[] =
 };
 
 /* IO ports register addresses */
-static GPIO_PRT_Type* PORT_Regs[] =
+static GPIO_PRT_Type* stlIo_portRegs[] =
 {
     GPIO_PRT0,
     GPIO_PRT1,
@@ -264,7 +275,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
         */
 
 #if (defined(CY_DEVICE_SERIES_XMC7100) || defined(CY_DEVICE_SERIES_XMC7200))
-static const uint8_t PinToTest[] =
+static const uint8_t stlIo_pinToTest[] =
 {
     /* The below mask is based on the project setting and CY8CKIT-45S MAX kit hardware. */
     0x00u,     /* PORT0 mask */
@@ -303,7 +314,7 @@ static const uint8_t PinToTest[] =
 };
 
 /* IO ports register addresses */
-static GPIO_PRT_Type* PORT_Regs[] =
+static GPIO_PRT_Type* stlIo_portRegs[] =
 {
     GPIO_PRT0,
     GPIO_PRT1,
@@ -341,9 +352,9 @@ static GPIO_PRT_Type* PORT_Regs[] =
 };
 #endif /* if (defined(CY_DEVICE_SERIES_XMC7100) || defined(CY_DEVICE_SERIES_XMC7200)) */
 
-#if (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) || \
-    defined(CY_DEVICE_SERIES_PSC3P2) || defined(CY_DEVICE_SERIES_PSC3P5))
-static const uint8_t PinToTest[] =
+#if (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) || defined(CY_DEVICE_SERIES_PSC3P2) || \
+    defined(CY_DEVICE_SERIES_PSC3P5))
+static const uint8_t stlIo_pinToTest[] =
 {
     0x00u,     /* PORT0 mask */
     0x00u,     /* PORT1 mask */
@@ -358,7 +369,7 @@ static const uint8_t PinToTest[] =
 };
 
 /* IO ports register addresses */
-static GPIO_PRT_Type* PORT_Regs[] =
+static GPIO_PRT_Type* stlIo_portRegs[] =
 {
     GPIO_PRT0,
     GPIO_PRT1,
@@ -375,8 +386,31 @@ static GPIO_PRT_Type* PORT_Regs[] =
         * defined(CY_DEVICE_SERIES_PSC3P2) || defined(CY_DEVICE_SERIES_PSC3P5))
         */
 
+#if defined(CY_DEVICE_SERIES_PSC3M6) || defined(CY_DEVICE_SERIES_PSC3P6)
+static const uint8_t stlIo_pinToTest[IO_PORTS];
+
+/* IO ports register addresses */
+static GPIO_PRT_Type* stlIo_portRegs[] =
+{
+    GPIO_PRT0,
+    GPIO_PRT1,
+    GPIO_PRT2,
+    GPIO_PRT3,
+    GPIO_PRT4,
+    GPIO_PRT5,
+    GPIO_PRT6,
+    GPIO_PRT7,
+    GPIO_PRT8,
+    GPIO_PRT9,
+    GPIO_PRT10,
+    GPIO_PRT11,
+    GPIO_PRT12,
+    GPIO_PRT13,
+};
+#endif /* if defined(CY_DEVICE_SERIES_PSC3M6) || defined(CY_DEVICE_SERIES_PSC3P6) */
+
 #if (defined(CY_DEVICE_SERIES_XMC5100) || defined(CY_DEVICE_SERIES_XMC5200) || defined(CY_DEVICE_SERIES_XMC5300))
-static const uint8_t PinToTest[] =
+static const uint8_t stlIo_pinToTest[] =
 {
     /* The below mask is based on the project setting and KIT_XMC52_EVK kit hardware. */
     0x00u,     /* PORT0 mask */
@@ -406,7 +440,7 @@ static const uint8_t PinToTest[] =
 };
 
 /* IO ports register addresses */
-static GPIO_PRT_Type* PORT_Regs[] =
+static GPIO_PRT_Type* stlIo_portRegs[] =
 {
     GPIO_PRT0,
     GPIO_PRT1,
@@ -436,7 +470,6 @@ static GPIO_PRT_Type* PORT_Regs[] =
 #endif /* if (defined(CY_DEVICE_SERIES_XMC5100) || defined(CY_DEVICE_SERIES_XMC5200) ||
         * defined(CY_DEVICE_SERIES_XMC5300))
         */
-
 /*******************************************************************************
  * Function Name: SelfTest_IO_GetPortError
  ********************************************************************************
@@ -452,7 +485,7 @@ static GPIO_PRT_Type* PORT_Regs[] =
  **********************************************************************************/
 uint8_t SelfTest_IO_GetPortError(void)
 {
-    return (errorPinNum / IO_PINS);
+    return (stlIo_errorPinNum / IO_PINS);
 }
 
 
@@ -471,7 +504,7 @@ uint8_t SelfTest_IO_GetPortError(void)
  **********************************************************************************/
 uint8_t SelfTest_IO_GetPinError(void)
 {
-    return (errorPinNum & IO_PINS_MASK);
+    return (stlIo_errorPinNum & IO_PINS_MASK);
 }
 
 
@@ -486,12 +519,12 @@ uint8_t SelfTest_IO_GetPinError(void)
  *  pinMaskArr - The custom pin mask array. The length of the array must be equal
  *  to the IO_PORTS value. Each element of the array is a mask of the GPIO port pins,
  *  that will be tested in the SelfTest_IO function. The Port sequence is the same
- *  as in the PORT_Regs array. Pass the NULL value to use the default PIN mask.
+ *  as in the stlIo_portRegs array. Pass the NULL value to use the default PIN mask.
  *
  **********************************************************************************/
 void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr)
 {
-    pinMask = pinMaskArr;
+    stlIo_pinMask = pinMaskArr;
 }
 
 
@@ -502,7 +535,7 @@ void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr)
  * Summary:
  *  This function performs I/O tests to detect pin shorts to Ground or Vcc.
  *  Not all pins may be compatible with this test based on the applications specifics.
- *  By default, this function uses the "PinToTest" array to determine which pins
+ *  By default, this function uses the "stlIo_pinToTest" array to determine which pins
  *  to test. To set a custom pin mask, use the SelfTest_IO_SetPinMask() function.
  *
  * Parameters:
@@ -524,12 +557,17 @@ uint8_t SelfTest_IO(void)
     uint32_t savePortDR;
     uint32_t savePortPC;
 
-    const uint8_t* pinToTestPtr = PinToTest;
+    #if ((defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS)) && \
+    defined(CY_PDL_TZ_ENABLED))
+    uint32_t savePortNonSecMsk;
+    #endif
+
+    const uint8_t* pinToTestPtr = stlIo_pinToTest;
 
     /* Use custom pin mask if set */
-    if (pinMask != NULL)
+    if (stlIo_pinMask != NULL)
     {
-        pinToTestPtr = pinMask;
+        pinToTestPtr = stlIo_pinMask;
     }
 
     /* Disable the global interrupts */
@@ -541,11 +579,14 @@ uint8_t SelfTest_IO(void)
     {
         /* Save PORT state */
         #if defined(CY_IP_M0S8IOSS)
-        savePortDR = (GPIO_PRT_DR(PORT_Regs[portNum]));
-        savePortPC = (GPIO_PRT_PC(PORT_Regs[portNum]));
-        #elif (defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS) || defined (CY_IP_MXS22IOSS))
-        savePortDR = (GPIO_PRT_OUT(PORT_Regs[portNum]));
-        savePortPC = (GPIO_PRT_CFG(PORT_Regs[portNum]));
+        savePortDR = (GPIO_PRT_DR(stlIo_portRegs[portNum]));
+        savePortPC = (GPIO_PRT_PC(stlIo_portRegs[portNum]));
+        #elif (defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS))
+        savePortDR = (GPIO_PRT_OUT(stlIo_portRegs[portNum]));
+        savePortPC = (GPIO_PRT_CFG(stlIo_portRegs[portNum]));
+        #if defined(CY_PDL_TZ_ENABLED)
+        savePortNonSecMsk = HSIOM_SEC_PRT_NONSEC_MASK((GPIO2HSIOM_PTR(stlIo_portRegs[portNum])));
+        #endif
         #endif
         /* Run through all pins of current port */
         pinNum = 0u;
@@ -554,45 +595,49 @@ uint8_t SelfTest_IO(void)
             /* If a pin should be tested */
             if ((pinToTestPtr[portNum] & (uint8_t)(1u << pinNum)) != 0u)
             {
+                #if ((defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS)) && \
+                defined(CY_PDL_TZ_ENABLED))
+                Cy_GPIO_SetHSIOM_SecPin(stlIo_portRegs[portNum], pinNum, CY_GPIO_HSIOM_SECURE_ACCESS);
+                #endif
                 /* Set pin mode to resistive pull-up */
-                Cy_GPIO_SetDrivemode(PORT_Regs[portNum], pinNum, CY_GPIO_DM_PULLUP);
+                Cy_GPIO_SetDrivemode(stlIo_portRegs[portNum], pinNum, CY_GPIO_DM_PULLUP);
 
                 /* Set pin to "1" */
-                Cy_GPIO_Set(PORT_Regs[portNum], pinNum);
+                Cy_GPIO_Set(stlIo_portRegs[portNum], pinNum);
 
                 #if (ERROR_IN_DIGITAL_IO == 1u)
 
                 /* Set pin to "0" and produce error */
-                Cy_GPIO_Clr(PORT_Regs[portNum], pinNum);
+                Cy_GPIO_Clr(stlIo_portRegs[portNum], pinNum);
                 #endif /* End (ERROR_IN_DIGITAL_IO == 1u) */
 
                 /* Wait for applying Drive mode */
                 Cy_SysLib_DelayCycles(DELAY_DRIVE_MODE_SETUP);
 
                 /* Test if pin is not connected to GND */
-                if (Cy_GPIO_Read(PORT_Regs[portNum], pinNum) == 0x00u)
+                if (Cy_GPIO_Read(stlIo_portRegs[portNum], pinNum) == 0x00u)
                 {
                     /* Test fail */
                     ret = SHORT_TO_GND;
-                    errorPinNum = (portNum * 8u) + pinNum;
+                    stlIo_errorPinNum = (portNum * 8u) + pinNum;
                     continue;
                 }
 
                 /* Set pin mode to resistive pull-down */
-                Cy_GPIO_SetDrivemode(PORT_Regs[portNum], pinNum, CY_GPIO_DM_PULLDOWN);
+                Cy_GPIO_SetDrivemode(stlIo_portRegs[portNum], pinNum, CY_GPIO_DM_PULLDOWN);
 
                 /* Set pin to "0" */
-                Cy_GPIO_Clr(PORT_Regs[portNum], pinNum);
+                Cy_GPIO_Clr(stlIo_portRegs[portNum], pinNum);
 
                 /* Wait for applying Drive mode (critical delay) */
                 Cy_SysLib_DelayCycles(DELAY_DRIVE_MODE_SETUP);
 
                 /* Test if pin is not connected to VCC */
-                if (Cy_GPIO_Read(PORT_Regs[portNum], pinNum) == 0x01u)
+                if (Cy_GPIO_Read(stlIo_portRegs[portNum], pinNum) == 0x01u)
                 {
                     /* Test fail */
                     ret = SHORT_TO_VCC;
-                    errorPinNum = (portNum * 8u) + pinNum;
+                    stlIo_errorPinNum = (portNum * 8u) + pinNum;
 
                     break;
                 }
@@ -602,11 +647,14 @@ uint8_t SelfTest_IO(void)
 
         /* Restore PORT state */
         #if defined(CY_IP_M0S8IOSS)
-        GPIO_PRT_DR(PORT_Regs[portNum]) = savePortDR;
-        GPIO_PRT_PC(PORT_Regs[portNum]) = savePortPC;
-        #elif (defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS) || defined (CY_IP_MXS22IOSS))
-        GPIO_PRT_OUT(PORT_Regs[portNum]) = savePortDR;
-        GPIO_PRT_CFG(PORT_Regs[portNum]) = savePortPC;
+        GPIO_PRT_DR(stlIo_portRegs[portNum]) = savePortDR;
+        GPIO_PRT_PC(stlIo_portRegs[portNum]) = savePortPC;
+        #elif (defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS))
+        GPIO_PRT_OUT(stlIo_portRegs[portNum]) = savePortDR;
+        GPIO_PRT_CFG(stlIo_portRegs[portNum]) = savePortPC;
+        #if defined(CY_PDL_TZ_ENABLED)
+        HSIOM_SEC_PRT_NONSEC_MASK((GPIO2HSIOM_PTR(stlIo_portRegs[portNum]))) = savePortNonSecMsk;
+        #endif
         #endif
         portNum++;
     }

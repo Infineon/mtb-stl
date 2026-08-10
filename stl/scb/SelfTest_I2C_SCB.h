@@ -6,7 +6,7 @@
 *  for the I2C self tests according to the Class B library.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_i2c
+ * \defgroup group_i2c I2C (I2C STL module)
  * \{
  *
  * This test requires connecting the I2C Master and Slave externally.
@@ -104,12 +104,15 @@
 * \note
 *  During a call, the function transmits from 0x01 to 0xFF.
 *  Clears I2C Master status, reads and writes the buffer
+*  Do not call this function while application traffic is active on the same
+*  I2C master or slave instances. The slave read/write buffers and I2C status
+*  are used as test resources and are modified by the function.
 *
 *
 * \return
-*  1 - Test failed <br>
-*  2 - Still testing <br>
-*  3 - Test completed OK
+*  \ref ERROR_STATUS (1) - Test failed <br>
+*  \ref PASS_STILL_TESTING_STATUS (2) - Still testing <br>
+*  \ref PASS_COMPLETE_STATUS (3) - Test completed OK <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_I2C_SCB(CySCB_Type* master_base, cy_stc_scb_i2c_context_t* master_context,

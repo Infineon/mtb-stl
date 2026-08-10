@@ -36,7 +36,7 @@
 *******************************************************************************/
 
 /**
- * \addtogroup group_ram
+ * \defgroup group_ram RAM (RAM STL module)
  * \{
  *
  * To meet the Class B requirement, SRAM test must be checked for DC fault. Either of the two
@@ -131,8 +131,8 @@ typedef enum
 * equal to buffSize in each iteration.
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 
@@ -171,8 +171,8 @@ uint8_t SelfTest_SRAM(stl_sram_test_mode_t type, uint8_t* startAddr, uint32_t si
 * the alternate stack is within the stack limit set by the platform
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 
@@ -234,8 +234,8 @@ uint8_t SelfTest_SRAM_March_Runtime_Asm(uint32_t startAddress,
 *  March algorithm to use, see \ref stl_sram_march_mode_t
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 * \note Interrupts should be disabled before calling this function.
 * \note Ensure no active DMA transfers to/from the test region during test.
@@ -290,8 +290,8 @@ uint8_t SelfTest_SRAM_March_Full(uint32_t startAddress,
 *  March algorithm to use, see \ref stl_sram_march_mode_t
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 * \note Interrupts should be disabled before calling this function.
 * \note Ensure no active DMA transfers to/from the test region during test.

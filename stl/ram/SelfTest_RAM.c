@@ -341,15 +341,15 @@ uint8_t SelfTest_SRAM_GALPAT(uint8_t* startAddr, uint32_t size, uint8_t* buffAdd
 *  1 - Test failed
 *
 *******************************************************************************/
-static uint32_t stackPointer;
-static uint32_t currentStackSize;
+static uint32_t stlRam_stackPointer;
+static uint32_t stlRam_currentStackSize;
 
 
 uint8_t SelfTest_SRAM_Stack(uint8_t* stackBase, uint32_t stackSize, uint8_t* altStackBase)
 {
     uint8_t stackTestStatus = OK_STATUS;
-    __asm volatile("mov %0, sp" : "=r" (stackPointer));
-    currentStackSize = ((uint32_t)stackBase - stackPointer);
+    __asm volatile("mov %0, sp" : "=r" (stlRam_stackPointer));
+    stlRam_currentStackSize = ((uint32_t)stackBase - stlRam_stackPointer);
 
     /* Check the proper buffer address is provided for store/restore */
     if (((uint32_t)altStackBase >= ((uint32_t)stackBase - stackSize)) &&
@@ -357,11 +357,11 @@ uint8_t SelfTest_SRAM_Stack(uint8_t* stackBase, uint32_t stackSize, uint8_t* alt
     {
         return ERROR_STATUS;
     }
-    copy_buffer((uint8_t*)stackPointer, stackBase, altStackBase - currentStackSize);
-    __asm volatile("mov sp, %0" :: "r" ((uint32_t)altStackBase - currentStackSize));
+    copy_buffer((uint8_t*)stlRam_stackPointer, stackBase, altStackBase - stlRam_currentStackSize);
+    __asm volatile("mov sp, %0" :: "r" ((uint32_t)altStackBase - stlRam_currentStackSize));
     stackTestStatus = SelfTest_SRAM_MARCH(stackBase - stackSize, stackSize, NULL, 0);
-    copy_buffer((uint8_t*)altStackBase - currentStackSize, altStackBase, (uint8_t*)stackPointer);
-    __asm volatile("mov sp, %0" :: "r" (stackPointer));
+    copy_buffer((uint8_t*)altStackBase - stlRam_currentStackSize, altStackBase, (uint8_t*)stlRam_stackPointer);
+    __asm volatile("mov sp, %0" :: "r" (stlRam_stackPointer));
     return stackTestStatus;
 }
 

@@ -6,7 +6,7 @@
 *  Gatekill self tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,24 +35,24 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_pwm_gatekill
+ * \defgroup group_pwm_gatekill PWM GateKill (PWM GateKill STL module)
  * \{
  *
  * The Gate Kill function is used in motor controllers and multi-level power
- * converters. When an over-voltage or over-current state is detected, the Gate Kill
- * shuts down the output drivers in less than 50 nanoseconds.
+ * converters. When the Kill input signal is asserted, the Gate Kill shuts down
+ * the PWM output drivers in less than 50 nanoseconds.
  *
  * \section group_pwm_gatekill_more_information More Information
  *
  * The test procedure:
  *
- *      1) The Low power comparator/ SAR ADC Range Voilation Intr output is routed to Kill
- *      signal of TCPWM indicating over-voltage/over-current condition if the voltage on +ve
- *      terminal is > -ve.
- *      2) Under over-voltage or over-current condition it will Kill the PWM output.
- *      3) The TCPWM base and CntNum is passed to check whether the counter is stopped or not.
- *      4) If the counter is not incrementing/decrementing, the PWM output is inactive.
- *
+ *      1) Before calling this function, the Kill signal must already be
+ *      asserted on the TCPWM instance under test.
+ *      2) The TCPWM counter value is read twice with a 10 ms delay between
+ *      reads.
+ *      3) If both counter values are equal, the counter has stopped,
+ *      confirming that the Gate Kill signal was correctly applied at the
+ *      pin-function level.
  *
  * \defgroup group_pwm_gatekill_functions Functions
  */
@@ -79,6 +79,10 @@
 * The TCPWM base and CntNum is passed to check whether the counter is stopped or
 * not. If the counter is not incrementing/decrementing, the PWM output is inactive.
 *
+* \note This test only verifies that the TCPWM counter stopped between the two
+* reads. It does not directly evaluate the actual pin or output state.
+* Functional verification of the pin state is tracked separately.
+*
 *
 * \param base
 * The pointer to a TCPWM instance. <br>
@@ -87,8 +91,8 @@
 *
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_PWM_GateKill(TCPWM_Type* base, uint32_t cntNum);

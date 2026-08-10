@@ -5,7 +5,7 @@
  * Include this file in all of your source files that access mtb-stl middleware.
  *
  *******************************************************************************
- * (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+ * (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
  * Technologies AG. All rights reserved.
  * This software, associated documentation and materials ("Software") is
  * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -68,6 +68,8 @@
 #include "SelfTest_ECC.h"
 #include "SelfTest_WWDT.h"
 #include "SelfTest_CANFD.h"
+#include "SelfTest_CPU_Instructions.h"
+#include "SelfTest_HWFILT3P3Z.h"
 
 #endif /* if !defined(SELFTEST_H) */
 /* [] END OF FILE */

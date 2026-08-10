@@ -5,7 +5,7 @@
 * clock source testing according to the Class B library.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -41,10 +41,10 @@
 /*******************************************************************************
 * Global Variables
 *******************************************************************************/
-static volatile uint16_t clock_test_isr_count;
-static volatile uint32_t wdt_counter_1;
-static TCPWM_Type* base1;
-static uint32_t cntNum1;
+static volatile uint16_t stlClock_testIsrCount;
+static volatile uint32_t stlClock_wdtCounter1;
+static TCPWM_Type* stlClock_base1;
+static uint32_t stlClock_cntNum1;
 
 /******************************************************************************
 * Function Name: SelfTest_Clock_ISR_TIMER
@@ -57,20 +57,20 @@ static uint32_t cntNum1;
 void SelfTest_Clock_ISR_TIMER(void)
 {
     /* Read WDT timer final value */
-    wdt_counter_1 = Cy_WDT_GetCount();
+    stlClock_wdtCounter1 = Cy_WDT_GetCount();
 
     #if defined(CY_IP_MXTCPWM)
-    Cy_TCPWM_Counter_Disable(base1, cntNum1);
-    uint32_t interrupts = Cy_TCPWM_GetInterruptStatusMasked(base1, cntNum1);
+    Cy_TCPWM_Counter_Disable(stlClock_base1, stlClock_cntNum1);
+    uint32_t interrupts = Cy_TCPWM_GetInterruptStatusMasked(stlClock_base1, stlClock_cntNum1);
     /* Clear the terminal count interrupt */
-    Cy_TCPWM_ClearInterrupt(base1, cntNum1, interrupts);
+    Cy_TCPWM_ClearInterrupt(stlClock_base1, stlClock_cntNum1, interrupts);
     #else
 
-    Cy_TCPWM_ClearInterrupt(base1, cntNum1, CY_TCPWM_INT_ON_TC);
+    Cy_TCPWM_ClearInterrupt(stlClock_base1, stlClock_cntNum1, CY_TCPWM_INT_ON_TC);
 
     #endif
     /* Set the ISR count */
-    clock_test_isr_count++;
+    stlClock_testIsrCount++;
 }
 
 
@@ -99,8 +99,8 @@ void SelfTest_Clock_ISR_TIMER(void)
 *****************************************************************************/
 uint8_t SelfTest_Clock(TCPWM_Type* base, uint32_t cntNum)
 {
-    base1 = base;
-    cntNum1 = cntNum;
+    stlClock_base1 = base;
+    stlClock_cntNum1 = cntNum;
     static volatile uint32_t counter_0 = 0uL;
     volatile uint32_t counter_1;
     uint8_t ret;
@@ -109,14 +109,14 @@ uint8_t SelfTest_Clock(TCPWM_Type* base, uint32_t cntNum)
     uint32_t CLOCK_TEST_TIME_TIMER_PERIOD =
         ((Cy_SysClk_ClkPeriGetFrequency() / 1000000U) * (CLOCK_TEST_TIME));
     #endif
-    #if (defined(CY_IP_MXS40SSRSS))
+    #if defined(CY_IP_MXS40SSRSS)
     uint32_t CLOCK_TEST_TIME_TIMER_PERIOD =
-        ((uint32_t)(((uint64_t)Cy_SysClk_ClkHfGetFrequency(3) / 1000000U) * CLOCK_TEST_TIME));
+        ((uint32_t)(((uint64_t)Cy_SysClk_ClkHfGetFrequency(STL_CLOCK_SOURCE_HFCLOCK) / 1000000U) * CLOCK_TEST_TIME));
     #endif
     if (test_in_progress == 0u)
     {
         test_in_progress = 1u;
-        clock_test_isr_count = 0u;
+        stlClock_testIsrCount = 0u;
 
         #if (ERROR_IN_CLOCK == 1)
         #if defined(CY_IP_MXTCPWM)
@@ -144,17 +144,17 @@ uint8_t SelfTest_Clock(TCPWM_Type* base, uint32_t cntNum)
 
         ret = PASS_STILL_TESTING_STATUS;
     }
-    else if (clock_test_isr_count == 0u)
+    else if (stlClock_testIsrCount == 0u)
     {
         /* Still waiting for the timer interrupt */
         ret = PASS_STILL_TESTING_STATUS;
     }
-    else if (clock_test_isr_count == 1u)
+    else if (stlClock_testIsrCount == 1u)
     {
         /* ISR triggered once and is ready to perform calculations */
 
         /* Copy global ISR counter value to the local variable to avoid a value change*/
-        counter_1 = wdt_counter_1;
+        counter_1 = stlClock_wdtCounter1;
 
         if (counter_0 < counter_1)
         {
@@ -180,7 +180,7 @@ uint8_t SelfTest_Clock(TCPWM_Type* base, uint32_t cntNum)
     }
     else
     {
-        /* clock_test_isr_count > 1 */
+        /* stlClock_testIsrCount > 1 */
         ret = ERROR_INCORRECT_USAGE_STATUS;
         test_in_progress = 0;
     }

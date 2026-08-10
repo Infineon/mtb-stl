@@ -6,7 +6,7 @@
 *  self tests according to the Class B library.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -148,9 +148,8 @@ void SelfTest_Init_MSCv3_Vdda_Div2_Amux_B(MSC_Type* base)
 
 #endif /* (ANALOG_TEST_VREF == ANALOG_TEST_VREF_DUAL_MSC) */
 
-
 #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
-static int16_t dacOffset = 0;
+static int16_t stlAnalog_dacOffset = 0;
 static void SelfTest_Clear_CSDv2_Regs(CSD_Type* base);
 static uint8_t SelfTests_Set_IDAC_Offset(SAR_Type* sar_base, uint32_t channel);
 /*****************************************************************************
@@ -494,8 +493,8 @@ static uint8_t SelfTests_Set_IDAC_Offset(SAR_Type* sar_base, uint32_t channel)
     /* Check if timeout */
     if (guardCnt < ADC_TEST_CON_TIME_uS)
     {
-        dacOffset = Cy_SAR_GetResult16(sar_base, channel);
-        dacOffset = Cy_SAR_CountsTo_mVolts(sar_base, channel, dacOffset);
+        stlAnalog_dacOffset = Cy_SAR_GetResult16(sar_base, channel);
+        stlAnalog_dacOffset = Cy_SAR_CountsTo_mVolts(sar_base, channel, stlAnalog_dacOffset);
         ret = OK_STATUS;
     }
     return ret;
@@ -561,14 +560,14 @@ uint8_t SelfTests_ADC(SAR_Type* base, uint32_t channel, int16_t expected_res, in
         }
 
         #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
-        if (adc_res > dacOffset)
+        if (adc_res > stlAnalog_dacOffset)
         {
-            adc_res = adc_res - dacOffset;
+            adc_res = adc_res - stlAnalog_dacOffset;
         }
         #endif /* ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC */
 
         #if ERROR_IN_ADC
-        adc_res += 2*ANALOG_ADC_ACURACCY;
+        adc_res += 2*ANALOG_ADC_ACCURACY;
         #endif
         ret = OK_STATUS;
     }
@@ -635,7 +634,7 @@ uint8_t SelfTests_ADC(PASS_SAR_Type* base, uint32_t channel, int16_t expected_re
         }
 
         #if ERROR_IN_ADC
-        adc_res += 2*ANALOG_ADC_ACURACCY;
+        adc_res += 2*ANALOG_ADC_ACCURACY;
         #endif
         ret = OK_STATUS;
     }
@@ -699,10 +698,10 @@ uint8_t SelfTests_ADC(uint32_t group, uint32_t channel, int16_t expected_res, in
     if (guardCnt < ADC_TEST_CON_TIME_uS)
     {
         /* Get the channel data */
-        adc_res = Cy_HPPASS_SAR_Result_ChannelRead((uint8_t)channel);
+        adc_res = (int16_t)Cy_HPPASS_SAR_Result_ChannelRead((uint8_t)channel);
 
         #if ERROR_IN_ADC
-        adc_res += 2*ANALOG_ADC_ACURACCY;
+        adc_res += 2*ANALOG_ADC_ACCURACY;
         #endif
         ret = OK_STATUS;
     }
@@ -723,56 +722,60 @@ uint8_t SelfTests_ADC(uint32_t group, uint32_t channel, int16_t expected_res, in
 }
 
 
-uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t trig_in)
+uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int32_t expected_res, int32_t accuracy, uint32_t trig_in)
 {
     (void)group;
-    int16_t adc_res = 0;
+    int32_t adc_res = 0;
     uint32_t result_status = 0;
 
     uint16_t guardCnt;
     uint8_t ret = ERROR_STATUS;
 
     /* Start the HPPASS autonomous controller (AC) from state 0, do not wait for HPPASS block to be ready */
-    if (CY_HPPASS_SUCCESS != Cy_HPPASS_AC_Start(0U, 0U))
+    if (CY_HPPASS_SUCCESS == Cy_HPPASS_AC_Start(0U, 0U))
     {
-        CY_ASSERT(0);
+        /* Time for system readiness */
+        Cy_SysLib_Delay(40u);
+
+        /* Check SAR ADC busy status */
+        guardCnt = 0u;
+        while (Cy_HPPASS_SAR_IsBusy() && (guardCnt < ADC_TEST_CON_TIME_uS))
+        {
+            Cy_SysLib_DelayUs(1u);
+            guardCnt++;
+        }
+
+        if (guardCnt < ADC_TEST_CON_TIME_uS)
+        {
+            /* Start ADC conversion */
+            /* Trigger SAR ADC */
+            if (CY_HPPASS_SUCCESS == Cy_HPPASS_SetFwTrigger((uint8_t)trig_in))
+            {
+                /* Wait for the end of conversion using a guard interval > ADC conversion time */
+                guardCnt = 0u;
+                do
+                {
+                    Cy_SysLib_DelayUs(1u);
+                    result_status = Cy_HPPASS_SAR_Result_GetStatus();
+                    guardCnt++;
+                } while(((result_status & (1UL << channel)) == 0U) && (guardCnt < ADC_TEST_CON_TIME_uS));
+
+                if (guardCnt < ADC_TEST_CON_TIME_uS)
+                {
+                    /* Get the channel data */
+                    adc_res = Cy_HPPASS_SAR_Result_ChannelRead((uint8_t)channel);
+
+                    #if ERROR_IN_ADC
+                    adc_res += 2*ANALOG_ADC_ACCURACY;
+                    #endif
+                    ret = OK_STATUS;
+                }
+
+                /* Clear the result status */
+                Cy_HPPASS_SAR_Result_ClearStatus(1UL << channel);
+            }
+        }
     }
-
-    /* Check SAR ADC busy status */
-    while (Cy_HPPASS_SAR_IsBusy())
-    {
-    }
-    Cy_SysLib_Delay(100u);
-    /* Start ADC conversion */
-    /* Trigger SAR ADC */
-    if (CY_HPPASS_SUCCESS != Cy_HPPASS_SetFwTrigger((uint8_t)trig_in))
-    {
-        CY_ASSERT(0);
-    }
-
-    /* Wait for the end of conversion using a guard interval > ADC conversion time */
-    guardCnt = 0u;
-
-    do
-    {
-        guardCnt++;
-        result_status = Cy_HPPASS_SAR_Result_GetStatus();
-    } while(((result_status & (1UL << channel)) == 0U) && (guardCnt < ADC_TEST_CON_TIME_uS));
-
-    /* Check if timeout */
-    if (guardCnt < ADC_TEST_CON_TIME_uS)
-    {
-        /* Get the channel data */
-        adc_res = Cy_HPPASS_SAR_Result_ChannelRead((uint8_t)channel);
-
-        #if ERROR_IN_ADC
-        adc_res += 2*ANALOG_ADC_ACURACCY;
-        #endif
-        ret = OK_STATUS;
-    }
-
-    /* Clear the result status */
-    Cy_HPPASS_SAR_Result_ClearStatus(1UL << channel);
 
     /* Check that the measured results are in the range */
     if (ret == OK_STATUS)
@@ -787,9 +790,703 @@ uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int16_t expected_
 }
 
 
+#if defined(CY_IP_MXS40MCPASS) && (CY_IP_MXS40MCPASS_VERSION >= 3u)
+/*******************************************************************************
+* Static HPPASS Configuration for DAC R2R Self-Test
+*
+* These structures replace the configuration generated from design.modus so
+* that SelfTests_DAC_TrigIn() is independent of cycfg_peripherals.c.
+*
+* Hardware topology:
+*   DAC 0 output → AN_A5 pin → HPPASS AROUTE → SAR direct sampler 5 → SAR channel 5
+*                             SAR group 0, firmware trigger 0 (CY_HPPASS_TRIG_0_MSK)
+*   DAC 1 output → AN_B5 pin → HPPASS AROUTE → SAR muxed sampler 13 (AIO_B_5, MUX1_SEL=0) → SAR channel 18
+*                             SAR group 1, firmware trigger 1 (CY_HPPASS_TRIG_1_MSK)
+*******************************************************************************/
+/** HPPASS startup clock divider for CLK_HF = 180 MHz (CLK_INFRA = 90 MHz).
+ *  Chosen so that each startup count tick is ~200 ns: 18 * (1/90 MHz) = 200 ns. */
+#define STL_HPPASS_CLK_HF_DIV           (18U)
+/** CLK_INFRA = CLK_HF / 2 in MHz. Used to derive the startup tick period. */
+#define STL_HPPASS_CLK_INFRA_MHZ        (90U)
+/** Startup clock tick period in nanoseconds (= STL_HPPASS_CLK_HF_DIV / CLK_INFRA). */
+#define STL_HPPASS_STARTUP_TICK_NS      ((STL_HPPASS_CLK_HF_DIV * 1000U) / STL_HPPASS_CLK_INFRA_MHZ)
+/** Desired SAR power-up delay in microseconds. */
+#define STL_HPPASS_SAR_STARTUP_US       (40U)
+/** startup[].count value: hardware adds 1, so actual delay =
+ *  (STL_HPPASS_SAR_STARTUP_COUNT + 1) * STL_HPPASS_STARTUP_TICK_NS ≈ STL_HPPASS_SAR_STARTUP_US µs. */
+#define STL_HPPASS_SAR_STARTUP_COUNT    ((STL_HPPASS_SAR_STARTUP_US * 1000U) / STL_HPPASS_STARTUP_TICK_NS)
+#define STL_DAC0_OUT_SAMP_MSK           ((uint16_t)(1U << SELFTEST_HPPASS_DAC0_R2R_SAR_CHAN_IDX))
+/** DAC1: muxed sampler 13 (bit 1 of muxSampEnMsk/muxSampMsk), MUX1_SEL=0 → AIO_B_5 → AN_B5.
+ *  DAC buffer 1 output (bufferOutputSelect=0) routes to AIO_B_5 input of sampler 13. */
+#define STL_DAC1_OUT_MUX_SAMP_MSK       (0x2U)
+/** MUX1_SEL value 0 = AIO_B_5 (AN_B5); result channel for sampler 13 = 18 + 0 = 18. */
+#define STL_DAC1_OUT_MUX_CHAN_IDX       (0U)
+/** DAC load mode */
+#define STL_DAC_BUF_PWR_ULTRA           (3U)
+/** DAC settling time */
+#define DAC_R2R_SETTLE_TIME_uS          (1000U)
+
+static const cy_stc_hppass_ac_stt_t stlAnalog_dacR2rStt[] =
+{
+    {
+        .condition      = (cy_en_hppass_condition_t)CY_HPPASS_CONDITION_FALSE,
+        .action         = CY_HPPASS_ACTION_STOP,
+        .branchStateIdx = 0U,
+        .interrupt      = false,
+        .count          = 1U,
+        .gpioOutUnlock  = false,
+        .gpioOutMsk     = 0U,
+        .csgUnlock      =
+        {
+            false, false, false,
+            false, false, false,
+            false, false, false,
+        },
+        .csgEnable      =
+        {
+            false, false, false,
+            false, false, false,
+            false, false, false,
+        },
+        .csgDacTrig     =
+        {
+            false, false, false,
+            false, false, false,
+            false, false, false,
+        },
+        .sarUnlock      = true,
+        .sarEnable      = true,
+        .sarGrpMsk      = 0U,
+        .sarMux         =
+        {
+            { false, 0U },
+            { false, 0U },
+            { false, 0U },
+            { false, 0U },
+        },
+    },
+};
+
+/* SAR channel 5: DAC0 output readback (AN_A5, direct sampler 5) */
+static const cy_stc_hppass_sar_chan_t stlAnalog_dacR2rSarChan0 =
+{
+    .diff       = false,
+    .sign       = false,
+    .rightAlign = true,
+    .avg        = CY_HPPASS_SAR_AVG_DISABLED,
+    .limit      = CY_HPPASS_SAR_LIMIT_DISABLED,
+    .result     = true,
+    .fifo       = CY_HPPASS_FIFO_DISABLED,
+};
+
+/* SAR group 0: DAC0 — direct sampler 5 (AN_A5), triggered by FW trigger 0 */
+static const cy_stc_hppass_sar_grp_t stlAnalog_dacR2rSarGrp0 =
+{
+    .dirSampMsk = STL_DAC0_OUT_SAMP_MSK,
+    .muxSampMsk = 0x0U,
+    .muxChanIdx =
+    {
+        0U,
+        0U,
+        0U,
+        0U,
+    },
+    .trig       = CY_HPPASS_SAR_TRIG_0,
+    .sampTime   = CY_HPPASS_SAR_SAMP_TIME_0,
+    .priority   = true,
+    .continuous = false,
+};
+
+/* SAR channel 18: DAC1 output readback (AN_B5, muxed sampler 13, MUX1_SEL=0 → AIO_B_5) */
+static const cy_stc_hppass_sar_chan_t stlAnalog_dacR2rSarChan1 =
+{
+    .diff       = false,
+    .sign       = false,
+    .rightAlign = true,
+    .avg        = CY_HPPASS_SAR_AVG_DISABLED,
+    .limit      = CY_HPPASS_SAR_LIMIT_DISABLED,
+    .result     = true,
+    .fifo       = CY_HPPASS_FIFO_DISABLED,
+};
+
+/* SAR group 1: DAC1 — muxed sampler 13 (AIO_B_5 / AN_B5), triggered by FW trigger 1.
+ * MUX1_SEL=0 selects AIO_B_5; muxChanIdx[1]=0; result channel = 18 + 0 = 18. */
+static const cy_stc_hppass_sar_grp_t stlAnalog_dacR2rSarGrp1 =
+{
+    .dirSampMsk = 0x0U,
+    .muxSampMsk = STL_DAC1_OUT_MUX_SAMP_MSK,
+    .muxChanIdx =
+    {
+        0U,
+        STL_DAC1_OUT_MUX_CHAN_IDX,
+        0U,
+        0U,
+    },
+    .trig       = CY_HPPASS_SAR_TRIG_1,
+    .sampTime   = CY_HPPASS_SAR_SAMP_TIME_0,
+    .priority   = true,
+    .continuous = false,
+};
+
+static const cy_stc_hppass_sar_t stlAnalog_dacR2rSar =
+{
+    .vref         = CY_HPPASS_SAR_VREF_VDDA,
+    .lowSupply    = false,
+    .offsetCal    = false,
+    .linearCal    = false,
+    .gainCal      = false,
+    .chanId       = false,
+    .aroute       = true,
+    .dirSampEnMsk = STL_DAC0_OUT_SAMP_MSK,
+    .muxSampEnMsk = STL_DAC1_OUT_MUX_SAMP_MSK,
+    .holdCount    = 0xFFU,
+    .dirSampGain  =
+    {
+        CY_HPPASS_SAR_SAMP_GAIN_1, CY_HPPASS_SAR_SAMP_GAIN_1,
+        CY_HPPASS_SAR_SAMP_GAIN_1, CY_HPPASS_SAR_SAMP_GAIN_1,
+        CY_HPPASS_SAR_SAMP_GAIN_1, CY_HPPASS_SAR_SAMP_GAIN_1,
+        CY_HPPASS_SAR_SAMP_GAIN_1, CY_HPPASS_SAR_SAMP_GAIN_1,
+        CY_HPPASS_SAR_SAMP_GAIN_1, CY_HPPASS_SAR_SAMP_GAIN_1,
+        CY_HPPASS_SAR_SAMP_GAIN_1, CY_HPPASS_SAR_SAMP_GAIN_1,
+    },
+    .muxSampGain  =
+    {
+        CY_HPPASS_SAR_SAMP_GAIN_1, CY_HPPASS_SAR_SAMP_GAIN_1,
+        CY_HPPASS_SAR_SAMP_GAIN_1, CY_HPPASS_SAR_SAMP_GAIN_1,
+    },
+    .sampTime     =
+    {
+        512U,
+        32U,
+        32U,
+    },
+    .chan         =
+    {
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        &stlAnalog_dacR2rSarChan0, /* ch  5 = DAC0 (AN_A5, direct sampler 5) */
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        &stlAnalog_dacR2rSarChan1, /* ch 18 = DAC1 (AN_B5, muxed sampler 13, MUX1_SEL=0) */
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+    },
+    .grp          =
+    {
+        &stlAnalog_dacR2rSarGrp0, /* group 0 - DAC0 (AN_A5), trigger 0 */
+        &stlAnalog_dacR2rSarGrp1, /* group 1 - DAC1 (AN_B5), trigger 1 */
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+    },
+    .limit        =
+    {
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+    },
+    .muxMode      =
+    {
+        CY_HPPASS_SAR_MUX_SEQ, CY_HPPASS_SAR_MUX_SEQ,
+        CY_HPPASS_SAR_MUX_SEQ, CY_HPPASS_SAR_MUX_SEQ,
+    },
+    .fir          =
+    {
+        NULL,
+        NULL,
+    },
+    .fifo         = NULL,
+};
+
+static const cy_stc_hppass_cfg_t stlAnalog_dacR2rHppassCfg =
+{
+    .ac                               =
+    {
+        .sttEntriesNum                = 1U,
+        .stt                          = stlAnalog_dacR2rStt,
+        .gpioOutEnMsk                 = 0U,
+        .startupClkDiv                = STL_HPPASS_CLK_HF_DIV,
+        .startup                      =
+        {
+            {
+                .count                = STL_HPPASS_SAR_STARTUP_COUNT,
+                .sar                  = true,
+                .csgChan              = false,
+                .csgSlice             = false,
+                .csgReady             = false,
+            },
+            {
+                .count                = 0U,
+                .sar                  = false,
+                .csgChan              = false,
+                .csgSlice             = false,
+                .csgReady             = false,
+            },
+            {
+                .count                = 0U,
+                .sar                  = false,
+                .csgChan              = false,
+                .csgSlice             = false,
+                .csgReady             = false,
+            },
+            {
+                .count                = 0U,
+                .sar                  = false,
+                .csgChan              = false,
+                .csgSlice             = false,
+                .csgReady             = false,
+            },
+        },
+    },
+    .csg                              = NULL,
+    .sar                              = &stlAnalog_dacR2rSar,
+    .trigIn                           =
+    {
+        /* [0] DAC0 */
+        {
+            .type                     = CY_HPPASS_TR_FW_LEVEL,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        /* [1] DAC1 */
+        {
+            .type                     = CY_HPPASS_TR_FW_LEVEL,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+        {
+            .type                     = CY_HPPASS_TR_DISABLED,
+            .hwMode                   = CY_HPPASS_PULSE_ON_POS_DOUBLE_SYNC,
+        },
+    },
+    .trigPulse                        =
+    {
+        CY_HPPASS_DISABLED, CY_HPPASS_DISABLED, CY_HPPASS_DISABLED, CY_HPPASS_DISABLED,
+        CY_HPPASS_DISABLED, CY_HPPASS_DISABLED, CY_HPPASS_DISABLED, CY_HPPASS_DISABLED,
+        CY_HPPASS_DISABLED, CY_HPPASS_DISABLED, CY_HPPASS_DISABLED, CY_HPPASS_DISABLED,
+        CY_HPPASS_DISABLED, CY_HPPASS_DISABLED, CY_HPPASS_DISABLED, CY_HPPASS_DISABLED,
+    },
+    .trigLevel                        =
+    {
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+        {
+            .syncBypass               = true,
+            .compMsk                  = 0U,
+            .limitMsk                 = 0U,
+            .compRemapMsk             = 0U,
+            .dacFifoBelowThresholdMsk = 0U,
+        },
+    },
+    .vrefSel                          = 1U,
+};
+
+static const cy_stc_hppass_dac_buf_config_t stlAnalog_dacR2rBufCfg =
+{
+    .startTriggerSelect         = CY_HPPASS_DAC_TRIG_DISABLED,
+    .updateTriggerSelect        = CY_HPPASS_DAC_TRIG_DISABLED,
+    .mode                       = CY_HPPASS_DAC_BUF_MODE_BUFFERED,
+    .continuousMode             = false,
+    .skipTriggerEnable          = false,
+    .paramSyncEnable            = false,
+    .stepSize                   = 0U,
+    .fifoAccessMode             = 0U,
+    .paramSyncReady             = false,
+    .valueA                     = 0U,
+    .valueB                     = 0U,
+    .updatePeriodInteger        = 0U,
+    .updatePeriodFractional     = 0U,
+    .powerEnable                = true,
+    .comparatorEnable           = false,
+    .compDirection              = CY_HPPASS_DAC_COMP_DIR_RISING,
+    .comparatorHysteresisEnable = false,
+    .enableGainBoost            = false,
+    .referenceSelect            = 0,
+    .bufferOutputSelect         = 0,
+    .powerMode                  = STL_DAC_BUF_PWR_ULTRA,
+    .chargePumpEnable           = true,
+    .adcLoopbackChannel         = 0U,
+};
+
+uint8_t SelfTests_DAC_TrigIn(uint8_t dac_idx, uint32_t dac_val,
+                             int32_t expected_res, int32_t accuracy)
+{
+    /* Derive SAR channel and FW trigger mask from the DAC index.
+     *   DAC 0 → direct sampler 5 (AN_A5),              SAR ch  5, trigger 0
+     *   DAC 1 → muxed sampler 13 MUX1_SEL=0 (AN_B5),  SAR ch 18, trigger 1 */
+    uint32_t channel = (dac_idx == 0U) ?
+                       SELFTEST_HPPASS_DAC0_R2R_SAR_CHAN_IDX :
+                       SELFTEST_HPPASS_DAC1_R2R_SAR_CHAN_IDX;
+    uint32_t trig_in = (dac_idx == 0U) ?
+                       CY_HPPASS_TRIG_0_MSK :
+                       CY_HPPASS_TRIG_1_MSK;
+
+    int32_t adc_res = 0;
+    uint32_t result_status = 0;
+
+    uint16_t guardCnt;
+    uint8_t ret = ERROR_STATUS;
+
+    /* De-initialize HPPASS first: Cy_HPPASS_Init fails if AC is already running
+     * (e.g. started by the application via init_cycfg_all). */
+    Cy_HPPASS_DeInit();
+
+    if (CY_RSLT_SUCCESS == Cy_HPPASS_Init(&stlAnalog_dacR2rHppassCfg))
+    {
+        /* Initialize and enable the requested DAC buffer */
+        (void)Cy_HPPASS_DAC_Init(dac_idx, &stlAnalog_dacR2rBufCfg);
+        Cy_HPPASS_DAC_Enable(dac_idx);
+
+        /* Start the HPPASS autonomous controller (AC) from state 0 */
+        if (CY_HPPASS_SUCCESS == Cy_HPPASS_AC_Start(0U, 0U))
+        {
+            /* Time for system readiness */
+            Cy_SysLib_Delay(40u);
+
+            /* Check DAC busy status. */
+            guardCnt = 0u;
+            while (!Cy_HPPASS_DAC_Is_Ready(dac_idx) && (guardCnt < DAC_R2R_SETTLE_TIME_uS))
+            {
+                Cy_SysLib_DelayUs(1u);
+                guardCnt++;
+            }
+
+            if (guardCnt < DAC_R2R_SETTLE_TIME_uS)
+            {
+                /* Set DAC mode */
+                Cy_HPPASS_DAC_ModeSet(dac_idx, CY_HPPASS_DAC_BUF_MODE_BUFFERED);
+
+                /* Write DAC Buffer data directly. */
+                Cy_HPPASS_DAC_WriteValue(dac_idx, dac_val);
+
+                /* Wait for the data to finish loading. */
+                guardCnt = 0u;
+                while ((Cy_HPPASS_DAC_Buf_IsBusy(dac_idx) == true) && (guardCnt < DAC_R2R_SETTLE_TIME_uS))
+                {
+                    Cy_SysLib_DelayUs(1u);
+                    guardCnt++;
+                }
+
+                if (guardCnt < DAC_R2R_SETTLE_TIME_uS)
+                {
+                    /* Check SAR ADC busy status */
+                    guardCnt = 0u;
+                    while (Cy_HPPASS_SAR_IsBusy() && (guardCnt < ADC_TEST_CON_TIME_uS))
+                    {
+                        Cy_SysLib_DelayUs(1u);
+                        guardCnt++;
+                    }
+
+                    if (guardCnt < ADC_TEST_CON_TIME_uS)
+                    {
+                        /* Start ADC conversion */
+                        /* Trigger SAR ADC */
+                        if (CY_HPPASS_SUCCESS == Cy_HPPASS_SetFwTrigger((uint8_t)trig_in))
+                        {
+                            /* Wait for the end of conversion using a guard interval > ADC conversion time */
+                            guardCnt = 0u;
+                            do
+                            {
+                                Cy_SysLib_DelayUs(1u);
+                                result_status = Cy_HPPASS_SAR_Result_GetStatus();
+                                guardCnt++;
+                            } while(((result_status & (1UL << channel)) == 0U) && (guardCnt < ADC_TEST_CON_TIME_uS));
+
+                            if (guardCnt < ADC_TEST_CON_TIME_uS)
+                            {
+                                /* Get the channel data */
+                                adc_res = Cy_HPPASS_SAR_Result_ChannelRead((uint8_t)channel);
+
+                                #if ERROR_IN_DAC
+                                adc_res += 2*ANALOG_ADC_ACCURACY;
+                                #endif
+                                ret = OK_STATUS;
+                            }
+
+                            /* Clear the result status */
+                            Cy_HPPASS_SAR_Result_ClearStatus(1UL << channel);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* Check that the measured results are in the range */
+    if (ret == OK_STATUS)
+    {
+        if ((adc_res < (expected_res - accuracy)) || (adc_res > (expected_res + accuracy)))
+        {
+            ret = ERROR_STATUS;
+        }
+    }
+
+    return ret;
+}
+
+
+uint8_t SelfTests_AFE_TrigIn(uint32_t group, uint32_t channel, int32_t expected_res, int32_t accuracy, uint32_t trig_in)
+{
+    (void)group;
+    int32_t adc_res = 0;
+    uint32_t result_status = 0;
+
+    uint16_t guardCnt;
+    uint8_t ret = ERROR_STATUS;
+
+    /* Start the HPPASS autonomous controller (AC) from state 0, do not wait for HPPASS block to be ready */
+    if (CY_HPPASS_SUCCESS == Cy_HPPASS_AC_Start(0U, 0U))
+    {
+        /* Time for system readiness */
+        Cy_SysLib_Delay(40u);
+
+        /* Check SAR ADC busy status */
+        guardCnt = 0u;
+        while (Cy_HPPASS_SAR_IsBusy() && (guardCnt < ADC_TEST_CON_TIME_uS))
+        {
+            Cy_SysLib_DelayUs(1u);
+            guardCnt++;
+        }
+
+        if (guardCnt < ADC_TEST_CON_TIME_uS)
+        {
+            /* Start ADC conversion */
+            /* Trigger SAR ADC */
+            if (CY_HPPASS_SUCCESS == Cy_HPPASS_SetFwTrigger((uint8_t)trig_in))
+            {
+                /* Wait for the end of conversion using a guard interval > ADC conversion time */
+                guardCnt = 0u;
+                do
+                {
+                    Cy_SysLib_DelayUs(1u);
+                    result_status = Cy_HPPASS_SAR_Result_GetStatus();
+                    guardCnt++;
+                } while(((result_status & (1UL << channel)) == 0U) && (guardCnt < ADC_TEST_CON_TIME_uS));
+
+                if (guardCnt < ADC_TEST_CON_TIME_uS)
+                {
+                    /* Get the channel data */
+                    adc_res = Cy_HPPASS_SAR_Result_ChannelRead((uint8_t)channel);
+
+                    #if ERROR_IN_ADC
+                    adc_res += 2*ANALOG_ADC_ACCURACY;
+                    #endif
+                    ret = OK_STATUS;
+                }
+
+                /* Clear the result status */
+                Cy_HPPASS_SAR_Result_ClearStatus(1UL << channel);
+            }
+        }
+    }
+
+    /* Check that the measured results are in the range */
+    if (ret == OK_STATUS)
+    {
+        if ((adc_res < (expected_res - accuracy)) || (adc_res > (expected_res + accuracy)))
+        {
+            ret = ERROR_STATUS;
+        }
+    }
+
+    return ret;
+}
+
+
+#endif /* defined(CY_IP_MXS40MCPASS) && (CY_IP_MXS40MCPASS_VERSION >= 3u) */
 #endif /* defined(CY_IP_M0S8PASS4A_SAR) || defined(CY_IP_MXS40PASS_SAR) */
 
 
+#if defined(CLASSB_SELF_TEST_ADC) && (defined(CY_IP_MXS40PASS_CTB) || defined(CY_IP_M0S8PASS4A_CTB))
 /*****************************************************************************
 * Function Name: SelfTests_Opamp
 ******************************************************************************
@@ -802,7 +1499,7 @@ uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int16_t expected_
 * \param expected_res
 * If count_to_mV = 1 => Expected result in mV, else Expected result in counts.
 * \param accuracy
-* Accuracy in count ANALOG_OPAMP_ACURACCY
+* Accuracy in count ANALOG_OPAMP_ACCURACY
 * \param opamp_in_channel
 * Channel number where the OPAMP output is read.
 * \param count_to_mV
@@ -813,7 +1510,6 @@ uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int16_t expected_
 *  1 - Test failed
 *
 *****************************************************************************/
-#if defined (CLASSB_SELF_TEST_OPAMP)
 uint8_t SelfTests_Opamp(SAR_Type* sar_base, int16_t expected_res, int16_t accuracy,
                         uint32_t opamp_in_channel, bool count_to_mV)
 {
@@ -847,9 +1543,9 @@ uint8_t SelfTests_Opamp(SAR_Type* sar_base, int16_t expected_res, int16_t accura
         }
 
         #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC)
-        if (adc_res > dacOffset)
+        if (adc_res > stlAnalog_dacOffset)
         {
-            adc_res = adc_res - dacOffset;
+            adc_res = adc_res - stlAnalog_dacOffset;
         }
         #endif /* ANALOG_TEST_VREF == ANALOG_TEST_VREF_CSD_IDAC */
         #if (ERROR_IN_OPAMP == 1)
@@ -986,7 +1682,7 @@ uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChanne
 #endif /* CY_IP_MXS40PASS_CTDAC defined */
 
 
-#ifdef CY_IP_MXS40MCPASS
+#if defined(CY_IP_MXS40MCPASS) && (CY_IP_MXS40MCPASS_VERSION < 3u)
 /*******************************************************************************
 * Function Name: SelfTests_DAC_TrigIn
 ********************************************************************************
@@ -1070,10 +1766,10 @@ uint8_t SelfTests_DAC_TrigIn(uint32_t adc_channel, uint32_t dac_slice, uint32_t 
     if ((guardCnt_ADC < ADC_TEST_CON_TIME_uS) && (guardCnt_ADC < DAC_TEST_CON_TIME_uS))
     {
         /* Get the channel data */
-        adc_res = Cy_HPPASS_SAR_Result_ChannelRead((uint8_t)adc_channel);
+        adc_res = (int16_t)Cy_HPPASS_SAR_Result_ChannelRead((uint8_t)adc_channel);
 
         #if ERROR_IN_ADC
-        adc_res += 2*ANALOG_ADC_ACURACCY;
+        adc_res += 2*ANALOG_ADC_ACCURACY;
         #endif
         ret = OK_STATUS;
     }
@@ -1094,6 +1790,6 @@ uint8_t SelfTests_DAC_TrigIn(uint32_t adc_channel, uint32_t dac_slice, uint32_t 
 }
 
 
-#endif /* ifdef CY_IP_MXS40MCPASS */
+#endif /* defined(CY_IP_MXS40MCPASS) && (CY_IP_MXS40MCPASS_VERSION < 3u) */
 
 /* [] END OF FILE */

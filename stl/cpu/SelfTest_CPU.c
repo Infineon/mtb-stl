@@ -5,7 +5,7 @@
 *  This file provides the source code for the CPU register self tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -39,13 +39,13 @@
 #include "SelfTest_CPU_Regs.h"
 #include "SelfTest_ErrorInjection.h"
 
-static volatile uint8_t CPU_SelfTestA;
-static volatile uint16_t CPU_SelfTestB;
-static volatile uint32_t CPU_SelfTestC;
-static uint16_t counter1;
-static uint16_t counter2;
-static bool Program_flow_test;
-/* The definition of the section for the SelfTest_PC5555() and SelfTest_PCAAAA() functions (GCC Compiler).
+static volatile uint8_t stlCpu_selfTestA;
+static volatile uint16_t stlCpu_selfTestB;
+static volatile uint32_t stlCpu_selfTestC;
+static uint16_t stlCpu_counter1;
+static uint16_t stlCpu_counter2;
+static bool stlCpu_programFlowTest;
+/* The definition of the section for the SelfTest_PC5555() and SelfTest_PCAAAA() functions (GNU-compatible compilers).
  *   Custom linkers files are required to placed at correct location
  */
 
@@ -90,7 +90,7 @@ uint8_t SelfTest_CPU_Registers(void)
 
     #if defined(__ARMCC_VERSION)
     ret = SelfTest_CPU_Regs_ARM();
-    #elif defined(__GNUC__)
+    #elif defined(__GNUC__) && !defined(__clang__)
     ret = SelfTest_CPU_Regs_GCC();
     #elif defined(__ICCARM__)
     ret = SelfTest_CPU_Regs_IAR();
@@ -129,36 +129,36 @@ uint8_t SelfTest_PC(void)
     uint8_t returned_value;
 
     /* Clear global variables for test */
-    CPU_SelfTestA = 0x00u;
-    CPU_SelfTestB = 0x0000u;
-    CPU_SelfTestC = 0x00000000u;
-    Program_flow_test = false;
+    stlCpu_selfTestA = 0x00u;
+    stlCpu_selfTestB = 0x0000u;
+    stlCpu_selfTestC = 0x00000000u;
+    stlCpu_programFlowTest = false;
 
     returned_value = SelfTest_PC5555();
 
     /* Check if SelfTest_PC5555() returned and wrote correct values to global variables*/
-    if (CPU_SelfTestA == SELF_TEST_A_1)
+    if (stlCpu_selfTestA == SELF_TEST_A_1)
     {
-        if (CPU_SelfTestB == SELF_TEST_B_1)
+        if (stlCpu_selfTestB == SELF_TEST_B_1)
         {
-            if (CPU_SelfTestC == SELF_TEST_C_1)
+            if (stlCpu_selfTestC == SELF_TEST_C_1)
             {
                 if (returned_value == CHECKERBOARD_PATTERN_55)
                 {
                     /* Clear global variables for next test */
-                    CPU_SelfTestA = 0x00u;
-                    CPU_SelfTestB = 0x0000u;
-                    CPU_SelfTestC = 0x00000000u;
+                    stlCpu_selfTestA = 0x00u;
+                    stlCpu_selfTestB = 0x0000u;
+                    stlCpu_selfTestC = 0x00000000u;
 
                     returned_value = SelfTest_PCAAAA();
 
                     /* Check if SelfTest_PCAAAA() returned and wrote correct values to global
                        variables*/
-                    if (CPU_SelfTestA == SELF_TEST_A_2)
+                    if (stlCpu_selfTestA == SELF_TEST_A_2)
                     {
-                        if (CPU_SelfTestB == SELF_TEST_B_2)
+                        if (stlCpu_selfTestB == SELF_TEST_B_2)
                         {
-                            if (CPU_SelfTestC == SELF_TEST_C_2)
+                            if (stlCpu_selfTestC == SELF_TEST_C_2)
                             {
                                 if (returned_value == CHECKERBOARD_PATTERN_AA)
                                 {
@@ -201,29 +201,29 @@ uint8_t SelfTest_PROGRAM_FLOW(void)
     uint8_t ret = ERROR_STATUS;
 
     /* Clear global variables for test */
-    CPU_SelfTestA = 0x00u;
-    CPU_SelfTestB = 0x0000u;
-    CPU_SelfTestC = 0x00000000u;
-    counter1 = 0x0000;
-    counter2 = 0xFFFF;
+    stlCpu_selfTestA = 0x00u;
+    stlCpu_selfTestB = 0x0000u;
+    stlCpu_selfTestC = 0x00000000u;
+    stlCpu_counter1 = 0x0000;
+    stlCpu_counter2 = 0xFFFF;
 
-    Program_flow_test = true;
+    stlCpu_programFlowTest = true;
 
-    counter1 += (uint16_t)0x0010;
+    stlCpu_counter1 += (uint16_t)0x0010;
     (void)SelfTest_PC5555();
-    counter2 -= (uint16_t)0x0010;
-    counter1 += (uint16_t)0x0030;
+    stlCpu_counter2 -= (uint16_t)0x0010;
+    stlCpu_counter1 += (uint16_t)0x0030;
     (void)SelfTest_PCAAAA();
 
     #if ERROR_IN_PROGRAM_FLOW
     /* Return error value */
-    counter2 -= 0x0060;
+    stlCpu_counter2 -= 0x0060;
     #else
     /* Return OK value */
-    counter2 -= (uint16_t)0x0030;
+    stlCpu_counter2 -= (uint16_t)0x0030;
     #endif /* End ERROR_IN_PROGRAM_FLOW */
 
-    if ((uint16_t)(counter1 ^ counter2) == (uint16_t)0xFFFF)
+    if ((uint16_t)(stlCpu_counter1 ^ stlCpu_counter2) == (uint16_t)0xFFFF)
     {
         ret = OK_STATUS;
     }
@@ -256,19 +256,19 @@ uint8_t SelfTest_PROGRAM_FLOW(void)
 *******************************************************************************/
 static uint8_t SelfTest_PCAAAA(void)
 {
-    if (Program_flow_test)
+    if (stlCpu_programFlowTest)
     {
-        counter1 += (uint16_t)0x0040;
+        stlCpu_counter1 += (uint16_t)0x0040;
     }
-    CPU_SelfTestA = SELF_TEST_A_2;
+    stlCpu_selfTestA = SELF_TEST_A_2;
 
-    CPU_SelfTestB = SELF_TEST_B_2;
+    stlCpu_selfTestB = SELF_TEST_B_2;
 
-    CPU_SelfTestC = SELF_TEST_C_2;
+    stlCpu_selfTestC = SELF_TEST_C_2;
 
-    if (Program_flow_test)
+    if (stlCpu_programFlowTest)
     {
-        counter2 -= (uint16_t)0x0040;
+        stlCpu_counter2 -= (uint16_t)0x0040;
     }
 
     #if ERROR_IN_PROGRAM_COUNTER
@@ -304,19 +304,19 @@ static uint8_t SelfTest_PCAAAA(void)
  ******************************************************************************/
 static uint8_t SelfTest_PC5555(void)
 {
-    if (Program_flow_test)
+    if (stlCpu_programFlowTest)
     {
-        counter1 += (uint16_t)0x0015;
+        stlCpu_counter1 += (uint16_t)0x0015;
     }
-    CPU_SelfTestA = SELF_TEST_A_1;
+    stlCpu_selfTestA = SELF_TEST_A_1;
 
-    CPU_SelfTestB = SELF_TEST_B_1;
+    stlCpu_selfTestB = SELF_TEST_B_1;
 
-    CPU_SelfTestC = SELF_TEST_C_1;
+    stlCpu_selfTestC = SELF_TEST_C_1;
 
-    if (Program_flow_test)
+    if (stlCpu_programFlowTest)
     {
-        counter2 -= (uint16_t)0x0015;
+        stlCpu_counter2 -= (uint16_t)0x0015;
     }
 
     #if ERROR_IN_PROGRAM_COUNTER

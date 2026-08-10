@@ -5,7 +5,7 @@
 *  This file provides the source code for DMAC Self Tests.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -43,8 +43,8 @@
 #include "SelfTest_ErrorInjection.h"
 
 #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
-CY_SECTION_SHAREDMEM static uint32_t data_src_0[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-CY_SECTION_SHAREDMEM static uint8_t data_src_1[66] =
+CY_SECTION_SHAREDMEM static uint32_t stlDmaDw_dataSrc0[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+CY_SECTION_SHAREDMEM static uint8_t stlDmaDw_dataSrc1[66] =
 {
     0x00, 0x00, 0xff,
     0x00, 0x00, 0xff,
@@ -70,8 +70,8 @@ CY_SECTION_SHAREDMEM static uint8_t data_src_1[66] =
     0x00, 0x00, 0xff
 };
 
-CY_SECTION_SHAREDMEM static uint32_t data_dst_0[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-CY_SECTION_SHAREDMEM static uint8_t data_dst_1[66] =
+CY_SECTION_SHAREDMEM static uint32_t stlDmaDw_dataDst0[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+CY_SECTION_SHAREDMEM static uint8_t stlDmaDw_dataDst1[66] =
 {
     0x00, 0x00, 0x00,
     0x00, 0x00, 0x00,
@@ -98,8 +98,8 @@ CY_SECTION_SHAREDMEM static uint8_t data_dst_1[66] =
 };
 
 #else /* if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE) */
-static uint32_t data_src_0[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-static uint8_t data_src_1[66] =
+static uint32_t stlDmaDw_dataSrc0[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+static uint8_t stlDmaDw_dataSrc1[66] =
 {
     0x00, 0x00, 0xff,
     0x00, 0x00, 0xff,
@@ -125,8 +125,8 @@ static uint8_t data_src_1[66] =
     0x00, 0x00, 0xff
 };
 
-static uint32_t data_dst_0[16];
-static uint8_t data_dst_1[66];
+static uint32_t stlDmaDw_dataDst0[16];
+static uint8_t stlDmaDw_dataDst1[66];
 #endif /* if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE) */
 
 
@@ -166,7 +166,8 @@ static uint8_t data_dst_1[66];
 *
 *
 * \note
-* Applicable only for CAT1A, CAT1B(PSoC C3) and CAT1C devices.
+* Applicable only for PSOC 61 Programmable Line, PSOC 62 Performance Line, PSOC Control C3,
+* XMC7000 and XMC5000 devices.
 *
 *
 * \return
@@ -184,66 +185,81 @@ uint8_t SelfTest_DMA_DW(DW_Type* base, uint32_t channel, cy_stc_dma_descriptor_t
     uint8_t ret = ERROR_STATUS;
     uint32_t interruptStatus;
     uint32_t guardCnt = 0UL;
+    cy_en_dma_status_t dmaStatus = CY_DMA_SUCCESS;
+    cy_en_trigmux_status_t trigStatus = CY_TRIGMUX_SUCCESS;
 
-    (void)memset(data_dst_0, 0xAA, sizeof(data_dst_0));
-    (void)memset(data_dst_1, 0, sizeof(data_dst_1));
+    (void)memset(stlDmaDw_dataDst0, 0xAA, sizeof(stlDmaDw_dataDst0));
+    (void)memset(stlDmaDw_dataDst1, 0, sizeof(stlDmaDw_dataDst1));
 
     /* Init Descriptors */
-    (void)Cy_DMA_Descriptor_Init(descriptor0, des0_config);
-    (void)Cy_DMA_Descriptor_Init(descriptor1, des1_config);
-
-    #if (ERROR_IN_DMA_DW == 0u)
-    /* Set source and dest address */
-    /* Descriptor 0 */
-    Cy_DMA_Descriptor_SetSrcAddress(descriptor0, data_src_0);
-    Cy_DMA_Descriptor_SetDstAddress(descriptor0, data_dst_0);
-    /* Descriptor 1 */
-    Cy_DMA_Descriptor_SetSrcAddress(descriptor1, data_src_1);
-    Cy_DMA_Descriptor_SetDstAddress(descriptor1, data_dst_1);
-    #endif /* End (ERROR_IN_DMA_DW == 0) */
-
-    #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
-    SCB_CleanDCache_by_Addr(descriptor0, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
-    SCB_CleanDCache_by_Addr(descriptor1, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
-    #endif
-
-    (void)Cy_DMA_Channel_Init(base, channel, channelConfig);
-    Cy_DMA_Channel_Enable(base, channel);
-
-    /* Enable DMA */
-    Cy_DMA_Enable(base);
-
-    (void)Cy_TrigMux_SwTrigger((uint32_t)trigLine, CY_TRIGGER_TWO_CYCLES);
-
-    /* Wait for DMA transfer completion with timeout */
-    do
+    dmaStatus = Cy_DMA_Descriptor_Init(descriptor0, des0_config);
+    if (CY_DMA_SUCCESS == dmaStatus)
     {
-        Cy_SysLib_DelayUs(1u);
-        guardCnt++;
-        interruptStatus = Cy_DMA_Channel_GetInterruptStatus(base, channel);
-    } while ((interruptStatus == 0UL) && (SELFTEST_DMA_DW_TIMEOUT > guardCnt));
+        dmaStatus = Cy_DMA_Descriptor_Init(descriptor1, des1_config);
+    }
 
-    #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
-    SCB_InvalidateDCache_by_Addr(descriptor0, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
-    SCB_InvalidateDCache_by_Addr(descriptor1, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
-    #endif
-
-    /* Check for timeout */
-    if (SELFTEST_DMA_DW_TIMEOUT > guardCnt)
+    if (CY_DMA_SUCCESS == dmaStatus)
     {
-        int32_t cmpRes;
+        #if (ERROR_IN_DMA_DW == 0u)
+        /* Set source and dest address */
+        /* Descriptor 0 */
+        Cy_DMA_Descriptor_SetSrcAddress(descriptor0, stlDmaDw_dataSrc0);
+        Cy_DMA_Descriptor_SetDstAddress(descriptor0, stlDmaDw_dataDst0);
+        /* Descriptor 1 */
+        Cy_DMA_Descriptor_SetSrcAddress(descriptor1, stlDmaDw_dataSrc1);
+        Cy_DMA_Descriptor_SetDstAddress(descriptor1, stlDmaDw_dataDst1);
+        #endif /* End (ERROR_IN_DMA_DW == 0) */
 
-        #if (ERROR_IN_DMA_DW == 1u)
-        data_dst_0[0] = 1;
-        #endif /* End (ERROR_IN_DMA_DW == 1u) */
-        Cy_SysLib_DelayUs(10u);
-        cmpRes = memcmp(data_src_0, data_dst_0, sizeof(data_dst_0));
-        if (cmpRes == 0)
+        #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
+        SCB_CleanDCache_by_Addr(descriptor0, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
+        SCB_CleanDCache_by_Addr(descriptor1, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
+        #endif
+
+        dmaStatus = Cy_DMA_Channel_Init(base, channel, channelConfig);
+    }
+
+    if (CY_DMA_SUCCESS == dmaStatus)
+    {
+        Cy_DMA_Channel_Enable(base, channel);
+
+        /* Enable DMA */
+        Cy_DMA_Enable(base);
+
+        trigStatus = Cy_TrigMux_SwTrigger((uint32_t)trigLine, CY_TRIGGER_TWO_CYCLES);
+    }
+
+    if ((CY_DMA_SUCCESS == dmaStatus) && (CY_TRIGMUX_SUCCESS == trigStatus))
+    {
+        /* Wait for DMA transfer completion with timeout */
+        do
         {
-            cmpRes = memcmp(data_src_1, data_dst_1, sizeof(data_dst_1));
+            Cy_SysLib_DelayUs(1u);
+            guardCnt++;
+            interruptStatus = Cy_DMA_Channel_GetInterruptStatus(base, channel);
+        } while ((interruptStatus == 0UL) && (SELFTEST_DMA_DW_TIMEOUT > guardCnt));
+
+        #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
+        SCB_InvalidateDCache_by_Addr(descriptor0, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
+        SCB_InvalidateDCache_by_Addr(descriptor1, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
+        #endif
+
+        /* Check for timeout */
+        if (SELFTEST_DMA_DW_TIMEOUT > guardCnt)
+        {
+            int32_t cmpRes;
+
+            #if (ERROR_IN_DMA_DW == 1u)
+            stlDmaDw_dataDst0[0] = 1;
+            #endif /* End (ERROR_IN_DMA_DW == 1u) */
+            Cy_SysLib_DelayUs(10u);
+            cmpRes = memcmp(stlDmaDw_dataSrc0, stlDmaDw_dataDst0, sizeof(stlDmaDw_dataDst0));
             if (cmpRes == 0)
             {
-                ret = OK_STATUS;
+                cmpRes = memcmp(stlDmaDw_dataSrc1, stlDmaDw_dataDst1, sizeof(stlDmaDw_dataDst1));
+                if (cmpRes == 0)
+                {
+                    ret = OK_STATUS;
+                }
             }
         }
     }

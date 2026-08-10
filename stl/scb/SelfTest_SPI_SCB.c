@@ -6,7 +6,7 @@
 *  according to Class B library.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -195,7 +195,6 @@ uint8_t SelfTest_SPI_SCB(CySCB_Type* base)
              *  Send and receive byte and compare if they are the same
              */
             ret = SelfTest_SPI_SCB_Byte(base, byteToTest);
-            byteToTest++;
 
             /* Enabled RX and TX interrupts after the test */
             Cy_SCB_SetRxInterruptMask(base, rxSpiInterruptMask);
@@ -209,16 +208,23 @@ uint8_t SelfTest_SPI_SCB(CySCB_Type* base)
                 /* Check if the test was performed with all values from 0x00 to 0xFF */
 
                 /* If test was performed with all values from 0x00 to 0xFF */
-                if (byteToTest == 0x00u)
+                if (byteToTest == SPI_TEST_RANGE)
                 {
                     /* Return the status that test fully completed */
                     ret = PASS_COMPLETE_STATUS;
+                    byteToTest = 0u;
                 }
                 else
                 {
                     /* Return the status that an error was not detected but the test is not fully completed */
                     ret = PASS_STILL_TESTING_STATUS;
+                    byteToTest++;
                 }
+            }
+            else
+            {
+                ret = ERROR_STATUS;
+                byteToTest = 0u;
             }
         }
     }

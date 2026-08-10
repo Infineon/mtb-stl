@@ -6,7 +6,7 @@
 *  self tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_cordic
+ * \defgroup group_cordic CORDIC (CORDIC STL module)
  * \{
  *
  * To meet Class B requirement, Cordic must be tested for sine and cosine trignometric functions:
@@ -56,6 +56,7 @@
 #include "SelfTest_common.h"
 #include "SelfTest_ErrorInjection.h"
 
+
 #if (defined (CY_IP_MXCORDIC) || defined (CY_DOXYGEN))
 
 /***************************************
@@ -75,14 +76,27 @@
 * The CORDIC block accelerates the calculation of trigonometric functions.
 * Sine and Cosine are calculated in this function.
 *
+* \param base Pointer to the CORDIC instance.
 *
 * \return
-*  "0" "OK_STATUS" - Test passed <br>
-*  "1" "ERROR_STATUS" - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 
-uint8_t SelfTest_Cordic(void);
+uint8_t SelfTest_Cordic_Ext(MXCORDIC_Type* base);
+/*******************************************************************************
+* Function Name: SelfTest_Cordic
+****************************************************************************//**
+*
+* BWC macro to call SelfTest_Cordic_Ext() with the default CORDIC instance.
+*
+* \return
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
+*
+*******************************************************************************/
+#define SelfTest_Cordic(void) SelfTest_Cordic_Ext(MXCORDIC)
 
 /** \} group_cordic_functions */
 

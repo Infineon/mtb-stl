@@ -25,21 +25,21 @@
 var NAVTREE =
 [
   [ "ModusToolbox Safety Test Library", "index.html", [
-    [ "Getting started", "page_getting_started.html", null ],
-    [ "STL API Reference", "modules.html", "modules" ],
+    [ "ModusToolbox™ Safety Test Library (mtb-stl) - IEC 60730 Class B Compliance for Industrial and Home Appliance Safety", "index.html", "index" ],
+    [ "STL API Reference", "topics.html", "topics" ],
     [ "Online Documentation", "usergroup0.html", [
       [ "ModusToolbox™ Software", "^https://github.com/Infineon/modustoolbox-software", null ],
       [ "CMSIS Documentation", "^https://www.keil.com/pack/doc/CMSIS/General/html/index.html", null ]
-    ] ],
-    [ "MISRA-C:2012 Compliance", "page_misra.html", null ],
-    [ "Additional Resources", "page_cypress_resources.html", null ]
+    ] ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"group__group__analog.html"
+"group__group__analog.html",
+"group__group__uart__data__tsf__functions__master.html#ga1f88efc82506e566608dcd39e0523a88"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
+var SYNCONMSG = 'click to disable panel synchronization';
+var SYNCOFFMSG = 'click to enable panel synchronization';
+var LISTOFALLMEMBERS = 'List of all members';

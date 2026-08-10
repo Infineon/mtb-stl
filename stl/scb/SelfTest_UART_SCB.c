@@ -10,7 +10,7 @@
 *  for ModusToolbox
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -145,19 +145,19 @@ static uint8_t SelfTest_UART_SCB_Byte(CySCB_Type* base, uint8_t transmitByte)
 * This function tests a loopback of UART (transmitted byte must be equal to received).
 *
 * This function should be called repeatedly while it returns the
-* PASS_STILL_TESTING_STATUS status. The test is complete when
-* PASS_COMPLETE_STATUS or any error status is returned.
+* \ref PASS_STILL_TESTING_STATUS status. The test is complete when
+* \ref PASS_COMPLETE_STATUS or any error status is returned.
 *
 * \param base
 * The pointer to SCB hardware to configure.
 *
 * \return
-*  - ERROR_STATUS - Test failed
-*  - PASS_STILL_TESTING_STATUS - Still testing
-*  - PASS_COMPLETE_STATUS - Test completed OK
-*  - ERROR_TX_NOT_EMPTY - Error, TX buffer is not empty
-*  - ERROR_RX_NOT_EMPTY - Error, RX buffer is not empty
-*  - ERROR_UART_NOT_ENABLE - Error, UART block is not enabled
+*  - \ref ERROR_STATUS - Test failed
+*  - \ref PASS_STILL_TESTING_STATUS - Still testing
+*  - \ref PASS_COMPLETE_STATUS - Test completed OK
+*  - \ref ERROR_TX_NOT_EMPTY - Error, TX buffer is not empty
+*  - \ref ERROR_RX_NOT_EMPTY - Error, RX buffer is not empty
+*  - \ref ERROR_UART_NOT_ENABLE - Error, UART block is not enabled
 *
 * \note
 *  During a call, the function transmits and receives bytes from 0x00 to 0xFF.
@@ -226,7 +226,6 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base)
 
                 /* Transmit bytes from 0x00 to 0xFF */
                 ret = SelfTest_UART_SCB_Byte(base, byteToTest);
-                byteToTest++;
 
                 /* Enabled RX and TX interrupts after the test */
                 Cy_SCB_SetRxInterruptMask(base, rxUartInterruptMask);
@@ -236,10 +235,11 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base)
                 if (ret == OK_STATUS)
                 {
                     /* If the test was performed with all values from 0x00 to 0xFF */
-                    if (byteToTest == 0x00u)
+                    if (byteToTest == UART_TEST_RANGE)
                     {
                         /* Return the status that the test is fully completed */
                         ret = PASS_COMPLETE_STATUS;
+                        byteToTest = 0U;
                     }
                     /* If not */
                     else
@@ -247,7 +247,13 @@ uint8_t SelfTest_UART_SCB(CySCB_Type* base)
                         /* Return the status that an error was not detected but the test is not fully
                            completed. */
                         ret = PASS_STILL_TESTING_STATUS;
+                        byteToTest++;
                     }
+                }
+                else
+                {
+                    ret = ERROR_STATUS;
+                    byteToTest = 0U;
                 }
             }
         }

@@ -5,7 +5,7 @@
 *  This file provides the source code for DMAC self test.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -38,9 +38,9 @@
 
 #if (defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M7CPUSS_DMAC))
 #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
-CY_SECTION_SHAREDMEM static uint32_t dmac_data_src_0[16] =
+CY_SECTION_SHAREDMEM static uint32_t stlDmac_dataSrc0[16] =
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-CY_SECTION_SHAREDMEM static uint8_t dmac_data_src_1[66] =
+CY_SECTION_SHAREDMEM static uint8_t stlDmac_dataSrc1[66] =
 {
     0x00, 0x00, 0xff,
     0x00, 0x00, 0xff,
@@ -66,9 +66,9 @@ CY_SECTION_SHAREDMEM static uint8_t dmac_data_src_1[66] =
     0x00, 0x00, 0xff
 };
 
-CY_SECTION_SHAREDMEM static uint32_t dmac_data_dst_0[16] =
+CY_SECTION_SHAREDMEM static uint32_t stlDmac_dataDst0[16] =
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-CY_SECTION_SHAREDMEM static uint8_t dmac_data_dst_1[66] =
+CY_SECTION_SHAREDMEM static uint8_t stlDmac_dataDst1[66] =
 {
     0x0, 0x0, 0x0,
     0x0, 0x0, 0x0,
@@ -94,8 +94,8 @@ CY_SECTION_SHAREDMEM static uint8_t dmac_data_dst_1[66] =
     0x0, 0x0, 0x0
 };
 #else /* if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE) */
-static const uint32_t dmac_data_src_0[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-static const uint8_t dmac_data_src_1[66] =
+static const uint32_t stlDmac_dataSrc0[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+static const uint8_t stlDmac_dataSrc1[66] =
 {
     0x00, 0x00, 0xff,
     0x00, 0x00, 0xff,
@@ -121,8 +121,8 @@ static const uint8_t dmac_data_src_1[66] =
     0x00, 0x00, 0xff
 };
 
-static uint32_t dmac_data_dst_0[16];
-static uint8_t dmac_data_dst_1[66];
+static uint32_t stlDmac_dataDst0[16];
+static uint8_t stlDmac_dataDst1[66];
 #endif /* if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE) */
 
 
@@ -141,7 +141,7 @@ static uint8_t dmac_data_dst_1[66];
 * 3) Another destination block is filled with 00 00 ff by using an 8-bit DMA transfers from a fixed
 *    address with an increment of 1 and a length of 64. <br>
 * 4) The destination block is verified to contain the correct pattern (shown below with lowest
-*    address first): ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000�
+*    address first): ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000
 *
 *
 * \param base
@@ -171,7 +171,8 @@ static uint8_t dmac_data_dst_1[66];
 * -> Bits 7:0 select the input trigger signal for the trigger multiplexer.
 *
 * \note
-* Applicable only for CAT1A and CAT1C devices.
+* Applicable only for PSOC 61 Programmable Line, PSOC 62 Performance Line, XMC7000 and
+* XMC5000 devices.
 *
 *
 * \return
@@ -189,62 +190,76 @@ uint8_t SelfTest_DMAC(DMAC_Type* base, uint32_t channel, cy_stc_dmac_descriptor_
     uint8_t ret = ERROR_STATUS;
     uint32_t interruptStatus;
     uint32_t guardCnt = 0UL;
+    cy_en_dmac_status_t dmacStatus = CY_DMAC_SUCCESS;
+    cy_en_trigmux_status_t trigStatus = CY_TRIGMUX_SUCCESS;
 
-    (void)memset(dmac_data_dst_0, 0xAA, sizeof(dmac_data_dst_0));
-    (void)memset(dmac_data_dst_1, 0, sizeof(dmac_data_dst_1));
+    (void)memset(stlDmac_dataDst0, 0xAA, sizeof(stlDmac_dataDst0));
+    (void)memset(stlDmac_dataDst1, 0, sizeof(stlDmac_dataDst1));
 
     /* Init Descriptors */
-    (void)Cy_DMAC_Descriptor_Init(descriptor0, des0_config);
-    (void)Cy_DMAC_Descriptor_Init(descriptor1, des1_config);
-
-    /* Set source and dest address */
-    /* Descriptor 0*/
-    Cy_DMAC_Descriptor_SetSrcAddress(descriptor0, dmac_data_src_0);
-    Cy_DMAC_Descriptor_SetDstAddress(descriptor0, dmac_data_dst_0);
-    /* Descriptor 1 */
-    Cy_DMAC_Descriptor_SetSrcAddress(descriptor1, dmac_data_src_1);
-    Cy_DMAC_Descriptor_SetDstAddress(descriptor1, dmac_data_dst_1);
-    Cy_DMAC_Enable(base);
-
-
-    (void)Cy_DMAC_Channel_Init(base, channel, channelConfig);
-    #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
-    SCB_CleanDCache_by_Addr(descriptor0, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
-    SCB_CleanDCache_by_Addr(descriptor1, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
-    #endif
-    Cy_DMAC_Channel_Enable(base, channel);
-
-    (void)Cy_TrigMux_SwTrigger((uint32_t)trigLine, CY_TRIGGER_TWO_CYCLES);
-
-    /* Wait for DMA transfer completion with timeout */
-    do
+    dmacStatus = Cy_DMAC_Descriptor_Init(descriptor0, des0_config);
+    if (CY_DMAC_SUCCESS == dmacStatus)
     {
-        Cy_SysLib_DelayUs(1u);
-        guardCnt++;
-        interruptStatus = Cy_DMAC_Channel_GetInterruptStatus(base, channel);
-    } while ((interruptStatus == 0UL) && (SELFTEST_DMAC_TIMEOUT > guardCnt));
+        dmacStatus = Cy_DMAC_Descriptor_Init(descriptor1, des1_config);
+    }
 
-    #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
-    SCB_InvalidateDCache_by_Addr(descriptor0, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
-    SCB_InvalidateDCache_by_Addr(descriptor1, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
-    #endif
-
-    /* Check for timeout */
-    if (SELFTEST_DMAC_TIMEOUT > guardCnt)
+    if (CY_DMAC_SUCCESS == dmacStatus)
     {
-        int32_t cmpRes;
+        /* Set source and dest address */
+        /* Descriptor 0*/
+        Cy_DMAC_Descriptor_SetSrcAddress(descriptor0, stlDmac_dataSrc0);
+        Cy_DMAC_Descriptor_SetDstAddress(descriptor0, stlDmac_dataDst0);
+        /* Descriptor 1 */
+        Cy_DMAC_Descriptor_SetSrcAddress(descriptor1, stlDmac_dataSrc1);
+        Cy_DMAC_Descriptor_SetDstAddress(descriptor1, stlDmac_dataDst1);
+        Cy_DMAC_Enable(base);
 
-        #if (ERROR_IN_DMAC == 1u)
-        dmac_data_dst_0[0] = 1;
-        #endif /* End (ERROR_IN_DMAC == 1u) */
+        dmacStatus = Cy_DMAC_Channel_Init(base, channel, channelConfig);
+    }
 
-        cmpRes = memcmp(dmac_data_src_0, dmac_data_dst_0, sizeof(dmac_data_dst_0));
-        if (cmpRes == 0)
+    if (CY_DMAC_SUCCESS == dmacStatus)
+    {
+        #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
+        SCB_CleanDCache_by_Addr(descriptor0, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
+        SCB_CleanDCache_by_Addr(descriptor1, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
+        #endif
+        Cy_DMAC_Channel_Enable(base, channel);
+
+        trigStatus = Cy_TrigMux_SwTrigger((uint32_t)trigLine, CY_TRIGGER_TWO_CYCLES);
+    }
+
+    if ((CY_DMAC_SUCCESS == dmacStatus) && (CY_TRIGMUX_SUCCESS == trigStatus))
+    {
+        /* Wait for DMA transfer completion with timeout */
+        do
         {
-            cmpRes = memcmp(dmac_data_src_1, dmac_data_dst_1, sizeof(dmac_data_dst_1));
+            Cy_SysLib_DelayUs(1u);
+            guardCnt++;
+            interruptStatus = Cy_DMAC_Channel_GetInterruptStatus(base, channel);
+        } while ((interruptStatus == 0UL) && (SELFTEST_DMAC_TIMEOUT > guardCnt));
+
+        #if (CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)
+        SCB_InvalidateDCache_by_Addr(descriptor0, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
+        SCB_InvalidateDCache_by_Addr(descriptor1, (int32_t)sizeof(cy_stc_dmac_descriptor_t));
+        #endif
+
+        /* Check for timeout */
+        if (SELFTEST_DMAC_TIMEOUT > guardCnt)
+        {
+            int32_t cmpRes;
+
+            #if (ERROR_IN_DMAC == 1u)
+            stlDmac_dataDst0[0] = 1;
+            #endif /* End (ERROR_IN_DMAC == 1u) */
+
+            cmpRes = memcmp(stlDmac_dataSrc0, stlDmac_dataDst0, sizeof(stlDmac_dataDst0));
             if (cmpRes == 0)
             {
-                ret = OK_STATUS;
+                cmpRes = memcmp(stlDmac_dataSrc1, stlDmac_dataDst1, sizeof(stlDmac_dataDst1));
+                if (cmpRes == 0)
+                {
+                    ret = OK_STATUS;
+                }
             }
         }
     }
@@ -258,9 +273,9 @@ uint8_t SelfTest_DMAC(DMAC_Type* base, uint32_t channel, cy_stc_dmac_descriptor_
 
 #if (defined(CY_IP_M0S8CPUSSV3_DMAC))
 
-static const uint32_t dmac_data_src_0[16U] =
+static const uint32_t stlDmac_dataSrc0[16U] =
     { 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U };
-static const uint8_t dmac_data_src_1[64U]  =
+static const uint8_t stlDmac_dataSrc1[64U]  =
 {
     0x00U, 0x00U, 0xFFU,
     0x00U, 0x00U, 0xFFU,
@@ -288,14 +303,14 @@ static const uint8_t dmac_data_src_1[64U]  =
 
 CY_ALIGN(4) static uint8_t dmac_data_dst[64U];
 
-static const cy_stc_dmac_channel_config_t dmac_channel_config =
+static const cy_stc_dmac_channel_config_t stlDmac_channelConfig =
 {
     .priority   = 3UL,
     .enable     = false,
     .descriptor = CY_DMAC_DESCRIPTOR_PING,
 };
 
-static const cy_stc_dmac_descriptor_config_t dmac_ping_config =
+static const cy_stc_dmac_descriptor_config_t stlDmac_pingConfig =
 {
     .srcAddress       = 0UL,
     .dstAddress       = 0UL,
@@ -313,7 +328,7 @@ static const cy_stc_dmac_descriptor_config_t dmac_ping_config =
     .triggerType      = CY_DMAC_SINGLE_DESCR,
 };
 
-static const cy_stc_dmac_descriptor_config_t dmac_pong_config =
+static const cy_stc_dmac_descriptor_config_t stlDmac_pongConfig =
 {
     .srcAddress       = 0UL,
     .dstAddress       = 0UL,
@@ -347,7 +362,7 @@ static const cy_stc_dmac_descriptor_config_t dmac_pong_config =
 * 3) The same destination block is filled with 00 00 ff by using an 8-bit DMA transfers from a fixed
 *    address with an increment of 1 and a length of 64. <br>
 * 4) The destination block is verified to contain the correct pattern (shown below with lowest
-*    address first): ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000�
+*    address first): ff0000ff0000ff0000ff0000ff0000ff0000ff0000ff0000
 *
 * \param base
 * The pointer to the hardware DMAC block
@@ -360,7 +375,7 @@ static const cy_stc_dmac_descriptor_config_t dmac_pong_config =
 * Refer to device TRM for details on trigLine value selection
 *
 * \note
-* Applicable only for CAT2 devices.
+* Applicable only for PSOC 4 devices.
 *
 * \return
 *  0 - Test passed <br>
@@ -373,50 +388,44 @@ uint8_t SelfTest_DMAC(DMAC_Type* base, uint32_t channel, uint32_t trigLine)
     uint32_t interruptStatus;
     uint32_t dmacIntrMask = 1UL << channel;
     uint32_t guardCnt = 0UL;
+    cy_en_dmac_status_t dmacStatus = CY_DMAC_SUCCESS;
+    cy_en_trigmux_status_t trigStatus = CY_TRIGMUX_SUCCESS;
 
     (void)memset(dmac_data_dst, 0xAA, sizeof(dmac_data_dst));
 
     /* Initialize Descriptors */
-    (void)Cy_DMAC_Descriptor_Init(base, channel, CY_DMAC_DESCRIPTOR_PING, &dmac_ping_config);
-    (void)Cy_DMAC_Descriptor_Init(base, channel, CY_DMAC_DESCRIPTOR_PONG, &dmac_pong_config);
-
-    /* Set source and destination address */
-    /* Descriptor 0 */
-    Cy_DMAC_Descriptor_SetSrcAddress(base, channel, CY_DMAC_DESCRIPTOR_PING, dmac_data_src_0);
-    Cy_DMAC_Descriptor_SetDstAddress(base, channel, CY_DMAC_DESCRIPTOR_PING, dmac_data_dst);
-
-    /* Descriptor 1 */
-    Cy_DMAC_Descriptor_SetSrcAddress(base, channel, CY_DMAC_DESCRIPTOR_PONG, dmac_data_src_1);
-    Cy_DMAC_Descriptor_SetDstAddress(base, channel, CY_DMAC_DESCRIPTOR_PONG, dmac_data_dst);
-
-    (void)Cy_DMAC_Channel_Init(base, channel, &dmac_channel_config);
-
-    Cy_DMAC_Channel_Enable(base, channel);
-    Cy_DMAC_Enable(base);
-    Cy_DMAC_ClearInterrupt(base, dmacIntrMask);
-
-    /* Start first array transfer and check */
-    (void)Cy_TrigMux_SwTrigger(trigLine, 2UL);
-
-    do
+    dmacStatus = Cy_DMAC_Descriptor_Init(base, channel, CY_DMAC_DESCRIPTOR_PING, &stlDmac_pingConfig);
+    if (CY_DMAC_SUCCESS == dmacStatus)
     {
-        Cy_SysLib_DelayUs(1u);
-        guardCnt++;
-        interruptStatus = Cy_DMAC_GetInterruptStatus(base);
-    } while(((interruptStatus & dmacIntrMask) == 0UL) && (SELFTEST_DMAC_TIMEOUT > guardCnt));
-    Cy_DMAC_ClearInterrupt(base, dmacIntrMask);
+        dmacStatus = Cy_DMAC_Descriptor_Init(base, channel, CY_DMAC_DESCRIPTOR_PONG, &stlDmac_pongConfig);
+    }
 
-    #if (ERROR_IN_DMAC == 1U)
-    dmac_data_dst[0]= 1U;
-    #endif
-
-    if ((0 == memcmp((const uint8_t*)dmac_data_src_0, dmac_data_dst,
-                     sizeof(dmac_data_dst))) && (SELFTEST_DMAC_TIMEOUT > guardCnt))
+    if (CY_DMAC_SUCCESS == dmacStatus)
     {
-        /* First array check passed, start second array transfer and check */
-        (void)Cy_TrigMux_SwTrigger(trigLine, 2UL);
-        guardCnt = 0UL;
+        /* Set source and destination address */
+        /* Descriptor 0 */
+        Cy_DMAC_Descriptor_SetSrcAddress(base, channel, CY_DMAC_DESCRIPTOR_PING, stlDmac_dataSrc0);
+        Cy_DMAC_Descriptor_SetDstAddress(base, channel, CY_DMAC_DESCRIPTOR_PING, dmac_data_dst);
 
+        /* Descriptor 1 */
+        Cy_DMAC_Descriptor_SetSrcAddress(base, channel, CY_DMAC_DESCRIPTOR_PONG, stlDmac_dataSrc1);
+        Cy_DMAC_Descriptor_SetDstAddress(base, channel, CY_DMAC_DESCRIPTOR_PONG, dmac_data_dst);
+
+        dmacStatus = Cy_DMAC_Channel_Init(base, channel, &stlDmac_channelConfig);
+    }
+
+    if (CY_DMAC_SUCCESS == dmacStatus)
+    {
+        Cy_DMAC_Channel_Enable(base, channel);
+        Cy_DMAC_Enable(base);
+        Cy_DMAC_ClearInterrupt(base, dmacIntrMask);
+
+        /* Start first array transfer and check */
+        trigStatus = Cy_TrigMux_SwTrigger(trigLine, 2UL);
+    }
+
+    if ((CY_DMAC_SUCCESS == dmacStatus) && (CY_TRIGMUX_SUCCESS == trigStatus))
+    {
         do
         {
             Cy_SysLib_DelayUs(1u);
@@ -425,10 +434,33 @@ uint8_t SelfTest_DMAC(DMAC_Type* base, uint32_t channel, uint32_t trigLine)
         } while(((interruptStatus & dmacIntrMask) == 0UL) && (SELFTEST_DMAC_TIMEOUT > guardCnt));
         Cy_DMAC_ClearInterrupt(base, dmacIntrMask);
 
-        if ((0 == memcmp(dmac_data_src_1, dmac_data_dst,
+        #if (ERROR_IN_DMAC == 1U)
+        dmac_data_dst[0]= 1U;
+        #endif
+
+        if ((0 == memcmp((const uint8_t*)stlDmac_dataSrc0, dmac_data_dst,
                          sizeof(dmac_data_dst))) && (SELFTEST_DMAC_TIMEOUT > guardCnt))
         {
-            ret = OK_STATUS;
+            /* First array check passed, start second array transfer and check */
+            trigStatus = Cy_TrigMux_SwTrigger(trigLine, 2UL);
+            guardCnt = 0UL;
+
+            if (CY_TRIGMUX_SUCCESS == trigStatus)
+            {
+                do
+                {
+                    Cy_SysLib_DelayUs(1u);
+                    guardCnt++;
+                    interruptStatus = Cy_DMAC_GetInterruptStatus(base);
+                } while(((interruptStatus & dmacIntrMask) == 0UL) && (SELFTEST_DMAC_TIMEOUT > guardCnt));
+                Cy_DMAC_ClearInterrupt(base, dmacIntrMask);
+
+                if ((0 == memcmp(stlDmac_dataSrc1, dmac_data_dst,
+                                 sizeof(dmac_data_dst))) && (SELFTEST_DMAC_TIMEOUT > guardCnt))
+                {
+                    ret = OK_STATUS;
+                }
+            }
         }
     }
     return ret;

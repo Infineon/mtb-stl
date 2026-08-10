@@ -5,7 +5,7 @@
 * This file provides constants and parameter values used for FPU register self
 * tests.
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -34,15 +34,15 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_fpu
+ * \defgroup group_fpu FPU (FPU STL module)
  * \{
  *
  * The FPU registers test detects stuck-at faults in the FPU by using the checkerboard test.
  *
  * \section group_fpu_more_information More Information
  *
- * This test ensures that the bits in the registers are not stuck at value '0' or '1'. It is a
- * destructive test that performs the following major tasks:
+ * This test ensures that the bits in the registers are not stuck at value '0' or '1'. The
+ * test performs the following major tasks:
  *
  *      1) The registers are tested by performing a write/read/compare test sequence using a
  *         checkerboard pattern (0x5555 5555, then 0xaaaa aaaaa). These binary sequences are
@@ -65,12 +65,12 @@
 /***************************************
 * Function Prototypes
 ***************************************/
-#if defined(__GNUC__)
+#if defined(__ARMCC_VERSION)
+uint8_t SelfTest_FPU_Regs_ARM(void);
+#elif defined(__GNUC__) && !defined(__clang__)
 uint8_t SelfTest_FPU_Regs_GCC(void);
 #elif defined(__ICCARM__)
 uint8_t SelfTest_FPU_Regs_IAR(void);
-#elif defined(__ARMCC_VERSION)
-uint8_t SelfTest_FPU_Regs_ARM(void);
 #endif /* End (__GNUC__) ||  (__CC_ARM) */
 /** \endcond */
 
@@ -86,11 +86,12 @@ uint8_t SelfTest_FPU_Regs_ARM(void);
 *
 * This function performs the checkerboard test for all FPU registers (S0-S31).
 * \note
-* Applicable only for CAT1A, CAT1B(PSoC C3) and CAT1C devices.
+* Applicable only for PSOC 61 Programmable Line, PSOC 62 Performance Line, PSOC Control C3,
+* XMC7000 and XMC5000 devices.
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_FPU_Registers(void);

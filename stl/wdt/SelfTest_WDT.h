@@ -6,7 +6,7 @@
 *  used for the watchdog timer self tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_wdt
+ * \defgroup group_wdt WDT (WDT STL module)
  * \{
  *
  * This function implements the watchdog functional test. The function starts the WDT and runs an
@@ -66,10 +66,12 @@
 ***************************************/
 
 /** To set the WDT period. <br>
-   For CAT1A, and CAT2, WDT does a reset when this Limit is hit for the 3rd time. <br>
-   For CAT1C, the Upper Limit is set to this value and will do a reset it WDT is not served
-   before Upper Limit. <br>
-   Note : This value differs for CAT1A, CAT1B(PSoC C3), CAT1C, and CAT2 devices. */
+   For PSOC 61 Programmable Line, PSOC 62 Performance Line, and PSOC 4 devices, WDT does a reset
+   when this Limit is hit for the 3rd time. <br>
+   For XMC7000 and XMC5000 devices, the Upper Limit is set to this value and will do a reset
+   if WDT is not served before Upper Limit. <br>
+   Note : This value differs for PSOC 61 Programmable Line, PSOC 62 Performance Line, PSOC
+   Control C3, XMC7000, XMC5000, and PSOC 4 devices. */
 #define WDT_PERIOD                     (900u)
 
 /** Sets the desired number of ignore bits. To make WDT counter (32/16 - IGNORE_BITS) bits up
@@ -77,7 +79,8 @@
 #define IGNORE_BITS                    (3U)
 
 /** WDT guard interval <br>
-   Note : This value differs for CAT1A, CAT1B(PSoC C3), CAT1C, and CAT2 devices. */
+   Note : This value differs for PSOC 61 Programmable Line, PSOC 62 Performance Line, PSOC
+   Control C3, XMC7000, XMC5000, and PSOC 4 devices. */
 #define WDT_DATA_TIME                  (3000u)
 
 /** The waiting time in milliseconds, for the proper start-up of ILO. */
@@ -126,10 +129,16 @@
 * If the PSOC was reset, bit 1 in CyResetStatus must be set to 1. If
 * this bit was set, the function returns the OK status.
 *
+* \note
+* This test reconfigures and enables the WDT and expects the device to reset
+* as part of the pass path. Do not call it during normal runtime unless the
+* system is prepared for that reset and can distinguish the self-test reset
+* from an unexpected watchdog reset.
+*
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_WDT(void);

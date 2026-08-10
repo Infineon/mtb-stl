@@ -6,7 +6,7 @@
 *  tests.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -36,7 +36,7 @@
 *******************************************************************************/
 
 /**
- * \addtogroup group_io
+ * \defgroup group_io GPIO (GPIO STL module)
  * \{
  *
  * Digital I/Os are arranged into ports with up-to-eight pins per port. Some of
@@ -55,6 +55,10 @@
  * input level is zero under normal conditions. If the pin is connected to VCC through a
  * small resistance, the input level is recognized as a logical one.
  *
+ * \section group_io_analog_pin Analog Pins of PPCA
+ * Some I/O pins are multiplexed with analog blocks such as PPCA. Some of those pins can be mapped
+ * to GPIO and tested like other GPIO pins; others cannot. Refer to the device datasheet to verify
+ * pin mapping and testability.
  *
  * \defgroup group_gpio_macros Macros
  * \defgroup group_gpio_functions Functions
@@ -82,11 +86,16 @@
 *  By default, this function uses the "PinToTest" array to determine which pins
 *  to test. To set a custom pin mask, use the SelfTest_IO_SetPinMask() function.
 *
+* \note
+* Include only GPIO pins that can safely be driven with the self-test pull-up
+* and pull-down sequence. Do not include pins that are actively driven by
+* external circuitry, tied directly to a power rail, used for debug or clocks,
+* or required by another active peripheral during the test.
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed (Shorts to VCC) <br>
-*  2 - Test failed (Shorts to GND)
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref SHORT_TO_VCC (1) - Test failed (short to VCC) <br>
+*  \ref SHORT_TO_GND (2) - Test failed (short to GND) <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_IO(void);
@@ -147,8 +156,8 @@ void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr);
 /** \addtogroup group_gpio_macros
  * \{
  */
-/** The number of IO ports. This may differ depending on the device used(CAT1A, CAT1B(PSoC C3), CAT1C,
- *  CAT2). */
+/** The number of IO ports. This may differ depending on the device used (PSOC 61 Programmable Line,
+ *  PSOC 62 Performance Line, PSOC Control C3, XMC7000, XMC5000, or PSOC 4). */
 /* The number of IO ports: PORT0 - PORT12 */
 #define IO_PORTS                        (12u)
 /** \} group_gpio_macros */
@@ -183,10 +192,14 @@ void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr);
 /* The number of IO ports: PORT0 - PORT6 */
 #define IO_PORTS                        (7u)
 
+/** \endcond */
+
 #endif /* if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX) */
 
-#if (defined(CY_DEVICE_SERIES_PSOC_61) || defined(CY_DEVICE_SERIES_PSOC_62) || \
-    defined(CY_DEVICE_SERIES_PSOC_63) || defined(CY_DEVICE_SERIES_PSOC_64))
+/** \cond INTERNAL */
+
+#if (defined(CY_DEVICE_SERIES_PSOC_61) || defined(CY_DEVICE_SERIES_PSOC_62) || defined(CY_DEVICE_SERIES_PSOC_63) || \
+    defined(CY_DEVICE_SERIES_PSOC_64))
 /* The number of IO ports: PORT0 - PORT14 */
 #define IO_PORTS                        (15u)
 #endif
@@ -196,17 +209,21 @@ void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr);
 #define IO_PORTS                        (33u)
 #endif
 
-#if (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) || \
-    defined(CY_DEVICE_SERIES_PSC3P2) || defined(CY_DEVICE_SERIES_PSC3P5))
+#if (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) || defined(CY_DEVICE_SERIES_PSC3P2) || \
+    defined(CY_DEVICE_SERIES_PSC3P5))
 /* The number of IO ports: PORT0 - PORT9 */
 #define IO_PORTS                        (10u)
+#endif
+
+#if defined(CY_DEVICE_SERIES_PSC3M6) || defined(CY_DEVICE_SERIES_PSC3P6)
+/* The number of IO ports: PORT0 - PORT13 */
+#define IO_PORTS                        (14u)
 #endif
 
 #if (defined(CY_DEVICE_SERIES_XMC5100) || defined(CY_DEVICE_SERIES_XMC5200) || defined(CY_DEVICE_SERIES_XMC5300))
 /* The number of IO ports: PORT0 - PORT23 */
 #define IO_PORTS                        (24u)
 #endif
-
 
 /** \endcond */
 
@@ -219,11 +236,11 @@ void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr);
 /** The pins bit mask */
 #define IO_PINS_MASK                    (IO_PINS - 1u)
 
-#if (defined(CY_DEVICE_SERIES_PSOC_61) || defined(CY_DEVICE_SERIES_PSOC_62) || \
-    defined(CY_DEVICE_SERIES_PSOC_63) || defined(CY_DEVICE_SERIES_PSOC_64) || defined (CY_DOXYGEN))
+#if (defined(CY_DEVICE_SERIES_PSOC_61) || defined(CY_DEVICE_SERIES_PSOC_62) || defined(CY_DEVICE_SERIES_PSOC_63) || \
+    defined(CY_DEVICE_SERIES_PSOC_64) || defined (CY_DOXYGEN))
 /** The optimal delay cycle value needed to set up the GPIO Drive mode
- *  in Release configuration. This may differ depending on the device used(CAT1A, CAT1B(PSoC C3),
- *  CAT1C, CAT2).*/
+ *  in Release configuration. This may differ depending on the device used (PSOC 61 Programmable
+ *  Line, PSOC 62 Performance Line, PSOC Control C3, XMC7000, XMC5000, or PSOC 4).*/
 #define DELAY_DRIVE_MODE_SETUP              (10u)
 /** \} group_gpio_macros */
 
@@ -232,20 +249,26 @@ void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr);
 #elif (defined(CY_DEVICE_SERIES_XMC7100) || defined(CY_DEVICE_SERIES_XMC7200))
     #define DELAY_DRIVE_MODE_SETUP          (500u)
 
-#elif (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) || \
-    defined(CY_DEVICE_SERIES_PSC3P2) || defined(CY_DEVICE_SERIES_PSC3P5))
+#elif (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) || defined(CY_DEVICE_SERIES_PSC3P2) || \
+    defined(CY_DEVICE_SERIES_PSC3P5))
     #define DELAY_DRIVE_MODE_SETUP          (500u)
 
 #elif (defined(CY_DEVICE_SERIES_XMC5100) || defined(CY_DEVICE_SERIES_XMC5200) || defined(CY_DEVICE_SERIES_XMC5300))
     #define DELAY_DRIVE_MODE_SETUP          (500u)
 
+#elif defined(CY_DEVICE_SERIES_PSC3M6) || defined(CY_DEVICE_SERIES_PSC3P6)
+    #define DELAY_DRIVE_MODE_SETUP          (500u)
+
+/** \endcond */
+
 #else /* PSOC4 devices */
+/** \cond INTERNAL */
     #define DELAY_DRIVE_MODE_SETUP          (10u)
+/** \endcond */
 #endif /* if (defined(CY_DEVICE_SERIES_PSOC_61) || defined(CY_DEVICE_SERIES_PSOC_62) ||
         *     defined(CY_DEVICE_SERIES_PSOC_63) || defined(CY_DEVICE_SERIES_PSOC_64))
         */
 
-/** \endcond */
 
 /** \} group_io */
 #endif /* SELFTEST_MEMORY_H */

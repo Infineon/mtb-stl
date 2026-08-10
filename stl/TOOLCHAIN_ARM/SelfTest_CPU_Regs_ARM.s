@@ -14,9 +14,8 @@
 ; Hardware Dependency:
 ;  CY8C40XX, CY8C42XX, CY8C42XXM, CY8C42XXL, CY8C40XXS, CY8C41XXS and
 ;  CY8C41XXS Plus Devices
-;
 ;-------------------------------------------------------------------------------
-; (c) (2018-2025), Infineon Technologies AG, or an affiliate of Infineon
+; (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 ; Technologies AG. All rights reserved.
 ; This software, associated documentation and materials ("Software") is
 ; owned by Infineon Technologies AG or one of its affiliates ("Infineon")

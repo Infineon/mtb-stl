@@ -24,7 +24,7 @@
  *  then it is exchanged with the two-byte sequence <ESC><ESC+1>.
  *
  ********************************************************************************
- * (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+ * (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
  * Technologies AG. All rights reserved.
  * This software, associated documentation and materials ("Software") is
  * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -592,6 +592,48 @@ void UartMesSlave_Init(CySCB_Type* uart_base, uint8_t address)
 
 
 /*****************************************************************************
+* Function Name: UartMesSlave_DeInit
+******************************************************************************
+*
+* Summary:
+*  De-initialize the UART slave protocol unit. Disables all interrupts,
+*  flushes the TX/RX FIFOs, disables the UART peripheral, and resets the
+*  internal control status structure.
+*
+* Parameters:
+*  NONE
+*
+* Return:
+*  NONE
+*
+*****************************************************************************/
+void UartMesSlave_DeInit(void)
+{
+    if (UART_Slave_Struct.scb_base != NULL)
+    {
+        /* Disable TX and RX interrupts */
+        Cy_SCB_SetTxInterruptMask(UART_Slave_Struct.scb_base, 0UL);
+        Cy_SCB_SetRxInterruptMask(UART_Slave_Struct.scb_base, 0UL);
+
+        /* Flush FIFOs */
+        Cy_SCB_UART_ClearTxFifo(UART_Slave_Struct.scb_base);
+        Cy_SCB_UART_ClearRxFifo(UART_Slave_Struct.scb_base);
+
+        /* Disable the UART peripheral */
+        Cy_SCB_UART_Disable(UART_Slave_Struct.scb_base, NULL);
+
+        /* Reset internal state */
+        UART_Slave_Struct.gstatus  = UM_IDLE;
+        UART_Slave_Struct.rstatus  = UMS_RECEIVE_START;
+        UART_Slave_Struct.tstatus  = UMS_SEND_COMPLETE;
+        UART_Slave_Struct.rescflg  = 0u;
+        UART_Slave_Struct.tescflg  = 0u;
+        UART_Slave_Struct.scb_base = NULL;
+    }
+}
+
+
+/*****************************************************************************
 * Function Name: UartMesSlave_State
 ******************************************************************************
 *
@@ -661,13 +703,13 @@ uint8_t UartMesSlave_GetDataSize(void)
 *****************************************************************************/
 uint8_t UartMesSlave_Respond(uint8_t* txd, uint8_t tlen)
 {
-    uint8_t ret = 0u;
+    uint8_t ret = UART_SLAVE_RESPOND_STARTED_STATUS;
 
     const uint8_t uart_slave_struct_gstatus = UART_Slave_Struct.gstatus;
     /* Check if it possible to start responding */
     if ((tlen == 0u) || (uart_slave_struct_gstatus == UM_IDLE))
     {
-        ret = 1u;
+        ret = UART_SLAVE_RESPOND_NOT_STARTED_STATUS;
     }
     else
     {

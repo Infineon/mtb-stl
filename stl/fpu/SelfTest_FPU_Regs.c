@@ -5,7 +5,7 @@
 *  This file provides the source code for the FPU register self tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -59,12 +59,12 @@ uint8_t SelfTest_FPU_Registers(void)
 
     /* Enable the global interrupts */
     __disable_irq();
-    #if defined(__GNUC__)
+    #if defined (__ARMCC_VERSION)
+    ret = SelfTest_FPU_Regs_ARM();
+    #elif defined(__GNUC__) && !defined(__clang__)
     ret = SelfTest_FPU_Regs_GCC();
     #elif defined(__ICCARM__)
     ret = SelfTest_FPU_Regs_IAR();
-    #elif defined (__ARMCC_VERSION)
-    ret = SelfTest_FPU_Regs_ARM();
     #else
     ret = ERROR_STATUS;
     #endif

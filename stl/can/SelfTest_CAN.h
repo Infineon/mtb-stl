@@ -6,7 +6,7 @@
 *  for the CAN self tests according to Class B library.
 *
 *******************************************************************************
-* (c) 2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_can
+ * \defgroup group_can CAN (CAN STL module)
  * \{
  *
  * The CAN block is tested using the internal loopback capability.
@@ -46,7 +46,7 @@
  *
  *
  * \note
- * Applicable only to CAT2 devices.
+ * Applicable only to PSOC 4 devices.
  *
  * \defgroup group_can_functions Functions
  */
@@ -77,6 +77,11 @@
 *  The function verifies if the transmitted messages are received correctly and
 *  restores the original configuration.
 *
+* \note
+* Do not call this function while the selected CAN instance is handling
+* application bus traffic. The test temporarily reconfigures the CAN block into
+* the requested loopback mode and transmits test messages.
+*
 *
 * @param base
 * The pointer to a CAN instance. <br>
@@ -88,8 +93,8 @@
 * The test mode to be used for the self-test.
 *
 * @return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_CAN(CAN_Type* base, const cy_stc_can_config_t* config,

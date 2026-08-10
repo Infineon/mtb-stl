@@ -6,7 +6,7 @@
 *  Class B self tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -115,10 +115,10 @@ uint8_t SelfTest_WDT(void)
         #endif /* End !(ERROR_IN_WDT == 1) */
 
 
-        /* Reset the PSoC by WDT */
+        /* Reset the PSOC by WDT */
         /* WDT_DATA_TIME defined in SelfTest_WDT.h */
-        /* During period of next cycle WDT must reset the PSoC */
-        /* If the PSoC was not reset, WDT works incorrect */
+        /* During period of next cycle WDT must reset the PSOC */
+        /* If the PSOC was not reset, WDT works incorrect */
         while ((guardCnt < WDT_DATA_TIME))
         {
             /* Wait for WDT reset */
@@ -126,7 +126,7 @@ uint8_t SelfTest_WDT(void)
             Cy_SysLib_Delay(1u);
         }
 
-        /* If the PSoC was not reset, WDT works incorrect */
+        /* If the PSOC was not reset, WDT works incorrect */
         /* Return ERROR status  */
         ret = ERROR_STATUS;
     }
@@ -190,7 +190,7 @@ uint8_t SelfTest_WDT(void)
             Cy_SysLib_Delay(500u);
         }
 
-        /* If the PSoC was not reset, WDT works incorrect */
+        /* If the PSOC was not reset, WDT works incorrect */
         /* Return ERROR status  */
         ret = ERROR_STATUS;
     }

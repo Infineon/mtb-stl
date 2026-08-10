@@ -6,7 +6,7 @@
 * tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -46,7 +46,7 @@
 ***************************************/
 #if defined(__ARMCC_VERSION)
 uint8_t SelfTest_CPU_Regs_ARM(void);
-#elif defined(__GNUC__)
+#elif defined(__GNUC__) && !defined(__clang__)
 uint8_t SelfTest_CPU_Regs_GCC(void);
 #elif defined(__ICCARM__)
 uint8_t SelfTest_CPU_Regs_IAR(void);

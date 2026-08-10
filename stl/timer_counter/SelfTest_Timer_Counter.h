@@ -6,7 +6,7 @@
 *  for the clock self tests according to Class B library.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_timer_counter
+ * \defgroup group_timer_counter Timer/Counter (Timer/Counter STL module)
  * \{
  *
  * This test uses the timer function to ensure that the counter is
@@ -55,7 +55,7 @@
 
 #if !defined(SELFTEST_TIMER_COUNTER_H)
     #define SELFTEST_TIMER_COUNTER_H
-#include "cybsp.h"
+
 #include "SelfTest_common.h"
 
 #if (defined(CY_IP_MXTCPWM) || defined(CY_IP_M0S8TCPWM) || defined(CY_DOXYGEN))
@@ -84,6 +84,10 @@
 * \param intsrc
 * Interrupt source
 *
+* \note
+* Use a TCPWM counter and interrupt source dedicated to this self-test. This
+* function initializes the selected counter, installs the timer-counter ISR,
+* enables the interrupt, and sets the counter interrupt mask.
 *
 ******************************************************************************/
 void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum,
@@ -95,10 +99,13 @@ void SelfTest_Timer_Counter_init(TCPWM_Type* base, uint32_t cntNum,
 *
 *  Performs Timer Counter test by checking that the counter is incrementing.
 *
+* \note
+* Call \ref SelfTest_Timer_Counter_init before this function. The test programs
+* the selected counter period, compare value, and counter value during the check.
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *
 *****************************************************************************/

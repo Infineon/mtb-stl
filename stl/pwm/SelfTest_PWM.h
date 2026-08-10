@@ -6,7 +6,7 @@
 *  self tests.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_pwm
+ * \defgroup group_pwm PWM (PWM STL module)
  * \{
  *
  * This module performs PWM test and verifies that the duty cycle set is actually
@@ -58,6 +58,11 @@
 #include "SelfTest_common.h"
 
 #if (defined(CY_IP_MXTCPWM) || defined(CY_IP_M0S8TCPWM) || CY_DOXYGEN)
+
+#if !defined(STL_PWM_SOURCE_HFCLOCK) && defined(CY_IP_MXS40SSRSS)
+/** High frequency clock that serves as the source for the PWM counter */
+#define STL_PWM_SOURCE_HFCLOCK (3u)
+#endif /* !defined(STL_PWM_SOURCE_HFCLOCK) && defined(CY_IP_MXS40SSRSS) */
 
 /** \addtogroup group_pwm_macros
  * \{
@@ -91,11 +96,13 @@
 *
 *
 * \note
-* The pin parameters passed for CAT1C and XMC5000 devices will be ignored.
+* The pin parameters passed for XMC7000, XMC5000, and PSOC Control C3 devices will be ignored.
+* Use a PWM/TCPWM instance dedicated to the self-test while the test is running;
+* the measurement depends on the interrupt configured by \ref SelfTest_PWM_init.
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_PWM(GPIO_PRT_Type* pinbase, uint32_t pinNum);
@@ -118,12 +125,29 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type* pinbase, uint32_t pinNum);
 * \param intr_src
 * Interrupt source
 *
+* \note
+* This function initializes the selected PWM counter, installs the self-test ISR,
+* enables the interrupt, and starts the counter. Do not share the selected PWM
+* counter or interrupt source with application PWM control during the test.
+*
 * \return
-*  0 - Initialization successful <br>
-*  -1 (255) - Initialization failed
+*  \ref OK_STATUS (0) - Initialization successful <br>
+*  \ref PWM_INIT_ERROR_STATUS (255) - Initialization failed
 ******************************************************************************/
 uint8_t SelfTest_PWM_init(TCPWM_Type* base, uint32_t cntNum,
                           cy_stc_tcpwm_pwm_config_t const* config, IRQn_Type  intr_src);
+
+/******************************************************************************
+* Function Name: SelfTest_PWM_DeInit
+***************************************************************************//**
+*
+* De-initialize the PWM self test, disabling the peripheral and its interrupt.
+*
+* \param intr_src
+* Interrupt source passed to SelfTest_PWM_init.
+*
+******************************************************************************/
+void SelfTest_PWM_DeInit(IRQn_Type intr_src);
 
 /** \} group_pwm_functions */
 

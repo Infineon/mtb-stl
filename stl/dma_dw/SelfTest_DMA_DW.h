@@ -6,7 +6,7 @@
 * tests.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_dma
+ * \defgroup group_dma DMA (DMA STL module)
  * \{
  *
  * The DMA test performs test on DMA block using DW transfers.
@@ -117,12 +117,16 @@
 *
 *
 * \note
-* Applicable only for CAT1A, CAT1B(PSoC C3) and CAT1C devices.
+* Applicable only for PSOC 61 Programmable Line, PSOC 62 Performance Line, PSOC Control C3,
+* XMC7000 and XMC5000 devices.
+* Use a DMA channel, descriptors, and trigger line dedicated to this self-test.
+* The function initializes the descriptors and channel, sets the descriptor
+* source/destination addresses, and enables the selected DMA channel.
 *
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 

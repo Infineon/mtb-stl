@@ -6,7 +6,7 @@
 *  CAN testing according to the Class B library.
 *
 *******************************************************************************
-* (c) 2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -52,11 +52,11 @@
 /*******************************************************************************
 * Global Variables
 *******************************************************************************/
-static uint8_t canDataReceivedCounter = 0U;
-static bool canRxIsrFlag = false;
+static uint8_t stlCan_dataReceivedCounter = 0U;
+static bool stlCan_rxIsrFlag = false;
 
 
-static cy_stc_can_message_frame_t canFrameData =
+static cy_stc_can_message_frame_t stlCan_frameData =
 {
     .id     = SELFTEST_CAN_ID_IN_RANGE,
     .data   =
@@ -69,7 +69,7 @@ static cy_stc_can_message_frame_t canFrameData =
     .ide    = false
 };
 
-static const cy_stc_can_rx_buffer_config_t rxbConfig =
+static const cy_stc_can_rx_buffer_config_t stlCan_rxbConfig =
 {
     .acceptanceMask   =
     {
@@ -111,11 +111,11 @@ static void SelfTest_CAN_RxMsgCallback(uint8_t index, cy_stc_can_message_frame_t
     /* Check if the received message ID is in the range */
     if ((SELFTEST_CAN_ID_LOW <= rxMsg->id) && (SELFTEST_CAN_ID_HIGH >= rxMsg->id))
     {
-        canRxIsrFlag = true;
+        stlCan_rxIsrFlag = true;
 
         for (uint32_t i = 0UL; i < SELFTEST_CAN_DATA_LEN_U32; i++)
         {
-            if (canFrameData.data[i] != rxMsg->data[i])
+            if (stlCan_frameData.data[i] != rxMsg->data[i])
             {
                 /* Data mismatch */
                 dataError = true;
@@ -129,14 +129,14 @@ static void SelfTest_CAN_RxMsgCallback(uint8_t index, cy_stc_can_message_frame_t
 
         if (!dataError)
         {
-            canDataReceivedCounter++;
+            stlCan_dataReceivedCounter++;
         }
     }
 
     /* Set ISR flag for the received message with ID out of the range. */
     if (SELFTEST_CAN_ID_OUT_OF_RANGE == rxMsg->id)
     {
-        canRxIsrFlag = true;
+        stlCan_rxIsrFlag = true;
     }
 }
 
@@ -154,9 +154,10 @@ static void SelfTest_CAN_RxMsgCallback(uint8_t index, cy_stc_can_message_frame_t
 * The starting index of the RX message buffers to disable.
 *
 *******************************************************************************/
-static void SelfTest_CAN_SetDisabledRxBufferConfig(CAN_Type* base, uint8_t startIndex)
+static cy_en_can_status_t SelfTest_CAN_SetDisabledRxBufferConfig(CAN_Type* base, uint8_t startIndex)
 {
     uint8_t index = startIndex;
+    cy_en_can_status_t canStatus = CY_CAN_SUCCESS;
 
     cy_stc_can_rx_buffer_config_t disabledRxBufferConfig =
     {
@@ -165,8 +166,14 @@ static void SelfTest_CAN_SetDisabledRxBufferConfig(CAN_Type* base, uint8_t start
 
     for (; index < CY_CAN_MESSAGE_RX_BUFFERS_MAX_CNT; index++)
     {
-        (void)Cy_CAN_UpdateRxBufferConfig(base, index, &disabledRxBufferConfig, NULL);
+        canStatus = Cy_CAN_UpdateRxBufferConfig(base, index, &disabledRxBufferConfig, NULL);
+        if (CY_CAN_SUCCESS != canStatus)
+        {
+            break;
+        }
     }
+
+    return canStatus;
 }
 
 
@@ -214,33 +221,39 @@ uint8_t SelfTest_CAN(CAN_Type* base, const cy_stc_can_config_t* config,
     /* Save the current CAN settings and reconfigure them to perform selftest. */
     if (CY_CAN_SUCCESS == canStatus)
     {
+        canCfgChanged = true;
         Cy_CAN_SetTestMode(base, testMode);
 
         rxCallFxnBkp = context->canRxInterruptFunction;
         context->canRxInterruptFunction = (cy_can_rx_msg_func_ptr_t)SelfTest_CAN_RxMsgCallback;
 
         /* Update filter settings */
-        (void)Cy_CAN_UpdateRxBufferConfig(base, 0U, &rxbConfig, NULL);
-        SelfTest_CAN_SetDisabledRxBufferConfig(base, 1U);
+        canStatus = Cy_CAN_UpdateRxBufferConfig(base, 0U, &stlCan_rxbConfig, NULL);
+    }
 
-        canCfgChanged = true;
+    if (CY_CAN_SUCCESS == canStatus)
+    {
+        canStatus = SelfTest_CAN_SetDisabledRxBufferConfig(base, 1U);
+    }
 
+    if (CY_CAN_SUCCESS == canStatus)
+    {
         canStatus = Cy_CAN_Start(base);
     }
 
     /* Send the first data packet with ID outsige the range. */
     if (CY_CAN_SUCCESS == canStatus)
     {
-        canDataReceivedCounter = 0U;
-        canFrameData.id = SELFTEST_CAN_ID_OUT_OF_RANGE;
-        canRxIsrFlag = false;
-        canStatus = Cy_CAN_Transmit(base, 0u, &canFrameData, true, false, context);
+        stlCan_dataReceivedCounter = 0U;
+        stlCan_frameData.id = SELFTEST_CAN_ID_OUT_OF_RANGE;
+        stlCan_rxIsrFlag = false;
+        canStatus = Cy_CAN_Transmit(base, 0u, &stlCan_frameData, true, false, context);
     }
 
     /* Wait for and check the first data-packet reception. */
     if (CY_CAN_SUCCESS == canStatus)
     {
-        while ((false == canRxIsrFlag) && (timeoutCntr < SELFTEST_CAN_RX_TIMEOUT_MS))
+        while ((false == stlCan_rxIsrFlag) && (timeoutCntr < SELFTEST_CAN_RX_TIMEOUT_MS))
         {
             Cy_SysLib_Delay(1u);
             timeoutCntr++;
@@ -251,7 +264,7 @@ uint8_t SelfTest_CAN(CAN_Type* base, const cy_stc_can_config_t* config,
             canStatus = CY_CAN_ERROR_TIMEOUT;
         }
 
-        if (0U == canDataReceivedCounter)
+        if (0U == stlCan_dataReceivedCounter)
         {
             passCnt++;
         }
@@ -260,15 +273,15 @@ uint8_t SelfTest_CAN(CAN_Type* base, const cy_stc_can_config_t* config,
     /* Send the second data packet with ID in the range. */
     if (CY_CAN_SUCCESS == canStatus)
     {
-        canFrameData.id = SELFTEST_CAN_ID_IN_RANGE;
-        canRxIsrFlag = false;
-        canStatus = Cy_CAN_Transmit(base, 0u, &canFrameData, true, false, context);
+        stlCan_frameData.id = SELFTEST_CAN_ID_IN_RANGE;
+        stlCan_rxIsrFlag = false;
+        canStatus = Cy_CAN_Transmit(base, 0u, &stlCan_frameData, true, false, context);
     }
 
     /* Wait for and check the second data packet reception. */
     if (CY_CAN_SUCCESS == canStatus)
     {
-        while ((false == canRxIsrFlag) && (timeoutCntr < SELFTEST_CAN_RX_TIMEOUT_MS))
+        while ((false == stlCan_rxIsrFlag) && (timeoutCntr < SELFTEST_CAN_RX_TIMEOUT_MS))
         {
             Cy_SysLib_Delay(1u);
             timeoutCntr++;
@@ -279,7 +292,7 @@ uint8_t SelfTest_CAN(CAN_Type* base, const cy_stc_can_config_t* config,
             canStatus = CY_CAN_ERROR_TIMEOUT;
         }
 
-        if (1U == canDataReceivedCounter)
+        if (1U == stlCan_dataReceivedCounter)
         {
             passCnt++;
         }
@@ -294,12 +307,22 @@ uint8_t SelfTest_CAN(CAN_Type* base, const cy_stc_can_config_t* config,
 
             for (index = 0u; index < config->numOfRxBuffers; index++)
             {
-                (void)Cy_CAN_UpdateRxBufferConfig(base, 0U, &(config->rxBuffer[index]), NULL);
+                canStatus = Cy_CAN_UpdateRxBufferConfig(base, 0U, &(config->rxBuffer[index]), NULL);
+                if (CY_CAN_SUCCESS != canStatus)
+                {
+                    break;
+                }
             }
 
-            SelfTest_CAN_SetDisabledRxBufferConfig(base, index);
+            if (CY_CAN_SUCCESS == canStatus)
+            {
+                canStatus = SelfTest_CAN_SetDisabledRxBufferConfig(base, index);
+            }
 
-            canStatus = Cy_CAN_Start(base);
+            if (CY_CAN_SUCCESS == canStatus)
+            {
+                canStatus = Cy_CAN_Start(base);
+            }
         }
     }
 

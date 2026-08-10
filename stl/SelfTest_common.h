@@ -5,7 +5,7 @@
  * This file combines all return status codes of mtb-stl middleware.
  *
  *******************************************************************************
- * (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+ * (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
  * Technologies AG. All rights reserved.
  * This software, associated documentation and materials ("Software") is
  * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -60,7 +60,8 @@
 #endif
 
 #if (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) || \
-    defined(CY_DEVICE_SERIES_PSC3P2) || defined(CY_DEVICE_SERIES_PSC3P5))
+    defined(CY_DEVICE_SERIES_PSC3P2) || defined(CY_DEVICE_SERIES_PSC3P5) || \
+    defined(CY_DEVICE_SERIES_PSC3M6) || defined(CY_DEVICE_SERIES_PSC3P6))
 #define SELFTEST_PSC3_FAMILY 1
 #endif
 
@@ -69,41 +70,96 @@
 #endif
 /** \endcond */
 
-/* Common return status codes */
+/**
+ * \defgroup group_stl_status STL return status codes
+ * \{
+ *
+ * Return status codes used by the mtb-stl self-test APIs.
+ *
+ * Only \ref OK_STATUS and \ref ERROR_STATUS are global to the whole library.
+ * Every other code is <b>module-scoped</b>:
+ * several codes deliberately reuse the same numeric value because they
+ * belong to different self-tests and are never returned by the same API. For
+ * example, \ref SHORT_TO_VCC and \ref ERROR_STACK_OVERFLOW are both 1, and
+ * \ref SHORT_TO_GND, \ref ERROR_STACK_UNDERFLOW, \ref CRC_SAVED_STATUS and
+ * \ref PASS_STILL_TESTING_STATUS are all 2. Always compare a returned value
+ * only against the constants documented for the specific API that produced it;
+ * never compare status codes across modules.
+ */
+
+/** Test passed / operation completed successfully. Returned by every self-test. */
 #define OK_STATUS                       (0u)
+/** Test failed or a generic error occurred. Returned by every self-test. */
 #define ERROR_STATUS                    (1u)
 
-/* UART Self-Test return status codes */
+/** PWM init: initialization failed before the self-test could run. */
+#define PWM_INIT_ERROR_STATUS           (255u)
+
+/** UART slave respond: background response started successfully.
+ *  Module-scoped: aliases \ref OK_STATUS for the UART slave respond API. */
+#define UART_SLAVE_RESPOND_STARTED_STATUS      (0u)
+/** UART slave respond: response was not started because the unit is idle or input is invalid.
+ *  Module-scoped: shares the value 1 with \ref ERROR_STATUS and other module-specific failures. */
+#define UART_SLAVE_RESPOND_NOT_STARTED_STATUS  (1u)
+
+/** UART master transfer: background message process started successfully.
+ *  Module-scoped: aliases \ref OK_STATUS for the UART master transfer API. */
+#define UART_MASTER_MESSAGE_STARTED_STATUS      (0u)
+/** UART master transfer: message process did not start because the unit is busy or input is invalid.
+ *  Module-scoped: shares the value 1 with \ref ERROR_STATUS and other module-specific failures. */
+#define UART_MASTER_MESSAGE_NOT_STARTED_STATUS  (1u)
+
+/** UART self-test: the UART block is not enabled. */
 #define ERROR_UART_NOT_ENABLE           (6u)
+/** UART self-test: an unexpected or unclassified error occurred. */
 #define UNKNOWN_ERROR                   (8u)
 
-/* UART and SPI Self-Test common return status codes */
+/** UART/SPI self-test: the transmit buffer did not drain as expected. */
 #define ERROR_TX_NOT_EMPTY              (4u)
+/** UART/SPI self-test: the receive buffer was not empty as expected. */
 #define ERROR_RX_NOT_EMPTY              (5u)
 
-
-/* STACK OVERFLOW and UNDERFLOW */
+/** Stack range bitmask flag: bottom guard corrupted (stack overflow).
+ *  Module-scoped: shares the value 1 with \ref SHORT_TO_VCC. */
 #define ERROR_STACK_OVERFLOW              (1u)
+/** Stack range bitmask flag: top guard corrupted (stack underflow).
+ *  Module-scoped: shares the value 2 with \ref SHORT_TO_GND, \ref CRC_SAVED_STATUS
+ *  and \ref PASS_STILL_TESTING_STATUS. */
 #define ERROR_STACK_UNDERFLOW             (2u)
 
-/* I2C Self-Test return status codes */
+/** I2C self-test: the I2C master is busy. */
 #define I2C_MASTER_BUSY_STATUS          (4u)
 
-/* Digital I/O Self-Test return status codes */
+/** Digital I/O self-test: the tested pin is shorted to VCC.
+ *  Module-scoped: shares the value 1 with \ref ERROR_STACK_OVERFLOW. */
 #define SHORT_TO_VCC                    (1u)
+/** Digital I/O self-test: the tested pin is shorted to ground.
+ *  Module-scoped: shares the value 2 with \ref ERROR_STACK_UNDERFLOW,
+ *  \ref CRC_SAVED_STATUS and \ref PASS_STILL_TESTING_STATUS.
+ */
 #define SHORT_TO_GND                    (2u)
 
-/* Clock Self-Test return status */
+/** Clock self-test: the API was called in an incorrect sequence or state. */
 #define ERROR_INCORRECT_USAGE_STATUS    (4u)
 
-/* Startup Configuration Registers Self-Test return status */
-/* If this status flag is true then CRC already saved */
+/** A bad input parameter was passed to a self-test API. */
+#define ERROR_BAD_PARAM                 (9u)
+
+/** Startup Configuration Registers self-test (CRC mode): the CRC baseline was
+ *  just stored on the first run.
+ *  Module-scoped: shares the value 2 with \ref ERROR_STACK_UNDERFLOW,
+ *  \ref SHORT_TO_GND and \ref PASS_STILL_TESTING_STATUS. */
 #define CRC_SAVED_STATUS                (2u)
 
-/* Additional return status codes for Flash, Clock, Configuration Registers,
-   I2C, UART, SPI */
+/** Multi-call self-test (Flash, Clock, Configuration Registers, I2C, UART, SPI):
+ *  the test is still running and has not yet produced a final result.
+ *  Module-scoped: shares the value 2 with \ref ERROR_STACK_UNDERFLOW,
+ *  \ref SHORT_TO_GND and \ref CRC_SAVED_STATUS. */
 #define PASS_STILL_TESTING_STATUS       (2u)
+/** Multi-call self-test: the test completed and the final result is available. */
 #define PASS_COMPLETE_STATUS            (3u)
+
+/** \} group_stl_status */
 
 #endif /* SELFTEST_COMMON_H */
 

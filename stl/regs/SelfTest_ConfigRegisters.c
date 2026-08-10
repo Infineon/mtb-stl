@@ -6,7 +6,7 @@
 *  tests.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -45,7 +45,7 @@
 
 #if defined(CY_DEVICE_SERIES_PSOC_4100S_MAX)
 /* The table of register 32Bit registers to test. */
-static volatile uint32_t* regs32_ToTest[] =
+static volatile uint32_t* stlRegs_regs32ToTest[] =
 {
     /* Clock registers */
     &(SRSSLT->CLK_IMO_SELECT),
@@ -114,7 +114,7 @@ static volatile uint32_t* regs32_ToTest[] =
 /* The table of register 32Bit registers to test */
 #if (defined(CY_DEVICE_SERIES_PSOC_4100S_PLUS)) || \
     (defined(CY_DEVICE_SERIES_PSOC_4500S))
-static volatile uint32_t* regs32_ToTest[] =
+static volatile uint32_t* stlRegs_regs32ToTest[] =
 {
     /* Clock registers */
     &(SRSSLT->CLK_IMO_SELECT),
@@ -165,7 +165,7 @@ static volatile uint32_t* regs32_ToTest[] =
 #endif /* 4500S & 4100S Plus */
 
 #if defined(CY_DEVICE_SERIES_PSOC_4100S)
-static volatile uint32_t* regs32_ToTest[] =
+static volatile uint32_t* stlRegs_regs32ToTest[] =
 {
     /* Clock registers */
     &(SRSSLT->CLK_IMO_SELECT),
@@ -207,7 +207,7 @@ static volatile uint32_t* regs32_ToTest[] =
 #endif /* 4100S */
 
 #if defined(CY_DEVICE_SERIES_PSOC_4100T_PLUS)
-static volatile uint32_t* regs32_ToTest[] =
+static volatile uint32_t* stlRegs_regs32ToTest[] =
 {
     /* Clock registers */
     &(SRSSLT->CLK_IMO_SELECT),
@@ -253,7 +253,7 @@ static volatile uint32_t* regs32_ToTest[] =
 #endif /* 4100T Plus */
 
 #if defined(CY_DEVICE_SERIES_PSOC_4000T)
-static volatile uint32_t* regs32_ToTest[] =
+static volatile uint32_t* stlRegs_regs32ToTest[] =
 {
     /* Clock registers */
     &(SRSSLT->CLK_IMO_SELECT),
@@ -290,7 +290,7 @@ static volatile uint32_t* regs32_ToTest[] =
 
 #if defined(CY_DEVICE_SERIES_PSOC_4000S) || \
     defined(CY_DEVICE_SERIES_PSOC_4700S)
-static volatile uint32_t* regs32_ToTest[] =
+static volatile uint32_t* stlRegs_regs32ToTest[] =
 {
     /* Clock registers */
     &(SRSSLT->CLK_IMO_SELECT),
@@ -328,7 +328,7 @@ static volatile uint32_t* regs32_ToTest[] =
 
 #elif defined(SELFTEST_PSOC6_FAMILY) || defined(SELFTEST_XMC7X_FAMILY)
 
-static volatile uint32_t* regs32_ToTest[] =
+static volatile uint32_t* stlRegs_regs32ToTest[] =
 {
     #if defined(SELFTEST_PSOC6_FAMILY)
     /* Analog routing regs */
@@ -453,7 +453,101 @@ static volatile uint32_t* regs32_ToTest[] =
 };
 
 #elif defined(SELFTEST_PSC3_FAMILY)
-static volatile uint32_t* regs32_ToTest[] =
+
+#if defined(CY_DEVICE_SERIES_PSC3M6) || defined(CY_DEVICE_SERIES_PSC3P6)
+static volatile uint32_t* stlRegs_regs32ToTest[] =
+{
+    /* SRSS_CLK_PATH_SELECT (SRSS_NUM_CLKPATH = 7) */
+    &(SRSS->CLK_PATH_SELECT[0]),
+    &(SRSS->CLK_PATH_SELECT[1]),
+    &(SRSS->CLK_PATH_SELECT[2]),
+    &(SRSS->CLK_PATH_SELECT[3]),
+    &(SRSS->CLK_PATH_SELECT[4]),
+    &(SRSS->CLK_PATH_SELECT[5]),
+    &(SRSS->CLK_PATH_SELECT[6]),
+    /* SRSS_CLK_ROOT_SELECT (SRSS_NUM_HFROOT = 7) */
+    &(SRSS->CLK_ROOT_SELECT[0]),
+    &(SRSS->CLK_ROOT_SELECT[1]),
+    &(SRSS->CLK_ROOT_SELECT[2]),
+    &(SRSS->CLK_ROOT_SELECT[3]),
+    &(SRSS->CLK_ROOT_SELECT[4]),
+    &(SRSS->CLK_ROOT_SELECT[5]),
+    &(SRSS->CLK_ROOT_SELECT[6]),
+    /* SRSS_CLK_DIRECT_SELECT (SRSS_NUM_HFROOT = 7) */
+    &(SRSS->CLK_DIRECT_SELECT[0]),
+    &(SRSS->CLK_DIRECT_SELECT[1]),
+    &(SRSS->CLK_DIRECT_SELECT[2]),
+    &(SRSS->CLK_DIRECT_SELECT[3]),
+    &(SRSS->CLK_DIRECT_SELECT[4]),
+    &(SRSS->CLK_DIRECT_SELECT[5]),
+    &(SRSS->CLK_DIRECT_SELECT[6]),
+    &(SRSS->CLK_SELECT),
+    &(SRSS->CLK_OUTPUT_SLOW),
+    &(SRSS->CLK_OUTPUT_FAST),
+    &(SRSS->CLK_ECO_CONFIG),
+    &(SRSS->CLK_PILO_CONFIG),
+    &(SRSS->CLK_ILO0_CONFIG),
+    &(SRSS->CLK_ILO1_CONFIG),
+    &(SRSS->CLK_ILO_CONFIG),
+    &(SRSS->CLK_FLL_CONFIG),
+    &(SRSS->CLK_FLL_CONFIG2),
+    &(SRSS->CLK_FLL_CONFIG3),
+    /* DPLL LP bank 0 (SRSS_NUM_DPLL250 = 1) */
+    &(SRSS->CLK_DPLL_LP[0].CONFIG),
+    &(SRSS->CLK_DPLL_LP[0].CONFIG2),
+    &(SRSS->CLK_DPLL_LP[0].CONFIG3),
+    &(SRSS->CLK_DPLL_LP[0].CONFIG4),
+    &(SRSS->CLK_DPLL_LP[0].CONFIG5),
+
+    /* HSIOM registers (IOSS_GPIO_GPIO_PORT_NR = 14) */
+    &(HSIOM_PRT0->PORT_SEL0),
+    &(HSIOM_PRT0->PORT_SEL1),
+    &(HSIOM_PRT1->PORT_SEL0),
+    &(HSIOM_PRT1->PORT_SEL1),
+    &(HSIOM_PRT2->PORT_SEL0),
+    &(HSIOM_PRT2->PORT_SEL1),
+    &(HSIOM_PRT3->PORT_SEL0),
+    &(HSIOM_PRT3->PORT_SEL1),
+    &(HSIOM_PRT4->PORT_SEL0),
+    &(HSIOM_PRT4->PORT_SEL1),
+    &(HSIOM_PRT5->PORT_SEL0),
+    &(HSIOM_PRT5->PORT_SEL1),
+    &(HSIOM_PRT6->PORT_SEL0),
+    &(HSIOM_PRT6->PORT_SEL1),
+    &(HSIOM_PRT7->PORT_SEL0),
+    &(HSIOM_PRT7->PORT_SEL1),
+    &(HSIOM_PRT8->PORT_SEL0),
+    &(HSIOM_PRT8->PORT_SEL1),
+    &(HSIOM_PRT9->PORT_SEL0),
+    &(HSIOM_PRT9->PORT_SEL1),
+    &(HSIOM_PRT10->PORT_SEL0),
+    &(HSIOM_PRT10->PORT_SEL1),
+    &(HSIOM_PRT11->PORT_SEL0),
+    &(HSIOM_PRT11->PORT_SEL1),
+    &(HSIOM_PRT12->PORT_SEL0),
+    &(HSIOM_PRT12->PORT_SEL1),
+    &(HSIOM_PRT13->PORT_SEL0),
+    &(HSIOM_PRT13->PORT_SEL1),
+
+    /* IO Pin registers (IOSS_GPIO_GPIO_PORT_NR = 14) */
+    &(GPIO_PRT0->CFG),
+    &(GPIO_PRT1->CFG),
+    &(GPIO_PRT2->CFG),
+    &(GPIO_PRT3->CFG),
+    &(GPIO_PRT4->CFG),
+    &(GPIO_PRT5->CFG),
+    &(GPIO_PRT6->CFG),
+    &(GPIO_PRT7->CFG),
+    &(GPIO_PRT8->CFG),
+    &(GPIO_PRT9->CFG),
+    &(GPIO_PRT10->CFG),
+    &(GPIO_PRT11->CFG),
+    &(GPIO_PRT12->CFG),
+    &(GPIO_PRT13->CFG),
+};
+
+#else /* Other PSC3 variants (PSC3M5, PSC3M6, etc.) */
+static volatile uint32_t* stlRegs_regs32ToTest[] =
 {
     /* SRSS_CLK_PATH_SELECT */
     &(SRSS->CLK_PATH_SELECT[0]),
@@ -543,10 +637,11 @@ static volatile uint32_t* regs32_ToTest[] =
     &(GPIO_PRT8->CFG),
     &(GPIO_PRT9->CFG),
 };
+#endif /* PSC3M6/P6 vs other PSC3 */
 
 #elif defined(SELFTEST_XMC5X_FAMILY)
 
-static volatile uint32_t* regs32_ToTest[] =
+static volatile uint32_t* stlRegs_regs32ToTest[] =
 {
     /* SRSS_CLK_PATH_SELECT (4 paths) */
     &(SRSS->CLK_PATH_SELECT[0]),
@@ -649,6 +744,9 @@ static volatile uint32_t* regs32_ToTest[] =
 
 #endif /* SELFTEST device family blocks */
 
+#define CONF_REG_STARTUP_REG_COUNT        (sizeof(stlRegs_regs32ToTest) / sizeof(stlRegs_regs32ToTest[0u]))
+#define CONF_REG_STARTUP_REG_SIZE_BYTES   (CONF_REG_STARTUP_REG_COUNT * sizeof(uint32_t))
+
 /* The buffer to store Flash row. */
 #if !defined(CY_IP_MXFLASHC_VERSION_ECT)
 CY_ALIGN(4) static uint32_t flashRowData[CY_FLASH_SIZEOF_ROW/(sizeof(uint32_t))];
@@ -660,7 +758,7 @@ CY_ALIGN(4) static uint32_t flashRowData[(2*CY_FLASH_SIZEOF_ROW)/(sizeof(uint32_
 void SelfTests_Init_StartUp_ConfigReg(void)
 {
     volatile uint32_t* pass_aref = &PASS_AREF_AREF_CTRL;
-    regs32_ToTest[0] = pass_aref;
+    stlRegs_regs32ToTest[0] = pass_aref;
 }
 
 
@@ -679,16 +777,15 @@ static uint8_t SelfTests_Check_StartUp_Cfg_CRC(uint32_t Current_CRC);
  *******************************************************************************
  *
  * Summary:
- *  This function stores the configuration registers to FlashRowData array
- *  and writes this array to Flash.
+ *  This function stores the configuration registers to nonvolatile storage.
  *
  * Parameters:
  *  None.
  *
  * Return:
- *  0 - Writing to Flash is successful.
- *  >=1 - Writing to Flash is not successful. Refer to the Flash Driver PDL documentation.
- *  for error codes.
+ *  CY_FLASH_DRV_SUCCESS - Writing to Flash is successful. <br>
+ *  Other cy_en_flashdrv_status_t values - Writing to nonvolatile storage is
+ *  not successful. Refer to the Flash Driver PDL documentation for error codes.
  *
  ******************************************************************************/
 cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
@@ -708,9 +805,9 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
     #endif
 
     /* Store 32Bit registers */
-    for (uint32_t i = 0u; i < (sizeof(regs32_ToTest) / sizeof(regs32_ToTest[0u])); i++)
+    for (uint32_t i = 0u; i < CONF_REG_STARTUP_REG_COUNT; i++)
     {
-        flashRowData[i] = CY_GET_REG32(regs32_ToTest[i]);
+        flashRowData[i] = CY_GET_REG32(stlRegs_regs32ToTest[i]);
     }
 
     #if !defined(CY_IP_MXFLASHC_VERSION_ECT)
@@ -734,7 +831,7 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
     {
         return ret;
     }
-    uint32_t regsToTestSize = sizeof(regs32_ToTest);
+    uint32_t regsToTestSize = (uint32_t)CONF_REG_STARTUP_REG_SIZE_BYTES;
     if (regsToTestSize > CY_FLASH_SIZEOF_ROW)
     {
         uint32_t addr_to_write = (uint32_t)(CONF_REG_FIRST_ROW_ADDR);
@@ -767,17 +864,18 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
  *
  * Summary:
  *  This function compares the calculated CRC (uint32_t Current_CRC) with the
- *  CRC previously stored in Flash if the status semaphore for a stored CRC is
+ *  CRC previously stored in nonvolatile storage if the status semaphore for a stored CRC is
  *  set.
  *  If the semaphore status is not set, it calculates a new CRC
- *  (uint32_t Current_CRC) and stores it to Flash and sets the status semaphore.
+ *  (uint32_t Current_CRC) and stores it to nonvolatile storage and sets the status semaphore.
  *
  * Parameters:
  *  uint32_t Current_CRC - CRC to compare with the saved CRC.
  *
  * Return:
- *  0 - No error, CRC matched or Flash write is successful.
- *  Not 0 - Error detected, CRC did not match or Flash write failed.
+ *  CRC_SAVED_STATUS - CRC was stored successfully. <br>
+ *  PASS_COMPLETE_STATUS - CRC matched the stored CRC. <br>
+ *  ERROR_STATUS - CRC did not match or nonvolatile storage access failed.
  *
  ******************************************************************************/
 static uint8_t SelfTests_Check_StartUp_Cfg_CRC(uint32_t Current_CRC)
@@ -874,15 +972,17 @@ static uint8_t SelfTests_Check_StartUp_Cfg_CRC(uint32_t Current_CRC)
  *
  * Summary:
  *  This function call checks the configuration registers by comparing the value
- *  stored in Flash with the current configuration registers value.
+ *  stored in nonvolatile storage with the current configuration registers value.
  *  If the values are different, the function returns a fail.
  *
  * Parameters:
  *  None.
  *
  * Return:
- *  0 - pass test.
- *  1 - fail test.
+ *  OK_STATUS - Test passed in CFG_REGS_TO_FLASH_MODE. <br>
+ *  ERROR_STATUS - Test failed or nonvolatile storage access failed. <br>
+ *  CRC_SAVED_STATUS - CRC was stored successfully in CFG_REGS_CRC_MODE. <br>
+ *  PASS_COMPLETE_STATUS - CRC matched the stored CRC in CFG_REGS_CRC_MODE.
  *
  ******************************************************************************/
 uint8_t SelfTests_StartUp_ConfigReg(void)
@@ -892,12 +992,12 @@ uint8_t SelfTests_StartUp_ConfigReg(void)
     uint8_t ret = OK_STATUS;
     uint32_t tmp;
 
-    /* Set the base address to Flash where configuration registers are stored */
+    /* Set the base address where configuration register copies are stored */
     cfgRegPointer = (uint32_t*)(CONF_REG_FIRST_ROW_ADDR);
 
     /* Compare the register values with the saved values */
     uint32_t i = 0u;
-    while (((i < (sizeof(regs32_ToTest) / sizeof(regs32_ToTest[0u]))) && (ret == OK_STATUS)))
+    while (((i < CONF_REG_STARTUP_REG_COUNT) && (ret == OK_STATUS)))
     {
         tmp = cfgRegPointer[i];
 
@@ -908,7 +1008,7 @@ uint8_t SelfTests_StartUp_ConfigReg(void)
         tmp++;
         #endif /* End (ERROR_IN_STARTUP_CONF_REG) */
 
-        if (tmp != CY_GET_REG32(regs32_ToTest[i]))
+        if (tmp != CY_GET_REG32(stlRegs_regs32ToTest[i]))
         {
             ret = ERROR_STATUS;
         }
@@ -925,15 +1025,15 @@ uint8_t SelfTests_StartUp_ConfigReg(void)
     (void)memset(flashRowData, 0x00, sizeof(flashRowData));
 
     /* Store the 32Bit registers */
-    for (uint32_t i = 0u; i < (sizeof(regs32_ToTest) / sizeof(regs32_ToTest[0u])); i++)
+    for (uint32_t i = 0u; i < CONF_REG_STARTUP_REG_COUNT; i++)
     {
-        flashRowData[i] = CY_GET_REG32(regs32_ToTest[i]);
+        flashRowData[i] = CY_GET_REG32(stlRegs_regs32ToTest[i]);
     }
 
     /* Calculate CRC of Start Up registers */
     calculated_CRC =
         SelfTests_CRC32((uint32_t)flashRowData,
-                        (sizeof(regs32_ToTest) / sizeof(regs32_ToTest[0u])));
+                        (uint32_t)CONF_REG_STARTUP_REG_SIZE_BYTES);
 
     /* Compare the calculated CRC with the previously saved and return the status of matches */
     return SelfTests_Check_StartUp_Cfg_CRC(calculated_CRC);

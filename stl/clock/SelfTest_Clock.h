@@ -6,7 +6,7 @@
 *  for the clock self tests according to Class B library.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_clock
+ * \defgroup group_clock Clock (Clock STL module)
  * \{
  *
  * The clock test implements independent time-slot monitoring and verifies the reliability
@@ -82,11 +82,16 @@
 * \param cntNum
 * The Counter instance number in the selected TCPWM
 *
+* \note
+* Use a TCPWM counter dedicated to the clock self-test. The test programs the
+* selected counter period/counter value and depends on \ref SelfTest_Clock_ISR_TIMER
+* being installed for the counter terminal-count interrupt.
+*
 * \return
-*  1 - Test failed <br>
-*  2 - Still testing <br>
-*  3 - Test completed <br>
-*  4 - Incorrect Usage
+*  \ref ERROR_STATUS (1) - Test failed <br>
+*  \ref PASS_STILL_TESTING_STATUS (2) - Still testing <br>
+*  \ref PASS_COMPLETE_STATUS (3) - Test completed <br>
+*  \ref ERROR_INCORRECT_USAGE_STATUS (4) - Incorrect usage <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_Clock(TCPWM_Type* base, uint32_t cntNum);
@@ -104,30 +109,52 @@ void SelfTest_Clock_ISR_TIMER(void);
 /***************************************
 * Initial Parameter Constants
 ***************************************/
-#if defined(SELFTEST_PSOC4_FAMILY)
 
 /** \addtogroup group_clock_macros
  * \{
  */
-/** Lower possible clock count for WDT depending on the accuracy of oscillator */
-/* For PSoC 4100S Max, ILO = 40kHz */
-/* Lower possible clock count = 40 * (1 - 50%) = 20 */
+#if (!defined(STL_CLOCK_SOURCE_HFCLOCK)) && ((defined(CY_IP_MXS40SSRSS)) || (defined(CY_DOXYGEN)))
+/** High-frequency clock source selection used by the Clock self-test timer on PSOC Control C3 devices. */
+#define STL_CLOCK_SOURCE_HFCLOCK (3u)
+#endif /* (!defined(STL_CLOCK_SOURCE_HFCLOCK)) && ((defined(CY_IP_MXS40SSRSS)) || (defined(CY_DOXYGEN))) */
+
+#if defined(SELFTEST_PSOC4_FAMILY) || defined(CY_DOXYGEN)
+/** Lower possible clock count for WDT depending on the accuracy of oscillator.
+ *
+ * - PSOC 4 devices: `20u`, calculated for PSOC 4100S Max with ILO = 40 kHz:
+ *   `40 * (1 - 50%) = 20`
+ * - PSOC 61 Programmable Line, PSOC 62 Performance Line, PSOC Control C3,
+ *   and XMC7000 devices: `31u`, calculated with WCO = 32 kHz:
+ *   `32 * (1 - 0.015%) = 31`
+ * - XMC5000 devices: `30u`, calculated with WCO = 32.77 kHz:
+ *   `32.77 * (1 - 7%) = 30`
+ */
 #define CLOCK_TICKS_LO                      (20u)
 
-/** Higher possible clock count for WDT depending on the accuracy of oscillator */
-/* Higher possible clock count = 40 * (1 + 100%) = 80 */
+/** Higher possible clock count for WDT depending on the accuracy of oscillator.
+ *
+ * - PSOC 4 devices: `80u`, calculated for PSOC 4100S Max with ILO = 40 kHz:
+ *   `40 * (1 + 100%) = 80`
+ * - PSOC 61 Programmable Line, PSOC 62 Performance Line, PSOC Control C3,
+ *   and XMC7000 devices: `33u`, calculated with WCO = 32 kHz:
+ *   `32 * (1 + 0.015%) = 33`
+ * - XMC5000 devices: `36u`, calculated with WCO = 32.77 kHz:
+ *   `32.77 * (1 + 7%) = 36`
+ */
 #define CLOCK_TICKS_HI                      (80u)
 
-/** Time to test in uS */
+/** Clock self-test interval in microseconds. */
 #define CLOCK_TEST_TIME                     (1000u)
 
-/** Number of IMO clock cycles equivalent to CLOCK_TEST_TIME (Only for CAT2 devices). */
-/** For CAT1A, CAT1B(PSoC C3) and CAT1C, this value is calculated during the runtime depending on the
-    Pheripheral clock and its divider. */
+/** Number of timer/source-clock cycles corresponding to CLOCK_TEST_TIME.
+ *
+ * This macro is used on PSOC 4 devices. PSOC 61 Programmable Line, PSOC 62
+ * Performance Line, PSOC Control C3, XMC7000, and XMC5000 devices calculate
+ * the equivalent period at runtime from the peripheral or high-frequency clock
+ * and its divider.
+ */
 #define CLOCK_TEST_TIME_TIMER_PERIOD        \
     (((CY_CFG_SYSCLK_IMO_FREQ_HZ/(1000000uL)) * (CLOCK_TEST_TIME)) / CLOCK_TEST_TIMER_CLK_DIV)
-
-/** \} group_clock_macros */
 
 /** \cond INTERNAL */
 
@@ -139,19 +166,29 @@ void SelfTest_Clock_ISR_TIMER(void);
 
 /* Set the desired number of ignore bits */
 #define IGNORE_BITS_CLK_TEST                (0U)
+/** \endcond */
 
-#elif (defined(SELFTEST_PSOC6_FAMILY) || defined(SELFTEST_XMC7X_FAMILY) || \
-    defined(SELFTEST_PSC3_FAMILY))
+#elif (defined(SELFTEST_PSOC6_FAMILY) || defined(SELFTEST_XMC7X_FAMILY) || defined(SELFTEST_PSC3_FAMILY))
 
-/* For PSoC6 and XMC  WCO = 32kHz */
-/* Lower possible clock count = 32 * (1 - 0.015%) = 31 */
+/** Lower possible clock count for PSOC 61 Programmable Line, PSOC 62
+ * Performance Line, PSOC Control C3, and XMC7000 devices.
+ *
+ * For PSOC 6 and XMC, WCO = 32 kHz.
+ * Lower possible clock count = 32 * (1 - 0.015%) = 31.
+ */
 #define CLOCK_TICKS_LO                      (31u)
 
-/* Higher possible clock count = 32 * (1 + 0.015%) = 33 */
+/** Higher possible clock count for PSOC 61 Programmable Line, PSOC 62
+ * Performance Line, PSOC Control C3, and XMC7000 devices.
+ *
+ * Higher possible clock count = 32 * (1 + 0.015%) = 33.
+ */
 #define CLOCK_TICKS_HI                      (33u)
 
+/** Clock self-test interval in microseconds. */
 #define CLOCK_TEST_TIME                     (1000u)
 
+/** \cond INTERNAL */
 /* How much the source clock to the timer is divided */
 #define CLOCK_TEST_TIMER_CLK_DIV            (1u)
 
@@ -160,20 +197,28 @@ void SelfTest_Clock_ISR_TIMER(void);
 
 /* Set the desired number of ignore bits */
 #define IGNORE_BITS_CLK_TEST                (0U)
+/** \endcond */
 
 #elif defined(SELFTEST_XMC5X_FAMILY)
 
-/* For XMC5X WCO = 32.77kHz */
-/* Lower possible clock count = 32.77 * (1 - 7%) = 30 */
+/** Lower possible clock count for XMC5000 devices.
+ *
+ * For XMC5000 WCO = 32.77 kHz.
+ * Lower possible clock count = 32.77 * (1 - 7%) = 30.
+ */
 #define CLOCK_TICKS_LO                      (30u)
 
-/* Higher possible clock count = 32.77 * (1 + 7%) = 36 */
+/** Higher possible clock count for XMC5000 devices.
+ *
+ * Higher possible clock count = 32.77 * (1 + 7%) = 36.
+ */
 #define CLOCK_TICKS_HI                      (36u)
 
+/** Clock self-test interval in microseconds. */
 #define CLOCK_TEST_TIME                     (1000u)
-/** \endcond */
 
 #endif /* defined(SELFTEST_PSOC4_FAMILY) */
+/** \} group_clock_macros */
 /** \} group_clock */
 
 #endif /* End SELFTEST_CLOCK_H */

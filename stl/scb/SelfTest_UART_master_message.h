@@ -24,7 +24,7 @@
  *  then it is exchanged with the two-byte sequence <ESC><ESC+1>.
  *
  ********************************************************************************
- * (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+ * (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
  * Technologies AG. All rights reserved.
  * This software, associated documentation and materials ("Software") is
  * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -62,6 +62,8 @@
 #if !defined(UART_master_message_H)
     #define UART_master_message_H
 
+#include "SelfTest_common.h"
+
 
 /*******************************************************************************
 * Function Prototypes
@@ -78,6 +80,12 @@
 * Initializes the UART master protocol unit. This function starts the required components and
 * initializes the control status structure.
 *
+* \note
+* This function enables the UART peripheral, clears TX/RX FIFOs, and sets the
+* interrupt masks used by the message protocol. Use a UART instance dedicated
+* to this protocol or reinitialize the application UART configuration after
+* calling \ref UartMesMaster_DeInit.
+*
 *
 * \param uart_base
 * The pointer to the master UART SCB instance.
@@ -88,6 +96,17 @@
 *
 *******************************************************************************/
 void UartMesMaster_Init(CySCB_Type* uart_base, TCPWM_Type* counter_base, uint32_t cntNum);
+
+/*******************************************************************************
+* Function Name: UartMesMaster_DeInit
+****************************************************************************//**
+*
+* De-initializes the UART master protocol unit. Disables all TX/RX interrupts,
+* flushes the FIFOs, stops the guard timer, disables the UART peripheral, and
+* resets the internal control status structure.
+*
+*******************************************************************************/
+void UartMesMaster_DeInit(void);
 
 /*******************************************************************************
 * Function Name: UartMesMaster_DataProc
@@ -107,9 +126,15 @@ void UartMesMaster_Init(CySCB_Type* uart_base, TCPWM_Type* counter_base, uint32_
 * \param rlen
 * The size of the received data buffer.
 *
+* \note
+* This function starts an interrupt-driven background transaction. Do not call
+* it again while \ref UartMesMaster_State returns UM_BUSY. The \p txd and
+* \p rxd buffers must remain valid and unmodified until the state becomes
+* UM_COMPLETE or UM_ERROR.
+*
 * \return
-*  0 - If the unit started a message process <br>
-*  1 - If not (because the unit is busy or data input is invalid)
+*  \ref UART_MASTER_MESSAGE_STARTED_STATUS (0) - The unit started a message process <br>
+*  \ref UART_MASTER_MESSAGE_NOT_STARTED_STATUS (1) - The unit did not start a message process
 *
 * \note
 * Use UartMesMaster_State() to check busy state

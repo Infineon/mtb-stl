@@ -6,7 +6,7 @@
 *  used for Flash self tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_flash
+ * \defgroup group_flash Flash (Flash STL module)
  * \{
  *
  * To complete a full diagnostic of the Flash memory, a checksum of all used Flash needs to be
@@ -98,9 +98,9 @@
 * Number of 32-bit Double Words of Flash to be calculated per each function call. <br>
 *
 * \return
-*  1 - Test failed <br>
-*  2 - Test in progress <br>
-*  3 - Test completed
+*  \ref ERROR_STATUS (1) - Test failed <br>
+*  \ref PASS_STILL_TESTING_STATUS (2) - Test in progress <br>
+*  \ref PASS_COMPLETE_STATUS (3) - Test completed <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest);
@@ -175,25 +175,29 @@ void SelfTest_Flash_init(uint32_t StartAddressOfFlash, uint32_t EndAddressOfFlas
 
 #define FLASH_END_ADDR                \
     (uint32_t)(CY_FLASH_BASE + CY_FLASH_SIZE - FLASH_RESERVED_CHECKSUM_SIZE)
+/** \endcond */
 #endif /* if (defined (CY_IP_M0S8CPUSSV3) || defined(CY_IP_M4CPUSS) || defined (CY_DOXYGEN)) */
 
-#if defined (CY_IP_M33SYSCPUSS)
-#define CY_FLASH_NSC_SIZE 0x00000100UL
+#if defined (SELFTEST_PSC3_FAMILY)
+/** \cond INTERNAL */
+#include "partition_psc3.h"
 #define FLASH_END_ADDR         \
-    (uint32_t)(CY_FLASH_BASE + (CY_FLASH_SIZE/2UL) - (CY_FLASH_NSC_SIZE +FLASH_RESERVED_CHECKSUM_SIZE))
+    (uint32_t)(CY_FLASH_BASE + (CY_FLASH_SIZE/2UL) - (((uint32_t)FLASH_NSC_SIZE) + ((uint32_t)FLASH_RESERVED_CHECKSUM_SIZE)))
+/** \endcond */
 #endif
 
 /***************************************
 * External Variables
 ***************************************/
 #if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
+/** \cond INTERNAL */
 extern uint64_t flash_CheckSum;
 #elif (FLASH_TEST_MODE == FLASH_TEST_CRC32)
 extern uint32_t flash_CheckSum;
+/** \endcond */
 #endif
 
 
-/** \endcond */
 
 /** \} group_flash */
 

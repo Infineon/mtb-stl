@@ -1,6 +1,11 @@
 var searchData=
 [
-  ['macros_0',['Macros',['../group__group__analog__macros.html',1,'(Global Namespace)'],['../group__group__clock__macros.html',1,'(Global Namespace)'],['../group__group__cpu__macros.html',1,'(Global Namespace)'],['../group__group__crc__macros.html',1,'(Global Namespace)'],['../group__group__dmac__macros.html',1,'(Global Namespace)'],['../group__group__flash__macros.html',1,'(Global Namespace)'],['../group__group__gpio__macros.html',1,'(Global Namespace)'],['../group__group__i2c__macros.html',1,'(Global Namespace)'],['../group__group__intr__macros.html',1,'(Global Namespace)'],['../group__group__pwm__macros.html',1,'(Global Namespace)'],['../group__group__regs__macros.html',1,'(Global Namespace)'],['../group__group__stack__macros.html',1,'(Global Namespace)'],['../group__group__timer__counter__macros.html',1,'(Global Namespace)'],['../group__group__wdt__macros.html',1,'(Global Namespace)'],['../group__group__wwdt__macros.html',1,'(Global Namespace)']]],
-  ['master_1',['Master',['../group__group__uart__data__tsf__functions__master.html',1,'']]],
-  ['motif_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_20_28motif_20stl_20module_29_2',['MOTIF                     (MOTIF STL module)',['../group__group__motif.html',1,'']]]
+  ['i2c_20i2c_20stl_20module_0',['I2C (I2C STL module)',['../group__group__i2c.html',1,'']]],
+  ['i2c_20stl_20module_1',['I2C (I2C STL module)',['../group__group__i2c.html',1,'']]],
+  ['instructions_20cpu_20instructions_20stl_20module_2',['CPU instructions (CPU Instructions STL module)',['../group__group__cpu__instructions.html',1,'']]],
+  ['instructions_20stl_20module_3',['CPU instructions (CPU Instructions STL module)',['../group__group__cpu__instructions.html',1,'']]],
+  ['intr_20intr_20stl_20module_4',['INTR (INTR STL module)',['../group__group__intr.html',1,'']]],
+  ['intr_20stl_20module_5',['INTR (INTR STL module)',['../group__group__intr.html',1,'']]],
+  ['ipc_20ipc_20stl_20module_6',['IPC (IPC STL module)',['../group__group__ipc.html',1,'']]],
+  ['ipc_20stl_20module_7',['IPC (IPC STL module)',['../group__group__ipc.html',1,'']]]
 ];

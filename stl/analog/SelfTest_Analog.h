@@ -6,7 +6,7 @@
 *  for the analog component self tests according to Class B library.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_analog
+ * \defgroup group_analog Analog (Analog STL module)
  * \{
  *
  * This module carries out 4 tests: <br>
@@ -100,10 +100,10 @@
  *  reference voltage for the self test. */
 #define ANALOG_TEST_VREF_EXTERNAL              (0u)
 /** Uses the two internal MSCv3 blocks to route VREF(1.2V) and VDDA/2 to the AMUXBUS, which the tests
- *  can use. Only for CAT2 device */
+ *  can use. Only for PSOC 4 devices. */
 #define ANALOG_TEST_VREF_DUAL_MSC              (1u)
-/** Uses an internal CSD IDAC to generate a voltage from an external pull-down resistor. Only for CAT2
- *  device. */
+/** Uses an internal CSD IDAC to generate a voltage from an external pull-down resistor. Only for
+ *  PSOC 4 devices. */
 #define ANALOG_TEST_VREF_CSD_IDAC              (2u)
 
 
@@ -131,11 +131,13 @@
 #define ADC_TEST_ACC                    12
 
 /** OPAMP accuracy - the same as ADC accuracy */
-#define OPAMP_TEST_ACURACCY             12
+#define OPAMP_TEST_ACCURACY             12
+/** \cond INTERNAL */
+#define OPAMP_TEST_ACURACCY             OPAMP_TEST_ACCURACY  /* deprecated: use OPAMP_TEST_ACCURACY */
+/** \endcond */
 
 /* Definition of the analog components included in class B */
-#if defined (CY_IP_MXLPCOMP) || defined (CY_IP_MXS22LPCOMP) || \
-    defined (CY_IP_MXS40LPCOMP) || defined (CY_IP_M0S8LPCOMP)
+#if defined (CY_IP_MXLPCOMP) || defined (CY_IP_MXS40LPCOMP) || defined (CY_IP_M0S8LPCOMP)
     #define CLASSB_SELF_TEST_COMP           1u
 #endif
 
@@ -145,6 +147,10 @@
 #endif
 
 #if defined(CLASSB_SELF_TEST_ADC) && (defined(CY_IP_MXS40PASS_CTB) || defined(CY_IP_M0S8PASS4A_CTB))
+    #define CLASSB_SELF_TEST_OPAMP          1u
+#endif
+
+#if defined(CLASSB_SELF_TEST_ADC) && defined(CY_IP_MXS40MCPASS) && (CY_IP_MXS40MCPASS_VERSION >= 3u)
     #define CLASSB_SELF_TEST_OPAMP          1u
 #endif
 
@@ -234,28 +240,31 @@
 /** \endcond */
 
 #if (ANALOG_TEST_VREF == ANALOG_TEST_VREF_EXTERNAL)
-/** External voltage references using 3 equivalent resistor voltage divider*/
+/** External reference voltage 1 (VDDA / 3) using a three-resistor voltage divider. */
 #define EXTERNAL_VREF1_MV               ((CY_CFG_PWR_VDDA_MV*1)/3)
-/** External voltage references using 3 equivalent resistor voltage divider*/
+/** External reference voltage 2 (2 * VDDA / 3) using a three-resistor voltage divider. */
 #define EXTERNAL_VREF2_MV               ((CY_CFG_PWR_VDDA_MV*2)/3)
-/** External voltage references using 3 equivalent resistor voltage divider*/
+/** Selected test reference voltage 1. */
 #define ANALOG_TEST_VREF1_MV            (EXTERNAL_VREF1_MV)
-/** External voltage references using 3 equivalent resistor voltage divider*/
+/** Selected test reference voltage 2. */
 #define ANALOG_TEST_VREF2_MV            (EXTERNAL_VREF2_MV)
 #endif /*(ANALOG_TEST_VREF == ANALOG_TEST_VREF_EXTERNAL )*/
 
 /*****************************************************************************
 * Defined parameters for Opamp self test
 *****************************************************************************/
-/** ADC channel to read OPAMP output. Only for CAT2 device */
+/** ADC channel to read OPAMP output. Only for PSOC 4 devices. */
 #define ANALOG_ADC_CHNL_OPAMP           0x00u
 
 /** OPAMP Accuracy in counts */
-#define ANALOG_OPAMP_ACURACCY           ((CY_CFG_PWR_VDDA_MV * OPAMP_TEST_ACURACCY) / 100)
+#define ANALOG_OPAMP_ACCURACY           ((CY_CFG_PWR_VDDA_MV * OPAMP_TEST_ACCURACY) / 100)
+/** \cond INTERNAL */
+#define ANALOG_OPAMP_ACURACCY           ANALOG_OPAMP_ACCURACY  /* deprecated: use ANALOG_OPAMP_ACCURACY */
+/** \endcond */
 
-/** Expected OPAMP result 1*/
+/** Expected OPAMP SAR result for ANALOG_TEST_VREF1_MV. */
 #define ANALOG_OPAMP_SAR_RESULT1        (ANALOG_TEST_VREF1_MV)
-/** Expected OPAMP result 2*/
+/** Expected OPAMP SAR result for ANALOG_TEST_VREF2_MV. */
 #define ANALOG_OPAMP_SAR_RESULT2        (ANALOG_TEST_VREF2_MV)
 
 /** \cond INTERNAL */
@@ -275,10 +284,13 @@
 /** \endcond */
 
 /** ADC Accuracy in counts */
-#define ANALOG_ADC_ACURACCY             ((CY_CFG_PWR_VDDA_MV * ADC_TEST_ACC) / 100)
-/** Expected ADC result 1*/
+#define ANALOG_ADC_ACCURACY             ((CY_CFG_PWR_VDDA_MV * ADC_TEST_ACC) / 100)
+/** \cond INTERNAL */
+#define ANALOG_ADC_ACURACCY             ANALOG_ADC_ACCURACY  /* deprecated: use ANALOG_ADC_ACCURACY */
+/** \endcond */
+/** Expected SAR result for ANALOG_TEST_VREF1_MV. */
 #define ANALOG_ADC_SAR_RESULT1          (ANALOG_TEST_VREF1_MV)
-/** Expected ADC result 2*/
+/** Expected SAR result for ANALOG_TEST_VREF2_MV. */
 #define ANALOG_ADC_SAR_RESULT2          (ANALOG_TEST_VREF2_MV)
 
 /** ADC conversion time in test mode, uS */
@@ -333,7 +345,8 @@ uint8_t SelfTests_IDACA_Analog_Calibration(CSD_Type* csd_base, SAR_Type* sar_bas
  * \{
  */
 
-#if defined(CLASSB_SELF_TEST_OPAMP) || defined (CY_DOXYGEN)
+#if (defined(CLASSB_SELF_TEST_ADC) && (defined(CY_IP_MXS40PASS_CTB) || defined(CY_IP_M0S8PASS4A_CTB))) || \
+    defined (CY_DOXYGEN)
 /*******************************************************************************
 * Function Name: SelfTests_Opamp
 ****************************************************************************//**
@@ -346,15 +359,15 @@ uint8_t SelfTests_IDACA_Analog_Calibration(CSD_Type* csd_base, SAR_Type* sar_bas
 * \param expected_res
 * If count_to_mV = 1 => Expected result in mV, else Expected result in counts.
 * \param accuracy
-* Accuracy in count ANALOG_OPAMP_ACURACCY
+* Accuracy in count ANALOG_OPAMP_ACCURACY
 * \param opamp_in_channel
 * Channel number where the OPAMP output is read.
 * \param count_to_mV
 * 1 = convert the count to mV.(take more time)
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 uint8_t SelfTests_Opamp(SAR_Type* sar_base, int16_t expected_res, int16_t accuracy,
@@ -367,27 +380,145 @@ uint8_t SelfTests_Opamp(SAR_Type* sar_base, int16_t expected_res, int16_t accura
 * Function Name: SelfTests_ADC_TrigIn
 ****************************************************************************//**
 *
-* Performs ADC test and verifies if the measured voltage is in the accuracy range.
+* Performs an ADC self-test by issuing a firmware SAR trigger and verifying
+* that the measured result falls within the expected range.
+*
+* <b>HPPASS subsystem configuration and signal routing:</b><br>
+* The test uses the CSG VDAC (pass[0].csg[0].slice[0]) as an
+* internally generated stimulus so that no external reference voltage is
+* required on any device pin. The complete analog signal path through the
+* HPPASS block is:
+*
+*   CSG Group 0, Slice 0 (VDAC, buffered, 10-bit)
+*   → CSG analog router (dacOutSelLoc = 1)
+*   → SAR muxed sampler input
+*   → SAR channel CSG_VDAC_OUT_CHAN_IDX (defined in cycfg_peripherals.h)
+*
+* The following HPPASS configurations are required:
+*   - CSG[0]: Group 0 power enabled (grpPwrEn0 = true),
+*     CSG AROUTE mux not used (arouteMuxSel0 = CY_HPPASS_CSG_AROUTE_NONE),
+*     DAC output location 1 (dacOutSelLoc = 1, routes the VDAC output to the
+*     HPPASS analog router so the SAR muxed sampler can reach it).
+*   - CSG[0] Slice 0: mode = CY_HPPASS_DAC_MODE_BUFFERED (10-bit VDAC with
+*     output buffer).
+*   - HPPASS input trigger 2 (pass[0].input_trigger[2]): CY_HPPASS_TR_FW_PULSE
+*     — used to fire the SAR sequencer group that samples the DAC output
+*     (passed as \p trig_in = CY_HPPASS_TRIG_2_MSK).
+*   - SAR[0]: Vref = CY_HPPASS_SAR_VREF_VDDA, 12-bit result, right-aligned,
+*     unsigned. Muxed sampler 0 (pass[0].sar[0].muxed_sampler[0]) connected to
+*     the CSG VDAC analog router output.
+*   - SAR[0] sequencer group (pass[0].sar[0].seq[0].grp[N]): muxed sampler 0
+*     enabled (muxSampEn0 = true), mux input select pointing to the CSG VDAC
+*     output, trigger = CY_HPPASS_SAR_TRIG_2 (corresponding to \p trig_in).
+*     The result is stored in SAR channel CSG_VDAC_OUT_CHAN_IDX.
+*   - Autonomous Controller (pass[0].ac[0]): the HPPASS AC must be started
+*     (Cy_HPPASS_AC_Start()) before any SAR conversion can be triggered. The AC
+*     Finite State Automaton (FSA) must be configured with at least one state
+*     (pass[0].ac[0].stt[0].vstate[0]) that keeps the subsystem running, e.g.
+*     action = CY_HPPASS_ACTION_STOP with count = 1. The AC holds the HPPASS
+*     clock and power rails active; without it the SAR trigger is ignored.
+*
+* The caller must pre-stage the DAC stimulus before calling this function:
+* program the desired 10-bit code with Cy_HPPASS_DAC_SetValue(), start the DAC
+* slice with Cy_HPPASS_DAC_Start() in HW mode, and wait for the DAC to settle
+* before invoking SelfTests_ADC_TrigIn(). This function then issues the
+* SAR trigger specified by \p trig_in and reads the conversion result from
+* \p channel.
 *
 * \param group
-* Group instance.
+* SAR group instance (0 for SAR[0]).
 * \param channel
-* The channel number where the input voltage needs to be read.
+* SAR channel index where the DAC stimulus is sampled. Use the macro
+* CSG_VDAC_OUT_CHAN_IDX generated in cycfg_peripherals.h for the target BSP.
 * \param expected_res
-* if count_to_mV = 1 => Expected result in mV, else Expected result in counts.
+* Expected ADC result in counts (12-bit, Vref = VDDA).
 * \param accuracy
-* Accuracy in count ANALOG_ADC_ACURACCY
+* Acceptable deviation from expected_res in counts (ANALOG_ADC_ACCURACY).
 * \param trig_in
-* Trigger input.
+* HPPASS input trigger mask that fires the SAR sequencer group containing
+* the muxed sampler channel (e.g. CY_HPPASS_TRIG_2_MSK).
 *
 * \return
-*  0 - Test Passed <br>
-*  1 - Test Failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
-uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int16_t expected_res, int16_t accuracy,
+uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int32_t expected_res, int32_t accuracy,
                              uint32_t trig_in);
-#endif /* End Testing ADC */
+
+
+#if defined(CY_IP_MXS40MCPASS) && (CY_IP_MXS40MCPASS_VERSION >= 3u)
+/** \addtogroup group_analog_macros
+ * \{
+ */
+/**
+ * SAR channel index for DAC0 output readback (AN_A5 via HPPASS AROUTE direct sampler 5).
+ *
+ * Topology: DAC buffer 0 output → AN_A5 → HPPASS AROUTE → SAR direct sampler 5
+ */
+#define SELFTEST_HPPASS_DAC0_R2R_SAR_CHAN_IDX   (5U)
+/**
+ * SAR channel index for DAC1 output readback (AN_B5 via HPPASS AROUTE muxed sampler 13).
+ *
+ * Topology: DAC buffer 1 output → AN_B5 → HPPASS AROUTE → SAR muxed sampler 13 (MUX1_SEL=0 → AIO_B_5)
+ *
+ */
+#define SELFTEST_HPPASS_DAC1_R2R_SAR_CHAN_IDX  (18U)
+/** \} group_analog_macros */
+
+/*******************************************************************************
+* Function Name: SelfTests_DAC_TrigIn
+****************************************************************************//**
+*
+* Performs DAC R2R self-test: sets the DAC output to the specified value and
+* verifies the SAR ADC readback is within the expected range.
+*
+* \param dac_idx
+* DAC index: 0 = DAC0 (AN_A5, SAR ch 5, trigger 0),
+*            1 = DAC1 (AN_B5, SAR ch 18, trigger 1).
+* \param dac_val
+* DAC output value to write (12-bit unsigned).
+* \param expected_res
+* Expected SAR result in counts.
+* \param accuracy
+* Accuracy tolerance in counts (ANALOG_ADC_ACCURACY).
+*
+* \return
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
+*
+*******************************************************************************/
+uint8_t SelfTests_DAC_TrigIn(uint8_t dac_idx, uint32_t dac_val,
+                             int32_t expected_res, int32_t accuracy);
+
+
+/*******************************************************************************
+* Function Name: SelfTests_AFE_TrigIn
+****************************************************************************//**
+*
+* The Opamp test is performed to verify that the Opamp output voltage is aligned
+* with the Opamp input voltage and gain.
+*
+* \param group
+* The SAR group instance.
+* \param channel
+* The SAR channel number where the Opamp output is read.
+* \param expected_res
+* Expected SAR result in counts.
+* \param accuracy
+* The SAR accuracy in count ANALOG_ADC_ACCURACY
+* \param trig_in
+* The SAR trigger input.
+*
+* \return
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
+*
+*******************************************************************************/
+uint8_t SelfTests_AFE_TrigIn(uint32_t group, uint32_t channel, int32_t expected_res, int32_t accuracy,
+                             uint32_t trig_in);
+#endif /* defined(CY_IP_MXS40MCPASS) && (CY_IP_MXS40MCPASS_VERSION >= 3u) */
+#endif /* defined(CY_IP_MXS40MCPASS) || defined (CY_DOXYGEN) */
 
 /*******************************************************************************
 * Function Name: SelfTests_ADC
@@ -397,21 +528,21 @@ uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int16_t expected_
 *
 *
 * \param base
-* The pointer to a SAR ADC instance. For CAT1B, the base is the group instance.
+* The pointer to a SAR ADC instance. For PSOC Control C3 devices, the base is the group instance.
 * \param channel
 * The channel number where the input voltage needs to be read.
 * \param expected_res
 * If count_to_mV = 1, then the expected result in mV, else expected result in counts
 * \param accuracy
-* Accuracy in count ANALOG_ADC_ACURACCY
+* Accuracy in count ANALOG_ADC_ACCURACY
 * \param vbg_channel
-* The channel number where the VBG voltage is connected. Only for CAT1C device.
+* The channel number where the VBG voltage is connected. Only for XMC7000 and XMC5000 devices.
 * \param count_to_mV
-* 1 = convert the count to mV.(take more time). Not applicable for CAT1B device.
+* 1 = convert the count to mV.(take more time). Not applicable for PSOC Control C3 devices.
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 * \note
 * For CA1B devices, the user needs to configure the trigger input the same as the channel number.
@@ -430,6 +561,7 @@ uint8_t SelfTests_ADC(uint32_t group, uint32_t channel, int16_t expected_res, in
 
 
 #if defined(CLASSB_SELF_TEST_COMP) || defined (CY_DOXYGEN)
+
 /*******************************************************************************
 * Function Name: SelfTests_Comparator
 ****************************************************************************//**
@@ -446,8 +578,8 @@ uint8_t SelfTests_ADC(uint32_t group, uint32_t channel, int16_t expected_res, in
 * Expected result (1 or 0)
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 uint8_t SelfTests_Comparator(LPCOMP_Type const* lpcomp_base, cy_en_lpcomp_channel_t lpcomp_channel,
@@ -455,7 +587,6 @@ uint8_t SelfTests_Comparator(LPCOMP_Type const* lpcomp_base, cy_en_lpcomp_channe
 #endif /* defined(CLASSB_SELF_TEST_COMP) || defined (CY_DOXYGEN) */
 
 
-#if defined(CY_IP_MXS40PASS_CTDAC) || defined (CY_DOXYGEN)
 /*******************************************************************************
 * Function Name: SelfTests_DAC
 ****************************************************************************//**
@@ -471,17 +602,18 @@ uint8_t SelfTests_Comparator(LPCOMP_Type const* lpcomp_base, cy_en_lpcomp_channe
 * The channel number of SAR ADC instance.
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 * \note
-* Applicable only to CAT1A devices
+* Applicable only to PSOC 61 Programmable Line and PSOC 62 Performance Line devices.
 *
 *******************************************************************************/
+#if defined(CY_IP_MXS40PASS_CTDAC) || defined (CY_DOXYGEN)
 uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChannel);
-#endif /* defined(CY_IP_MXS40PASS_CTDAC) || defined (CY_DOXYGEN) */
+#endif
 
-#if defined(CLASSB_SELF_TEST_DAC) || defined (CY_DOXYGEN)
+#if (defined(CY_IP_MXS40MCPASS) && (CY_IP_MXS40MCPASS_VERSION < 3u)) || defined (CY_DOXYGEN)
 /*******************************************************************************
 * Function Name: SelfTests_DAC_TrigIn
 ****************************************************************************//**
@@ -504,16 +636,16 @@ uint8_t SelfTests_DAC(CTDAC_Type* dacBase, SAR_Type* adcBase, uint32_t adcChanne
 * DAC trigger input.
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 * \note
-* Applicable only to CAT1B devices.
+* Applicable only to PSOC Control C3 devices.
 *
 *******************************************************************************/
 uint8_t SelfTests_DAC_TrigIn(uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val,
                              int16_t expected_res, int16_t accuracy, uint32_t adc_trig_in, uint32_t dac_trig_in);
-#endif
+#endif /* defined(CY_IP_MXS40MCPASS) && (CY_IP_MXS40MCPASS_VERSION < 3u) */
 /** \} group_analog_functions */
 
 /** \} group_analog */

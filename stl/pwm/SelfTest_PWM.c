@@ -5,7 +5,7 @@
 *  This file provides the source code for the PWM self tests.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -41,11 +41,11 @@
 
 #if (defined(CY_IP_MXTCPWM) || defined(CY_IP_M0S8TCPWM))
 
-static TCPWM_Type* base1;
-static uint32_t cntNum1;
-static volatile uint16_t pwm_test_isr_count;
-static uint32_t h_cnt, l_cnt;
-static cy_stc_tcpwm_pwm_config_t const* config1;
+static TCPWM_Type* stlPwm_base1;
+static uint32_t stlPwm_cntNum1;
+static volatile uint16_t stlPwm_testIsrCount;
+static uint32_t stlPwm_hCnt, stlPwm_lCnt;
+static cy_stc_tcpwm_pwm_config_t const* stlPwm_config1;
 
 
 /******************************************************************************
@@ -57,19 +57,19 @@ static cy_stc_tcpwm_pwm_config_t const* config1;
 ******************************************************************************/
 static void TIMER_ISR(void)
 {
-    uint32_t interrupts = Cy_TCPWM_GetInterruptStatusMasked(base1, cntNum1);
+    uint32_t interrupts = Cy_TCPWM_GetInterruptStatusMasked(stlPwm_base1, stlPwm_cntNum1);
 
     if (0UL != (CY_TCPWM_INT_ON_TC & interrupts))
     {
-        if (pwm_test_isr_count >= 4U)
+        if (stlPwm_testIsrCount >= 4U)
         {
-            Cy_TCPWM_PWM_Disable(base1, cntNum1);
+            Cy_TCPWM_PWM_Disable(stlPwm_base1, stlPwm_cntNum1);
         }
-        pwm_test_isr_count++;
+        stlPwm_testIsrCount++;
     }
 
     /* Clear the interrupt */
-    Cy_TCPWM_ClearInterrupt(base1, cntNum1, interrupts);
+    Cy_TCPWM_ClearInterrupt(stlPwm_base1, stlPwm_cntNum1, interrupts);
 }
 
 
@@ -92,8 +92,8 @@ static void TIMER_ISR(void)
 * Interrupt source
 *
 * \return
-*  0 - Initialization successful <br>
-*  -1 (255) - Initialization failed
+*  \ref OK_STATUS (0) - Initialization successful <br>
+*  \ref PWM_INIT_ERROR_STATUS (255) - Initialization failed
 ******************************************************************************/
 uint8_t SelfTest_PWM_init(TCPWM_Type* base, uint32_t cntNum,
                           cy_stc_tcpwm_pwm_config_t const* config, IRQn_Type  intr_src)
@@ -119,7 +119,7 @@ uint8_t SelfTest_PWM_init(TCPWM_Type* base, uint32_t cntNum,
     /* Configure the TCPWM for PWM operation. */
     if (CY_TCPWM_SUCCESS != Cy_TCPWM_PWM_Init(base, cntNum, config))
     {
-        ret = (uint8_t)-1;
+        ret = PWM_INIT_ERROR_STATUS;
     }
 
     if (OK_STATUS == ret)
@@ -127,7 +127,7 @@ uint8_t SelfTest_PWM_init(TCPWM_Type* base, uint32_t cntNum,
         /* Set the interrupt line for TIMER_HW */
         if ((CY_SYSINT_SUCCESS != Cy_SysInt_Init(&sTIMER_IRQ_cfg, &TIMER_ISR)))
         {
-            ret =  (uint8_t)-1;
+            ret = PWM_INIT_ERROR_STATUS;
         }
     }
 
@@ -141,12 +141,46 @@ uint8_t SelfTest_PWM_init(TCPWM_Type* base, uint32_t cntNum,
         NVIC_EnableIRQ(sTIMER_IRQ_cfg.intrSrc);
         #endif
 
-        base1 = base;
-        cntNum1 = cntNum;
-        config1  = config;
+        stlPwm_base1 = base;
+        stlPwm_cntNum1 = cntNum;
+        stlPwm_config1  = config;
     }
 
     return ret;
+}
+
+
+/******************************************************************************
+* Function Name: SelfTest_PWM_DeInit
+***************************************************************************//**
+*
+* De-initialize the PWM self test, disabling the peripheral and its interrupt.
+*
+* \param intr_src
+* Interrupt source passed to SelfTest_PWM_init.
+*
+******************************************************************************/
+void SelfTest_PWM_DeInit(IRQn_Type intr_src)
+{
+    if (stlPwm_base1 != NULL)
+    {
+        #if (defined (CY_IP_M7CPUSS) || defined (CY_M4CPUSS_V2_IRQ_MUXING))
+        NVIC_DisableIRQ((IRQn_Type)NvicMux3_IRQn);
+        CY_UNUSED_PARAMETER(intr_src);
+        #else
+        NVIC_DisableIRQ(intr_src);
+        #endif
+
+        Cy_TCPWM_PWM_Disable(stlPwm_base1, stlPwm_cntNum1);
+        Cy_TCPWM_PWM_DeInit(stlPwm_base1, stlPwm_cntNum1, stlPwm_config1);
+
+        stlPwm_base1    = NULL;
+        stlPwm_cntNum1  = 0U;
+        stlPwm_config1  = NULL;
+        stlPwm_testIsrCount = 0U;
+        stlPwm_hCnt     = 0U;
+        stlPwm_lCnt     = 0U;
+    }
 }
 
 
@@ -165,7 +199,7 @@ uint8_t SelfTest_PWM_init(TCPWM_Type* base, uint32_t cntNum,
 *
 *
 * \note
-* The parameter passed for CAT1C devices will be ignored
+* The parameter passed for XMC7000 and XMC5000 devices will be ignored
 *
 * \return
 *  0 - Test passed <br>
@@ -182,11 +216,11 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type* pinbase, uint32_t pinNum)
     uint8_t clk_divide;
     uint32_t timeout;
 
-    h_cnt = 0U;
-    l_cnt = 0U;
-    pwm_test_isr_count = 0;
+    stlPwm_hCnt = 0U;
+    stlPwm_lCnt = 0U;
+    stlPwm_testIsrCount = 0;
 
-    switch (config1->clockPrescaler)
+    switch (stlPwm_config1->clockPrescaler)
     {
         case CY_TCPWM_PWM_PRESCALER_DIVBY_1:
             clk_divide = 1;
@@ -225,9 +259,9 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type* pinbase, uint32_t pinNum)
             break;
     }
 
-    #if (defined(CY_IP_MXS40SSRSS))
+    #if defined(CY_IP_MXS40SSRSS)
     uint32_t PWM_PERIOD =
-        (((Cy_SysClk_ClkHfGetFrequency(3U) / 1000000U) / clk_divide) * (PWM_TIME));
+        (((Cy_SysClk_ClkHfGetFrequency(STL_PWM_SOURCE_HFCLOCK) / 1000000U) / clk_divide) * (PWM_TIME));
 
     #elif defined (CY_IP_MXS40SRSS)
     uint32_t PWM_PERIOD =
@@ -236,21 +270,21 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type* pinbase, uint32_t pinNum)
     uint32_t PWM_PERIOD = (((Cy_SysClk_ClkHfGetFrequency() / 1000000U) / clk_divide) * (PWM_TIME));
     #endif
 
-    Cy_TCPWM_PWM_SetPeriod0(base1, cntNum1, (PWM_PERIOD - 1U));
+    Cy_TCPWM_PWM_SetPeriod0(stlPwm_base1, stlPwm_cntNum1, (PWM_PERIOD - 1U));
 
     #if (ERROR_IN_PWM == 1u)
     /* Set 50% duty cycle instead of 33% */
-    Cy_TCPWM_PWM_SetCompare0(base1, cntNum1, (PWM_PERIOD / 2U));
+    Cy_TCPWM_PWM_SetCompare0(stlPwm_base1, stlPwm_cntNum1, (PWM_PERIOD / 2U));
     #else
-    Cy_TCPWM_PWM_SetCompare0(base1, cntNum1, ((PWM_PERIOD / 3U) - 1U));
+    Cy_TCPWM_PWM_SetCompare0(stlPwm_base1, stlPwm_cntNum1, ((PWM_PERIOD / 3U) - 1U));
     #endif
 
-    Cy_TCPWM_PWM_Enable(base1, cntNum1);
+    Cy_TCPWM_PWM_Enable(stlPwm_base1, stlPwm_cntNum1);
 
     #if defined(CY_IP_M0S8TCPWM)
-    Cy_TCPWM_TriggerReloadOrIndex(base1, 1UL << cntNum1);
+    Cy_TCPWM_TriggerReloadOrIndex(stlPwm_base1, 1UL << stlPwm_cntNum1);
     #else
-    Cy_TCPWM_TriggerReloadOrIndex_Single(base1, cntNum1);
+    Cy_TCPWM_TriggerReloadOrIndex_Single(stlPwm_base1, stlPwm_cntNum1);
     #endif
 
     timeout = 0uL;
@@ -261,29 +295,29 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type* pinbase, uint32_t pinNum)
         timeout++;
 
         #if defined (CY_IP_MXTCPWM) && (CY_IP_MXTCPWM_VERSION >= 2U)
-        if (Cy_TCPWM_PWM_LineOutStatus(base1, cntNum1, CY_TCPWM_PWM_LINE_PWM) != 0UL)
+        if (Cy_TCPWM_PWM_LineOutStatus(stlPwm_base1, stlPwm_cntNum1, CY_TCPWM_PWM_LINE_PWM) != 0UL)
         {
-            h_cnt++;
+            stlPwm_hCnt++;
         }
         else
         {
-            l_cnt++;
+            stlPwm_lCnt++;
         }
         #else
         if (0U != Cy_GPIO_Read(pinbase, pinNum))
         {
-            h_cnt++;
+            stlPwm_hCnt++;
         }
         else
         {
-            l_cnt++;
+            stlPwm_lCnt++;
         }
         #endif /* if defined (CY_IP_MXTCPWM) && (CY_IP_MXTCPWM_VERSION >= 2U) */
-    } while ((pwm_test_isr_count < 5U) && (PWM_TIME_TIMEOUT > timeout));
+    } while ((stlPwm_testIsrCount < 5U) && (PWM_TIME_TIMEOUT > timeout));
 
-    if (h_cnt != 0U)
+    if (stlPwm_hCnt != 0U)
     {
-        float off_on_ratio = (float)l_cnt/(float)h_cnt;
+        float off_on_ratio = (float)stlPwm_lCnt/(float)stlPwm_hCnt;
         if ((off_on_ratio > (float)1.875) && (off_on_ratio < (float)2.125))
         {
             ret = OK_STATUS;

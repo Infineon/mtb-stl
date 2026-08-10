@@ -14,9 +14,8 @@
 *  PSoC 4100S Plus 256k Device
 *  PSoC 4100S Max Device
 *  PSoC 4500S Device
-*
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")

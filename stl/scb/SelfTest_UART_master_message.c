@@ -24,7 +24,7 @@
  *  then it is exchanged with a two-byte sequence <ESC><ESC+1>.
  *
  ********************************************************************************
- * (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+ * (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
  * Technologies AG. All rights reserved.
  * This software, associated documentation and materials ("Software") is
  * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -650,6 +650,62 @@ void UartMesMaster_Init(CySCB_Type* uart_base, TCPWM_Type* counter_base, uint32_
 
 
 /*****************************************************************************
+* Function Name: UartMesMaster_DeInit
+******************************************************************************
+*
+* Summary:
+*  De-initialize the UART master protocol unit. Disables all interrupts,
+*  flushes the TX/RX FIFOs, stops the guard timer, and resets the internal
+*  control status structure.
+*
+* Parameters:
+*  NONE
+*
+* Return:
+*  NONE
+*
+*****************************************************************************/
+void UartMesMaster_DeInit(void)
+{
+    if (UART_Master_Struct.scb_base != NULL)
+    {
+        /* Disable TX and RX interrupts */
+        Cy_SCB_SetTxInterruptMask(UART_Master_Struct.scb_base, 0UL);
+        Cy_SCB_SetRxInterruptMask(UART_Master_Struct.scb_base, 0UL);
+
+        /* Flush FIFOs */
+        Cy_SCB_UART_ClearTxFifo(UART_Master_Struct.scb_base);
+        Cy_SCB_UART_ClearRxFifo(UART_Master_Struct.scb_base);
+
+        /* Disable the UART peripheral */
+        Cy_SCB_UART_Disable(UART_Master_Struct.scb_base, NULL);
+
+        /* Reset internal state */
+        UART_Master_Struct.gstatus  = UM_ERROR;
+        UART_Master_Struct.tstatus  = UM_SEND_START;
+        UART_Master_Struct.rstatus  = UM_RECEIVE_START;
+        UART_Master_Struct.tescflg  = 0u;
+        UART_Master_Struct.rescflg  = 0u;
+        UART_Master_Struct.scb_base = NULL;
+        Counter_Struct.counter_base = NULL;
+        Counter_Struct.cntNum       = 0UL;
+        Counter_Struct.cntMsk       = 0UL;
+    }
+
+    if (Counter_Struct.counter_base != NULL)
+    {
+        /* Stop and disarm the guard timer */
+        Cy_TCPWM_SetInterruptMask(Counter_Struct.counter_base, Counter_Struct.cntNum, 0UL);
+        #if defined(CY_IP_MXTCPWM)
+        Cy_TCPWM_TriggerStopOrKill_Single(Counter_Struct.counter_base, Counter_Struct.cntNum);
+        #else
+        Cy_TCPWM_TriggerStopOrKill(Counter_Struct.counter_base, Counter_Struct.cntMsk);
+        #endif
+    }
+}
+
+
+/*****************************************************************************
 * Function Name: UartMesMaster_DataProc
 ******************************************************************************
 *
@@ -675,12 +731,12 @@ void UartMesMaster_Init(CySCB_Type* uart_base, TCPWM_Type* counter_base, uint32_
 uint8_t UartMesMaster_DataProc(uint8_t address, uint8_t* txd, uint8_t tlen, uint8_t* rxd,
                                uint8_t rlen)
 {
-    uint8_t ret = 0u;
+    uint8_t ret = UART_MASTER_MESSAGE_STARTED_STATUS;
     const uint8_t uart_master_struct_gstatus = UART_Master_Struct.gstatus;
     /* Check if it possible to start a request */
     if ((tlen == 0u) || (uart_master_struct_gstatus == UM_BUSY))
     {
-        ret = 1u;
+        ret = UART_MASTER_MESSAGE_NOT_STARTED_STATUS;
     }
     else
     {

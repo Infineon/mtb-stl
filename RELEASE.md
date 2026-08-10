@@ -1,123 +1,60 @@
-# ModusToolbox Safety Test Library 3.4.1
+# ModusToolbox™ Safety Test Library 3.5.0
 
 
-Refer to the [README.md](./README.md) for a complete description of the ModusToolbox Safety Test Library.
+Refer to the [README.md](./README.md) for a complete description of the ModusToolbox™ Safety Test Library.
 
 ## What is Included?
 
-### CAT1A
-* Devices Supported: 
-  - PSOC™ 61 Programmable Line 
-  - PSOC™ 62 Performance Line
-  - XMC5000
+### PSOC™ Control C3 M6
 
 * Compilers Supported: GCC_ARM, ARM, IAR
 
 * List of Self-Tests supported:
     | Group              | Module |
     | ------             | ------ |
-    | System platform    | Interrupt, Clock, IPC, Startup Configuration Registers, DMAC, DMA/DW, WDT, WWDT, ECC|
-    | CPU                | CPU Registers, Program Counter, Program Flow, FPU Registers |
+    | System platform    | Interrupt, Clock, IPC, Startup Configuration Registers, DMA/DW, WDT, WWDT|
+    | CPU                | CPU Registers, CPU Instructions, Program Counter, Program Flow, FPU Registers |
     | Memory             | Flash, RAM, Stack |
-    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, ADC, DAC, Comparator, OP-AMP, Timer Counter, PWM, PWM Gatekill, CANFD |
-
-### CAT1B
-* Devices Supported: PSC3M5FDS2AFQ1
-
-* Compilers Supported: GCC_ARM, ARM, IAR
-
-* List of Self-Tests supported:
-    | Group              | Module |
-    | ------             | ------ |
-    | System platform    | Interrupt, Clock, IPC, Startup Configuration Registers, DMA/DW, WDT |
-    | CPU                | CPU Registers, Program Counter, Program Flow, FPU Registers |
-    | Memory             | Flash, RAM, Stack |
-    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, ADC, DAC, Comparator, Timer Counter, PWM, PWM Gatekill, CANFD, MOTIF, CORDIC, ECC |
-
-### CAT1C
-* Devices Supported: XMC7200D-E272K8384, XMC7100D-F176K4160
-
-* Compilers Supported: GCC_ARM, ARM, IAR
-
-* List of Self-Tests supported:
-    | Group              | Module |
-    | ------             | ------ |
-    | System platform    | Interrupt, Clock, IPC, Startup Configuration Registers, DMAC, DMA/DW, WDT, Windowed Watchdog |
-    | CPU                | CPU Registers, Program Counter, Program Flow, FPU Registers |
-    | Memory             | Flash, RAM, Stack |
-    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, ADC, Comparator, OP-AMP, Timer Counter, PWM, PWM Gatekill, CANFD |
-
-### CAT2
-* Device Families Supported: PSOC 4000S, PSOC 4000T, PSOC 4100S, PSOC 4100S Plus, PSOC 4100S Max, PSOC 4100T Plus, PSOC 4500S, PSOC 4700S
-
-* Compilers Supported: GCC_ARM, ARM, IAR
-
-* List of Self-Tests supported:
-    | Group              | Module |
-    | ------             | ------ |
-    | Analog group       | SAR ADC, OPAMP, LPCOMP |
-    | System platform    | Interrupt, Clock, Startup Configuration Registers, WDT, DMAC |
-    | CPU                | CPU Registers, Program Counter, Program Flow |
-    | Memory             | Flash, RAM, Stack |
-    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, Timer Counter, PWM, PWM Gatekill, CAN, CANFD |
-
-* Note: To perform SRAM tests, update CY_SRAM_BASE, CY_SRAM_SIZE, CY_STACK_SIZE according to the device being tested.
+    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, ADC, DAC, OPAMP, HWFILT3P3Z, Comparator, Timer Counter, PWM, PWM Gatekill, CANFD, MOTIF, CORDIC, ECC |
 
 ## What Changed?
+
+### v3.5.0
+* Added support for the PSOC™ Control C3 M6 device family.
+* Updated user documentation.
+* Fixed a failure in SelfTest_ECC() on XMC7000.
 
 ### v3.4.1
 * Added new SelfTest_SRAM_March_Full and SelfTest_SRAM_March_Runtime tests.
 
 ### v3.4.0
-* Updated user documentation
+* Updated user documentation.
 * Added support of the XMC5000 device family.
 
 ### v3.3.1
-* Fixed the return status for the SelfTest_UART_SCB() function for the case when the test is still in progress
+* Fixed the return status for the SelfTest_UART_SCB() function for the case when the test is still in progress.
 * Fixed build warnings for SAR ADC, ECC and IPC tests.
 
 ### v3.3.0
-* Updated user documentation
+* Updated user documentation.
 * Added support of the following device families:
-    * PSOC 4000T
-    * PSOC 4000S
-    * PSOC 4100S
-    * PSOC 4700S
-* Added support of CAT2 devices for the following tests:
+    * PSOC™ 4000T
+    * PSOC™ 4000S
+    * PSOC™ 4100S
+    * PSOC™ 4700S
+* Added support of PSOC™ 4 devices for the following tests:
     * CAN
     * CANFD
 
 ### v3.2.0
-* Updated user documentation
-* Added support for PSOC4100T Plus and PSOC4100S Plus device families
-* Added support of CAT2 devices for the following tests:
+* Updated user documentation.
+* Added support for PSOC™ 4100T Plus and PSOC™ 4100S Plus device families.
+* Added support of PSOC™ 4 devices for the following tests:
     * DMAC
     * Timer Counter
     * PWM
     * PWM Gatekill
 
-## Supported Software and Tools
-
-This version of the ModusToolbox Safety Test Library was validated for the compatibility with the following Software and Tools:
-
-| Software and Tools                                      | Version |
-| :---                                                    | :----:  |
-| ModusToolbox Software Environment                       | 3.7.0   |
-| CAT1 Peripheral Driver Library                          | 3.21.0  |
-| CAT2 Peripheral Driver Library                          | 2.17.0  |
-| GCC Compiler                                            | 14.2.1  |
-| IAR Compiler                                            | 9.50.2  |
-| ARM Compiler                                            | 6.22    |
-
-
-## More information
-
-For more information, refer to the following documents:
-
-* [ModusToolbox Safety Test Library README.md](./README.md)
-* [ModusToolbox Software Environment, Quick Start Guide, Documentation, and Videos](https://www.infineon.com/cms/en/design-support/tools/sdk/modustoolbox-software/)
-* [Infineon Technologies AG](https://www.infineon.com)
-
 ---
-(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+(c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 Technologies AG.  All rights reserved.

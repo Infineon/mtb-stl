@@ -6,7 +6,7 @@
 *  self tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -36,7 +36,7 @@
 *******************************************************************************/
 
 /**
- * \addtogroup group_motif
+ * \defgroup group_motif MOTIF (MOTIF STL module)
  * \{
  *
  * The MOTIF self test implements the Quadrature Decoder mode and validates the
@@ -119,11 +119,35 @@ typedef struct
 *  These signals are input to the MOTIF module.
 *  - Configure the TCPWM counter to capture the Q-CLK resolution.
 *  - Configure the MOTIF module.
+*
+* \note
+* Use MOTIF and TCPWM resources dedicated to this self-test while it is active.
+* This function configures the MOTIF block, a TCPWM counter for Q-clock capture,
+* and TCPWM PWM instances that emulate Phase-A, Phase-B, and Index inputs.
+* Call \ref SelfTest_Motif_DeInit before returning those resources to the application.
+*
 * \param hPtr
 * Pointer to the motif self test configuration handler.
 *
 *******************************************************************************/
 void SelfTest_Motif_Init(stl_motif_cfg_handle_t* hPtr);
+
+/*******************************************************************************
+* Function Name: SelfTest_Motif_DeInit
+****************************************************************************//**
+*
+*  This function de-initializes the MOTIF self test configuration. De-initialization
+*  includes:
+*  - Disable and de-initialize the MOTIF module.
+*  - Disable and de-initialize the TCPWM counter used for Q-CLK capture.
+*  - Disable and de-initialize the TCPWM PWM instances used to generate the
+*    emulated Phase-A, Phase-B and Index signals.
+*
+* \param hPtr
+* Pointer to the motif self test configuration handler.
+*
+*******************************************************************************/
+void SelfTest_Motif_DeInit(stl_motif_cfg_handle_t* hPtr);
 
 /*******************************************************************************
 * Function Name: SelfTest_Motif_Start
@@ -138,8 +162,8 @@ void SelfTest_Motif_Init(stl_motif_cfg_handle_t* hPtr);
 * Pointer to the motif self test configuration handler.
 *
 * \return
-*  "0" "OK_STATUS" - Test passed <br>
-*  "1" "ERROR_STATUS" - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 

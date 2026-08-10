@@ -6,7 +6,7 @@
 *  used for the CRC16 implementation according to CCITT standards.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_crc
+ * \defgroup group_crc CRC (CRC STL module)
  * \{
  *
  * The CRC test implements the CRC16 implementation according to CCITT standards.

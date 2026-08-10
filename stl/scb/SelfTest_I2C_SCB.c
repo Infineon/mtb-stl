@@ -6,7 +6,7 @@
 *  according to Class B library.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -55,7 +55,7 @@ static uint8_t SelfTest_I2C_SCB_Read(CySCB_Type* master_base,
 * Function Declaration
 *******************************************************************************/
 
-static cy_stc_scb_i2c_master_xfer_config_t masterTransferCfg =
+static cy_stc_scb_i2c_master_xfer_config_t stlScbI2c_masterTransferCfg =
 {
     .slaveAddress = I2C_SLAVE_ADDR,
     .buffer       = NULL,
@@ -112,11 +112,11 @@ static uint8_t SelfTest_I2C_SCB_Write(CySCB_Type* master_base,
 
     txBuffer[0] = transmitData;
     /* Setup transfer specific parameters */
-    masterTransferCfg.buffer     = txBuffer;
-    masterTransferCfg.bufferSize = PACKET_SIZE;
+    stlScbI2c_masterTransferCfg.buffer     = txBuffer;
+    stlScbI2c_masterTransferCfg.bufferSize = PACKET_SIZE;
 
     /* Start I2C write and check status*/
-    if (CY_SCB_I2C_SUCCESS == Cy_SCB_I2C_MasterWrite(master_base, &masterTransferCfg,
+    if (CY_SCB_I2C_SUCCESS == Cy_SCB_I2C_MasterWrite(master_base, &stlScbI2c_masterTransferCfg,
                                                      master_context))
     {
         /* If I2C write started without errors,
@@ -211,11 +211,11 @@ static uint8_t SelfTest_I2C_SCB_Read(CySCB_Type* master_base,
     uint8_t byteReceivedMaster[PACKET_SIZE];
 
     /* Setup transfer specific parameters */
-    masterTransferCfg.buffer     = byteReceivedMaster;
-    masterTransferCfg.bufferSize = PACKET_SIZE;
+    stlScbI2c_masterTransferCfg.buffer     = byteReceivedMaster;
+    stlScbI2c_masterTransferCfg.bufferSize = PACKET_SIZE;
 
     if (CY_SCB_I2C_SUCCESS ==
-        Cy_SCB_I2C_MasterRead(master_base, &masterTransferCfg, master_context))
+        Cy_SCB_I2C_MasterRead(master_base, &stlScbI2c_masterTransferCfg, master_context))
     {
         /* If I2C read started without errors, wait until master complete read transfer */
         while ((0u !=
@@ -313,7 +313,7 @@ uint8_t SelfTest_I2C_SCB(CySCB_Type* master_base, cy_stc_scb_i2c_context_t* mast
     static uint8_t i2cMode = WRITE;
 
     /* Byte for transmitting */
-    static uint8_t byteToTest = { 7u };
+    static uint8_t byteToTest = 0u;
     static uint8_t i2cBusBusyWriteCount = 0u;
     static uint8_t i2cBusBusyReadCount = 0u;
 

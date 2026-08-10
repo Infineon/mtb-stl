@@ -6,7 +6,7 @@
 *  for the Startup Configuration Register self tests.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_regs
+ * \defgroup group_regs Startup Register (Startup Register STL module)
  * \{
  *
  * This test describes and shows an example of how to check the startup configuration registers:
@@ -48,12 +48,12 @@
  *
  * Two test modes are implemented in the functions:
  *
- *      1) Store duplicates of startup configuration registers in Flash memory after the device startup.
+ *      1) Store duplicates of startup configuration registers in nonvolatile storage after the device startup.
  *         Periodically, the configuration registers are compared with the stored duplicates. Corrupted
- *         registers can be restored from Flash after checking.
- *      2) Compare the calculated CRC with the CRC previously stored in Flash if the CRC status
+ *         registers can be restored from nonvolatile storage after checking.
+ *      2) Compare the calculated CRC with the CRC previously stored in nonvolatile storage if the CRC status
  *         semaphore is set. If the status semaphore is not set, the CRC must be calculated and
- *         stored in Flash, and the status semaphore must be set.
+ *         stored in nonvolatile storage, and the status semaphore must be set.
  *
  *
  * \defgroup group_regs_macros Macros
@@ -62,7 +62,9 @@
 
 #if !defined(SELFTEST_CONFIGREGISTERS_H)
     #define SELFTEST_CONFIGREGISTERS_H
+#include "cy_pdl.h"
 #include "SelfTest_common.h"
+#include "cycfg.h"
 #include <string.h>
 
 /***************************************
@@ -73,38 +75,39 @@
  */
 
 /* Supports two self test modes: */
-/** Stores duplicates of registers to Flash and compares duplicates with registers. Registers can be
+/** Stores duplicates of registers to nonvolatile storage and compares duplicates with registers. Registers can be
  *  restored in this mode. */
 #define CFG_REGS_TO_FLASH_MODE           (1u)
-/** Calculates the registers CRC and stores to Flash; recalculates CRC and compares with the saved CRC. */
+/** Calculates the registers CRC and stores to nonvolatile storage; recalculates CRC and compares with the saved CRC. */
 #define CFG_REGS_CRC_MODE                (0u)
 
 /** Select which mode to use (CFG_REGS_TO_FLASH_MODE or CFG_REGS_CRC_MODE) */
-#define STARTUP_CFG_REGS_MODE            CFG_REGS_TO_FLASH_MODE
-
+#if !defined(STARTUP_CFG_REGS_MODE)
+    #define STARTUP_CFG_REGS_MODE        CFG_REGS_TO_FLASH_MODE
+#endif
 
 #if (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE)
 
 /** The first byte to store before storing CRC. */
     #define CRC_STARTUP_SEMAPHORE        (0x5Au)
 
-/** The number of bytes from the end of Flash. */
+/** The number of bytes from the end of nonvolatile storage. */
     #define CRC_STARTUP_SEMAPHORE_SHIFT  (13u)
 
-/** The number of bytes from the end of Flash. */
+/** The number of bytes from the end of nonvolatile storage. */
     #define CRC_STARTUP_LO               (12u)
 
 
-/* Define the number for the last row in Flash. */
-#if defined(SELFTEST_PSOC4_FAMILY) || defined(SELFTEST_PSOC6_FAMILY)
+/* Define the nonvolatile storage used to keep the startup register CRC record. */
+#if defined(SELFTEST_PSOC4_FAMILY) || defined(SELFTEST_PSOC6_FAMILY) || defined(SELFTEST_PSC3_FAMILY)
 /** Calculates the offset address for the last row of Flash for storing the register data.*/
     #define LAST_ROW_IN_FLASH_OFFSET        ((CY_FLASH_SIZE - CY_FLASH_SIZEOF_ROW))
 /** Calculates the starting address of the last row. This value may differ depending on the device used. */
     #define LAST_ROW_IN_FLASH_ADDR          (CY_FLASH_BASE + (LAST_ROW_IN_FLASH_OFFSET))
-#elif defined(SELFTEST_XMC7X_FAMILY) || defined(SELFTEST_PSC3_FAMILY) || defined(SELFTEST_XMC5X_FAMILY)
-/** The base address of Code Flash for XMC7X/XMC5X/PSC3. */
+#elif defined(SELFTEST_XMC7X_FAMILY) || defined(SELFTEST_XMC5X_FAMILY)
+/** The base address of Code Flash for XMC7000 and XMC5000 device families. */
     #define CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE      CY_FLASH_SM_SBM_BASE
-/** The size of Code Flash for XMC7X/XMC5X/PSC3. */
+/** The size of Code Flash for XMC7000 and XMC5000 device families. */
     #define CONF_REG_FLASH_SMALL_SECTOR_SIZE           CY_FLASH_SM_SBM_SIZE
 /** Calculates the offset address for the last row of Flash for storing the register data.*/
     #define LAST_ROW_IN_FLASH_OFFSET        \
@@ -117,9 +120,9 @@
 
 
 #if defined(SELFTEST_XMC7X_FAMILY)
-/** Base address of Code Flash only for XMC7X. */
+/** Base address of Code Flash only for the XMC7000 Family. */
     #define CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE      CY_FLASH_SM_SBM_BASE
-/** The size of Code Flash only for XMC7X. */
+/** The size of Code Flash only for the XMC7000 Family. */
     #define CONF_REG_FLASH_SMALL_SECTOR_SIZE           CY_FLASH_SM_SBM_SIZE
 /** The number of Flash rows to save the configuration registers. */
     #define CONF_REG_NUMBER_OF_ROWS     0x02u
@@ -169,12 +172,20 @@
 ****************************************************************************//**
 *
 * This function call checks the configuration registers by comparing the value
-* stored in Flash with the current configuration registers value.
+* stored in nonvolatile storage with the current configuration registers value.
 * If the values are different, the function returns a fail.
 *
+* \note
+* In \ref CFG_REGS_TO_FLASH_MODE, call \ref SelfTests_Save_StartUp_ConfigReg
+* once to create the stored baseline before using this check. In
+* \ref CFG_REGS_CRC_MODE, the first successful call stores the CRC baseline and
+* returns \ref CRC_SAVED_STATUS; subsequent calls perform the comparison.
+*
 * \return
-*  0 - Test Passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed in CFG_REGS_TO_FLASH_MODE. <br>
+*  \ref ERROR_STATUS (1) - Test failed or nonvolatile storage access failed. <br>
+*  \ref CRC_SAVED_STATUS (2) - CRC was stored successfully in CFG_REGS_CRC_MODE. <br>
+*  \ref PASS_COMPLETE_STATUS (3) - CRC matched the stored CRC in CFG_REGS_CRC_MODE. <br>
 *
 *******************************************************************************/
 uint8_t SelfTests_StartUp_ConfigReg(void);
@@ -206,30 +217,31 @@ void SelfTests_Init_StartUp_ConfigReg(void);
  * \addtogroup group_regs_functions
  * \{
  */
+#if (STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE)
 /*******************************************************************************
 * Function Name: SelfTests_Save_StartUp_ConfigReg
 ****************************************************************************//**
 *
 *
-*  This function stores the configuration registers to the FlashRowData array and writes this array to
-*  Flash.
-*
+*  This function stores the configuration registers to nonvolatile storage.
 *
 * \note
-* Used only if the STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE. <br>
+* Used only if STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE. <br>
 * This function must be called once after the initial PSOC power up and initialization before
 * entering the main program.
+* Do not call it periodically or after runtime configuration changes that should
+* be detected by the startup-register self-test, because it overwrites the
+* nonvolatile baseline used by \ref SelfTests_StartUp_ConfigReg.
 *
 * \return
-*  0 - Writing to Flash is successful. <br>
-*  >=1 - Writing to Flash is not successful. Refer to the Flash Driver PDL documentation
-*  for error codes.
+*  CY_FLASH_DRV_SUCCESS - Writing to Flash is successful. <br>
+*  Other cy_en_flashdrv_status_t values - Writing to Flash is not successful. Refer
+*  to the Flash Driver PDL documentation for error codes.
 *
 *
 *******************************************************************************/
-#if (STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE)
 cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void);
-#endif /* End (STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE) */
+#endif /* (STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE) */
 /** \} group_regs_functions */
 
 /** \} group_regs */

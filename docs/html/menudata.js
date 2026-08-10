@@ -23,8 +23,8 @@
  @licend  The above is the entire license notice for the JavaScript code in this file
 */
 var menudata={children:[
-{text:"Getting started",url:"page_getting_started.html"},
-{text:"STL API Reference",url:"modules.html"},
+{text:"Home",url:"index.html"},
+{text:"STL API Reference",url:"topics.html"},
 {text:"Online Documentation",url:"usergroup0.html",children:[
-{text:"ModusToolbox™ Software",url:"https://github.com/Infineon/modustoolbox-software"},
-{text:"CMSIS Documentation",url:"https://www.keil.com/pack/doc/CMSIS/General/html/index.html"}]}]}
+{text:"ModusToolbox™ Software",url:"^https://github.com/Infineon/modustoolbox-software"},
+{text:"CMSIS Documentation",url:"^https://www.keil.com/pack/doc/CMSIS/General/html/index.html"}]}]}

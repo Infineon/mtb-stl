@@ -6,7 +6,7 @@
 *  used for the windowed watchdog timer self tests.
 *
 *******************************************************************************
-* (c) 2020-2026, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,10 +35,10 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_wwdt
+ * \defgroup group_wwdt WWDT (WWDT STL module)
  * \{
  *
- * Window-selectable WDTs allow adjusting the watchdog timeout period
+ * Windowed WDTs allow adjusting the watchdog timeout period
  * to provide more flexibility for the different processor timing requirements.
  * The windowed WDT provides a way to demand that the ClearWDT instruction be executed, for example,
  * only in the last quarter of the watchdog timeout period. Essentially, this enables better code
@@ -100,17 +100,62 @@
 *
 *
 * \note
-* Applicable only for CAT1C devices.
+* Applicable only for XMC7000 and XMC5000 devices.
+* This test reconfigures the WDT window, warning interrupt, and reset action.
+* Do not call it while the application relies on the same WDT configuration for
+* normal supervision unless the application can tolerate the temporary watchdog
+* setup and the intentional reset path.
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_Windowed_WDT(void);
 
+/** \} group_wwdt_functions */
+
 #endif /* if ((defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 2)) || defined (CY_DOXYGEN)) */
 
+#if defined(CY_IP_MXS40SSRSS) || defined (CY_DOXYGEN)
+
+#include "cy_mcwdt.h"
+
+/***************************************
+* Function Prototypes
+***************************************/
+/**
+ * \addtogroup group_wwdt_functions
+ * \{
+ */
+
+/*******************************************************************************
+* Function Name: SelfTest_Windowed_MCWDT
+****************************************************************************//**
+*
+* Verifies the windowed WDT behaviour of the specified MCWDT sub-counter. It: \n
+* 1) Services the MCWDT before the lower limit, which causes the device to reset (SWWDTx). \n
+* 2) After the reset, verifies that the match interrupt fires at the configured match limit.
+*
+* \param base             Pointer to the MCWDT block base address (e.g. MCWDT_STRUCT0).
+* \param counter          Sub-counter to test. Valid values: CY_MCWDT_COUNTER0, CY_MCWDT_COUNTER1.
+*
+* \note
+* Applicable for PSOC Control Device Family.
+* Only CY_MCWDT_COUNTER0 and CY_MCWDT_COUNTER1 support the lower-limit windowed mode.
+* This test reconfigures the selected MCWDT sub-counter, its lower-limit reset
+* behavior, and its interrupt routing. Do not share the selected sub-counter
+* with application watchdog supervision during the test.
+*
+* \return
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
+*
+*******************************************************************************/
+uint8_t SelfTest_Windowed_MCWDT(MCWDT_STRUCT_Type* base, cy_en_mcwdtctr_t counter);
+
 /** \} group_wwdt_functions */
+
+#endif /* defined(CY_IP_MXS40SSRSS) */
 
 /** \} group_wwdt */
 

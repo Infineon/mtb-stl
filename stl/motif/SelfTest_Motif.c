@@ -5,7 +5,7 @@
 *  This file provides the source code to the API for the Motif self tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -36,11 +36,9 @@
 
 #include "cy_pdl.h"
 #include "SelfTest_Motif.h"
+#include "SelfTest_ErrorInjection.h"
 
 #if defined (CY_IP_MXS40TCPWM)
-
-#ifndef SELTTEST_MOTIF_H
-#define SELTTEST_MOTIF_H
 
 /*******************************************************************************
 * Function Name: SelfTest_MotifCfgSigGen
@@ -62,6 +60,14 @@ static inline void SelfTest_MotifCfgSigGen(stl_motif_cfg_handle_t* hPtr)
         (void)Cy_TCPWM_PWM_Init(hPtr->sgen_base[i], hPtr->sgen[i].idx, hPtr->sgen[i].cfg);
         Cy_TCPWM_PWM_Enable(hPtr->sgen_base[i], hPtr->sgen[i].idx);
     }
+
+    #if (ERROR_IN_MOTIF)
+    /* Corrupt Phase-A signal period to simulate MOTIF IP malfunction.
+     * This causes the MOTIF quadrature decoder to produce a wrong Q-CLK frequency,
+     * which will be detected by the capture range check in SelfTest_Motif_Start(). */
+    Cy_TCPWM_PWM_SetPeriod0(hPtr->sgen_base[0u], hPtr->sgen[0u].idx,
+                            Cy_TCPWM_PWM_GetPeriod0(hPtr->sgen_base[0u], hPtr->sgen[0u].idx) / 4u);
+    #endif /* ERROR_IN_MOTIF */
 
     /* Start test signals.*/
     Cy_TCPWM_TriggerStart_Single(
@@ -103,6 +109,46 @@ void SelfTest_Motif_Init(stl_motif_cfg_handle_t* hPtr)
 
     /* Enable MOTIF */
     Cy_TCPWM_MOTIF_Enable(hPtr->motif_base);
+}
+
+
+/*******************************************************************************
+* Function Name: SelfTest_Motif_DeInit
+****************************************************************************//**
+*
+*  This function de-initializes the MOTIF self test configuration. De-initialization
+*  includes:
+*  - Disable and de-initialize the MOTIF module.
+*  - Disable and de-initialize the TCPWM counter used for Q-CLK capture.
+*  - Disable and de-initialize the TCPWM PWM instances used to generate the
+*    emulated Phase-A, Phase-B and Index signals.
+*
+* \param hPtr
+* Pointer to the motif self test configuration handler.
+*
+*******************************************************************************/
+void SelfTest_Motif_DeInit(stl_motif_cfg_handle_t* hPtr)
+{
+    if (hPtr->motif_base != NULL)
+    {
+        Cy_TCPWM_MOTIF_Disable(hPtr->motif_base);
+        Cy_TCPWM_MOTIF_DeInit(hPtr->motif_base);
+    }
+
+    if (hPtr->qclk_base != NULL)
+    {
+        Cy_TCPWM_Counter_Disable(hPtr->qclk_base, hPtr->qclk.idx);
+        Cy_TCPWM_Counter_DeInit(hPtr->qclk_base, hPtr->qclk.idx, hPtr->qclk.cfg);
+    }
+
+    if (hPtr->sgen_base[0] != NULL)
+    {
+        for (uint32_t i = 0u; i < EMU_SIG_NUM; i++)
+        {
+            Cy_TCPWM_PWM_Disable(hPtr->sgen_base[i], hPtr->sgen[i].idx);
+            Cy_TCPWM_PWM_DeInit(hPtr->sgen_base[i], hPtr->sgen[i].idx, hPtr->sgen[i].cfg);
+        }
+    }
 }
 
 
@@ -150,6 +196,5 @@ uint8_t SelfTest_Motif_Start(stl_motif_cfg_handle_t* hPtr)
 }
 
 
-#endif /* SELFTEST_MOTIF_H */
 #endif /* if defined (CY_IP_MXS40TCPWM) */
 /* [] END OF FILE */

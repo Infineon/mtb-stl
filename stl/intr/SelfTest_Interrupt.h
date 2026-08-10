@@ -6,7 +6,7 @@
  *  used for the interrupt self test.
  *
  *******************************************************************************
- * (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+ * (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
  * Technologies AG. All rights reserved.
  * This software, associated documentation and materials ("Software") is
  * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
  * thereof can reasonably be expected to result in personal injury.
  *******************************************************************************/
 /**
- * \addtogroup group_intr
+ * \defgroup group_intr INTR (INTR STL module)
  * \{
  *
  * To meet the Class B requirement, check the interrupt for “incorrect frequency”. This test is a
@@ -85,9 +85,15 @@
 * \param cntNum
 * The Counter instance number in the selected TCPWM
 *
+* \note
+* Use a TCPWM counter and interrupt source dedicated to this self-test. The
+* application must route the selected counter interrupt to
+* \ref SelfTest_Interrupt_ISR_TIMER, and the counter interrupt state is consumed
+* by the test.
+*
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_Interrupt(TCPWM_Type* base, uint32_t cntNum);
@@ -111,20 +117,37 @@ void SelfTest_Interrupt_ISR_TIMER(void);
  * \{
  */
 #if (defined (CY_IP_M0S8CPUSSV3) || defined (CY_DOXYGEN))
-/** Lower possible interrupt count. This value may differ depending on the device used (CAT1A,
- *  CAT1B(PSoC C3), CAT1C, or CAT2). */
+/** Lower possible interrupt count.
+ *
+ * - PSOC 4 devices: `9u`
+ * - PSOC 61 Programmable Line, PSOC 62 Performance Line, PSOC Control C3,
+ *   XMC7000, and XMC5000 devices: `22u` for configurations
+ *   where the timer input clock and period produce about 22 to 27 terminal-
+ *   count interrupts in 1000 us; `22u` is the low end of that fixed pass
+ *   window
+ */
 #define NUMBER_OF_TIMER_TICKS_LO          (9u)
 
-/** Higher possible interrupt count. This value may differ depending on the device used (CAT1A,
- *  CAT1B(PSoC C3), CAT1C, or CAT2).  */
+/** Higher possible interrupt count.
+ *
+ * - PSOC 4 devices: `15u`
+ * - PSOC 61 Programmable Line, PSOC 62 Performance Line, PSOC Control C3,
+ *   XMC7000, and XMC5000 devices: `27u` for configurations
+ *   where the timer input clock and period produce about 22 to 27 terminal-
+ *   count interrupts in 1000 us; `27u` is the high end of that fixed pass
+ *   window
+ */
 #define NUMBER_OF_TIMER_TICKS_HI          (15u)
 
 #elif (defined (CY_IP_M4CPUSS) || defined (CY_IP_M7CPUSS) || defined (CY_IP_M33SYSCPUSS))
-/* If the input clock is of 25MHz*/
-/* Lower possible int count */
+/** Lower possible interrupt count for PSOC 61 Programmable Line, PSOC 62 Performance Line,
+*  PSOC Control C3, XMC7000, and XMC5000 devices when the timer input clock and
+*  period are configured to produce about 22 to 27 terminal-count interrupts in 1000 us. */
 #define NUMBER_OF_TIMER_TICKS_LO          (22u)
 
-/* Higher possible int count */
+/** Higher possible interrupt count for PSOC 61 Programmable Line, PSOC 62 Performance Line,
+ *  PSOC Control C3, XMC7000, and XMC5000 devices when the timer input clock and
+ *  period are configured to produce about 22 to 27 terminal-count interrupts in 1000 us. */
 #define NUMBER_OF_TIMER_TICKS_HI          (27u)
 #endif /* if (defined (CY_IP_M0S8CPUSSV3) || defined (CY_DOXYGEN)) */
 

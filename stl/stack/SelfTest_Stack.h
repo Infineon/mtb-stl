@@ -6,7 +6,7 @@
 *  self tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_stack
+ * \defgroup group_stack Stack (Stack STL module)
  * \{
  *
  * This Module checks for the stack overflow or underflow condition. The stack is a section of RAM
@@ -102,11 +102,11 @@ void SelfTests_Init_Stack_Range(uint16_t* stack_address, uint16_t stack_length,
  * The length of the stack.
  *
  * \return
- *  Result of test (bitmask): <br>
- *  0x00 (0) - Pass: both guard zones intact <br>
- *  0x01 (1) - Fail: stack overflow detected (bottom guard corrupted) <br>
- *  0x02 (2) - Fail: stack underflow detected (top guard corrupted) <br>
- *  0x03 (3) - Fail: both overflow and underflow detected
+ *  Stack range bitmask flags: <br>
+ *  \ref OK_STATUS (0) - Pass: both guard zones intact <br>
+ *  \ref ERROR_STACK_OVERFLOW (1) - Fail: bottom guard corrupted <br>
+ *  \ref ERROR_STACK_UNDERFLOW (2) - Fail: top guard corrupted <br>
+ *  \ref ERROR_STACK_OVERFLOW | \ref ERROR_STACK_UNDERFLOW (3) - Fail: both guard zones corrupted
  *
  **********************************************************************************/
 uint8_t SelfTests_Stack_Check_Range(uint16_t* stack_address, uint16_t stack_length);

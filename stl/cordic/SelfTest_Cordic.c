@@ -5,7 +5,7 @@
 *  This file provides the source code to the API for Cordic self tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -55,8 +55,8 @@
 #define OUT_SIN         (0.5f)
 #define OUT_COS         (0.866f)
 
-static uint8_t sine_cordic(void);
-static uint8_t cosine_cordic(void);
+static uint8_t sine_cordic(MXCORDIC_Type* base);
+static uint8_t cosine_cordic(MXCORDIC_Type* base);
 
 
 /*******************************************************************************
@@ -68,14 +68,14 @@ static uint8_t cosine_cordic(void);
 * If the difference between the results is within the tolerance, the function returns OK_STATUS or ERROR_STATUS.
 *
 * Parameters:
-*  void
+*  base - Pointer to the CORDIC instance.
 *
 * Return:
 *  uint8_t
 *
 *******************************************************************************/
 
-static uint8_t sine_cordic(void)
+static uint8_t sine_cordic(MXCORDIC_Type* base)
 {
     float32_t res;
     int32_t angle_deg = IN_SIN_COS;
@@ -90,7 +90,7 @@ static uint8_t sine_cordic(void)
     #endif
 
     /* Calculate the sine using CORDIC. */
-    result_q31 = Cy_CORDIC_Sin(MXCORDIC, angle_q31);
+    result_q31 = Cy_CORDIC_Sin(base, angle_q31);
 
     /* Convert the result into the Q31 format to float. */
     res = Q31_TO_FLOAT(result_q31);
@@ -116,14 +116,14 @@ static uint8_t sine_cordic(void)
 * the tolerance, the function returns OK_STATUS or ERROR_STATUS.
 *
 * Parameters:
-*  void
+*  base - Pointer to the CORDIC instance.
 *
 * Return:
 *  uint8_t
 *
 *******************************************************************************/
 
-static uint8_t cosine_cordic(void)
+static uint8_t cosine_cordic(MXCORDIC_Type* base)
 {
     float32_t res;
     CY_CORDIC_Q31_t result_q31 = 0;
@@ -134,7 +134,7 @@ static uint8_t cosine_cordic(void)
     CY_CORDIC_Q31_t angle_q31 = FLOAT_DEG_TO_RAD_Q31(angle_deg);
 
     /* Calculate the sine using CORDIC. */
-    result_q31 = Cy_CORDIC_Cos(MXCORDIC, angle_q31);
+    result_q31 = Cy_CORDIC_Cos(base, angle_q31);
 
     /* Convert the result into the Q31 format to float. */
     res = Q31_TO_FLOAT(result_q31);
@@ -152,25 +152,30 @@ static uint8_t cosine_cordic(void)
 
 
 /*******************************************************************************
-* Function Name: SelfTest_Cordic
+* Function Name: SelfTest_Cordic_Ext
 ********************************************************************************
 *
 *  This function performs the self test on Cordic IP.
 *  The CORDIC block accelerates the calculation of trigonometric functions.
 *  Sine and Cosine trignometric functions are performed in this API.
 *
+* Parameters:
+*  base - Pointer to the CORDIC instance.
+*
+* Return:
+*  "0" "OK_STATUS" - Test passed
+*  "1" "ERROR_STATUS" - Test failed
 *******************************************************************************/
-
-uint8_t SelfTest_Cordic(void)
+uint8_t SelfTest_Cordic_Ext(MXCORDIC_Type* base)
 {
     /* Enable CORDIC */
-    Cy_CORDIC_Enable(MXCORDIC);
+    Cy_CORDIC_Enable(base);
 
-    if (OK_STATUS != sine_cordic()) /* Sine function */
+    if (OK_STATUS != sine_cordic(base)) /* Sine function */
     {
         return ERROR_STATUS;
     }
-    if (OK_STATUS != cosine_cordic())  /* Cosine function */
+    if (OK_STATUS != cosine_cordic(base))  /* Cosine function */
     {
         return ERROR_STATUS;
     }
@@ -178,6 +183,6 @@ uint8_t SelfTest_Cordic(void)
 }
 
 
-#endif /* CY_IP_MXCORDIC */
+#endif /* defined (CY_IP_MXCORDIC) */
 
 /* [] END OF FILE */

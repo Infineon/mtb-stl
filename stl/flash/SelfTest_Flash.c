@@ -6,7 +6,7 @@
 *  used for Flash self tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -64,24 +64,24 @@
 #endif /* if defined(CY_IP_M0S8CPUSSV3) */
 
 /* Check whether the init function was called or not*/
-static bool init_fxn_called = false;
+static bool stlFlash_initFxnCalled = false;
 
 /* The pointer to the currently calculating Flash addr*/
-static uint32_t* flash_Pointer_FourBytes;
+static uint32_t* stlFlash_pointerFourBytes;
 
 /* Flash start addr*/
-static uint32_t flash_start_address;
+static uint32_t stlFlash_startAddress;
 
 /* Flash end addr*/
-static uint32_t flash_end_address;
+static uint32_t stlFlash_endAddress;
 
 #if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
 /* Variable that stores the running checksum of the Flash */
 uint64_t flash_CheckSum = CHECKSUM_INIT_VALUE;
-static uint64_t sumA = CHECKSUM_INIT_VALUE;
-static uint32_t IterationCounter = ITER_COUNT_INIT_VALUE;
+static uint64_t stlFlash_sumA = CHECKSUM_INIT_VALUE;
+static uint32_t stlFlash_iterationCounter = ITER_COUNT_INIT_VALUE;
 /* Expected checksum*/
-static uint64_t expected_flash_shecksum = 0ULL;
+static uint64_t stlFlash_expectedFlashChecksum = 0ULL;
 
 /***************************************
 * Local Function Prototypes
@@ -92,7 +92,7 @@ static void SelfTest_Fletcher64_CheckSum_Formula(uint32_t endAdress);
 /* Variable that store the running CRC checksum of the Flash */
 uint32_t flash_CheckSum = CRC32_INIT_VALUE;
 /* Expected checksum*/
-static uint32_t expected_flash_shecksum = 0ULL;
+static uint32_t stlFlash_expectedFlashChecksum = 0ULL;
 #endif /* FLASH_TEST_MODE == FLASH_TEST_CRC */
 
 
@@ -120,16 +120,16 @@ static uint32_t expected_flash_shecksum = 0ULL;
 void SelfTest_Flash_init(uint32_t StartAddressOfFlash, uint32_t EndAddressOfFlash,
                          uint64_t flash_ExpectedCheckSum)
 {
-    flash_start_address = StartAddressOfFlash;
+    stlFlash_startAddress = StartAddressOfFlash;
     /* Set a pointer to access Flash memory to the start address */
-    flash_Pointer_FourBytes = (uint32_t*)flash_start_address;
-    flash_end_address = EndAddressOfFlash;
+    stlFlash_pointerFourBytes = (uint32_t*)stlFlash_startAddress;
+    stlFlash_endAddress = EndAddressOfFlash;
     #if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
-    expected_flash_shecksum = flash_ExpectedCheckSum;
+    stlFlash_expectedFlashChecksum = flash_ExpectedCheckSum;
     #elif (FLASH_TEST_MODE == FLASH_TEST_CRC32)
-    expected_flash_shecksum = (uint32_t)flash_ExpectedCheckSum;
+    stlFlash_expectedFlashChecksum = (uint32_t)flash_ExpectedCheckSum;
     #endif
-    init_fxn_called = true;
+    stlFlash_initFxnCalled = true;
 }
 
 
@@ -153,7 +153,7 @@ void SelfTest_Flash_init(uint32_t StartAddressOfFlash, uint32_t EndAddressOfFlas
 
 uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
 {
-    if (init_fxn_called == false)
+    if (stlFlash_initFxnCalled == false)
     {
         return ERROR_STATUS;
     }
@@ -176,20 +176,20 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
     #endif
 
     /* Check if we are in the last permitted byte of Flash */
-    if ((uint32_t)flash_Pointer_FourBytes == flash_end_address)
+    if ((uint32_t)stlFlash_pointerFourBytes == stlFlash_endAddress)
     {
         /* Set a pointer to access Flash memory to the start address */
-        flash_Pointer_FourBytes = (uint32_t*)flash_start_address;
+        stlFlash_pointerFourBytes = (uint32_t*)stlFlash_startAddress;
 
 
         #if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
         /* Set init values for Iteration Counter in Fletcher64 Checksum algorithm */
-        IterationCounter = ITER_COUNT_INIT_VALUE;
+        stlFlash_iterationCounter = ITER_COUNT_INIT_VALUE;
 
         /* Set init values for the checksum calculation */
 
         flash_CheckSum = CHECKSUM_INIT_VALUE;
-        sumA = CHECKSUM_INIT_VALUE;
+        stlFlash_sumA = CHECKSUM_INIT_VALUE;
         #elif (FLASH_TEST_MODE == FLASH_TEST_CRC32)
         flash_CheckSum = CRC32_INIT_VALUE;
         #endif
@@ -197,12 +197,12 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
 
     /* Calculate the end address of the current tested block. */
     endAdressOfTest =
-        (uint32_t)((uint32_t)flash_Pointer_FourBytes + (DoubleWordsToTest * sizeof(uint32_t)));
+        (uint32_t)((uint32_t)stlFlash_pointerFourBytes + (DoubleWordsToTest * sizeof(uint32_t)));
 
     /* Check if Flash byte address is in the Flash range */
-    if (endAdressOfTest > flash_end_address)
+    if (endAdressOfTest > stlFlash_endAddress)
     {
-        endAdressOfTest = flash_end_address;
+        endAdressOfTest = stlFlash_endAddress;
     }
 
     #if defined(CY_IP_M0S8CPUSSV3)
@@ -225,9 +225,9 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
     /* Calculates the checksum for all bytes in Flash block */
     SelfTest_Fletcher64_CheckSum_Formula(endAdressOfTest);
     #elif (FLASH_TEST_MODE == FLASH_TEST_CRC32)
-    flash_CheckSum = SelfTests_CRC32_ACC(flash_CheckSum, (uint32_t)flash_Pointer_FourBytes,
-                                         endAdressOfTest - (uint32_t)flash_Pointer_FourBytes);
-    flash_Pointer_FourBytes = (uint32_t*)endAdressOfTest;
+    flash_CheckSum = SelfTests_CRC32_ACC(flash_CheckSum, (uint32_t)stlFlash_pointerFourBytes,
+                                         endAdressOfTest - (uint32_t)stlFlash_pointerFourBytes);
+    stlFlash_pointerFourBytes = (uint32_t*)endAdressOfTest;
     #endif
 
     #if defined(CY_IP_M0S8CPUSSV3)
@@ -241,16 +241,16 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
     #endif
 
     /* Check if we are in the last permitted byte of Flash */
-    if ((uint32_t)flash_Pointer_FourBytes == flash_end_address)
+    if ((uint32_t)stlFlash_pointerFourBytes == stlFlash_endAddress)
     {
         #if (ERROR_IN_FLASH == 1)
 
         /* Compare the stored check sum and calculated check sum */
-        if (flash_CheckSum == (expected_flash_shecksum + 1))
+        if (flash_CheckSum == (stlFlash_expectedFlashChecksum + 1))
         #else
 
         /* Compare the stored check sum and calculated check sum */
-        if (flash_CheckSum == expected_flash_shecksum)
+        if (flash_CheckSum == stlFlash_expectedFlashChecksum)
         #endif /* End ERROR_IN_FLASH */
         {
             /* Test passed */
@@ -294,10 +294,10 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
  *  uint32_t endAdress - The number of the last byte for the block checksum calculation.
  *
  * Global Variables Used:
- *  uint32_t *flash_Pointer_FourBytes - The pointer to the current byte of Flash.
- *  sumA - Fletcher64 A variable.
+ *  uint32_t *stlFlash_pointerFourBytes - The pointer to the current byte of Flash.
+ *  stlFlash_sumA - Fletcher64 A variable.
  *  flash_CheckSum - Fletcher64 B variable.
- *  IterationCounter - Byte N counter for Fletcher64.
+ *  stlFlash_iterationCounter - Byte N counter for Fletcher64.
  *
  * Return:
  *  No
@@ -306,7 +306,7 @@ uint8_t SelfTest_FlashCheckSum(uint32_t DoubleWordsToTest)
 #if (FLASH_TEST_MODE == FLASH_TEST_FLETCHER64)
 static void SelfTest_Fletcher64_CheckSum_Formula(uint32_t endAdress)
 {
-    uint32_t doubleWords = ((endAdress - (uint32_t)flash_Pointer_FourBytes) / sizeof(uint32_t));
+    uint32_t doubleWords = ((endAdress - (uint32_t)stlFlash_pointerFourBytes) / sizeof(uint32_t));
     uint32_t tlen;
 
     /* Calculate Fletcher64 Checksum for Flash Block with size doubleWords. */
@@ -322,32 +322,32 @@ static void SelfTest_Fletcher64_CheckSum_Formula(uint32_t endAdress)
         do
         {
             /* Calculate the sum of A = A + Byte i */
-            sumA = sumA + *flash_Pointer_FourBytes;
+            stlFlash_sumA = stlFlash_sumA + *stlFlash_pointerFourBytes;
 
             /* B = B + A */
-            flash_CheckSum = flash_CheckSum + sumA;
+            flash_CheckSum = flash_CheckSum + stlFlash_sumA;
 
             /* Increase Fletcher64 Iteration Counter */
             /* and the pointer to Flash current byte (+4 bytes because DoubleWord) */
-            IterationCounter++;
-            flash_Pointer_FourBytes++;
+            stlFlash_iterationCounter++;
+            stlFlash_pointerFourBytes++;
             --tlen;
         } while (tlen != 0u);
 
         /* First reduction step to 32 bits */
-        sumA = (sumA & 0xFFFFFFFFu) + (sumA >> 32);
+        stlFlash_sumA = (stlFlash_sumA & 0xFFFFFFFFu) + (stlFlash_sumA >> 32);
         flash_CheckSum = (flash_CheckSum & 0xFFFFFFFFu) + (flash_CheckSum >> 32);
     }
 
     /* If end of Flash summarize Checksum */
-    if ((uint32_t)flash_Pointer_FourBytes == flash_end_address)
+    if ((uint32_t)stlFlash_pointerFourBytes == stlFlash_endAddress)
     {
         /* Second reduction step to 32 bits */
-        sumA = (sumA & 0xFFFFFFFFu) + (sumA >> 32);
+        stlFlash_sumA = (stlFlash_sumA & 0xFFFFFFFFu) + (stlFlash_sumA >> 32);
         flash_CheckSum = (flash_CheckSum & 0xFFFFFFFFu) + (flash_CheckSum >> 32);
 
         /* Summarize Checksum and store to 64 bits */
-        flash_CheckSum = (flash_CheckSum << 32) | sumA;
+        flash_CheckSum = (flash_CheckSum << 32) | stlFlash_sumA;
     }
 }
 

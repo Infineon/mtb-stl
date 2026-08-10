@@ -6,7 +6,7 @@
 *  for the SPI self tests according to the Class B library.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,13 +35,14 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_spi
+ * \defgroup group_spi SPI (SPI STL module)
  * \{
  *
  * This test implements the SPI internal data loopback test. The test is a success
- * if the transmitted byte is equal to the received byte and returns 2. Each function
- * call increments the test byte. After 256 function calls, when the test completes
- * testing all 256 values and they are all a success, the function returns 3.
+ * if the transmitted byte is equal to the received byte and returns
+ * \ref PASS_STILL_TESTING_STATUS (2). Each function call increments the test byte.
+ * After 256 function calls, when the test completes testing all 256 values and they
+ * are all a success, the function returns \ref PASS_COMPLETE_STATUS (3).
  *
  *
  * \defgroup group_spi_functions Functions
@@ -74,14 +75,17 @@
 * \note
 *  Use SmartIO for internal loopback.
 *  During a call, the function transmits and receives bytes from 0x01 to 0xFF.
+*  Do not call this function while application traffic is active on the same
+*  SPI instance. The test clears RX/TX FIFOs and temporarily disables SPI RX/TX
+*  interrupt masks while each byte is checked.
 *
 *
 * \return
-*  1 - Test failed <br>
-*  2 - Still testing <br>
-*  3 - Test completed <br>
-*  4 - TX Not empty <br>
-*  5 - RX Not empty
+*  \ref ERROR_STATUS (1) - Test failed <br>
+*  \ref PASS_STILL_TESTING_STATUS (2) - Still testing <br>
+*  \ref PASS_COMPLETE_STATUS (3) - Test completed <br>
+*  \ref ERROR_TX_NOT_EMPTY (4) - TX not empty <br>
+*  \ref ERROR_RX_NOT_EMPTY (5) - RX not empty <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_SPI_SCB(CySCB_Type* base);
@@ -98,6 +102,8 @@ uint8_t SelfTest_SPI_SCB(CySCB_Type* base);
 #define SPI_TXRX_DATA_TIME              (32u)
 
 #define SPI_SCB_TRANSMIT_BYTE_ERROR     (100u)
+
+#define SPI_TEST_RANGE                  (0xFFu)
 
 /** \endcond */
 

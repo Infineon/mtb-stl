@@ -5,7 +5,7 @@
 * This file provides the source code for the CRC32 implementation.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -43,7 +43,7 @@
  * Poly:
  *  0xEDB88320
  ********************************************************************************/
-static const uint32_t CRC_32_Tab[256] =
+static const uint32_t stlCrc_crc32Tab[256] =
 {
     0x00000000uL, 0xedb88320uL, 0x36c98560uL, 0xdb710640uL, 0x6d930ac0uL, 0x802b89e0uL,
     0x5b5a8fa0uL, 0xb6e20c80uL,
@@ -114,7 +114,7 @@ static const uint32_t CRC_32_Tab[256] =
 /*******************************************************************************
 * Table for CRC16 CCITT calculation
 *******************************************************************************/
-static const uint16_t CRC_16_Tab[256] =
+static const uint16_t stlCrc_crc16Tab[256] =
 {
     0x0000u, 0x1021u, 0x2042u, 0x3063u, 0x4084u, 0x50a5u, 0x60c6u, 0x70e7u,
     0x8108u, 0x9129u, 0xa14au, 0xb16bu, 0xc18cu, 0xd1adu, 0xe1ceu, 0xf1efu,
@@ -171,7 +171,7 @@ uint32_t SelfTests_CRC32_Byte(uint32_t crc, uint8_t val)
     uint32_t calc_crc = crc;
 
     tbl_idx = (uint8_t)((calc_crc >> 24u) ^ val);
-    calc_crc = CRC_32_Tab[tbl_idx] ^ (calc_crc << 8);
+    calc_crc = stlCrc_crc32Tab[tbl_idx] ^ (calc_crc << 8);
 
     return calc_crc;
 }
@@ -254,7 +254,7 @@ uint32_t SelfTests_CRC32(uint32_t BaseAdress, uint32_t len)
  ******************************************************************************/
 uint16_t SelfTests_CRC16_CCITT_Byte(uint16_t crc, uint8_t val)
 {
-    return (uint16_t)(crc << 8u) ^ CRC_16_Tab[((crc >> 8u) ^ val)];
+    return (uint16_t)(crc << 8u) ^ stlCrc_crc16Tab[((crc >> 8u) ^ val)];
 }
 
 

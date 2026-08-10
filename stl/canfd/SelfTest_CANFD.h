@@ -6,7 +6,7 @@
 *  for the CAN-FD self tests according to Class B library.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_canfd
+ * \defgroup group_canfd CAN-FD (CAN-FD STL module)
  * \{
  *
  * The CAN-FD block is tested using the internal loopback capability.
@@ -45,7 +45,7 @@
  * transmitted and the message received in RX FIFO is verified.
  *
  * \note
- * Only applicable to CAT1C and CAT2 devices
+ * Only applicable to XMC7000, XMC5000, and PSOC 4 devices.
  *
  * \defgroup group_canfd_functions Functions
  */
@@ -83,6 +83,11 @@
 * verified to be empty. Similarly, a message with message ID 0x50 is
 * transmitted and the message received in RX FIFO is verified.
 *
+* \note
+* Do not call this function while the selected CAN FD channel is handling
+* application bus traffic. Internal test mode keeps the test inside the CAN FD
+* block; external test mode also drives the external CAN FD pins.
+*
 *
 * \param base
 * The pointer to a CAN FD instance
@@ -100,8 +105,8 @@
 * external: will drive the external pins along with loopback
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_CANFD(CANFD_Type* base, uint32_t chan,

@@ -6,7 +6,7 @@
 *  provoke detection of defects by self tests.
 *
 *******************************************************************************
-* (c) 2024, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -70,6 +70,7 @@
 #define ERROR_IN_SRAM_MARCH                                 0u
 #define ERROR_IN_SRAM_GALPAT                                0u
 #define ERROR_IN_SRAM_MARCH_STACKFREE                       0u
+#define ERROR_IN_HWFILT3P3Z                                 0u
 #define ERROR_IN_MOTIF                                      0u
 #define ERROR_IN_CORDIC                                     0u
 #define ERROR_IN_ECC                                        0u

@@ -6,7 +6,7 @@
 * tests.
 *
 *******************************************************************************
-* (c) 2020-2025, Infineon Technologies AG, or an affiliate of Infineon
+* (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
 * This software, associated documentation and materials ("Software") is
 * owned by Infineon Technologies AG or one of its affiliates ("Infineon")
@@ -35,7 +35,7 @@
 * thereof can reasonably be expected to result in personal injury.
 *******************************************************************************/
 /**
- * \addtogroup group_dmac
+ * \defgroup group_dmac DMAC (DMAC STL module)
  * \{
  *
  * The DMAC test performs tests on Direct Memory Access Controller using a fixed size of DMAC transfer.
@@ -124,12 +124,16 @@
 * -> Bits 7:0 select the input trigger signal for the trigger multiplexer.
 *
 * \note
-* Applicable only for CAT1A and CAT1C devices.
+* Applicable only for PSOC 61 Programmable Line, PSOC 62 Performance Line, XMC7000 and
+* XMC5000 devices.
+* Use a DMAC channel, descriptors, and trigger line dedicated to this self-test.
+* The function initializes the descriptors and channel, sets the descriptor
+* source/destination addresses, and enables the selected DMAC channel.
 *
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_DMAC(DMAC_Type* base, uint32_t channel, cy_stc_dmac_descriptor_t* descriptor0,
@@ -172,11 +176,14 @@ uint8_t SelfTest_DMAC(DMAC_Type* base, uint32_t channel, cy_stc_dmac_descriptor_
 * Refer to device TRM for details on trigLine value selection
 *
 * \note
-* Applicable only for CAT2 devices.
+* Applicable only for PSOC 4 devices.
+* Use a DMAC channel and trigger line dedicated to this self-test. The function
+* initializes the selected channel descriptors, sets source/destination
+* addresses, enables the DMAC channel, and clears the channel interrupt state.
 *
 * \return
-*  0 - Test passed <br>
-*  1 - Test failed
+*  \ref OK_STATUS (0) - Test passed <br>
+*  \ref ERROR_STATUS (1) - Test failed <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_DMAC(DMAC_Type* base, uint32_t channel, uint32_t trigLine);
