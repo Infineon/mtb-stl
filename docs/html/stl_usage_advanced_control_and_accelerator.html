@@ -92,11 +92,129 @@ $(function(){initNavTree('stl_usage_advanced_control_and_accelerator.html','',''
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_output_2libs_2mtb-stl_2guides_2advanced-control-and-accelerator-tests"></a></p>
-<p>This guide covers IPC communication, DMA DW, CORDIC math accelerator, and MOTIF quadrature-decoder self-tests.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md70"></a>
+<p>This guide covers CLB, EPU, and IPC communication, DMA DW, CORDIC math accelerator, and MOTIF quadrature-decoder self-tests.</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md101"></a>
+CLB test</h1>
+<p>The CLB (Custom Logic Block) self-test is available on PSOC Control C3 M8 devices with the PPCA subsystem. It exercises the DICO (Digital Current Observer) and MACO (Matrix Commutation) CLB sub-blocks. The DICO tests use internal timer-driven switching and, where needed, internal ADC test-data injection; the MACO test supplies its own minimal sector patterns. No external trigger source, routing, pin connection, power converter, or analog stimulus is required.</p>
+<p><span class="tt"><a class="el" href="group__group__clb__functions.html#ga67b8c15e927ba9ac22ba7e875bf25fe2" title="Performs a self-test of the CLB (Custom Logic Block) DICO and MACO sub-blocks by executing the sub-te...">SelfTest_CLB(uint8_t testMask)</a></span> accepts one or more of the following OR-combined selection bits. <span class="tt">SELFTEST_CLB_ALL</span> is the OR of all six bits. The function evaluates selected subtests in table order and stops at the first failure. Run the masks in separate calls when the returned status must identify the failing path.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Test mask  </th><th class="markdownTableHeadNone">Tested path  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_CLB_SAFE_STATE</span>  </td><td class="markdownTableBodyNone">DICO kill-path transition: autonomous Phase 1 switching leaves safe state, a software kill forces <span class="tt">KILL_STATE</span> and <span class="tt">SAFE_STATE</span>, and kill exit clears <span class="tt">KILL_STATE</span>.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_CLB_INTR</span>  </td><td class="markdownTableBodyNone">DICO interrupt-register path: <span class="tt">INTR_MASK</span> write/readback, software <span class="tt">INTR_SET</span> assertion and write-one-to-clear, and <span class="tt">INTR_MASKED</span> behavior.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_CLB_DICO_PATH</span>  </td><td class="markdownTableBodyNone">DICO autonomous Phase 1 switching and hardware-generated DICO interrupt status.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_CLB_DICO_IL</span>  </td><td class="markdownTableBodyNone">Internal ADC Group 0 Slice 0 test-data injection through AFLT0 median pass-through (<span class="tt">FILT_OUT0</span>) to the DICO Phase 1 <span class="tt">IL_ACCU</span> observer.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_CLB_DICO_LIMIT</span>  </td><td class="markdownTableBodyNone">DICO limit detection for an illegal <span class="tt">IMINL &gt; IMAXL</span> pair and the <span class="tt">MAX_ON_REACHED</span> on-time limiter.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_CLB_MACO_SEQ</span>  </td><td class="markdownTableBodyNone">MACO sequencer start, next-sector transition, and software-kill safe-state behavior using temporary sector patterns.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_CLB_ALL</span>  </td><td class="markdownTableBodyNone">All six paths above.  </td></tr>
+</table>
+<p>Bits outside <span class="tt">SELFTEST_CLB_ALL</span> are ignored when at least one valid bit is present. A zero mask, or a mask with no valid bit, returns <span class="tt">ERROR_STATUS</span> without running a subtest. A selected hardware failure or any internal timeout also returns <span class="tt">ERROR_STATUS</span>; there is no separate timeout status. The DICO autonomous-switch and limit checks are bounded to 50 ms, the ADC conversions in the IL path are bounded to 50 ms each, and the MACO start and sector-transition checks are bounded to 1 ms and 50 ms respectively.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md102"></a>
+Device Configurator setup</h2>
+<p>In the PPCA Configuration personality, allocate <span class="tt">clb</span> to the CPU that calls the self-test. The M8 reference configuration uses <span class="tt">CY_ALLOCATE_PERIPHERAL_TO_CPU0</span>. <span class="tt">SELFTEST_CLB_DICO_IL</span> also accesses ADC Group 0, so allocate <span class="tt">adcGrp0</span> to the same CPU; the reference configuration likewise uses <span class="tt">CY_ALLOCATE_PERIPHERAL_TO_CPU0</span>.</p>
+<p>No CLB, DICO, or MACO personality, generated configuration object, application ISR, or external signal route is required by this API. The normal system and PPCA peripheral clocks must be initialized before the call. The API enables the CLB and its selected DICO or MACO sub-block itself; the IL subtest additionally enables PPCA and AREF while it runs.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md103"></a>
+Resource ownership and restoration</h2>
+<p>Reserve the PPCA CLB exclusively while the self-test runs. The DICO tests change CLB output selection and DICO control, configuration, current limits, polarity, safe/on-time settings, interrupt masks, and interrupt/status flags. <span class="tt">SELFTEST_CLB_DICO_IL</span> additionally changes PPCA enable state, AREF enable state, ADC Group 0 Slice 0 configuration and test/calibration mode, and AFLT0 configuration. The MACO test changes CLB selection, MACO control/event state, all three sector row/safe registers, and their pattern tables.</p>
+<p>Each selected subtest completes its cleanup before <span class="tt"><a class="el" href="group__group__clb__functions.html#ga67b8c15e927ba9ac22ba7e875bf25fe2" title="Performs a self-test of the CLB (Custom Logic Block) DICO and MACO sub-blocks by executing the sub-te...">SelfTest_CLB()</a></span> can return a failure. Configuration registers saved by the test are restored before the next selected subtest or return. Pending DICO and MACO interrupt/status flags are cleared rather than preserved. The IL cleanup disables AREF before restoring the saved PPCA, ADC, and AFLT registers; it does not preserve a pre-existing AREF enabled state, so an application that owned that state must re-enable AREF after the call. Do not run the API while application code, an ISR, or another CPU uses DICO, MACO, ADC Group 0/AFLT0, or observes the CLB outputs. In particular, an application DICO interrupt handler must not consume the temporary interrupt state created by the interrupt-path test.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md104"></a>
+API sequence</h2>
+<p>Call <span class="tt"><a class="el" href="group__group__clb__functions.html#ga67b8c15e927ba9ac22ba7e875bf25fe2" title="Performs a self-test of the CLB (Custom Logic Block) DICO and MACO sub-blocks by executing the sub-te...">SelfTest_CLB()</a></span> only after the required PPCA ownership allocation and clock initialization. Use <span class="tt">SELFTEST_CLB_ALL</span> when one aggregate result is sufficient. To isolate a fault, call one mask at a time and stop after the first non-<span class="tt">OK_STATUS</span> result; the API has no failure-detail getter. The following example deliberately uses individual masks for that reason:</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> uint8_t clbTests[] =</div>
+<div class="line">{</div>
+<div class="line">    <a class="code hl_define" href="group__group__clb__test__mask.html#ga54eb6e98289221e7c464ad7de4f47ff4">SELFTEST_CLB_SAFE_STATE</a>,</div>
+<div class="line">    <a class="code hl_define" href="group__group__clb__test__mask.html#gafd729b14c7ffc932aafe6326ab76f0ca">SELFTEST_CLB_INTR</a>,</div>
+<div class="line">    <a class="code hl_define" href="group__group__clb__test__mask.html#ga38351548f9f04490d0452e322bd122f1">SELFTEST_CLB_DICO_PATH</a>,</div>
+<div class="line">    <a class="code hl_define" href="group__group__clb__test__mask.html#ga2963c1214ac36c145fb5a2a356940ebd">SELFTEST_CLB_DICO_IL</a>,</div>
+<div class="line">    <a class="code hl_define" href="group__group__clb__test__mask.html#gaf4a3432968493d2f0a8d69a23bd44548">SELFTEST_CLB_DICO_LIMIT</a>,</div>
+<div class="line">    <a class="code hl_define" href="group__group__clb__test__mask.html#ga0c0f19a34c4bbbe5858da98290a60683">SELFTEST_CLB_MACO_SEQ</a>,</div>
+<div class="line">};</div>
+<div class="line">uint8_t status = <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
+<div class="line">uint8_t failedTestMask = 0U;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">for</span> (uint32_t testIndex = 0U;</div>
+<div class="line">     (testIndex &lt; (<span class="keyword">sizeof</span>(clbTests) / <span class="keyword">sizeof</span>(clbTests[0]))) &amp;&amp; (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> == status);</div>
+<div class="line">     testIndex++)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_function" href="group__group__clb__functions.html#ga67b8c15e927ba9ac22ba7e875bf25fe2">SelfTest_CLB</a>(clbTests[testIndex]);</div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">    {</div>
+<div class="line">        failedTestMask = clbTests[testIndex];</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle the first failing CLB path identified by failedTestMask. */</span></div>
+<div class="line">    (void)failedTestMask;</div>
+<div class="line">}</div>
+<div class="ttc" id="agroup__group__clb__functions_html_ga67b8c15e927ba9ac22ba7e875bf25fe2"><div class="ttname"><a href="group__group__clb__functions.html#ga67b8c15e927ba9ac22ba7e875bf25fe2">SelfTest_CLB</a></div><div class="ttdeci">uint8_t SelfTest_CLB(uint8_t testMask)</div><div class="ttdoc">Performs a self-test of the CLB (Custom Logic Block) DICO and MACO sub-blocks by executing the sub-te...</div></div>
+<div class="ttc" id="agroup__group__clb__test__mask_html_ga0c0f19a34c4bbbe5858da98290a60683"><div class="ttname"><a href="group__group__clb__test__mask.html#ga0c0f19a34c4bbbe5858da98290a60683">SELFTEST_CLB_MACO_SEQ</a></div><div class="ttdeci">#define SELFTEST_CLB_MACO_SEQ</div><div class="ttdoc">Run Test F: MACO sequencer functional test (start, sector transition, kill path).</div><div class="ttdef"><b>Definition</b> SelfTest_CLB.h:208</div></div>
+<div class="ttc" id="agroup__group__clb__test__mask_html_ga2963c1214ac36c145fb5a2a356940ebd"><div class="ttname"><a href="group__group__clb__test__mask.html#ga2963c1214ac36c145fb5a2a356940ebd">SELFTEST_CLB_DICO_IL</a></div><div class="ttdeci">#define SELFTEST_CLB_DICO_IL</div><div class="ttdoc">Run Test D: DICO IL data path via ADC test-mode injection + AFLT[0] + DICO IL_ACCU.</div><div class="ttdef"><b>Definition</b> SelfTest_CLB.h:202</div></div>
+<div class="ttc" id="agroup__group__clb__test__mask_html_ga38351548f9f04490d0452e322bd122f1"><div class="ttname"><a href="group__group__clb__test__mask.html#ga38351548f9f04490d0452e322bd122f1">SELFTEST_CLB_DICO_PATH</a></div><div class="ttdeci">#define SELFTEST_CLB_DICO_PATH</div><div class="ttdoc">Run Test C: DICO phase-switching autonomy (timer-driven PS interrupt).</div><div class="ttdef"><b>Definition</b> SelfTest_CLB.h:199</div></div>
+<div class="ttc" id="agroup__group__clb__test__mask_html_ga54eb6e98289221e7c464ad7de4f47ff4"><div class="ttname"><a href="group__group__clb__test__mask.html#ga54eb6e98289221e7c464ad7de4f47ff4">SELFTEST_CLB_SAFE_STATE</a></div><div class="ttdeci">#define SELFTEST_CLB_SAFE_STATE</div><div class="ttdoc">Run Test A: DICO kill-path / safe-state transition.</div><div class="ttdef"><b>Definition</b> SelfTest_CLB.h:193</div></div>
+<div class="ttc" id="agroup__group__clb__test__mask_html_gaf4a3432968493d2f0a8d69a23bd44548"><div class="ttname"><a href="group__group__clb__test__mask.html#gaf4a3432968493d2f0a8d69a23bd44548">SELFTEST_CLB_DICO_LIMIT</a></div><div class="ttdeci">#define SELFTEST_CLB_DICO_LIMIT</div><div class="ttdoc">Run Test E: DICO limit/threshold detection (INCORR_SETTING + MAX_ON_REACHED).</div><div class="ttdef"><b>Definition</b> SelfTest_CLB.h:205</div></div>
+<div class="ttc" id="agroup__group__clb__test__mask_html_gafd729b14c7ffc932aafe6326ab76f0ca"><div class="ttname"><a href="group__group__clb__test__mask.html#gafd729b14c7ffc932aafe6326ab76f0ca">SELFTEST_CLB_INTR</a></div><div class="ttdeci">#define SELFTEST_CLB_INTR</div><div class="ttdoc">Run Test B: DICO software interrupt set / clear round-trip.</div><div class="ttdef"><b>Definition</b> SelfTest_CLB.h:196</div></div>
+<div class="ttc" id="agroup__group__stl__status_html_ga1a8b70f2787072be26b2aa39523f09d6"><div class="ttname"><a href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a></div><div class="ttdeci">#define OK_STATUS</div><div class="ttdoc">Test passed / operation completed successfully.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:93</div></div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md105"></a>
+EPU test</h1>
+<p>The EPU (Event Processing Unit) self-test is available on PSOC Control C3 M8 devices with PPCA. For every requested processing unit (PU), it configures asynchronous bypass mode, generates an internal software event, routes the PU output through COMBO0 to EPU IRQ0, and checks the EPU interrupt status. The test therefore covers the requested PU signal path plus COMBO and EPU IRQ routing without an external event source, pin, or application ISR.</p>
+<p><span class="tt">EPU_PU_TYPE_T1</span> selects the full-featured T1 PU implementation, which includes masking, blanking, debouncing, and delay capabilities. <span class="tt">EPU_PU_TYPE_T2</span> selects the simplified T2 implementation, which provides bypass, polarity, and edge capabilities. The self-test exercises both types in asynchronous bypass mode; it does not infer their behavior from the type name.</p>
+<p>The <span class="tt">puInitial</span> and <span class="tt">puEnd</span> arguments form an inclusive interval:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Type  </th><th class="markdownTableHeadNone">Valid inclusive indices  </th><th class="markdownTableHeadNone">Public maximum-index macro  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">EPU_PU_TYPE_T1</span>  </td><td class="markdownTableBodyNone"><span class="tt">0</span> through <span class="tt">31</span>  </td><td class="markdownTableBodyNone"><span class="tt">EPU_PU_T1_MAX_INDEX</span>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">EPU_PU_TYPE_T2</span>  </td><td class="markdownTableBodyNone"><span class="tt">0</span> through <span class="tt">15</span>  </td><td class="markdownTableBodyNone"><span class="tt">EPU_PU_T2_MAX_INDEX</span>  </td></tr>
+</table>
+<p>An unknown type, an end index beyond the selected type's maximum, or <span class="tt">puInitial &gt; puEnd</span> returns <span class="tt">ERROR_INCORRECT_USAGE_STATUS</span> without hardware access. There is no empty valid interval. A failed PU path returns <span class="tt">ERROR_STATUS</span> and the call stops at that PU; the API has no public failing-PU getter. For each PU it waits a fixed 100 us propagation interval before reading interrupt status, so there is no configurable polling timeout.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md106"></a>
+Device Configurator setup</h2>
+<p>Add the PPCA EPU personality and allocate every PU that will be tested to the calling CPU. The verified M8 configuration assigns <span class="tt">puty1_0</span> through <span class="tt">puty1_31</span> and <span class="tt">puty2_0</span> through <span class="tt">puty2_15</span> to <span class="tt">CY_ALLOCATE_PERIPHERAL_TO_CPU0</span>, which permits the full public ranges above. A different M8 application may test only the PU indices allocated to its caller.</p>
+<p>Before calling <span class="tt"><a class="el" href="group__group__epu__functions.html#gaff22aaa5c67469e4ae58c9ecd5590724" title="Performs a self-test of the EPU processing unit signal path by generating a software event on each PU...">SelfTest_EPU_PU()</a></span>, enable the EPU block with <span class="tt">Cy_PPCA_EPU_Enable(PPCA_EPU)</span>. The STL API deliberately does not toggle that enable state, so that power and clock policy remains application-owned. The API uses raw PPCA EPU registers and needs no generated EPU configuration object in customer code. A CPU interrupt allocation is not required for the self-test: it reads EPU IRQ0 status directly. In the verified configuration, <span class="tt">epuIrq0</span> through <span class="tt">epuIrq7</span> are unassigned (<span class="tt">-1</span>).</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md107"></a>
+Resource ownership and restoration</h2>
+<p>Reserve every requested PU, COMBO0, and EPU IRQ0 exclusively during the call. For each PU, the API temporarily rewrites that PU configuration, COMBO0 configuration, and EPU IRQ0 source selection; it generates and clears a software event and clears EPU IRQ0 status. Those saved configuration registers are restored before the next PU or before a failing call returns, but pending interrupt state is cleared rather than preserved. Other PU configuration registers are not changed.</p>
+<p>Do not use COMBO0, EPU IRQ0, or a requested PU concurrently from an ISR, another CPU, or application routing. Choose an unused COMBO0/IRQ0 topology or pause the application users first. The reference M8 configuration reserves other COMBO and T2 resources for application routing; those resources remain outside the self-test except when their PU index is deliberately included in the requested range.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md108"></a>
+API sequence</h2>
+<p>Enable the application-owned EPU block, call <span class="tt"><a class="el" href="group__group__epu__functions.html#gaff22aaa5c67469e4ae58c9ecd5590724" title="Performs a self-test of the EPU processing unit signal path by generating a software event on each PU...">SelfTest_EPU_PU()</a></span> once for each PU type and inclusive range, preserve the first failure, then disable the block only when the application owns that enable state. The example tests the complete ranges exposed by the public macros:</p>
+<div class="fragment"><div class="line">uint8_t status;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* This example owns the PPCA EPU enable state. */</span></div>
+<div class="line">Cy_PPCA_EPU_Enable(PPCA_EPU);</div>
+<div class="line"> </div>
+<div class="line">status = <a class="code hl_function" href="group__group__epu__functions.html#gaff22aaa5c67469e4ae58c9ecd5590724">SelfTest_EPU_PU</a>(<a class="code hl_define" href="group__group__epu__macros.html#ga79d286aad62c0c5a85581ee6564a55cb">EPU_PU_TYPE_T1</a>, 0U, <a class="code hl_define" href="group__group__epu__macros.html#ga4d3571b66f3c82056c6bf554872cdf00">EPU_PU_T1_MAX_INDEX</a>);</div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_function" href="group__group__epu__functions.html#gaff22aaa5c67469e4ae58c9ecd5590724">SelfTest_EPU_PU</a>(<a class="code hl_define" href="group__group__epu__macros.html#gad80754ea311336d7e3d6b5206eb1ccb9">EPU_PU_TYPE_T2</a>, 0U, <a class="code hl_define" href="group__group__epu__macros.html#gae15c6f824c905738a3dfb647501fa939">EPU_PU_T2_MAX_INDEX</a>);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle the first failing EPU PU range. */</span></div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">Cy_PPCA_EPU_Disable(PPCA_EPU);</div>
+<div class="ttc" id="agroup__group__epu__functions_html_gaff22aaa5c67469e4ae58c9ecd5590724"><div class="ttname"><a href="group__group__epu__functions.html#gaff22aaa5c67469e4ae58c9ecd5590724">SelfTest_EPU_PU</a></div><div class="ttdeci">uint8_t SelfTest_EPU_PU(uint8_t type, uint8_t puInitial, uint8_t puEnd)</div><div class="ttdoc">Performs a self-test of the EPU processing unit signal path by generating a software event on each PU...</div></div>
+<div class="ttc" id="agroup__group__epu__macros_html_ga4d3571b66f3c82056c6bf554872cdf00"><div class="ttname"><a href="group__group__epu__macros.html#ga4d3571b66f3c82056c6bf554872cdf00">EPU_PU_T1_MAX_INDEX</a></div><div class="ttdeci">#define EPU_PU_T1_MAX_INDEX</div><div class="ttdoc">Maximum PU_T1 index (derived from PPCA_EPU_EPU_Type::PU_T1_CNFG[] size)</div><div class="ttdef"><b>Definition</b> SelfTest_EPU.h:96</div></div>
+<div class="ttc" id="agroup__group__epu__macros_html_ga79d286aad62c0c5a85581ee6564a55cb"><div class="ttname"><a href="group__group__epu__macros.html#ga79d286aad62c0c5a85581ee6564a55cb">EPU_PU_TYPE_T1</a></div><div class="ttdeci">#define EPU_PU_TYPE_T1</div><div class="ttdoc">PU type: Processing Unit Type 1 (full-featured: masking/blanking/debouncing/delay)</div><div class="ttdef"><b>Definition</b> SelfTest_EPU.h:83</div></div>
+<div class="ttc" id="agroup__group__epu__macros_html_gad80754ea311336d7e3d6b5206eb1ccb9"><div class="ttname"><a href="group__group__epu__macros.html#gad80754ea311336d7e3d6b5206eb1ccb9">EPU_PU_TYPE_T2</a></div><div class="ttdeci">#define EPU_PU_TYPE_T2</div><div class="ttdoc">PU type: Processing Unit Type 2 (simplified: bypass/polarity/edge)</div><div class="ttdef"><b>Definition</b> SelfTest_EPU.h:86</div></div>
+<div class="ttc" id="agroup__group__epu__macros_html_gae15c6f824c905738a3dfb647501fa939"><div class="ttname"><a href="group__group__epu__macros.html#gae15c6f824c905738a3dfb647501fa939">EPU_PU_T2_MAX_INDEX</a></div><div class="ttdeci">#define EPU_PU_T2_MAX_INDEX</div><div class="ttdoc">Maximum PU_T2 index (derived from PPCA_EPU_EPU_Type::PU_T2_CNFG[] size)</div><div class="ttdef"><b>Definition</b> SelfTest_EPU.h:101</div></div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md109"></a>
 IPC test</h1>
-<p>The IPC self-test validates the device's internal inter-processor or inter-core communication resources.</p>
-<p>The following is an example of an IPC self-test:</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md110"></a>
+Conventional IPC implementation</h2>
+<p><span class="tt"><a class="el" href="group__group__ipc__functions.html#ga5cf6396aa1868bae667c7fc650445f4b" title="This function performs a check on each free IPC channel with all free IPC interrupts.">SelfTest_IPC()</a></span> validates the device's conventional internal inter-processor or inter-core communication resources.</p>
 <div class="fragment"><div class="line">uint8_t status = <a class="code hl_function" href="group__group__ipc__functions.html#ga5cf6396aa1868bae667c7fc650445f4b">SelfTest_IPC</a>();</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
@@ -104,8 +222,67 @@ IPC test</h1>
 <div class="line">    <span class="comment">/* Handle IPC self-test failure */</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__ipc__functions_html_ga5cf6396aa1868bae667c7fc650445f4b"><div class="ttname"><a href="group__group__ipc__functions.html#ga5cf6396aa1868bae667c7fc650445f4b">SelfTest_IPC</a></div><div class="ttdeci">uint8_t SelfTest_IPC(void)</div><div class="ttdoc">This function performs a check on each free IPC channel with all free IPC interrupts.</div><div class="ttdef"><b>Definition</b> SelfTest_IPC.c:858</div></div>
-<div class="ttc" id="agroup__group__stl__status_html_ga1a8b70f2787072be26b2aa39523f09d6"><div class="ttname"><a href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a></div><div class="ttdeci">#define OK_STATUS</div><div class="ttdoc">Test passed / operation completed successfully.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:91</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md71"></a>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md111"></a>
+PPCA implementation</h2>
+<p><span class="tt"><a class="el" href="group__group__ipc__ppca__functions.html#ga8de3c51802238ac0bf96938c2d274c25" title="Tests selected PPCA IPC channel/interrupt-structure pairs in loopback mode.">SelfTest_IPC_PPCA(uint8_t testMask)</a></span> is available on PSOC Control C3 M8 devices with <span class="tt">CY_IP_MXS40PPSS</span>. It runs on the Main CM33 in loopback mode, so no PPCA CPU firmware or external IPC endpoint is required. The PPCA IPC block has channels 0 through 3 and interrupt structures 0 through 3. Every invocation tests all 16 channel/interrupt-structure pairs for the selected groups, and each selected group runs for every pair until the first failure.</p>
+<p><span class="tt">testMask</span> selects one or more OR-combined groups. <span class="tt">SELFTEST_IPC_PPCA_ALL</span> is the OR of all six public group bits.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Test mask  </th><th class="markdownTableHeadNone">Tested path  </th><th class="markdownTableHeadNone">Subtests  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_IPC_PPCA_LOCK</span>  </td><td class="markdownTableBodyNone">Acquire, acquired-state verification, and release.  </td><td class="markdownTableBodyNone">1, 2, 3  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_IPC_PPCA_DATA</span>  </td><td class="markdownTableBodyNone">DATA0/DATA1 integrity, independence, and final lock release.  </td><td class="markdownTableBodyNone">4, 5, 13  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_IPC_PPCA_NOTIFY</span>  </td><td class="markdownTableBodyNone">Notify-to-self loopback, interrupt clear-on-write-one, and final lock release.  </td><td class="markdownTableBodyNone">6, 7, 14  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_IPC_PPCA_INTR</span>  </td><td class="markdownTableBodyNone">Interrupt masking, <span class="tt">INTR_MASKED</span> consistency, and software-forced interrupt.  </td><td class="markdownTableBodyNone">8, 9, 10  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_IPC_PPCA_RELEASE_EVT</span>  </td><td class="markdownTableBodyNone">Release-event self-loopback.  </td><td class="markdownTableBodyNone">11  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_IPC_PPCA_SILENT_REL</span>  </td><td class="markdownTableBodyNone">Release without interrupt generation.  </td><td class="markdownTableBodyNone">12  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">SELFTEST_IPC_PPCA_ALL</span>  </td><td class="markdownTableBodyNone">All six groups.  </td><td class="markdownTableBodyNone">1 through 14  </td></tr>
+</table>
+<p>At least one valid mask bit is required. A zero mask, or a mask containing no valid bit, returns <span class="tt">ERROR_STATUS</span> without running hardware tests. Bits outside <span class="tt">SELFTEST_IPC_PPCA_ALL</span> are ignored when at least one valid bit is present. A selected subtest timeout or path failure also returns <span class="tt">ERROR_STATUS</span>; there is no separate timeout status. Positive ISR waits are bounded to 1000 us, while checks that an interrupt must not fire use a 50 us observation interval.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md112"></a>
+Failure diagnostics</h3>
+<p>After a failed channel/interrupt-pair test, <span class="tt"><a class="el" href="group__group__ipc__ppca__functions.html#ga8f99c7b9b0665156cd0f9dd9d9b1037c" title="Returns the PPCA IPC channel index (0-3) of the first failure detected in the last SelfTest_IPC_PPCA(...">SelfTest_IPC_PPCA_GetFailChannel()</a></span>, <span class="tt"><a class="el" href="group__group__ipc__ppca__functions.html#ga235cb801eaf3abca02808b8776e2afc1" title="Returns the PPCA IPC interrupt structure index (0-3) of the first failure detected in the last SelfTe...">SelfTest_IPC_PPCA_GetFailIntr()</a></span>, and <span class="tt"><a class="el" href="group__group__ipc__ppca__functions.html#ga6df8879aaa7a0dcc9a6b52370afd8d29" title="Returns the sub-test number (1-14) of the first failure detected in the last SelfTest_IPC_PPCA() run.">SelfTest_IPC_PPCA_GetFailSubtest()</a></span> identify the first failed channel, interrupt structure, and numbered subtest. Do not treat those coordinates as fresh for every <span class="tt">ERROR_STATUS</span>: the API does not reset or populate them when the mask contains no valid selection or when temporary ISR configuration fails before pair execution.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md113"></a>
+Setup and ownership</h3>
+<p>Initialize the normal system and PPCA clocks, then enable the PPCA block before calling the API using the applicable PPCA enable flow, such as <span class="tt">Cy_PPCA_Enable(PPCA_CNFG)</span>. <span class="tt"><a class="el" href="group__group__ipc__ppca__functions.html#ga8de3c51802238ac0bf96938c2d274c25" title="Tests selected PPCA IPC channel/interrupt-structure pairs in loopback mode.">SelfTest_IPC_PPCA()</a></span> does not own the top-level PPCA enable/disable policy; disable PPCA afterward only when the calling application owns that enable state.</p>
+<p>The API installs temporary handlers for <span class="tt">ppca_ipc_0_IRQn</span> through <span class="tt">ppca_ipc_3_IRQn</span>; no application ISR setup is required. It temporarily uses all four IPC channels and all four interrupt structures. Reserve the entire PPCA IPC block exclusively during the call, and do not allow application code, another CPU, or an ISR to use these IPC resources concurrently.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md114"></a>
+Restoration behavior</h3>
+<p>The API saves and restores interrupt masks, ISR vectors, NVIC priorities, and the NVIC enabled state. Test-generated pending IPC interrupt bits are cleared rather than preserved, and cleanup releases any channel locks remaining from the test. DATA0 and DATA1 values written by the test are not restored. Therefore, pre-existing locks, pending events, and channel data must not be treated as preserved application state.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md115"></a>
+API sequence</h3>
+<p>The following example owns the PPCA enable state, runs all PPCA IPC groups, and makes first-failure details available to application failure handling:</p>
+<div class="fragment"><div class="line">uint8_t status;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* This example owns the PPCA enable state. */</span></div>
+<div class="line">Cy_PPCA_Enable(PPCA_CNFG);</div>
+<div class="line"> </div>
+<div class="line">status = <a class="code hl_function" href="group__group__ipc__ppca__functions.html#ga8de3c51802238ac0bf96938c2d274c25">SelfTest_IPC_PPCA</a>(<a class="code hl_define" href="group__group__ipc__ppca__test__mask.html#gaa2bcf8883aebdceba253bf537350b47f">SELFTEST_IPC_PPCA_ALL</a>);</div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">{</div>
+<div class="line">    uint32_t failedChannel = <a class="code hl_function" href="group__group__ipc__ppca__functions.html#ga8f99c7b9b0665156cd0f9dd9d9b1037c">SelfTest_IPC_PPCA_GetFailChannel</a>();</div>
+<div class="line">    uint32_t failedIntr = <a class="code hl_function" href="group__group__ipc__ppca__functions.html#ga235cb801eaf3abca02808b8776e2afc1">SelfTest_IPC_PPCA_GetFailIntr</a>();</div>
+<div class="line">    uint8_t failedSubtest = <a class="code hl_function" href="group__group__ipc__ppca__functions.html#ga6df8879aaa7a0dcc9a6b52370afd8d29">SelfTest_IPC_PPCA_GetFailSubtest</a>();</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">/* Make first-failure details available to application failure handling. */</span></div>
+<div class="line">    (void)failedChannel;</div>
+<div class="line">    (void)failedIntr;</div>
+<div class="line">    (void)failedSubtest;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">Cy_PPCA_Disable(PPCA_CNFG);</div>
+<div class="ttc" id="agroup__group__ipc__ppca__functions_html_ga235cb801eaf3abca02808b8776e2afc1"><div class="ttname"><a href="group__group__ipc__ppca__functions.html#ga235cb801eaf3abca02808b8776e2afc1">SelfTest_IPC_PPCA_GetFailIntr</a></div><div class="ttdeci">uint32_t SelfTest_IPC_PPCA_GetFailIntr(void)</div><div class="ttdoc">Returns the PPCA IPC interrupt structure index (0-3) of the first failure detected in the last SelfTe...</div></div>
+<div class="ttc" id="agroup__group__ipc__ppca__functions_html_ga6df8879aaa7a0dcc9a6b52370afd8d29"><div class="ttname"><a href="group__group__ipc__ppca__functions.html#ga6df8879aaa7a0dcc9a6b52370afd8d29">SelfTest_IPC_PPCA_GetFailSubtest</a></div><div class="ttdeci">uint8_t SelfTest_IPC_PPCA_GetFailSubtest(void)</div><div class="ttdoc">Returns the sub-test number (1-14) of the first failure detected in the last SelfTest_IPC_PPCA() run.</div></div>
+<div class="ttc" id="agroup__group__ipc__ppca__functions_html_ga8de3c51802238ac0bf96938c2d274c25"><div class="ttname"><a href="group__group__ipc__ppca__functions.html#ga8de3c51802238ac0bf96938c2d274c25">SelfTest_IPC_PPCA</a></div><div class="ttdeci">uint8_t SelfTest_IPC_PPCA(uint8_t testMask)</div><div class="ttdoc">Tests selected PPCA IPC channel/interrupt-structure pairs in loopback mode.</div></div>
+<div class="ttc" id="agroup__group__ipc__ppca__functions_html_ga8f99c7b9b0665156cd0f9dd9d9b1037c"><div class="ttname"><a href="group__group__ipc__ppca__functions.html#ga8f99c7b9b0665156cd0f9dd9d9b1037c">SelfTest_IPC_PPCA_GetFailChannel</a></div><div class="ttdeci">uint32_t SelfTest_IPC_PPCA_GetFailChannel(void)</div><div class="ttdoc">Returns the PPCA IPC channel index (0-3) of the first failure detected in the last SelfTest_IPC_PPCA(...</div></div>
+<div class="ttc" id="agroup__group__ipc__ppca__test__mask_html_gaa2bcf8883aebdceba253bf537350b47f"><div class="ttname"><a href="group__group__ipc__ppca__test__mask.html#gaa2bcf8883aebdceba253bf537350b47f">SELFTEST_IPC_PPCA_ALL</a></div><div class="ttdeci">#define SELFTEST_IPC_PPCA_ALL</div><div class="ttdoc">All six groups combined.</div><div class="ttdef"><b>Definition</b> SelfTest_IPC_PPCA.h:138</div></div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md116"></a>
 DMA DW test</h1>
 <p>The DMA DW self-test validates the configured DataWire DMA path and descriptor flow. The library re-initializes both descriptors at runtime from the config structs you supply, then overwrites the source and destination addresses with its own internal static buffers. The transfer geometry you configure in Device Configurator must therefore match those internal buffers exactly, or the destination-vs-source comparison will always fail.</p>
 <p>Add a DataWire DMA channel in Device Configurator and give it the alias <span class="tt">DMA_DW_TEST</span>. Configure it with <b>two descriptors</b> as follows.</p>
@@ -148,9 +325,9 @@ DMA DW test</h1>
 <div class="line">    <span class="comment">/* Handle DMA DW self-test failure */</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__dma__functions_html_gae9efde693de252424a84fb5acbc69327"><div class="ttname"><a href="group__group__dma__functions.html#gae9efde693de252424a84fb5acbc69327">SelfTest_DMA_DW</a></div><div class="ttdeci">uint8_t SelfTest_DMA_DW(DW_Type *base, uint32_t channel, cy_stc_dma_descriptor_t *descriptor0, cy_stc_dma_descriptor_t *descriptor1, const cy_stc_dma_descriptor_config_t *des0_config, const cy_stc_dma_descriptor_config_t *des1_config, cy_stc_dma_channel_config_t const *channelConfig, uint32_t trigLine)</div><div class="ttdoc">This function writes a pattern (66 bytes) to the destination using the DMA, and the destination block...</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md72"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md117"></a>
 CORDIC tests</h1>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md73"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md118"></a>
 Wrapper API</h2>
 <p>The wrapper API runs the self-test against the default CORDIC instance.</p>
 <p>The following is an example of a self-test using the wrapper API:</p>
@@ -164,8 +341,8 @@ Wrapper API</h2>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line">Cy_CORDIC_Disable(MXCORDIC);</div>
-<div class="ttc" id="agroup__group__cordic__functions_html_ga08f8a2432c3fe8a3bbbc0bbfc1d2fdfb"><div class="ttname"><a href="group__group__cordic__functions.html#ga08f8a2432c3fe8a3bbbc0bbfc1d2fdfb">SelfTest_Cordic</a></div><div class="ttdeci">#define SelfTest_Cordic(void)</div><div class="ttdoc">BWC macro to call SelfTest_Cordic_Ext() with the default CORDIC instance.</div><div class="ttdef"><b>Definition</b> SelfTest_Cordic.h:99</div></div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md74"></a>
+<div class="ttc" id="agroup__group__cordic__functions_html_ga08f8a2432c3fe8a3bbbc0bbfc1d2fdfb"><div class="ttname"><a href="group__group__cordic__functions.html#ga08f8a2432c3fe8a3bbbc0bbfc1d2fdfb">SelfTest_Cordic</a></div><div class="ttdeci">#define SelfTest_Cordic(void)</div><div class="ttdoc">BWC macro to call SelfTest_Cordic_Ext() with the default CORDIC instance.</div><div class="ttdef"><b>Definition</b> SelfTest_Cordic.h:101</div></div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md119"></a>
 Explicit-instance API</h2>
 <p>The explicit-instance API runs the self-test against a caller-provided CORDIC base address.</p>
 <p>The following is an example of a self-test using an explicit CORDIC instance:</p>
@@ -180,7 +357,7 @@ Explicit-instance API</h2>
 <div class="line"> </div>
 <div class="line">Cy_CORDIC_Disable(MXCORDIC);</div>
 <div class="ttc" id="agroup__group__cordic__functions_html_gab188594272df34a84634525eac9f344c"><div class="ttname"><a href="group__group__cordic__functions.html#gab188594272df34a84634525eac9f344c">SelfTest_Cordic_Ext</a></div><div class="ttdeci">uint8_t SelfTest_Cordic_Ext(MXCORDIC_Type *base)</div><div class="ttdoc">This function performs the self test on Cordic IP.</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md75"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md120"></a>
 MOTIF test</h1>
 <p>The MOTIF self-test validates the MOTIF quadrature decoder by driving it with internally generated emulated Phase A, Phase B, and Index signals and then verifying that the Q-CLK period captured by a dedicated timer counter matches the expected value.</p>
 <p>The test requires five TCPWM resources in the same TCPWM group and a MOTIF instance in the same group:</p>
@@ -199,10 +376,10 @@ MOTIF test</h1>
 <td class="markdownTableBodyNone"><span class="tt">MOTIF0</span>  </td><td class="markdownTableBodyNone">MOTIF  </td><td class="markdownTableBodyNone">Quadrature decoder under test  </td></tr>
 </table>
 <p>All five resources must be clocked from the same peripheral clock divider (alias: <span class="tt">MOTIF0_CLK</span>). This shared clock is critical: <span class="tt">ref_count</span> and <span class="tt">margin_count</span> in <span class="tt"><a class="el" href="group__group__motif__structure.html#structstl__motif__cfg__handle__t" title="MOTIF self test configuration structure.">stl_motif_cfg_handle_t</a></span> are expressed in units of that clock.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md76"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md121"></a>
 MOTIF0_CLK (shared peripheral clock divider)</h2>
 <p>Add a peripheral clock divider of type <span class="tt">8-bit</span> and give it the alias <span class="tt">MOTIF0_CLK</span>. Set the integer divider to any value that produces a stable, known frequency from your system clock. In the reference design the counter clock producing a 50 MHz. Connect this divider to <span class="tt">EMU_PH_A</span>, <span class="tt">EMU_PH_B</span>, <span class="tt">EMU_PH_I</span>, <span class="tt">Tick_Time</span>, and <span class="tt">MOTIF0</span> clock inputs.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md77"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md122"></a>
 EMU_PH_A (Phase A emulator)</h2>
 <p>Add a TCPWM in <b>PWM</b> mode in the same group as <span class="tt">MOTIF0</span> and give it the alias <span class="tt">EMU_PH_A</span>.</p>
 <ul>
@@ -213,7 +390,7 @@ EMU_PH_A (Phase A emulator)</h2>
 <li><b>Trigger Out 1:</b> Line-out (<span class="tt">CY_TCPWM_CNT_TRIGGER_ON_LINE_OUT</span>) — routed to the MOTIF Phase A input</li>
 <li><b>Reload Input:</b> Rising edge — driven by EMU_PH_I Trigger Out 0 to synchronize the phase signals with the index revolution</li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md78"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md123"></a>
 EMU_PH_B (Phase B emulator)</h2>
 <p>Add a second TCPWM in <b>PWM</b> mode in the same group and give it the alias <span class="tt">EMU_PH_B</span>.</p>
 <ul>
@@ -223,7 +400,7 @@ EMU_PH_B (Phase B emulator)</h2>
 <li><b>Trigger Out 1:</b> Line-out (<span class="tt">CY_TCPWM_CNT_TRIGGER_ON_LINE_OUT</span>) — routed to the MOTIF Phase B input</li>
 <li><b>Reload Input:</b> Rising edge — driven by EMU_PH_A Trigger Out 0 (CC0 match). This loads Phase B in the middle of Phase A's period, creating the required 90° quadrature offset</li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md79"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md124"></a>
 EMU_PH_I (Index emulator)</h2>
 <p>Add a third TCPWM in <b>PWM</b> mode in the same group and give it the alias <span class="tt">EMU_PH_I</span>.</p>
 <ul>
@@ -235,7 +412,7 @@ EMU_PH_I (Index emulator)</h2>
 <li><b>Trigger Out 1:</b> Line-out — routed to the MOTIF Index input</li>
 <li><b>Reload Input:</b> Disabled (EMU_PH_I is the free-running master; EMU_PH_A and EMU_PH_B synchronize to it)</li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md80"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md125"></a>
 Tick_Time (Q-CLK period capture counter)</h2>
 <p>Add a TCPWM in <b>Timer-Counter</b> mode in the same group and give it the alias <span class="tt">Tick_Time</span>.</p>
 <ul>
@@ -245,7 +422,7 @@ Tick_Time (Q-CLK period capture counter)</h2>
 <li><b>Capture Input:</b> Rising edge (<span class="tt">CY_TCPWM_INPUT_RISINGEDGE</span>) — driven by the MOTIF period-clock output. Each Q-CLK event both captures the current count and reloads the counter to zero</li>
 <li><b>Reload Input:</b> Rising edge — same MOTIF period-clock output. The simultaneous capture and reload means the captured value directly equals the number of clock cycles between two consecutive Q-CLK edges</li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md81"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md126"></a>
 MOTIF0 (quadrature decoder)</h2>
 <p>Add a MOTIF in <b>Quadrature Decoder</b> mode in the same group as the PWM emulators.</p>
 <ul>
@@ -258,7 +435,7 @@ MOTIF0 (quadrature decoder)</h2>
 <li><b>Period-clock event:</b> Forward to OUT2 (<span class="tt">CY_FWD_QUADDEC_EVENT_TO_OUT2</span>) — routes the Q-CLK period pulse to <span class="tt">Tick_Time</span> capture0 and reload inputs</li>
 <li><b>Clock and direction events:</b> Forward to OUT0 and OUT1 respectively (unused by the self-test but should be set to forward, not ignore)</li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md82"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md127"></a>
 Deriving ref_count and margin_count</h2>
 <p><span class="tt">ref_count</span> and <span class="tt">margin_count</span> are the only application-controlled thresholds in <span class="tt"><a class="el" href="group__group__motif__structure.html#structstl__motif__cfg__handle__t" title="MOTIF self test configuration structure.">stl_motif_cfg_handle_t</a></span>. All other values are set by the library.</p>
 <p>With both-edge Phase A detection, each Q-CLK event is separated by half the Phase A PWM period:</p>

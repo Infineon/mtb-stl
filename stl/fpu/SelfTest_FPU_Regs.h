@@ -67,7 +67,7 @@
 ***************************************/
 #if defined(__ARMCC_VERSION)
 uint8_t SelfTest_FPU_Regs_ARM(void);
-#elif defined(__GNUC__) && !defined(__clang__)
+#elif defined(__GNUC__)
 uint8_t SelfTest_FPU_Regs_GCC(void);
 #elif defined(__ICCARM__)
 uint8_t SelfTest_FPU_Regs_IAR(void);

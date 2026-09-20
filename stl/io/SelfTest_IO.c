@@ -41,7 +41,7 @@
 
 /* This is a temp WA as there is no API to convert GPIO base to HSIOM base. */
 /* The coresponding ticket is opened.                                       */
-#if ((defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS)) && \
+#if ((defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS) || defined (CY_IP_MXS22IOSS)) && \
     defined(CY_PDL_TZ_ENABLED))
 #define GPIO2HSIOM_PTR(base)   ((HSIOM_SECURE_PRT_Type*)CY_HSIOM_SECURE_BASE + \
 (HSIOM_SECURE_PRT_SECTION_SIZE * (((uint32_t)(base) \
@@ -409,6 +409,28 @@ static GPIO_PRT_Type* stlIo_portRegs[] =
 };
 #endif /* if defined(CY_DEVICE_SERIES_PSC3M6) || defined(CY_DEVICE_SERIES_PSC3P6) */
 
+#if (defined(CY_DEVICE_SERIES_PSC3M7) || defined(CY_DEVICE_SERIES_PSC3M8) || defined(CY_DEVICE_SERIES_PSC3P7) || \
+    defined(CY_DEVICE_SERIES_PSC3P8))
+static const uint8_t stlIo_pinToTest[IO_PORTS];
+
+/* IO ports register addresses */
+static GPIO_PRT_Type* stlIo_portRegs[] =
+{
+    GPIO_PRT0,
+    GPIO_PRT1,
+    GPIO_PRT2,
+    GPIO_PRT3,
+    GPIO_PRT4,
+    GPIO_PRT5,
+    GPIO_PRT6,
+    GPIO_PRT7,
+    GPIO_PRT8,
+    GPIO_PRT9,
+};
+#endif /* if (defined(CY_DEVICE_SERIES_PSC3M7) || defined(CY_DEVICE_SERIES_PSC3M8) ||
+        * defined(CY_DEVICE_SERIES_PSC3P7) || defined(CY_DEVICE_SERIES_PSC3P8))
+        */
+
 #if (defined(CY_DEVICE_SERIES_XMC5100) || defined(CY_DEVICE_SERIES_XMC5200) || defined(CY_DEVICE_SERIES_XMC5300))
 static const uint8_t stlIo_pinToTest[] =
 {
@@ -470,6 +492,7 @@ static GPIO_PRT_Type* stlIo_portRegs[] =
 #endif /* if (defined(CY_DEVICE_SERIES_XMC5100) || defined(CY_DEVICE_SERIES_XMC5200) ||
         * defined(CY_DEVICE_SERIES_XMC5300))
         */
+
 /*******************************************************************************
  * Function Name: SelfTest_IO_GetPortError
  ********************************************************************************
@@ -557,7 +580,7 @@ uint8_t SelfTest_IO(void)
     uint32_t savePortDR;
     uint32_t savePortPC;
 
-    #if ((defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS)) && \
+    #if ((defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS) || defined (CY_IP_MXS22IOSS)) && \
     defined(CY_PDL_TZ_ENABLED))
     uint32_t savePortNonSecMsk;
     #endif
@@ -581,7 +604,7 @@ uint8_t SelfTest_IO(void)
         #if defined(CY_IP_M0S8IOSS)
         savePortDR = (GPIO_PRT_DR(stlIo_portRegs[portNum]));
         savePortPC = (GPIO_PRT_PC(stlIo_portRegs[portNum]));
-        #elif (defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS))
+        #elif (defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS) || defined (CY_IP_MXS22IOSS))
         savePortDR = (GPIO_PRT_OUT(stlIo_portRegs[portNum]));
         savePortPC = (GPIO_PRT_CFG(stlIo_portRegs[portNum]));
         #if defined(CY_PDL_TZ_ENABLED)
@@ -595,7 +618,7 @@ uint8_t SelfTest_IO(void)
             /* If a pin should be tested */
             if ((pinToTestPtr[portNum] & (uint8_t)(1u << pinNum)) != 0u)
             {
-                #if ((defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS)) && \
+                #if ((defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS) || defined (CY_IP_MXS22IOSS)) && \
                 defined(CY_PDL_TZ_ENABLED))
                 Cy_GPIO_SetHSIOM_SecPin(stlIo_portRegs[portNum], pinNum, CY_GPIO_HSIOM_SECURE_ACCESS);
                 #endif
@@ -649,7 +672,7 @@ uint8_t SelfTest_IO(void)
         #if defined(CY_IP_M0S8IOSS)
         GPIO_PRT_DR(stlIo_portRegs[portNum]) = savePortDR;
         GPIO_PRT_PC(stlIo_portRegs[portNum]) = savePortPC;
-        #elif (defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS))
+        #elif (defined (CY_IP_MXS40SIOSS) || defined (CY_IP_MXS40IOSS) || defined (CY_IP_MXS22IOSS))
         GPIO_PRT_OUT(stlIo_portRegs[portNum]) = savePortDR;
         GPIO_PRT_CFG(stlIo_portRegs[portNum]) = savePortPC;
         #if defined(CY_PDL_TZ_ENABLED)

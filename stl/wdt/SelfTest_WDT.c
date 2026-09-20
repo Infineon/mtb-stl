@@ -135,7 +135,7 @@ uint8_t SelfTest_WDT(void)
 }
 
 
-#elif (defined (CY_IP_MXS40SRSS) || defined (CY_IP_MXS40SSRSS))
+#elif (defined (CY_IP_MXS40SRSS) || defined (CY_IP_MXS40SSRSS) || defined (CY_IP_MXS22SRSS))
 
 uint8_t SelfTest_WDT(void)
 {
@@ -167,7 +167,7 @@ uint8_t SelfTest_WDT(void)
         #elif (defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 2))
         Cy_WDT_SetUpperLimit(WDT_PERIOD); /* Reset after 3 seconds */
         Cy_WDT_SetUpperAction(CY_WDT_LOW_UPPER_LIMIT_ACTION_RESET);
-        #elif defined (CY_IP_MXS40SSRSS)
+        #elif (defined (CY_IP_MXS40SSRSS) || defined (CY_IP_MXS22SRSS))
         /* Step 2- Write the match bits - operate with only 14 bits */
         Cy_WDT_SetMatchBits(MATCH_BITS);
         /* Step 3- Write match value */

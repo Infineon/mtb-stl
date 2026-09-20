@@ -1,11 +1,8 @@
 var searchData=
 [
-  ['fd_20can_20fd_20stl_20module_0',['CAN-FD (CAN-FD STL module)',['../group__group__canfd.html',1,'']]],
-  ['fd_20stl_20module_1',['CAN-FD (CAN-FD STL module)',['../group__group__canfd.html',1,'']]],
-  ['filter_20stl_20module_2',['HWFILT3P3Z (HW3P3Z filter STL module)',['../group__group__hwfilt3p3z.html',1,'']]],
-  ['flash_20flash_20stl_20module_3',['Flash (Flash STL module)',['../group__group__flash.html',1,'']]],
-  ['flash_20stl_20module_4',['Flash (Flash STL module)',['../group__group__flash.html',1,'']]],
-  ['fpu_20fpu_20stl_20module_5',['FPU (FPU STL module)',['../group__group__fpu.html',1,'']]],
-  ['fpu_20stl_20module_6',['FPU (FPU STL module)',['../group__group__fpu.html',1,'']]],
-  ['functions_7',['Functions',['../group__group__analog__functions.html',1,'Functions'],['../group__group__can__functions.html',1,'Functions'],['../group__group__canfd__functions.html',1,'Functions'],['../group__group__clock__functions.html',1,'Functions'],['../group__group__cordic__functions.html',1,'Functions'],['../group__group__cpu__functions.html',1,'Functions'],['../group__group__cpu__instructions__functions.html',1,'Functions'],['../group__group__crc__functions.html',1,'Functions'],['../group__group__dma__functions.html',1,'Functions'],['../group__group__dmac__functions.html',1,'Functions'],['../group__group__ecc__functions.html',1,'Functions'],['../group__group__flash__functions.html',1,'Functions'],['../group__group__fpu__functions.html',1,'Functions'],['../group__group__hwfilt3p3z__functions.html',1,'Functions'],['../group__group__intr__functions.html',1,'Functions'],['../group__group__gpio__functions.html',1,'Functions'],['../group__group__ipc__functions.html',1,'Functions'],['../group__group__motif__functions.html',1,'Functions'],['../group__group__pwm__functions.html',1,'Functions'],['../group__group__pwm__gatekill__functions.html',1,'Functions'],['../group__group__regs__functions.html',1,'Functions'],['../group__group__i2c__functions.html',1,'Functions'],['../group__group__spi__functions.html',1,'Functions'],['../group__group__uart__functions.html',1,'Functions'],['../group__group__stack__functions.html',1,'Functions'],['../group__group__timer__counter__functions.html',1,'Functions'],['../group__group__wdt__functions.html',1,'Functions'],['../group__group__wwdt__functions.html',1,'Functions']]]
+  ['ecc_20ecc_20stl_20module_0',['ECC (ECC STL module)',['../group__group__ecc.html',1,'']]],
+  ['ecc_20stl_20module_1',['ECC (ECC STL module)',['../group__group__ecc.html',1,'']]],
+  ['enumerated_20types_2',['Enumerated Types',['../group__group__ecc__enums.html',1,'Enumerated Types'],['../group__group__sram__enums.html',1,'Enumerated Types']]],
+  ['epu_20epu_20stl_20module_3',['EPU (EPU STL module)',['../group__group__epu.html',1,'']]],
+  ['epu_20stl_20module_4',['EPU (EPU STL module)',['../group__group__epu.html',1,'']]]
 ];

@@ -95,11 +95,15 @@ $(function(){initNavTree('group__group__hwfilt3p3z__macros.html','',''); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:ga025863f590e970d1368c4984b314e071" id="r_ga025863f590e970d1368c4984b314e071"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga025863f590e970d1368c4984b314e071">HWFILT3P3Z_ATT_RATIO</a>&#160;&#160;&#160;(8U)</td></tr>
+<tr class="memdesc:ga025863f590e970d1368c4984b314e071"><td class="mdescLeft">&#160;</td><td class="mdescRight">Required attenuation ratio for the out-of-band sub-test: low_peak must be strictly greater than HWFILT3P3Z_ATT_RATIO * high_peak.  <br /></td></tr>
+<tr class="memitem:gad411f8348d36b1a5358bcc130b57c890" id="r_gad411f8348d36b1a5358bcc130b57c890"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gad411f8348d36b1a5358bcc130b57c890">HWFILT3P3Z_SS0_MAX_CHANNEL_INDEX</a></td></tr>
+<tr class="memdesc:gad411f8348d36b1a5358bcc130b57c890"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum HWFILT3P3Z channel index for subsystem SS_0 (4 channels: 0..3).  <br /></td></tr>
+<tr class="memitem:ga9f792b06b437b39c39e3bd6701b6db0f" id="r_ga9f792b06b437b39c39e3bd6701b6db0f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga9f792b06b437b39c39e3bd6701b6db0f">HWFILT3P3Z_SS1_MAX_CHANNEL_INDEX</a></td></tr>
+<tr class="memdesc:ga9f792b06b437b39c39e3bd6701b6db0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum HWFILT3P3Z channel index for subsystem SS_1 (2 channels: 0..1).  <br /></td></tr>
 <tr class="memitem:ga5db43cce594377de92f41a3fd2710de4" id="r_ga5db43cce594377de92f41a3fd2710de4"><td class="memItemLeft" align="right" valign="top"><a id="ga5db43cce594377de92f41a3fd2710de4" name="ga5db43cce594377de92f41a3fd2710de4"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>HWFILT3P3Z_HPPASS_MAX_IDX</b>&#160;&#160;&#160;(2U)</td></tr>
 <tr class="memdesc:ga5db43cce594377de92f41a3fd2710de4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum HWFILT3P3Z filter instance index for HPPASS (3 instances: 0..2). <br /></td></tr>
-<tr class="memitem:ga025863f590e970d1368c4984b314e071" id="r_ga025863f590e970d1368c4984b314e071"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga025863f590e970d1368c4984b314e071">HWFILT3P3Z_ATT_RATIO</a>&#160;&#160;&#160;(8U)</td></tr>
-<tr class="memdesc:ga025863f590e970d1368c4984b314e071"><td class="mdescLeft">&#160;</td><td class="mdescRight">Required attenuation ratio for the out-of-band sub-test: low_peak must be strictly greater than HWFILT3P3Z_ATT_RATIO * high_peak.  <br /></td></tr>
 </table>
 <a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
 <a id="ga025863f590e970d1368c4984b314e071" name="ga025863f590e970d1368c4984b314e071"></a>
@@ -115,7 +119,43 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Required attenuation ratio for the out-of-band sub-test: low_peak must be strictly greater than HWFILT3P3Z_ATT_RATIO * high_peak. </p>
-<p>The theoretical LPF attenuation ratio at the test frequencies is ~74:1, so a threshold of 8 provides a large safety margin. </p>
+<p>The theoretical LPF attenuation ratio at the test frequencies is ~74:1, so a threshold of 8 provides a large safety margin. Shared by the PPCA and HPPASS variants. </p>
+
+</div>
+</div>
+<a id="gad411f8348d36b1a5358bcc130b57c890" name="gad411f8348d36b1a5358bcc130b57c890"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad411f8348d36b1a5358bcc130b57c890">&#9670;&#160;</a></span>HWFILT3P3Z_SS0_MAX_CHANNEL_INDEX</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HWFILT3P3Z_SS0_MAX_CHANNEL_INDEX</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    ((uint8_t)((<span class="keyword">sizeof</span>(((PPCA_HWFILT3P3Z_SS_0_Type *)0)-&gt;HWFILT3P3Z) / \</div>
+<div class="line">                <span class="keyword">sizeof</span>(((PPCA_HWFILT3P3Z_SS_0_Type *)0)-&gt;HWFILT3P3Z[0])) - 1u))</div>
+</div><!-- fragment -->
+<p>Maximum HWFILT3P3Z channel index for subsystem SS_0 (4 channels: 0..3). </p>
+
+</div>
+</div>
+<a id="ga9f792b06b437b39c39e3bd6701b6db0f" name="ga9f792b06b437b39c39e3bd6701b6db0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9f792b06b437b39c39e3bd6701b6db0f">&#9670;&#160;</a></span>HWFILT3P3Z_SS1_MAX_CHANNEL_INDEX</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HWFILT3P3Z_SS1_MAX_CHANNEL_INDEX</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    ((uint8_t)((<span class="keyword">sizeof</span>(((PPCA_HWFILT3P3Z_SS_1_Type *)0)-&gt;HWFILT3P3Z) / \</div>
+<div class="line">                <span class="keyword">sizeof</span>(((PPCA_HWFILT3P3Z_SS_1_Type *)0)-&gt;HWFILT3P3Z[0])) - 1u))</div>
+</div><!-- fragment -->
+<p>Maximum HWFILT3P3Z channel index for subsystem SS_1 (2 channels: 0..1). </p>
 
 </div>
 </div>

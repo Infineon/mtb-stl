@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['hw3p3z_20filter_20stl_20module_0',['HWFILT3P3Z (HW3P3Z filter STL module)',['../group__group__hwfilt3p3z.html',1,'']]],
-  ['hwfilt3p3z_20hw3p3z_20filter_20stl_20module_1',['HWFILT3P3Z (HW3P3Z filter STL module)',['../group__group__hwfilt3p3z.html',1,'']]]
+  ['gatekill_20pwm_20gatekill_20stl_20module_0',['PWM GateKill (PWM GateKill STL module)',['../group__group__pwm__gatekill.html',1,'']]],
+  ['gatekill_20stl_20module_1',['PWM GateKill (PWM GateKill STL module)',['../group__group__pwm__gatekill.html',1,'']]],
+  ['gpio_20gpio_20stl_20module_2',['GPIO (GPIO STL module)',['../group__group__io.html',1,'']]],
+  ['gpio_20stl_20module_3',['GPIO (GPIO STL module)',['../group__group__io.html',1,'']]]
 ];

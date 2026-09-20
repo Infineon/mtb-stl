@@ -1,18 +1,4 @@
 var searchData=
 [
-  ['march_20test_20stack_20free_0',['SRAM March test (stack-free)',['../stl_usage_memory_tests.html#autotoc_md28',1,'']]],
-  ['margin_5fcount_1',['Deriving ref_count and margin_count',['../stl_usage_advanced_control_and_accelerator.html#autotoc_md82',1,'']]],
-  ['mcwdt_20test_2',['Windowed MCWDT test',['../stl_usage_getting_started.html#autotoc_md25',1,'']]],
-  ['memory_20and_20storage_20integrity_20tests_3',['Memory and Storage Integrity Tests',['../stl_usage_memory_tests.html',1,'index']]],
-  ['misra_20c_3a2012_20compliance_4',['MISRA-C:2012 compliance',['../index.html#autotoc_md9',1,'']]],
-  ['mixed_20signal_20tests_5',['Analog and Mixed-Signal Tests',['../stl_usage_analog_and_mixed_signal.html',1,'index']]],
-  ['mode_201_3a_20cfg_5fregs_5fto_5fflash_5fmode_20default_6',['Mode 1: &lt;span class=&quot;tt&quot;&gt;CFG_REGS_TO_FLASH_MODE&lt;/span&gt; (default)',['../stl_usage_getting_started.html#autotoc_md20',1,'']]],
-  ['mode_202_3a_20cfg_5fregs_5fcrc_5fmode_7',['Mode 2: &lt;span class=&quot;tt&quot;&gt;CFG_REGS_CRC_MODE&lt;/span&gt;',['../stl_usage_getting_started.html#autotoc_md21',1,'']]],
-  ['modustoolbox™_20safety_20test_20library_20mtb_20stl_20iec_2060730_20class_20b_20compliance_20for_20industrial_20and_20home_20appliance_20safety_8',['ModusToolbox™ Safety Test Library (mtb-stl) - IEC 60730 Class B Compliance for Industrial and Home Appliance Safety',['../index.html',1,'']]],
-  ['more_20information_9',['More Information',['../group__group__analog.html#group_analog_more_information',1,'More Information'],['../group__group__clock.html#group_clock_more_information',1,'More Information'],['../group__group__cpu.html#group_cpu_more_information',1,'More Information'],['../group__group__cpu__instructions.html#group_cpu_instructions_more_information',1,'More Information'],['../group__group__crc.html#group_crc_more_information',1,'More Information'],['../group__group__dma.html#group_dma_more_information',1,'More Information'],['../group__group__dmac.html#group_dmac_more_information',1,'More Information'],['../group__group__ecc.html#group_ecc_more_information',1,'More Information'],['../group__group__flash.html#group_flash_more_information',1,'More Information'],['../group__group__fpu.html#group_fpu_more_information',1,'More Information'],['../group__group__intr.html#group_intr_more_information',1,'More Information'],['../group__group__io.html#group_io_more_information',1,'More Information'],['../group__group__ipc.html#group_ipc_more_information',1,'More Information'],['../group__group__pwm.html#group_pwm_more_information',1,'More Information'],['../group__group__pwm__gatekill.html#group_pwm_gatekill_more_information',1,'More Information'],['../group__group__regs.html#group_regs_more_information',1,'More Information'],['../group__group__i2c.html#group_i2c_more_information',1,'More Information'],['../group__group__uart__data__tsf.html#group_uart_data_tsf_more_information',1,'More Information']]],
-  ['motif_20test_10',['MOTIF test',['../stl_usage_advanced_control_and_accelerator.html#autotoc_md75',1,'']]],
-  ['motif0_20quadrature_20decoder_11',['MOTIF0 (quadrature decoder)',['../stl_usage_advanced_control_and_accelerator.html#autotoc_md81',1,'']]],
-  ['motif0_5fclk_20shared_20peripheral_20clock_20divider_12',['MOTIF0_CLK (shared peripheral clock divider)',['../stl_usage_advanced_control_and_accelerator.html#autotoc_md76',1,'']]],
-  ['mtb_20stl_20iec_2060730_20class_20b_20compliance_20for_20industrial_20and_20home_20appliance_20safety_13',['ModusToolbox™ Safety Test Library (mtb-stl) - IEC 60730 Class B Compliance for Industrial and Home Appliance Safety',['../index.html',1,'']]],
-  ['mtb_20stl_20library_20to_20the_20project_14',['1. Add mtb-stl library to the project',['../index.html#autotoc_md5',1,'']]]
+  ['kill_20path_20safe_20state_20transition_0',['Test A - DICO kill-path / safe-state transition',['../group__group__clb.html#group_clb_test_a',1,'']]]
 ];

@@ -114,7 +114,7 @@ SRAM test</h1>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__sram__enums_html_ggaf9992282cd100677d9a1130aa4c8eb3baaaa6d850256263b0d1047f2ebd5b1d68"><div class="ttname"><a href="group__group__sram__enums.html#ggaf9992282cd100677d9a1130aa4c8eb3baaaa6d850256263b0d1047f2ebd5b1d68">SRAM_MARCH_TEST_MODE</a></div><div class="ttdeci">@ SRAM_MARCH_TEST_MODE</div><div class="ttdoc">Selects March test algorithm for sram.</div><div class="ttdef"><b>Definition</b> SelfTest_RAM.h:84</div></div>
 <div class="ttc" id="agroup__group__sram__functions_html_gab7add36c7dc17ded8d1d6390aca4be92"><div class="ttname"><a href="group__group__sram__functions.html#gab7add36c7dc17ded8d1d6390aca4be92">SelfTest_SRAM</a></div><div class="ttdeci">uint8_t SelfTest_SRAM(stl_sram_test_mode_t type, uint8_t *startAddr, uint32_t size, uint8_t *buffAddr, uint32_t buffSize)</div><div class="ttdoc">This function performs the self test on a block of RAM.</div><div class="ttdef"><b>Definition</b> SelfTest_RAM.c:88</div></div>
-<div class="ttc" id="agroup__group__stl__status_html_gaf5d0a0130e8b0fc1fe309e6d8b308249"><div class="ttname"><a href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a></div><div class="ttdeci">#define ERROR_STATUS</div><div class="ttdoc">Test failed or a generic error occurred.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:93</div></div>
+<div class="ttc" id="agroup__group__stl__status_html_gaf5d0a0130e8b0fc1fe309e6d8b308249"><div class="ttname"><a href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a></div><div class="ttdeci">#define ERROR_STATUS</div><div class="ttdoc">Test failed or a generic error occurred.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:95</div></div>
 </div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md28"></a>
 SRAM March test (stack-free)</h1>
 <p>These March C- or March X tests use assembly-based stack-free execution, enabling safe testing of both variable RAM and stack regions. The tests are non-destructive: original data is backed up and restored automatically.</p>
@@ -147,7 +147,7 @@ SRAM March test (stack-free)</h1>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__sram__enums_html_gga547cf7de8d85224b7e7818b6d7d22907ae821ad2025372fbc3b4a5a681b454db4"><div class="ttname"><a href="group__group__sram__enums.html#gga547cf7de8d85224b7e7818b6d7d22907ae821ad2025372fbc3b4a5a681b454db4">STL_SRAM_MARCH_C_MINUS</a></div><div class="ttdeci">@ STL_SRAM_MARCH_C_MINUS</div><div class="ttdoc">March C- algorithm (10n complexity).</div><div class="ttdef"><b>Definition</b> SelfTest_RAM.h:91</div></div>
 <div class="ttc" id="agroup__group__sram__functions_html_ga9a47aed67d55700fb4cbbeeeef0a5f1d"><div class="ttname"><a href="group__group__sram__functions.html#ga9a47aed67d55700fb4cbbeeeef0a5f1d">SelfTest_SRAM_March_Full</a></div><div class="ttdeci">uint8_t SelfTest_SRAM_March_Full(uint32_t startAddress, uint32_t endAddress, uint32_t blockSize, uint32_t backupAddress, stl_sram_march_mode_t mode)</div><div class="ttdoc">Full SRAM test using March algorithm (assembly implementation, no stack usage during the test).</div><div class="ttdef"><b>Definition</b> SelfTest_RAM.c:786</div></div>
-<div class="ttc" id="agroup__group__stl__status_html_ga1a8b70f2787072be26b2aa39523f09d6"><div class="ttname"><a href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a></div><div class="ttdeci">#define OK_STATUS</div><div class="ttdoc">Test passed / operation completed successfully.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:91</div></div>
+<div class="ttc" id="agroup__group__stl__status_html_ga1a8b70f2787072be26b2aa39523f09d6"><div class="ttname"><a href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a></div><div class="ttdeci">#define OK_STATUS</div><div class="ttdoc">Test passed / operation completed successfully.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:93</div></div>
 </div><!-- fragment --><p>The following is an example of incremental runtime testing using <span class="tt">SelfTest_SRAM_March_Runtime</span>. This function tests one block per call. Interrupts must be disabled for each call to prevent ISRs from accessing the block currently under test, but the critical section is bounded by <span class="tt">BLOCK_SIZE</span>. Full RAM coverage is achieved incrementally over many calls rather than in a single pass — size <span class="tt">BLOCK_SIZE</span> to keep each call within your interrupt-latency budget:</p>
 <div class="fragment"><div class="line"><span class="comment">/* State variable — must be initialized to RAM_START before first call and kept across calls */</span></div>
 <div class="line"><span class="keyword">static</span> uint32_t ramTestPosition = 0u;</div>
@@ -240,8 +240,8 @@ Stack range test</h1>
 <div class="line">                           STACK_RANGE_PATTERN_SIZE);</div>
 <div class="ttc" id="agroup__group__stack__functions_html_ga58bac912b1695dc8f230cbaddeed7cc2"><div class="ttname"><a href="group__group__stack__functions.html#ga58bac912b1695dc8f230cbaddeed7cc2">SelfTests_Init_Stack_Range</a></div><div class="ttdeci">void SelfTests_Init_Stack_Range(uint16_t *stack_address, uint16_t stack_length, uint8_t stack_pattern_blk_size)</div><div class="ttdoc">This function initializes the upper and lower stack areas with the 0xAA and 0x55 patterns.</div><div class="ttdef"><b>Definition</b> SelfTest_Stack.c:71</div></div>
 <div class="ttc" id="agroup__group__stack__functions_html_ga71379957753487128852842c734e34d0"><div class="ttname"><a href="group__group__stack__functions.html#ga71379957753487128852842c734e34d0">SelfTests_Stack_Check_Range</a></div><div class="ttdeci">uint8_t SelfTests_Stack_Check_Range(uint16_t *stack_address, uint16_t stack_length)</div><div class="ttdoc">This function performs the stack self test.</div><div class="ttdef"><b>Definition</b> SelfTest_Stack.c:140</div></div>
-<div class="ttc" id="agroup__group__stl__status_html_gad9d94bdba018d50cb609bbf58a41877f"><div class="ttname"><a href="group__group__stl__status.html#gad9d94bdba018d50cb609bbf58a41877f">ERROR_STACK_OVERFLOW</a></div><div class="ttdeci">#define ERROR_STACK_OVERFLOW</div><div class="ttdoc">Stack range bitmask flag: bottom guard corrupted (stack overflow).</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:124</div></div>
-<div class="ttc" id="agroup__group__stl__status_html_gae2438a88b3f5542e89b54cefd0f18d3a"><div class="ttname"><a href="group__group__stl__status.html#gae2438a88b3f5542e89b54cefd0f18d3a">ERROR_STACK_UNDERFLOW</a></div><div class="ttdeci">#define ERROR_STACK_UNDERFLOW</div><div class="ttdoc">Stack range bitmask flag: top guard corrupted (stack underflow).</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:128</div></div>
+<div class="ttc" id="agroup__group__stl__status_html_gad9d94bdba018d50cb609bbf58a41877f"><div class="ttname"><a href="group__group__stl__status.html#gad9d94bdba018d50cb609bbf58a41877f">ERROR_STACK_OVERFLOW</a></div><div class="ttdeci">#define ERROR_STACK_OVERFLOW</div><div class="ttdoc">Stack range bitmask flag: bottom guard corrupted (stack overflow).</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:126</div></div>
+<div class="ttc" id="agroup__group__stl__status_html_gae2438a88b3f5542e89b54cefd0f18d3a"><div class="ttname"><a href="group__group__stl__status.html#gae2438a88b3f5542e89b54cefd0f18d3a">ERROR_STACK_UNDERFLOW</a></div><div class="ttdeci">#define ERROR_STACK_UNDERFLOW</div><div class="ttdoc">Stack range bitmask flag: top guard corrupted (stack underflow).</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:130</div></div>
 </div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md31"></a>
 Flash integrity test</h1>
 <p>For CRC32 or Fletcher64 Flash integrity checks, call <span class="tt"><a class="el" href="group__group__flash__functions.html#gae3b711352066f67fd0a6d679d105799f" title="This function checks the checksum of the Flash for the given range of Flash with the expected/referen...">SelfTest_Flash_init()</a></span> once before entering the test loop.</p>
@@ -283,9 +283,104 @@ Flash ECC test</h2>
 <div class="line">{</div>
 <div class="line">    <span class="comment">/* Handle Flash ECC test failure */</span></div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__group__ecc__enums_html_gga110785fcd11cb40d50cc90ef773f054da1a6e60e013ac26460d61768446115c17"><div class="ttname"><a href="group__group__ecc__enums.html#gga110785fcd11cb40d50cc90ef773f054da1a6e60e013ac26460d61768446115c17">CY_ECC_NC_ERROR</a></div><div class="ttdeci">@ CY_ECC_NC_ERROR</div><div class="ttdoc">Non correctable error injection.</div><div class="ttdef"><b>Definition</b> SelfTest_ECC.h:128</div></div>
+<div class="ttc" id="agroup__group__ecc__enums_html_gga110785fcd11cb40d50cc90ef773f054da1a6e60e013ac26460d61768446115c17"><div class="ttname"><a href="group__group__ecc__enums.html#gga110785fcd11cb40d50cc90ef773f054da1a6e60e013ac26460d61768446115c17">CY_ECC_NC_ERROR</a></div><div class="ttdeci">@ CY_ECC_NC_ERROR</div><div class="ttdoc">Non correctable error injection.</div><div class="ttdef"><b>Definition</b> SelfTest_ECC.h:191</div></div>
 <div class="ttc" id="agroup__group__ecc__functions_html_gaf52bf5477e3c67809545b40a02ae470d"><div class="ttname"><a href="group__group__ecc__functions.html#gaf52bf5477e3c67809545b40a02ae470d">SelfTest_ECC_Flash</a></div><div class="ttdeci">uint8_t SelfTest_ECC_Flash(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode)</div><div class="ttdoc">Performs ECC hardware self-test for Flash memory on PSOC Control devices.</div></div>
 </div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md35"></a>
+Runtime Flash ECC test</h2>
+<p>Available when built with <span class="tt">SELFTEST_ECC_MODE=STL_ECC_MODE_RUNTIME</span>. In this mode the application owns the ECC register configuration, SysFault ISR, NVIC, and CPU fault hook. STL verifies configuration and decodes captured evidence.</p>
+<p>Configure and verify the Flash ECC registers once at startup:</p>
+<div class="fragment"><div class="line"><span class="keyword">const</span> <a class="code hl_struct" href="group__group__ecc__data__structures.html#structstl__ecc__flash__cfg__t">stl_ecc_flash_cfg_t</a> cfg =</div>
+<div class="line">{</div>
+<div class="line">    .eccEnable              = <span class="keyword">true</span>,</div>
+<div class="line">    .rbusErrSilent          = <span class="keyword">false</span>,</div>
+<div class="line">    .checkFlashMacroEncoder = <span class="keyword">true</span></div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line">FLASHC_FLASH_CTL |= FLASHC_FLASH_CTL_ECC_EN_Msk;</div>
+<div class="line">FLASHC_FLASH_CTL &amp;= ~FLASHC_FLASH_CTL_RBUS_ERR_SILENT_Msk;</div>
+<div class="line">__DSB();</div>
+<div class="line">__ISB();</div>
+<div class="line"><span class="keywordflow">return</span> <a class="code hl_function" href="group__group__ecc__functions.html#gac616bedb378d198d6a36df5b12abe01b">SelfTest_ECC_Flash_ConfigVerify</a>(&amp;cfg);</div>
+<div class="ttc" id="agroup__group__ecc__data__structures_html_structstl__ecc__flash__cfg__t"><div class="ttname"><a href="group__group__ecc__data__structures.html#structstl__ecc__flash__cfg__t">stl_ecc_flash_cfg_t</a></div><div class="ttdoc">Flash ECC runtime configuration contract.</div><div class="ttdef"><b>Definition</b> SelfTest_ECC.h:230</div></div>
+<div class="ttc" id="agroup__group__ecc__functions_html_gac616bedb378d198d6a36df5b12abe01b"><div class="ttname"><a href="group__group__ecc__functions.html#gac616bedb378d198d6a36df5b12abe01b">SelfTest_ECC_Flash_ConfigVerify</a></div><div class="ttdeci">uint8_t SelfTest_ECC_Flash_ConfigVerify(const stl_ecc_flash_cfg_t *expected)</div><div class="ttdoc">Verifies that the Flash ECC configuration still matches the expected contract.</div></div>
+</div><!-- fragment --><p>Then route both Flash ECC fault sources to your own SysFault ISR:</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> cy_stc_SysFault_t faultCfg =</div>
+<div class="line">{</div>
+<div class="line">    .ResetEnable   = <span class="keyword">false</span>,</div>
+<div class="line">    .OutputEnable  = <span class="keyword">true</span>,</div>
+<div class="line">    .TriggerEnable = <span class="keyword">false</span></div>
+<div class="line">};</div>
+<div class="line"><span class="keyword">static</span> <span class="keyword">const</span> cy_stc_sysint_t faultIrqCfg =</div>
+<div class="line">{</div>
+<div class="line">    .intrSrc      = cpuss_interrupts_fault_0_IRQn,</div>
+<div class="line">    .intrPriority = 3U</div>
+<div class="line">};</div>
+<div class="line">uint8_t status = stl_example_ecc_flash_app_managed_config();</div>
+<div class="line"> </div>
+<div class="line">Cy_SysFault_ClearStatus(FAULT_STRUCT0);</div>
+<div class="line">Cy_SysFault_SetMaskByIdx(FAULT_STRUCT0, CY_ECC_C_FAULT);</div>
+<div class="line">Cy_SysFault_SetMaskByIdx(FAULT_STRUCT0, CY_ECC_NC_FAULT);</div>
+<div class="line">Cy_SysFault_SetInterruptMask(FAULT_STRUCT0);</div>
+<div class="line">(void)Cy_SysFault_Init(FAULT_STRUCT0, &amp;faultCfg);</div>
+<div class="line">(void)Cy_SysInt_Init(&amp;faultIrqCfg, stl_example_ecc_flash_app_managed_isr);</div>
+<div class="line">NVIC_EnableIRQ((IRQn_Type)cpuss_interrupts_fault_0_IRQn);</div>
+</div><!-- fragment --><p><b>This provokes a real non-correctable error and rewrites the reserved row (<span class="tt">CY_FLASH_ADDR</span>, the last Flash row).</b> It is destructive, one-shot, and only used to validate the fault path — call it once, not on every boot:</p>
+<div class="fragment"><div class="line"><span class="comment">/* Destructive: rewrites the reserved row (CY_FLASH_ADDR) and forces a</span></div>
+<div class="line"><span class="comment"> * non-correctable error that Cy_SysLib_ProcessingFault() must catch. */</span></div>
+<div class="line">ecc_app_managed_armed = <span class="keyword">true</span>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_function" href="group__group__ecc__functions.html#gad474e6b64bf7aa6b6b499448cf7124b3">SelfTest_ECC_Flash_ProvokeNc</a>(CY_FLASH_ADDR) == <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Reached only if the fault hook resumed execution instead of</span></div>
+<div class="line"><span class="comment">     * resetting; restore the row and configuration afterwards. */</span></div>
+<div class="line">    (void)<a class="code hl_function" href="group__group__ecc__functions.html#gad955f3e7bb3b29a514047c0933eb07b4">SelfTest_ECC_Flash_RestoreRow</a>(CY_FLASH_ADDR);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">ecc_app_managed_armed = <span class="keyword">false</span>;</div>
+<div class="ttc" id="agroup__group__ecc__functions_html_gad474e6b64bf7aa6b6b499448cf7124b3"><div class="ttname"><a href="group__group__ecc__functions.html#gad474e6b64bf7aa6b6b499448cf7124b3">SelfTest_ECC_Flash_ProvokeNc</a></div><div class="ttdeci">uint8_t SelfTest_ECC_Flash_ProvokeNc(uint32_t addr)</div><div class="ttdoc">Provokes a real non-correctable Flash ECC error in one reserved row.</div></div>
+<div class="ttc" id="agroup__group__ecc__functions_html_gad955f3e7bb3b29a514047c0933eb07b4"><div class="ttname"><a href="group__group__ecc__functions.html#gad955f3e7bb3b29a514047c0933eb07b4">SelfTest_ECC_Flash_RestoreRow</a></div><div class="ttdeci">uint8_t SelfTest_ECC_Flash_RestoreRow(uint32_t addr)</div><div class="ttdoc">Erases the reserved row and programs it with consistent data and parity.</div></div>
+</div><!-- fragment --><p>A non-correctable Flash read raises a precise BusFault <em>before</em> the SysFault interrupt is taken, so <span class="tt">Cy_SysLib_ProcessingFault()</span> — the PDL <span class="tt">__WEAK</span> CPU fault hook — is where non-correctable evidence is actually captured. STL never defines this symbol in application-managed mode; your override always resolves:</p>
+<div class="fragment"><div class="line"><a class="code hl_struct" href="group__group__ecc__data__structures.html#structstl__ecc__flash__snapshot__t">stl_ecc_flash_snapshot_t</a> snapshot;</div>
+<div class="line"><a class="code hl_struct" href="group__group__ecc__data__structures.html#structstl__ecc__flash__event__t">stl_ecc_flash_event_t</a>    event;</div>
+<div class="line"> </div>
+<div class="line">(void)<a class="code hl_function" href="group__group__ecc__functions.html#gabf69816225fbf734a46a26a2862794b6">SelfTest_ECC_Flash_SnapshotCapture</a>(&amp;snapshot);</div>
+<div class="line">(void)<a class="code hl_function" href="group__group__ecc__functions.html#ga67be6bdfc7fce9a699a92ed26597530e">SelfTest_ECC_Flash_Decode</a>(&amp;snapshot, &amp;event); <span class="comment">/* store into application evidence, e.g. a CY_NOINIT struct */</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (ecc_app_managed_armed)</div>
+<div class="line">{</div>
+<div class="line">    ecc_app_managed_armed = <span class="keyword">false</span>;</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">/* The bus error is precise, so returning re-executes the faulting load.</span></div>
+<div class="line"><span class="comment">     * ECC off is what makes that retry complete instead of faulting again. */</span></div>
+<div class="line">    Cy_Flashc_ECCDisable();</div>
+<div class="line">    __DSB();</div>
+<div class="line">    __ISB();</div>
+<div class="line">    <span class="keywordflow">return</span>; <span class="comment">/* fault record stays latched for the SysFault ISR to drain */</span></div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">NVIC_SystemReset(); <span class="comment">/* any other fault: no safe resume */</span></div>
+<div class="ttc" id="agroup__group__ecc__data__structures_html_structstl__ecc__flash__event__t"><div class="ttname"><a href="group__group__ecc__data__structures.html#structstl__ecc__flash__event__t">stl_ecc_flash_event_t</a></div><div class="ttdoc">Decoded Flash ECC event.</div><div class="ttdef"><b>Definition</b> SelfTest_ECC.h:255</div></div>
+<div class="ttc" id="agroup__group__ecc__data__structures_html_structstl__ecc__flash__snapshot__t"><div class="ttname"><a href="group__group__ecc__data__structures.html#structstl__ecc__flash__snapshot__t">stl_ecc_flash_snapshot_t</a></div><div class="ttdoc">Hardware evidence captured for one FAULT_STRUCT0 record.</div><div class="ttdef"><b>Definition</b> SelfTest_ECC.h:245</div></div>
+<div class="ttc" id="agroup__group__ecc__functions_html_ga67be6bdfc7fce9a699a92ed26597530e"><div class="ttname"><a href="group__group__ecc__functions.html#ga67be6bdfc7fce9a699a92ed26597530e">SelfTest_ECC_Flash_Decode</a></div><div class="ttdeci">uint8_t SelfTest_ECC_Flash_Decode(const stl_ecc_flash_snapshot_t *snapshot, stl_ecc_flash_event_t *event)</div><div class="ttdoc">Decodes a captured fault record into a Flash ECC event.</div></div>
+<div class="ttc" id="agroup__group__ecc__functions_html_gabf69816225fbf734a46a26a2862794b6"><div class="ttname"><a href="group__group__ecc__functions.html#gabf69816225fbf734a46a26a2862794b6">SelfTest_ECC_Flash_SnapshotCapture</a></div><div class="ttdeci">uint8_t SelfTest_ECC_Flash_SnapshotCapture(stl_ecc_flash_snapshot_t *snapshot)</div><div class="ttdoc">Captures the fault record and Flash ECC register evidence for one event.</div></div>
+</div><!-- fragment --><p>Once the fault hook resumes execution, the pending record is drained and decoded from the SysFault ISR:</p>
+<div class="fragment"><div class="line"><a class="code hl_struct" href="group__group__ecc__data__structures.html#structstl__ecc__flash__snapshot__t">stl_ecc_flash_snapshot_t</a> snapshot;</div>
+<div class="line"><a class="code hl_struct" href="group__group__ecc__data__structures.html#structstl__ecc__flash__event__t">stl_ecc_flash_event_t</a>    event;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Cleared first: a record captured during the drain re-raises it and the</span></div>
+<div class="line"><span class="comment"> * handler is entered again, instead of being dropped here. */</span></div>
+<div class="line">Cy_SysFault_ClearInterrupt(FAULT_STRUCT0);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">while</span> (Cy_SysFault_GetErrorSource(FAULT_STRUCT0) != CY_SYSFAULT_NO_FAULT)</div>
+<div class="line">{</div>
+<div class="line">    (void)<a class="code hl_function" href="group__group__ecc__functions.html#gabf69816225fbf734a46a26a2862794b6">SelfTest_ECC_Flash_SnapshotCapture</a>(&amp;snapshot);</div>
+<div class="line">    (void)<a class="code hl_function" href="group__group__ecc__functions.html#ga67be6bdfc7fce9a699a92ed26597530e">SelfTest_ECC_Flash_Decode</a>(&amp;snapshot, &amp;event);</div>
+<div class="line">    <a class="code hl_function" href="group__group__ecc__functions.html#gafe997bd2c08c079694a1d999c5076869">SelfTest_ECC_Flash_Accumulate</a>(&amp;ecc_app_managed_counters, &amp;event); <span class="comment">/* application counters/log/policy */</span></div>
+<div class="line">    Cy_SysFault_ClearStatus(FAULT_STRUCT0);</div>
+<div class="line">}</div>
+<div class="ttc" id="agroup__group__ecc__functions_html_gafe997bd2c08c079694a1d999c5076869"><div class="ttname"><a href="group__group__ecc__functions.html#gafe997bd2c08c079694a1d999c5076869">SelfTest_ECC_Flash_Accumulate</a></div><div class="ttdeci">void SelfTest_ECC_Flash_Accumulate(stl_ecc_flash_counters_t *counters, const stl_ecc_flash_event_t *event)</div><div class="ttdoc">Adds one decoded event to a set of application-owned counters.</div></div>
+</div><!-- fragment --><p><b>Threshold/counter semantics</b>: <span class="tt">ECCTHRESHOLD = 0</span> is not supported (reset default <span class="tt">0xFF</span>); <span class="tt">main_c</span> fires on the (N+1)-th corrected error; <span class="tt">ECC1CNT</span> saturates and only the application may clear it.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md36"></a>
 RAM ECC test</h2>
 <p>The RAM ECC self-test validates SRAM ECC fault detection on a valid RAM target address.</p>
 <p>Define <span class="tt">RAM_ECC_TEST_ADDR</span> in the application so that it points to an SRAM location reserved for ECC injection during the test.</p>
@@ -297,6 +392,138 @@ RAM ECC test</h2>
 <div class="line">    <span class="comment">/* Handle RAM ECC test failure */</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__ecc__functions_html_gac1dbb00ad9ea284e92ecd81a04f45ca1"><div class="ttname"><a href="group__group__ecc__functions.html#gac1dbb00ad9ea284e92ecd81a04f45ca1">SelfTest_ECC_Ram</a></div><div class="ttdeci">uint8_t SelfTest_ECC_Ram(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode)</div><div class="ttdoc">Performs ECC hardware self-test for RAM memory on PSOC Control devices.</div></div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md37"></a>
+Runtime RAM ECC test</h2>
+<p>Available when built with <span class="tt">SELFTEST_ECC_MODE=STL_ECC_MODE_RUNTIME</span>. The application owns the RAMC and SysFault configuration, NVIC, ISR, fault-record acknowledgement, and monitoring policy. STL verifies RAMC configuration, captures and decodes evidence, updates caller-owned counters, and provides the destructive stimulus.</p>
+<p>Before enabling RAM checking at boot, configure each RAMC with ECC generation enabled and checking disabled, then initialize every ECC-protected RAM region that the startup code did not write. This includes unused initial stack space; do not overwrite frames at or above the current MSP. Enable checking only after that initialization is complete. Repeat the startup pattern for each RAMC instance used by the application.</p>
+<p>For a runtime configuration, first keep checking disabled while initializing application-owned RAM ranges that may be read before their first write. This is an example for the unused initial stack space; the application must identify any other applicable ranges for each RAMC instance. Enable checking only after that initialization, then verify the final ECC_CTL state including AUTO_CORRECT:</p>
+<div class="fragment"><div class="line"><span class="keyword">const</span> <a class="code hl_struct" href="group__group__ecc__data__structures.html#structstl__ecc__ram__cfg__t">stl_ecc_ram_cfg_t</a> cfgInit =</div>
+<div class="line">{</div>
+<div class="line">    .eccEnable    = <span class="keyword">true</span>,</div>
+<div class="line">    .autoCorrect  = <span class="keyword">true</span>,</div>
+<div class="line">    .checkEnable  = <span class="keyword">false</span></div>
+<div class="line">};</div>
+<div class="line"><span class="keyword">const</span> <a class="code hl_struct" href="group__group__ecc__data__structures.html#structstl__ecc__ram__cfg__t">stl_ecc_ram_cfg_t</a> cfgRun =</div>
+<div class="line">{</div>
+<div class="line">    .eccEnable    = <span class="keyword">true</span>,</div>
+<div class="line">    .autoCorrect  = <span class="keyword">true</span>,</div>
+<div class="line">    .checkEnable  = <span class="keyword">true</span></div>
+<div class="line">};</div>
+<div class="line">uint8_t status = <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Phase 1: enable generation with checking disabled on every RAMC. */</span></div>
+<div class="line">RAMC0-&gt;ECC_CTL = RAMC_ECC_CTL_EN_Msk |</div>
+<div class="line">                 RAMC_ECC_CTL_AUTO_CORRECT_Msk;</div>
+<div class="line">__DSB();</div>
+<div class="line">__ISB();</div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_function" href="group__group__ecc__functions.html#gab3a9b25c8470112986d99139e5f6bc96">SelfTest_ECC_Ram_ConfigVerify</a>(RAMC0, &amp;cfgInit) != <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_define" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a>;</div>
+<div class="line">}</div>
+<div class="line"><span class="preprocessor">#if (CY_IP_MXSRAMC_INSTANCES == 2U)</span></div>
+<div class="line">RAMC1-&gt;ECC_CTL = RAMC_ECC_CTL_EN_Msk |</div>
+<div class="line">                 RAMC_ECC_CTL_AUTO_CORRECT_Msk;</div>
+<div class="line">__DSB();</div>
+<div class="line">__ISB();</div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_function" href="group__group__ecc__functions.html#gab3a9b25c8470112986d99139e5f6bc96">SelfTest_ECC_Ram_ConfigVerify</a>(RAMC1, &amp;cfgInit) != <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_define" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a>;</div>
+<div class="line">}</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Phase 2: initialize application-owned, uninitialized ranges while CHECK_EN</span></div>
+<div class="line"><span class="comment"> * is off. Startup initializes the BSS/data objects above; this stack write</span></div>
+<div class="line"><span class="comment"> * is an example. The application must initialize any other ranges that may</span></div>
+<div class="line"><span class="comment"> * be read before their first write, including ranges protected by RAMC1. */</span></div>
+<div class="line"><span class="keyword">volatile</span> uint32_t* word = (<span class="keyword">volatile</span> uint32_t*)STL_STACK_LIMIT_ADDR;</div>
+<div class="line">uint32_t stackPointer = __get_MSP();</div>
+<div class="line"><span class="keywordflow">while</span> ((uint32_t)word &lt; stackPointer)</div>
+<div class="line">{</div>
+<div class="line">    *word = 0UL;</div>
+<div class="line">    word++;</div>
+<div class="line">}</div>
+<div class="line">__DSB();</div>
+<div class="line">__ISB();</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Phase 3: enable checking and verify runtime configuration. */</span></div>
+<div class="line">RAMC0-&gt;ECC_CTL = RAMC_ECC_CTL_EN_Msk |</div>
+<div class="line">                 RAMC_ECC_CTL_AUTO_CORRECT_Msk |</div>
+<div class="line">                 RAMC_ECC_CTL_CHECK_EN_Msk;</div>
+<div class="line">__DSB();</div>
+<div class="line">__ISB();</div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_function" href="group__group__ecc__functions.html#gab3a9b25c8470112986d99139e5f6bc96">SelfTest_ECC_Ram_ConfigVerify</a>(RAMC0, &amp;cfgRun) != <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_define" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a>;</div>
+<div class="line">}</div>
+<div class="line"><span class="preprocessor">#if (CY_IP_MXSRAMC_INSTANCES == 2U)</span></div>
+<div class="line">RAMC1-&gt;ECC_CTL = RAMC_ECC_CTL_EN_Msk |</div>
+<div class="line">                 RAMC_ECC_CTL_AUTO_CORRECT_Msk |</div>
+<div class="line">                 RAMC_ECC_CTL_CHECK_EN_Msk;</div>
+<div class="line">__DSB();</div>
+<div class="line">__ISB();</div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_function" href="group__group__ecc__functions.html#gab3a9b25c8470112986d99139e5f6bc96">SelfTest_ECC_Ram_ConfigVerify</a>(RAMC1, &amp;cfgRun) != <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_define" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a>;</div>
+<div class="line">}</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line"><span class="keywordflow">return</span> status;</div>
+<div class="ttc" id="agroup__group__ecc__data__structures_html_structstl__ecc__ram__cfg__t"><div class="ttname"><a href="group__group__ecc__data__structures.html#structstl__ecc__ram__cfg__t">stl_ecc_ram_cfg_t</a></div><div class="ttdoc">RAM ECC runtime configuration contract for one RAMC instance.</div><div class="ttdef"><b>Definition</b> SelfTest_ECC.h:277</div></div>
+<div class="ttc" id="agroup__group__ecc__functions_html_gab3a9b25c8470112986d99139e5f6bc96"><div class="ttname"><a href="group__group__ecc__functions.html#gab3a9b25c8470112986d99139e5f6bc96">SelfTest_ECC_Ram_ConfigVerify</a></div><div class="ttdeci">uint8_t SelfTest_ECC_Ram_ConfigVerify(RAMC_Type *ramc, const stl_ecc_ram_cfg_t *expected)</div><div class="ttdoc">Verifies the RAM ECC runtime configuration for one RAMC instance without writing any hardware registe...</div></div>
+</div><!-- fragment --><p>Then route both correctable and non-correctable sources to an application-owned SysFault ISR:</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> cy_stc_SysFault_t faultCfg =</div>
+<div class="line">{</div>
+<div class="line">    .ResetEnable   = <span class="keyword">false</span>,</div>
+<div class="line">    .OutputEnable  = <span class="keyword">true</span>,</div>
+<div class="line">    .TriggerEnable = <span class="keyword">false</span></div>
+<div class="line">};</div>
+<div class="line"><span class="keyword">static</span> <span class="keyword">const</span> cy_stc_sysint_t faultIrqCfg =</div>
+<div class="line">{</div>
+<div class="line">    .intrSrc      = cpuss_interrupts_fault_0_IRQn,</div>
+<div class="line">    .intrPriority = 3U</div>
+<div class="line">};</div>
+<div class="line">uint8_t status = stl_example_ecc_ram_app_managed_config();</div>
+<div class="line"> </div>
+<div class="line">Cy_SysFault_ClearStatus(FAULT_STRUCT0);</div>
+<div class="line">Cy_SysFault_SetMaskByIdx(FAULT_STRUCT0, CY_ECC_C_RAM_FAULT);</div>
+<div class="line">Cy_SysFault_SetMaskByIdx(FAULT_STRUCT0, CY_ECC_NC_RAM_FAULT);</div>
+<div class="line"><span class="preprocessor">#if (CY_IP_MXSRAMC_INSTANCES == 2U)</span></div>
+<div class="line">Cy_SysFault_SetMaskByIdx(FAULT_STRUCT0, CY_ECC_C_RAM1_FAULT);</div>
+<div class="line">Cy_SysFault_SetMaskByIdx(FAULT_STRUCT0, CY_ECC_NC_RAM1_FAULT);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line">Cy_SysFault_SetInterruptMask(FAULT_STRUCT0);</div>
+<div class="line">(void)Cy_SysFault_Init(FAULT_STRUCT0, &amp;faultCfg);</div>
+<div class="line">(void)Cy_SysInt_Init(&amp;faultIrqCfg, stl_example_ecc_ram_app_managed_isr);</div>
+<div class="line">NVIC_EnableIRQ((IRQn_Type)cpuss_interrupts_fault_0_IRQn);</div>
+<div class="line"><span class="keywordflow">return</span> status;</div>
+</div><!-- fragment --><p>The ISR captures, decodes, accounts for, and acknowledges every record. A decoded event of kind <span class="tt">STL_ECC_RAM_EVENT_NONE</span> increments <span class="tt">other</span>, so this loop also safely drains fault sources shared with RAM ECC:</p>
+<div class="fragment"><div class="line"><a class="code hl_struct" href="group__group__ecc__data__structures.html#structstl__ecc__ram__snapshot__t">stl_ecc_ram_snapshot_t</a> snapshot;</div>
+<div class="line"><a class="code hl_struct" href="group__group__ecc__data__structures.html#structstl__ecc__ram__event__t">stl_ecc_ram_event_t</a>    event;</div>
+<div class="line"> </div>
+<div class="line">Cy_SysFault_ClearInterrupt(FAULT_STRUCT0);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">while</span> (Cy_SysFault_GetErrorSource(FAULT_STRUCT0) != CY_SYSFAULT_NO_FAULT)</div>
+<div class="line">{</div>
+<div class="line">    (void)<a class="code hl_function" href="group__group__ecc__functions.html#gaaeaa9025aed29562ebb13ce085536839">SelfTest_ECC_Ram_SnapshotCapture</a>(&amp;snapshot);</div>
+<div class="line">    (void)<a class="code hl_function" href="group__group__ecc__functions.html#ga0454d103d6e0f6a91fd19a331e86112a">SelfTest_ECC_Ram_Decode</a>(&amp;snapshot, &amp;event);</div>
+<div class="line">    <a class="code hl_function" href="group__group__ecc__functions.html#gaa0932c700a07d76cad55660435b2bab2">SelfTest_ECC_Ram_Accumulate</a>(&amp;ecc_ram_app_managed_counters, &amp;event);</div>
+<div class="line">    Cy_SysFault_ClearStatus(FAULT_STRUCT0);</div>
+<div class="line">}</div>
+<div class="ttc" id="agroup__group__ecc__data__structures_html_structstl__ecc__ram__event__t"><div class="ttname"><a href="group__group__ecc__data__structures.html#structstl__ecc__ram__event__t">stl_ecc_ram_event_t</a></div><div class="ttdoc">Decoded RAM ECC event.</div><div class="ttdef"><b>Definition</b> SelfTest_ECC.h:296</div></div>
+<div class="ttc" id="agroup__group__ecc__data__structures_html_structstl__ecc__ram__snapshot__t"><div class="ttname"><a href="group__group__ecc__data__structures.html#structstl__ecc__ram__snapshot__t">stl_ecc_ram_snapshot_t</a></div><div class="ttdoc">Hardware evidence captured for one FAULT_STRUCT0 record.</div><div class="ttdef"><b>Definition</b> SelfTest_ECC.h:285</div></div>
+<div class="ttc" id="agroup__group__ecc__functions_html_ga0454d103d6e0f6a91fd19a331e86112a"><div class="ttname"><a href="group__group__ecc__functions.html#ga0454d103d6e0f6a91fd19a331e86112a">SelfTest_ECC_Ram_Decode</a></div><div class="ttdeci">uint8_t SelfTest_ECC_Ram_Decode(const stl_ecc_ram_snapshot_t *snapshot, stl_ecc_ram_event_t *event)</div><div class="ttdoc">Decodes captured RAM ECC evidence.</div></div>
+<div class="ttc" id="agroup__group__ecc__functions_html_gaa0932c700a07d76cad55660435b2bab2"><div class="ttname"><a href="group__group__ecc__functions.html#gaa0932c700a07d76cad55660435b2bab2">SelfTest_ECC_Ram_Accumulate</a></div><div class="ttdeci">void SelfTest_ECC_Ram_Accumulate(stl_ecc_ram_counters_t *counters, const stl_ecc_ram_event_t *event)</div><div class="ttdoc">Adds a decoded RAM ECC event to caller-owned saturating counters.</div></div>
+<div class="ttc" id="agroup__group__ecc__functions_html_gaaeaa9025aed29562ebb13ce085536839"><div class="ttname"><a href="group__group__ecc__functions.html#gaaeaa9025aed29562ebb13ce085536839">SelfTest_ECC_Ram_SnapshotCapture</a></div><div class="ttdeci">uint8_t SelfTest_ECC_Ram_SnapshotCapture(stl_ecc_ram_snapshot_t *snapshot)</div><div class="ttdoc">Captures one FAULT_STRUCT0 record and RAM ECC register evidence.</div></div>
+</div><!-- fragment --><p>To validate both fault paths, reserve one application-owned, 32-bit-aligned RAM word outside live data and stack storage. <span class="tt"><a class="el" href="group__group__ecc__functions.html#gaf2610d9c03a67fda67df9e8e609e0436" title="Destructively provokes a RAM ECC event in an application-owned sacrificial word, then repairs the wor...">SelfTest_ECC_Ram_Provoke()</a></span> overwrites that word, triggers the selected error, and restores it with valid ECC data. The sequence is destructive and intended only for a controlled diagnostic:</p>
+<div class="fragment"><div class="line"><span class="comment">/* Destructive: use only a dedicated, 32-bit-aligned RAM word. */</span></div>
+<div class="line">(void)<a class="code hl_function" href="group__group__ecc__functions.html#gaf2610d9c03a67fda67df9e8e609e0436">SelfTest_ECC_Ram_Provoke</a>(RAMC0,</div>
+<div class="line">                               (uint32_t)&amp;ecc_ram_app_managed_test_word,</div>
+<div class="line">                               <a class="code hl_enumvalue" href="group__group__ecc__enums.html#gga0823fb5f310600fe9dbc21eaf06d2924a69ea16fe9fe409df1fcd64f13e8299ec">STL_ECC_RAM_INJECT_CORRECTABLE</a>);</div>
+<div class="line">(void)<a class="code hl_function" href="group__group__ecc__functions.html#gaf2610d9c03a67fda67df9e8e609e0436">SelfTest_ECC_Ram_Provoke</a>(RAMC0,</div>
+<div class="line">                               (uint32_t)&amp;ecc_ram_app_managed_test_word,</div>
+<div class="line">                               <a class="code hl_enumvalue" href="group__group__ecc__enums.html#gga0823fb5f310600fe9dbc21eaf06d2924a484ddb5d7ddf1314dbe5ece4119cee1a">STL_ECC_RAM_INJECT_NON_CORRECTABLE</a>);</div>
+<div class="ttc" id="agroup__group__ecc__enums_html_gga0823fb5f310600fe9dbc21eaf06d2924a484ddb5d7ddf1314dbe5ece4119cee1a"><div class="ttname"><a href="group__group__ecc__enums.html#gga0823fb5f310600fe9dbc21eaf06d2924a484ddb5d7ddf1314dbe5ece4119cee1a">STL_ECC_RAM_INJECT_NON_CORRECTABLE</a></div><div class="ttdeci">@ STL_ECC_RAM_INJECT_NON_CORRECTABLE</div><div class="ttdoc">Two data-bit mismatch.</div><div class="ttdef"><b>Definition</b> SelfTest_ECC.h:216</div></div>
+<div class="ttc" id="agroup__group__ecc__enums_html_gga0823fb5f310600fe9dbc21eaf06d2924a69ea16fe9fe409df1fcd64f13e8299ec"><div class="ttname"><a href="group__group__ecc__enums.html#gga0823fb5f310600fe9dbc21eaf06d2924a69ea16fe9fe409df1fcd64f13e8299ec">STL_ECC_RAM_INJECT_CORRECTABLE</a></div><div class="ttdeci">@ STL_ECC_RAM_INJECT_CORRECTABLE</div><div class="ttdoc">One data-bit mismatch.</div><div class="ttdef"><b>Definition</b> SelfTest_ECC.h:215</div></div>
+<div class="ttc" id="agroup__group__ecc__functions_html_gaf2610d9c03a67fda67df9e8e609e0436"><div class="ttname"><a href="group__group__ecc__functions.html#gaf2610d9c03a67fda67df9e8e609e0436">SelfTest_ECC_Ram_Provoke</a></div><div class="ttdeci">uint8_t SelfTest_ECC_Ram_Provoke(RAMC_Type *ramc, uint32_t wordAddr, stl_ecc_ram_inject_mode_t mode)</div><div class="ttdoc">Destructively provokes a RAM ECC event in an application-owned sacrificial word, then repairs the wor...</div></div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->

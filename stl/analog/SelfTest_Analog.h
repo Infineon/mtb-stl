@@ -137,7 +137,8 @@
 /** \endcond */
 
 /* Definition of the analog components included in class B */
-#if defined (CY_IP_MXLPCOMP) || defined (CY_IP_MXS40LPCOMP) || defined (CY_IP_M0S8LPCOMP)
+#if defined (CY_IP_MXLPCOMP) || defined (CY_IP_MXS22LPCOMP) || \
+    defined (CY_IP_MXS40LPCOMP) || defined (CY_IP_M0S8LPCOMP)
     #define CLASSB_SELF_TEST_COMP           1u
 #endif
 

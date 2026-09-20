@@ -59,10 +59,10 @@
 
 #if (defined(CY_IP_MXTCPWM) || defined(CY_IP_M0S8TCPWM) || CY_DOXYGEN)
 
-#if !defined(STL_PWM_SOURCE_HFCLOCK) && defined(CY_IP_MXS40SSRSS)
+#if !defined(STL_PWM_SOURCE_HFCLOCK) && (defined(CY_IP_MXS40SSRSS) || defined(CY_IP_MXS22SRSS))
 /** High frequency clock that serves as the source for the PWM counter */
 #define STL_PWM_SOURCE_HFCLOCK (3u)
-#endif /* !defined(STL_PWM_SOURCE_HFCLOCK) && defined(CY_IP_MXS40SSRSS) */
+#endif /* !defined(STL_PWM_SOURCE_HFCLOCK) && (defined(CY_IP_MXS40SSRSS)  || defined(CY_IP_MXS22SRSS)) */
 
 /** \addtogroup group_pwm_macros
  * \{
@@ -135,7 +135,7 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type* pinbase, uint32_t pinNum);
 *  \ref PWM_INIT_ERROR_STATUS (255) - Initialization failed
 ******************************************************************************/
 uint8_t SelfTest_PWM_init(TCPWM_Type* base, uint32_t cntNum,
-                          cy_stc_tcpwm_pwm_config_t const* config, IRQn_Type  intr_src);
+                          cy_stc_tcpwm_pwm_config_t const* config, IRQn_Type intr_src);
 
 /******************************************************************************
 * Function Name: SelfTest_PWM_DeInit

@@ -93,9 +93,9 @@ $(function(){initNavTree('stl_usage_analog_and_mixed_signal.html','',''); });
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_output_2libs_2mtb-stl_2guides_2analog-and-mixed-signal-tests"></a></p>
 <p>This guide covers ADC, DAC, OPAMP, LPCOMP, and mixed-signal processing self-tests.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md60"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md62"></a>
 ADC tests</h1>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md61"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md63"></a>
 ADC TrigIn test</h2>
 <p>For MCPASS v3 devices, the supported ADC API in the device support matrix is <span class="tt"><a class="el" href="group__group__analog__functions.html#gaea86eb3837d6899b558d8eb4f2c8fd49" title="Performs an ADC self-test by issuing a firmware SAR trigger and verifying that the measured result fa...">SelfTests_ADC_TrigIn()</a></span>.</p>
 <p>The HPPASS internal CSG DAC drives the SAR input so no external stimulus is needed. The test exercises two voltage points (VDDA/3 and 2×VDDA/3) against fixed 12-bit expected results; both must fall within <span class="tt">ANALOG_ADC_ACURACCY</span> counts (default 100) to pass.</p>
@@ -152,8 +152,8 @@ ADC TrigIn test</h2>
 <div class="line">    }</div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__analog__functions_html_gaea86eb3837d6899b558d8eb4f2c8fd49"><div class="ttname"><a href="group__group__analog__functions.html#gaea86eb3837d6899b558d8eb4f2c8fd49">SelfTests_ADC_TrigIn</a></div><div class="ttdeci">uint8_t SelfTests_ADC_TrigIn(uint32_t group, uint32_t channel, int32_t expected_res, int32_t accuracy, uint32_t trig_in)</div><div class="ttdoc">Performs an ADC self-test by issuing a firmware SAR trigger and verifying that the measured result fa...</div></div>
-<div class="ttc" id="agroup__group__stl__status_html_ga1a8b70f2787072be26b2aa39523f09d6"><div class="ttname"><a href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a></div><div class="ttdeci">#define OK_STATUS</div><div class="ttdoc">Test passed / operation completed successfully.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:91</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md62"></a>
+<div class="ttc" id="agroup__group__stl__status_html_ga1a8b70f2787072be26b2aa39523f09d6"><div class="ttname"><a href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a></div><div class="ttdeci">#define OK_STATUS</div><div class="ttdoc">Test passed / operation completed successfully.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:93</div></div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md64"></a>
 DAC test</h1>
 <p>The DAC self-test sets the R2R DAC output to a known code and verifies the SAR ADC readback is within the acceptance window. The function starts the SAR conversion internally via the DAC's built-in trigger; no external settling delay is required in application code.</p>
 <p><b>Applies to:</b> MCPASS v3.</p>
@@ -206,7 +206,7 @@ DAC test</h1>
 <div class="line">    }</div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__analog__functions_html_ga15bc86d564d908382fd8b77aa7a4b57f"><div class="ttname"><a href="group__group__analog__functions.html#ga15bc86d564d908382fd8b77aa7a4b57f">SelfTests_DAC_TrigIn</a></div><div class="ttdeci">uint8_t SelfTests_DAC_TrigIn(uint32_t adc_channel, uint32_t dac_slice, uint32_t dac_val, int16_t expected_res, int16_t accuracy, uint32_t adc_trig_in, uint32_t dac_trig_in)</div><div class="ttdoc">Performs DAC test and verifies that the input of DAC and output from ADC are the same.</div></div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md63"></a>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md65"></a>
 Generic ADC example</h2>
 <p>Analog tests verify ADC and comparator functionality by comparing measured values against known reference voltages.</p>
 <p>The ADC test measures reference voltages such as VDDA/3 and VDDA/2 using a voltage divider and verifies the ADC reading is within tolerance. The test requires external resistor dividers to generate the reference voltages.</p>
@@ -283,12 +283,12 @@ Generic ADC example</h2>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__analog__functions_html_gaa62cee36638154714e8ff58dbe0bd7db"><div class="ttname"><a href="group__group__analog__functions.html#gaa62cee36638154714e8ff58dbe0bd7db">SelfTests_Comparator</a></div><div class="ttdeci">uint8_t SelfTests_Comparator(LPCOMP_Type const *lpcomp_base, cy_en_lpcomp_channel_t lpcomp_channel, uint8_t expected_res)</div><div class="ttdoc">Performs Comparator test and verifies if the higher voltage on +ve terminal compared to -ve terminal ...</div><div class="ttdef"><b>Definition</b> SelfTest_Analog.c:1598</div></div>
 <div class="ttc" id="agroup__group__analog__functions_html_gac4e7d0584933af065af68efc7158793e"><div class="ttname"><a href="group__group__analog__functions.html#gac4e7d0584933af065af68efc7158793e">SelfTests_ADC</a></div><div class="ttdeci">uint8_t SelfTests_ADC(SAR_Type *base, uint32_t channel, int16_t expected_res, int16_t accuracy, uint32_t vbg_channel, bool count_to_mV)</div><div class="ttdoc">Performs ADC test and verifies if the measured voltage is in the accuracy range.</div></div>
-<div class="ttc" id="agroup__group__analog__macros_html_ga0597ef983520beca3d1209a51cc1305e"><div class="ttname"><a href="group__group__analog__macros.html#ga0597ef983520beca3d1209a51cc1305e">ANALOG_COMP_RESULT1</a></div><div class="ttdeci">#define ANALOG_COMP_RESULT1</div><div class="ttdoc">Expected COMP result when +ve terminal voltage &gt; -ve terminal Voltage.</div><div class="ttdef"><b>Definition</b> SelfTest_Analog.h:304</div></div>
-<div class="ttc" id="agroup__group__analog__macros_html_ga1db4cb2b30e107bf735de53b5c16788c"><div class="ttname"><a href="group__group__analog__macros.html#ga1db4cb2b30e107bf735de53b5c16788c">ANALOG_COMP_RESULT2</a></div><div class="ttdeci">#define ANALOG_COMP_RESULT2</div><div class="ttdoc">Expected COMP result when +ve terminal voltage &lt; -ve terminal Voltage.</div><div class="ttdef"><b>Definition</b> SelfTest_Analog.h:306</div></div>
-<div class="ttc" id="agroup__group__analog__macros_html_ga3347a11ed6fd2222e02cf765e20ddceb"><div class="ttname"><a href="group__group__analog__macros.html#ga3347a11ed6fd2222e02cf765e20ddceb">ANALOG_ADC_SAR_RESULT2</a></div><div class="ttdeci">#define ANALOG_ADC_SAR_RESULT2</div><div class="ttdoc">Expected SAR result for ANALOG_TEST_VREF2_MV.</div><div class="ttdef"><b>Definition</b> SelfTest_Analog.h:294</div></div>
-<div class="ttc" id="agroup__group__analog__macros_html_ga468908e63532ae9c69e42542debdb11b"><div class="ttname"><a href="group__group__analog__macros.html#ga468908e63532ae9c69e42542debdb11b">ANALOG_ADC_SAR_RESULT1</a></div><div class="ttdeci">#define ANALOG_ADC_SAR_RESULT1</div><div class="ttdoc">Expected SAR result for ANALOG_TEST_VREF1_MV.</div><div class="ttdef"><b>Definition</b> SelfTest_Analog.h:292</div></div>
-<div class="ttc" id="agroup__group__analog__macros_html_gab8dd56c44eeed3d920dad9bb91ce7351"><div class="ttname"><a href="group__group__analog__macros.html#gab8dd56c44eeed3d920dad9bb91ce7351">ANALOG_ADC_ACCURACY</a></div><div class="ttdeci">#define ANALOG_ADC_ACCURACY</div><div class="ttdoc">ADC Accuracy in counts.</div><div class="ttdef"><b>Definition</b> SelfTest_Analog.h:287</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md64"></a>
+<div class="ttc" id="agroup__group__analog__macros_html_ga0597ef983520beca3d1209a51cc1305e"><div class="ttname"><a href="group__group__analog__macros.html#ga0597ef983520beca3d1209a51cc1305e">ANALOG_COMP_RESULT1</a></div><div class="ttdeci">#define ANALOG_COMP_RESULT1</div><div class="ttdoc">Expected COMP result when +ve terminal voltage &gt; -ve terminal Voltage.</div><div class="ttdef"><b>Definition</b> SelfTest_Analog.h:305</div></div>
+<div class="ttc" id="agroup__group__analog__macros_html_ga1db4cb2b30e107bf735de53b5c16788c"><div class="ttname"><a href="group__group__analog__macros.html#ga1db4cb2b30e107bf735de53b5c16788c">ANALOG_COMP_RESULT2</a></div><div class="ttdeci">#define ANALOG_COMP_RESULT2</div><div class="ttdoc">Expected COMP result when +ve terminal voltage &lt; -ve terminal Voltage.</div><div class="ttdef"><b>Definition</b> SelfTest_Analog.h:307</div></div>
+<div class="ttc" id="agroup__group__analog__macros_html_ga3347a11ed6fd2222e02cf765e20ddceb"><div class="ttname"><a href="group__group__analog__macros.html#ga3347a11ed6fd2222e02cf765e20ddceb">ANALOG_ADC_SAR_RESULT2</a></div><div class="ttdeci">#define ANALOG_ADC_SAR_RESULT2</div><div class="ttdoc">Expected SAR result for ANALOG_TEST_VREF2_MV.</div><div class="ttdef"><b>Definition</b> SelfTest_Analog.h:295</div></div>
+<div class="ttc" id="agroup__group__analog__macros_html_ga468908e63532ae9c69e42542debdb11b"><div class="ttname"><a href="group__group__analog__macros.html#ga468908e63532ae9c69e42542debdb11b">ANALOG_ADC_SAR_RESULT1</a></div><div class="ttdeci">#define ANALOG_ADC_SAR_RESULT1</div><div class="ttdoc">Expected SAR result for ANALOG_TEST_VREF1_MV.</div><div class="ttdef"><b>Definition</b> SelfTest_Analog.h:293</div></div>
+<div class="ttc" id="agroup__group__analog__macros_html_gab8dd56c44eeed3d920dad9bb91ce7351"><div class="ttname"><a href="group__group__analog__macros.html#gab8dd56c44eeed3d920dad9bb91ce7351">ANALOG_ADC_ACCURACY</a></div><div class="ttdeci">#define ANALOG_ADC_ACCURACY</div><div class="ttdoc">ADC Accuracy in counts.</div><div class="ttdef"><b>Definition</b> SelfTest_Analog.h:288</div></div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md66"></a>
 LPCOMP test</h1>
 <p>The low-power comparator test applies different voltages to the positive and negative inputs through AMUX and verifies that the comparator output matches the expected result.</p>
 <p>Configure the LPCOMP in Device Configurator with the following settings:</p>
@@ -304,10 +304,10 @@ LPCOMP test</h1>
 </ul>
 <p>Both pins must be configured as analog drive mode. The VPLUS pin must be held at a higher voltage than the VMINUS pin. The test routes these two voltages through the AMUX buses in both directions: first applying the lower voltage to the LPCOMP positive input and then applying the higher voltage to verify that the comparator changes state correctly.</p>
 <p><img src="../images/analog_lpcomp_config.png" alt="Device Configurator LPCOMP settings showing Direct output, Low Power/Low speed, Hysteresis enabled, Rising Edge interrupt, and analog input pins routed through AMUXBUS A and AMUXBUS B" class="inline"/></p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md65"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md67"></a>
 OPAMP test</h1>
 <p>The OPAMP test verifies the configured AFE/OPAMP signal path and gain. An internal DAC generates a controlled stimulus, the AFE/OPAMP amplifies it using the configured topology and gain, and the HPPASS SAR ADC measures the output. <span class="tt">SelfTests_AFE_TrigIn()</span> compares the conversion result with the expected SAR count within the supplied tolerance. No external connection is required on devices that support an equivalent internal DAC-to-AFE-to-SAR route.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md66"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md68"></a>
 Device Configurator setup</h2>
 <p>Configure the HPPASS analog subsystem, including its autonomous controller (AC), AFE, DAC, SAR ADC, samplers, and input trigger. The test API starts AC state 0 and issues the firmware trigger; the generated configuration must make that state and trigger start the intended SAR measurement path.</p>
 <p>Create an internal signal chain equivalent to:</p>
@@ -322,7 +322,7 @@ Device Configurator setup</h2>
 <li>HPPASS input trigger 0 is configured for <span class="tt">CY_HPPASS_TR_FW_PULSE</span>, matching the <span class="tt">CY_HPPASS_TRIG_0_MSK</span> firmware-trigger mask passed to the test API.</li>
 </ul>
 <p>The names generated by Device Configurator depend on the aliases chosen in the design. Record the DAC configuration object, AFE output SAR channel, and firmware trigger mask used by the selected route, then use those same resources in the application code.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md67"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md69"></a>
 Application-owned resources</h2>
 <p>The application owns the DAC instance and its generated configuration object, the AFE output/SAR result-channel index, trigger mask, DAC input codes, expected SAR results, conversion tolerance, and bounded DAC ready/update timeouts. The application also owns any resource restoration required after the test.</p>
 <p>The reference values in the following setup are specific to a 12-bit DAC, a 12-bit SAR with VDDA reference, and the configured AFE topology and gain. Recalculate the DAC codes, expected SAR counts, and tolerance for a different DAC resolution, SAR resolution, gain, topology, or reference voltage.</p>
@@ -367,10 +367,10 @@ Application-owned resources</h2>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> Cy_HPPASS_DAC_Buf_IsBusy(dacIndex) ? <a class="code hl_define" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a> : <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__group__stl__status_html_gaf5d0a0130e8b0fc1fe309e6d8b308249"><div class="ttname"><a href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a></div><div class="ttdeci">#define ERROR_STATUS</div><div class="ttdoc">Test failed or a generic error occurred.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:93</div></div>
+<div class="ttc" id="agroup__group__stl__status_html_gaf5d0a0130e8b0fc1fe309e6d8b308249"><div class="ttname"><a href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a></div><div class="ttdeci">#define ERROR_STATUS</div><div class="ttdoc">Test failed or a generic error occurred.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:95</div></div>
 </div><!-- fragment --><p><span class="tt">SelfTests_AFE_TrigIn()</span> does not initialize the DAC, select its mode, write its value, or create the AFE-to-SAR route. It starts HPPASS AC state 0, waits for the SAR conversion, issues the supplied firmware trigger, reads and clears the selected SAR result status, and checks the result against <span class="tt">expected_res +/- accuracy</span>.</p>
 <p>Pass the configured SAR group as <span class="tt">group</span>, the AFE output result-channel index as <span class="tt">channel</span>, the calculated count as <span class="tt">expected_res</span>, the allowed count deviation as <span class="tt">accuracy</span>, and the firmware-trigger bit mask that starts the sequence group as <span class="tt">trig_in</span>.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md68"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md70"></a>
 API sequence</h2>
 <p>Initialize and enable the selected DAC, start AC state 0, and wait for the DAC to become ready. Select buffered mode, write a stimulus code, and wait for the DAC buffer update using a bounded timeout. Call <span class="tt">SelfTests_AFE_TrigIn()</span> with the matching SAR group, result channel, expected result, tolerance, and trigger mask. Check its returned status, repeat with a second stimulus level where appropriate, then deinitialize or restore the DAC.</p>
 <p>The following application-side sequence uses two levels and always deinitializes the DAC before returning. The DAC-ready and buffer-update loops are bounded; handle <span class="tt">ERROR_STATUS</span> as a failed preparation or self-test result.</p>
@@ -427,10 +427,395 @@ API sequence</h2>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line">Cy_HPPASS_DAC_DeInit(STL_OPAMP_DAC_INDEX);</div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md69"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md71"></a>
+ATOP tests</h1>
+<p>These tests apply to the PPCA analog subsystem. In Device Configurator, allocate each ATOP resource to the processor that runs the self-test and keep the PPCA subsystem available. The verified reference design uses the <span class="tt">PPCA_CNFG</span> alias, assigns ADC groups 0-3 and DCSG groups 0-1 to CPU0, and leaves PPCA clock shutdown disabled.</p>
+<p>Call <span class="tt">init_cycfg_all()</span> before the examples, then enable PPCA before accessing an ATOP resource. ATOP ADC, AREF, DCSG, and DAC resources are shared; serialize each self-test with application use. The APIs below do not share an identical setup contract, so each subsection states its own AREF and resource-ownership requirements. When the application owns a resource before the test, preserve and restore its operating state around the test sequence.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md72"></a>
+ATOP ADC Core</h2>
+<p>The ADC Core self-test validates the 12-bit SAR conversion path, AFE input stage, AUX multiplexer, trigger/busy logic, and result-read path. For the on-chip test it routes the internal 1.2 V VREF through the Group 0 AUX path on channel 7 and compares the conversion code with the configured acceptance window.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md73"></a>
+Supported configuration and limitations</h3>
+<p><span class="tt"><a class="el" href="group__group__atop__adc__core__functions.html#ga7cc5b23ee0bccc341319c5c2ee2d8758" title="Performs a self-test of an ATOP ADC group by converting a known internal reference voltage and compar...">SelfTest_ATOP_ADC_Core(const stl_atop_adc_core_config_t* config)</a></span> accepts a non-NULL configuration with an expected code from 0 through 4095 and a non-zero tolerance. <span class="tt">adcGroup</span>, <span class="tt">channel</span>, and <span class="tt">refSource</span> select one of these paths:</p>
+<ul>
+<li><span class="tt">CY_STL_ATOP_ADC_REF_VREF_1V2</span> is supported only on Group 0, channel 7 (<span class="tt">ATOP_ADC_CORE_AUX_CHANNEL</span>). This is the self-contained on-chip reference test.</li>
+<li><span class="tt">CY_STL_ATOP_ADC_REF_EXTERNAL</span> uses an application-provided known voltage on a regular ADC channel. Groups 0 and 3 support channels 0-7; groups 1 and 2 support channels 0-3. The application must provide the expected 12-bit code and a justified tolerance for its supply voltage and external stimulus.</li>
+</ul>
+<p>Groups 1-3 have no internal VREF stimulus in this API. Their coverage therefore requires an external, known source and an application-owned analog route. Unsupported combinations, a NULL configuration, an expected code above 4095, or a zero tolerance return <span class="tt">ERROR_BAD_PARAM</span> before the API accesses hardware.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md74"></a>
+Device Configurator setup</h3>
+<p>Add the PPCA configuration, ATOP, ADC Group 0, and Group 0 AREF personalities, and allocate Group 0 to the processor running the test. The verified M8 design uses <span class="tt">ADC_0</span> for <span class="tt">ppca[0].atop[0].adc_grp[0].adc[0]</span>, <span class="tt">AREF</span> for <span class="tt">ppca[0].atop[0].adc_grp[0].aref[0]</span>, and locally generated VREF. It deliberately leaves generated ADC and AREF initialization disabled because the application sequence initializes the reference and the self-test configures ADC and AFE for the measurement.</p>
+<p>For a different compatible device, the generated aliases and the application-owned external channel can differ. Preserve the logical route: Group 0 AREF with locally generated VREF, AUX channel 7 for the internal reference, or a valid regular channel connected to a calibrated external source.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md75"></a>
+Application resources and API sequence</h3>
+<p>The application owns PPCA enablement, ATOP allocation, AREF initialization and readiness, external stimulus routing, and its chosen <span class="tt"><a class="el" href="group__group__atop__adc__core__data__structures.html#structstl__atop__adc__core__config__t" title="Configuration for one ADC Core self-test run.">stl_atop_adc_core_config_t</a></span>. For the Group 0 VREF test, initialize and enable AREF with locally generated VREF, assert its analog control, and poll <span class="tt">Cy_PPCA_AREF_Get_VDDA_Status()</span> with a bounded timeout before calling the API. The self-test itself reasserts Group 0 AREF analog control after enabling ADC and waits for its internal settle interval.</p>
+<p>The API saves and restores the ADC and AFE registers that it changes. It does not restore the top-level PPCA state or the Group 0 AREF state, so the application must restore those resources when it owns them. <span class="tt">OK_STATUS</span> indicates a conversion inside the configured tolerance; <span class="tt">ERROR_STATUS</span> indicates a conversion timeout, busy condition, or out-of-tolerance result.</p>
+<p>The following setup uses the M8 reference aliases and a 500 ms bounded AREF-ready wait. It owns the PPCA and AREF enable state and releases both after the test; an application that already uses either resource must instead restore its own saved state.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#define STL_ATOP_ADC_CORE_AREF_READY_TIMEOUT_MS   (500U)</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keyword">const</span> cy_stc_ppca_aref_config_t stlAtopAdcCoreArefConfig =</div>
+<div class="line">{</div>
+<div class="line">    .aref_mode            = <span class="keyword">false</span>,</div>
+<div class="line">    .enable_current_to_ts = <span class="keyword">false</span>,</div>
+<div class="line">    .analog_ctrl          = CY_AREF_FORCE_POR_1,</div>
+<div class="line">    .vref_source_sel      = CY_LOCALLY_GENERATED_VREF,</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> uint8_t stlAtopAdcCoreEnableReference(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    Cy_PPCA_Enable(PPCA_CNFG);</div>
+<div class="line">    Cy_PPCA_AREF_Init(AREF_HW, &amp;stlAtopAdcCoreArefConfig);</div>
+<div class="line">    Cy_PPCA_AREF_Enable(AREF_HW);</div>
+<div class="line">    Cy_PPCA_AREF_SetAnalogCtrl(AREF_HW, CY_AREF_FORCE_POR_1);</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">for</span> (uint32_t elapsedMs = 0U;</div>
+<div class="line">         elapsedMs &lt; STL_ATOP_ADC_CORE_AREF_READY_TIMEOUT_MS;</div>
+<div class="line">         elapsedMs++)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">if</span> (Cy_PPCA_AREF_Get_VDDA_Status(AREF_HW))</div>
+<div class="line">        {</div>
+<div class="line">            <span class="keywordflow">return</span> <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
+<div class="line">        }</div>
+<div class="line">        Cy_SysLib_Delay(1U);</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_define" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a>;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> stlAtopAdcCoreDisableReference(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    Cy_PPCA_AREF_Disable(AREF_HW);</div>
+<div class="line">    Cy_PPCA_Disable(PPCA_CNFG);</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>The following example runs the ready-made Group 0 VREF configuration:</p>
+<div class="fragment"><div class="line">uint8_t status = stlAtopAdcCoreEnableReference();</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">const</span> <a class="code hl_struct" href="group__group__atop__adc__core__data__structures.html#structstl__atop__adc__core__config__t">stl_atop_adc_core_config_t</a> adcCoreConfig = <a class="code hl_define" href="group__group__atop__adc__core__data__structures.html#ga07428ffdf49c5f1a40f0962792f03e5f">ATOP_ADC_CORE_CONFIG_GRP0_VREF</a>;</div>
+<div class="line">    status = <a class="code hl_function" href="group__group__atop__adc__core__functions.html#ga7cc5b23ee0bccc341319c5c2ee2d8758">SelfTest_ATOP_ADC_Core</a>(&amp;adcCoreConfig);</div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="comment">/* Handle the ADC Core self-test failure. */</span></div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* This example owns the PPCA and AREF enable state established above. */</span></div>
+<div class="line">stlAtopAdcCoreDisableReference();</div>
+<div class="ttc" id="agroup__group__atop__adc__core__data__structures_html_ga07428ffdf49c5f1a40f0962792f03e5f"><div class="ttname"><a href="group__group__atop__adc__core__data__structures.html#ga07428ffdf49c5f1a40f0962792f03e5f">ATOP_ADC_CORE_CONFIG_GRP0_VREF</a></div><div class="ttdeci">#define ATOP_ADC_CORE_CONFIG_GRP0_VREF</div><div class="ttdoc">Ready-made configuration: GROUP0 internal 1.2 V VREF self-test.</div><div class="ttdef"><b>Definition</b> SelfTest_ATOP_ADC_Core.h:169</div></div>
+<div class="ttc" id="agroup__group__atop__adc__core__data__structures_html_structstl__atop__adc__core__config__t"><div class="ttname"><a href="group__group__atop__adc__core__data__structures.html#structstl__atop__adc__core__config__t">stl_atop_adc_core_config_t</a></div><div class="ttdoc">Configuration for one ADC Core self-test run.</div><div class="ttdef"><b>Definition</b> SelfTest_ATOP_ADC_Core.h:158</div></div>
+<div class="ttc" id="agroup__group__atop__adc__core__functions_html_ga7cc5b23ee0bccc341319c5c2ee2d8758"><div class="ttname"><a href="group__group__atop__adc__core__functions.html#ga7cc5b23ee0bccc341319c5c2ee2d8758">SelfTest_ATOP_ADC_Core</a></div><div class="ttdeci">uint8_t SelfTest_ATOP_ADC_Core(const stl_atop_adc_core_config_t *config)</div><div class="ttdoc">Performs a self-test of an ATOP ADC group by converting a known internal reference voltage and compar...</div></div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md76"></a>
+ATOP ADC Filter</h2>
+<p>The ATOP ADC Filter self-test validates the digital processing chain after an ADC conversion on devices with PPCA ATOP IP. It applies known values through the selected group's ADC test-injection path, tests every filter instance in that group, and compares the output with the expected result. No external analog stimulus or pin routing is required.</p>
+<p><span class="tt"><a class="el" href="group__group__atop__adc__filter__functions.html#ga115220638adb54322094a22a0b51c6dc" title="Performs a self-test of the ATOP ADC digital filter chain for the given ADC group by running the sele...">SelfTest_ATOP_ADC_Filter(uint8_t adcGroup, uint8_t testMask)</a></span> accepts groups 0 through 3. The instances are not distributed uniformly: Group 0 contains <span class="tt">ADC_FILT_00</span> and <span class="tt">ADC_FILT_01</span>, Groups 1 and 2 each contain one instance (<span class="tt">ADC_FILT_10</span> and <span class="tt">ADC_FILT_20</span>), and Group 3 contains <span class="tt">ADC_FILT_30</span> and <span class="tt">ADC_FILT_31</span>. A call exercises every instance in the selected group.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md77"></a>
+Filter-test selection</h3>
+<p><span class="tt">testMask</span> selects one or more subtests with a bitwise OR. <span class="tt">ATOP_ADC_FILTER_TEST_ALL</span> selects all six. Bits outside this set are ignored; a mask containing no valid bit returns <span class="tt">ERROR_BAD_PARAM</span> before hardware access.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Mask  </th><th class="markdownTableHeadNone">Coverage  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">ATOP_ADC_FILTER_TEST_MEDIAN</span>  </td><td class="markdownTableBodyNone">Runs the Median datapath with two injected levels and verifies that its output tracks both values.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">ATOP_ADC_FILTER_TEST_LINTP</span>  </td><td class="markdownTableBodyNone">Checks the writable <span class="tt">LIF_CNFG</span> linear-interpolation configuration fields with write/read-back patterns. The functional LINTP output requires independent hardware start timing, so this subtest does not claim a functional injected-data check.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">ATOP_ADC_FILTER_TEST_LPF</span>  </td><td class="markdownTableBodyNone">Runs the low-pass filter with settled constant input levels and verifies its DC output.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">ATOP_ADC_FILTER_TEST_CIC3</span>  </td><td class="markdownTableBodyNone">Runs the third-order comb filter with settled constant input levels and verifies the gain-corrected output.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">ATOP_ADC_FILTER_TEST_AVG</span>  </td><td class="markdownTableBodyNone">Runs the fixed-window linear average filter and verifies the recovered average of injected samples.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">ATOP_ADC_FILTER_TEST_MINMAX</span>  </td><td class="markdownTableBodyNone">Runs the minimum/maximum detector over a known varying sample sequence.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">ATOP_ADC_FILTER_TEST_ALL</span>  </td><td class="markdownTableBodyNone">Bitwise combination of all six filter tests.  </td></tr>
+</table>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md78"></a>
+Device Configurator setup</h3>
+<p>Add the PPCA ATOP and ADC Group personalities, then allocate every ADC group that the application will test to the processor running the test. Add the Group 0 AREF personality when testing Group 0. The verified M8 reference design uses <span class="tt">PPCA_CNFG</span> for <span class="tt">ppca[0].ppca_cnfg[0]</span>, <span class="tt">ADC_0</span> for <span class="tt">ppca[0].atop[0].adc_grp[0].adc[0]</span>, and <span class="tt">AREF</span> for <span class="tt">ppca[0].atop[0].adc_grp[0].aref[0]</span>; <span class="tt">AREF</span> uses <span class="tt">CY_LOCALLY_GENERATED_VREF</span>. Its <span class="tt">PPCA_CNFG</span> configuration assigns ADC Groups 0-3 to CPU0 and leaves PPCA clock shutdown disabled.</p>
+<p>The API addresses the fixed filter instances directly and supplies its temporary ADC and filter configurations internally. It does not consume a generated filter alias or filter configuration object, so do not create a filter instance solely for this API. On another compatible M8 device, preserve the same logical allocation: the chosen ADC group, its hardware filter instances, PPCA access, and Group 0 AREF when Group 0 is selected.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md79"></a>
+Resource ownership and API sequence</h3>
+<p>Initialize the generated PPCA configuration and reserve the selected ADC group and all of its filter instances for the entire call. The API enables PPCA, configures the selected ADC group for test-data injection on channel 0, disables calibration-gain mode, and configures one filter stage at a time. It temporarily changes PPCA control and the selected ADC's <span class="tt">ADC_CNFG</span>, <span class="tt">ADC_CTL</span>, <span class="tt">ADC_CNV_CNFG</span>, <span class="tt">ADC_CH_CNFG0</span>, <span class="tt">ADC_CH_CNFG1</span>, and <span class="tt">ADC_SIGN_UNSIGN_CNFG</span> registers. Each filter subtest saves and restores its <span class="tt">CTL</span> and <span class="tt">CNFG</span> registers and, where used, the LPF, AVG, CIC3, or LINTP configuration register.</p>
+<p>The API restores the saved PPCA control, selected ADC configuration, and filter configuration before it returns. When Group 0 is tested, it enables Group 0 AREF for the test and disables it on return rather than restoring a pre-existing enabled AREF state. Treat Group 0 AREF as a shared, application-owned resource and restore it if the application was already using it.</p>
+<p>Do not access the selected group's ADC or filter outputs concurrently with the self-test. The API does not reconfigure ADC or filter registers in the other groups, so their saved configurations are unaffected; nevertheless, serialize calls because PPCA control and Group 0 AREF are shared. <span class="tt">OK_STATUS</span> means every selected test passed. <span class="tt">ERROR_STATUS</span> indicates an out-of-tolerance filter result or a conversion timeout. <span class="tt">ERROR_BAD_PARAM</span> indicates an invalid group or a mask with no valid test bit.</p>
+<p>The following example initializes the reference PPCA configuration, tests every filter type in Group 0, handles both failure classes, and releases PPCA. An application that already owns PPCA or AREF must restore its own prior state instead of unconditionally disabling it.</p>
+<div class="fragment"><div class="line">uint8_t status;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Initialize and enable the PPCA configuration that owns ADC Group 0. */</span></div>
+<div class="line">Cy_PPCA_CNFG_Init(PPCA_CNFG, &amp;PPCA_CNFG_config);</div>
+<div class="line">Cy_PPCA_Enable(PPCA_CNFG);</div>
+<div class="line"> </div>
+<div class="line">status = <a class="code hl_function" href="group__group__atop__adc__filter__functions.html#ga115220638adb54322094a22a0b51c6dc">SelfTest_ATOP_ADC_Filter</a>(<a class="code hl_define" href="group__group__atop__adc__filter__macros.html#ga62da52a8090059db1181f6a58591315a">ATOP_ADC_FILTER_GROUP_0</a>,</div>
+<div class="line">                                  <a class="code hl_define" href="group__group__atop__adc__filter__macros.html#gac9cfe08158c11e7ec4423296fdfc89d4">ATOP_ADC_FILTER_TEST_ALL</a>);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle an unsupported ADC group or empty filter-test selection. */</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle a filter result outside tolerance or conversion timeout. */</span></div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* This example owns the PPCA enable state established above. */</span></div>
+<div class="line">Cy_PPCA_Disable(PPCA_CNFG);</div>
+<div class="ttc" id="agroup__group__atop__adc__filter__functions_html_ga115220638adb54322094a22a0b51c6dc"><div class="ttname"><a href="group__group__atop__adc__filter__functions.html#ga115220638adb54322094a22a0b51c6dc">SelfTest_ATOP_ADC_Filter</a></div><div class="ttdeci">uint8_t SelfTest_ATOP_ADC_Filter(uint8_t adcGroup, uint8_t testMask)</div><div class="ttdoc">Performs a self-test of the ATOP ADC digital filter chain for the given ADC group by running the sele...</div></div>
+<div class="ttc" id="agroup__group__atop__adc__filter__macros_html_ga62da52a8090059db1181f6a58591315a"><div class="ttname"><a href="group__group__atop__adc__filter__macros.html#ga62da52a8090059db1181f6a58591315a">ATOP_ADC_FILTER_GROUP_0</a></div><div class="ttdeci">#define ATOP_ADC_FILTER_GROUP_0</div><div class="ttdoc">ATOP ADC group 0 index.</div><div class="ttdef"><b>Definition</b> SelfTest_ATOP_ADC_Filter.h:102</div></div>
+<div class="ttc" id="agroup__group__atop__adc__filter__macros_html_gac9cfe08158c11e7ec4423296fdfc89d4"><div class="ttname"><a href="group__group__atop__adc__filter__macros.html#gac9cfe08158c11e7ec4423296fdfc89d4">ATOP_ADC_FILTER_TEST_ALL</a></div><div class="ttdeci">#define ATOP_ADC_FILTER_TEST_ALL</div><div class="ttdoc">Test-mask value selecting every filter type.</div><div class="ttdef"><b>Definition</b> SelfTest_ATOP_ADC_Filter.h:130</div></div>
+<div class="ttc" id="agroup__group__stl__status_html_ga63a823f81897c011cdae5d765a12f379"><div class="ttname"><a href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a></div><div class="ttdeci">#define ERROR_BAD_PARAM</div><div class="ttdoc">A bad input parameter was passed to a self-test API.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:148</div></div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md80"></a>
+ATOP AFE</h2>
+<p>The ATOP AFE self-test verifies the programmable-gain path using an externally applied differential input. It supports one AFE on differential channel 0 of each ADC group; the API selects the corresponding ADC and AFE base internally and does not accept an arbitrary ADC channel.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Group  </th><th class="markdownTableHeadNone">Macro  </th><th class="markdownTableHeadNone">External differential pins  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone"><span class="tt">ATOP_AFE_GROUP_0</span>  </td><td class="markdownTableBodyNone">AIN0P / AIN0N  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">1  </td><td class="markdownTableBodyNone"><span class="tt">ATOP_AFE_GROUP_1</span>  </td><td class="markdownTableBodyNone">AIN4P / AIN4N  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">2  </td><td class="markdownTableBodyNone"><span class="tt">ATOP_AFE_GROUP_2</span>  </td><td class="markdownTableBodyNone">AIN6P / AIN6N  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">3  </td><td class="markdownTableBodyNone"><span class="tt">ATOP_AFE_GROUP_3</span>  </td><td class="markdownTableBodyNone">AIN8P / AIN8N  </td></tr>
+</table>
+<p><span class="tt">ATOP_AFE_GROUP_COUNT</span> is 4. Call the configuration-based API for the selected group:</p>
+<div class="fragment"><div class="line">uint8_t <a class="code hl_function" href="group__group__atop__afe__functions.html#gabdf6a749c06f2cbd706032acd5e9d370">SelfTest_ATOP_AFE</a>(<span class="keyword">const</span> <a class="code hl_struct" href="group__group__atop__afe__data__structures.html#structstl__atop__afe__config__t">stl_atop_afe_config_t</a>* config);</div>
+<div class="ttc" id="agroup__group__atop__afe__data__structures_html_structstl__atop__afe__config__t"><div class="ttname"><a href="group__group__atop__afe__data__structures.html#structstl__atop__afe__config__t">stl_atop_afe_config_t</a></div><div class="ttdoc">Configuration for one AFE gain self-test run.</div><div class="ttdef"><b>Definition</b> SelfTest_ATOP_AFE.h:169</div></div>
+<div class="ttc" id="agroup__group__atop__afe__functions_html_gabdf6a749c06f2cbd706032acd5e9d370"><div class="ttname"><a href="group__group__atop__afe__functions.html#gabdf6a749c06f2cbd706032acd5e9d370">SelfTest_ATOP_AFE</a></div><div class="ttdeci">uint8_t SelfTest_ATOP_AFE(const stl_atop_afe_config_t *config)</div><div class="ttdoc">Performs the ATOP AFE programmable-gain verification self-test for one ADC group, using an externally...</div></div>
+</div><!-- fragment --><h3 class="doxsection"><a class="anchor" id="autotoc_md81"></a>
+External stimulus and pin mapping</h3>
+<p>This is an <b>EXTERNAL-reference test</b>. Before calling the API, apply and stabilize a small differential voltage on the selected pin pair. Both pins must remain within <span class="tt">[VSSA - 0.25 V, 1 V]</span>; keep the differential small enough that the 16.5x measurement stays on-scale. A raw differential code of a few tens is an appropriate operating region.</p>
+<p>The ready-made <span class="tt">ATOP_AFE_CONFIG_GRP0_DEFAULT</span> selects <span class="tt">ATOP_AFE_GROUP_0</span>, <span class="tt">ATOP_AFE_DEFAULT_RAW_MIN</span> = 40, <span class="tt">ATOP_AFE_DEFAULT_RAW_MAX</span> = 120, and <span class="tt">ATOP_AFE_DEFAULT_TOLERANCE_PCT</span> = 25. These are suggested defaults for a small positive Group 0 stimulus, not universal limits for every external source. On <span class="tt">KIT_PSC3M8_EVK</span>, the focused Group 0 example uses R212 on AIN0P and R221 on AIN0N; these trimmers are board-specific and are not an API prerequisite.</p>
+<p>A missing, reversed, excessive, saturated, or otherwise out-of-window stimulus returns <span class="tt">ERROR_STATUS</span>.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md82"></a>
+Device Configurator and application setup</h3>
+<p>Initialize the generated system and PPCA configuration, allocate every ADC group that the application will test to the processor running the test, and enable the top-level PPCA block before accessing ATOP resources. Initialize and enable the shared Group 0 AREF with locally generated VREF, set its analog control to <span class="tt">CY_AREF_FORCE_POR_1</span>, and wait for <span class="tt">Cy_PPCA_AREF_Get_VDDA_Status()</span> with a bounded timeout before calling the self-test.</p>
+<p>The AREF is physically shared from ADC Group 0 and is required even when testing AFE groups 1, 2, or 3. Keep the selected ADC/AFE and the shared AREF exclusively available during the test. The application owns processor allocation, PPCA initialization and enable state, Group 0 AREF initialization, readiness and enable state, external stimulus setup, and concurrency control.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md83"></a>
+Configuration and acceptance criteria</h3>
+<p>Configure one test run with:</p>
+<div class="fragment"><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></div>
+<div class="line">{</div>
+<div class="line">    uint8_t  adcGroup;</div>
+<div class="line">    int32_t  rawMin;</div>
+<div class="line">    int32_t  rawMax;</div>
+<div class="line">    uint16_t gainTolerancePercent;</div>
+<div class="line">} <a class="code hl_struct" href="group__group__atop__afe__data__structures.html#structstl__atop__afe__config__t">stl_atop_afe_config_t</a>;</div>
+</div><!-- fragment --><p>The API validates <span class="tt">config</span> before accessing hardware: it must be non-NULL, <span class="tt">adcGroup</span> must be less than <span class="tt">ATOP_AFE_GROUP_COUNT</span>, <span class="tt">gainTolerancePercent</span> must be 1 through 100, and <span class="tt">rawMin</span> must be less than <span class="tt">rawMax</span>. Invalid configuration returns <span class="tt">ERROR_BAD_PARAM</span> without hardware access.</p>
+<p>The test converts the same differential input three times: with the AFE disabled for the raw signed ADC code, with <span class="tt">CY_AFE_GAIN_3</span> (nominally 8.25x), and with <span class="tt">CY_AFE_GAIN_6</span> (nominally 16.5x). It passes only when the raw code is inside <span class="tt">config-&gt;rawMin</span> through <span class="tt">config-&gt;rawMax</span>, neither amplified code is saturated, the 8.25x and 16.5x codes match the raw code scaled by 33/4 and 33/2, and the 16.5x result is approximately twice the 8.25x result. Each comparison uses the caller-supplied percentage tolerance plus <span class="tt">ATOP_AFE_CODE_NOISE_FLOOR</span>.</p>
+<p>The public gain and acceptance constants are <span class="tt">ATOP_AFE_GAIN_LOW_NUM</span> / <span class="tt">ATOP_AFE_GAIN_LOW_DEN</span>, <span class="tt">ATOP_AFE_GAIN_HIGH_NUM</span> / <span class="tt">ATOP_AFE_GAIN_HIGH_DEN</span>, <span class="tt">ATOP_AFE_GAIN_RATIO</span>, <span class="tt">ATOP_AFE_SATURATION_CODE</span> = 2040, and <span class="tt">ATOP_AFE_CODE_NOISE_FLOOR</span> = 48.</p>
+<p><span class="tt">OK_STATUS</span> means all raw-window, saturation, gain, and ratio checks passed. <span class="tt">ERROR_STATUS</span> means the raw stimulus was outside its configured window, a reading saturated, or a gain or ratio was outside tolerance. <span class="tt">MTB_STL_ERROR_TIMEOUT</span> means an ADC conversion timed out.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md84"></a>
+Resource ownership and restoration</h3>
+<p>The API configures and temporarily enables the selected group's ADC and AFE. It saves and restores the ADC control and configuration, conversion configuration, regular channel configurations, AUX and alternate-AUX configuration, signed/unsigned configuration, and AFE control and configuration. It stops after the first conversion error and restores the selected ADC/AFE registers before returning.</p>
+<p>The API reasserts Group 0 AREF analog control while converting, but does not save and restore AREF state. ADC/AFE state is restored; PPCA, AREF, and external stimulus remain application-owned. An application that enabled PPCA or AREF for the sequence must restore its own enable policy afterward.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md85"></a>
+API sequence</h3>
+<p>The following Group 0 example owns and releases the PPCA and AREF enable states. It waits for AREF readiness with a bounded loop; an application already using either shared resource must instead preserve its prior state.</p>
+<div class="fragment"><div class="line"><span class="keyword">const</span> cy_stc_ppca_aref_config_t afeArefConfig =</div>
+<div class="line">{</div>
+<div class="line">    .aref_mode            = <span class="keyword">false</span>,</div>
+<div class="line">    .enable_current_to_ts = <span class="keyword">false</span>,</div>
+<div class="line">    .analog_ctrl          = CY_AREF_FORCE_POR_1,</div>
+<div class="line">    .vref_source_sel      = CY_LOCALLY_GENERATED_VREF,</div>
+<div class="line">};</div>
+<div class="line"><span class="keyword">const</span> <a class="code hl_struct" href="group__group__atop__afe__data__structures.html#structstl__atop__afe__config__t">stl_atop_afe_config_t</a> afeConfig = <a class="code hl_define" href="group__group__atop__afe__data__structures.html#gacbbfcae7604d2915ebb6eb0827451321">ATOP_AFE_CONFIG_GRP0_DEFAULT</a>;</div>
+<div class="line"><span class="keyword">const</span> uint32_t arefReadyTimeoutMs = 500U;</div>
+<div class="line"><span class="keywordtype">bool</span> arefReady = <span class="keyword">false</span>;</div>
+<div class="line">uint8_t status = <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Initialize and enable the generated PPCA configuration before accessing</span></div>
+<div class="line"><span class="comment"> * the shared Group 0 AREF. */</span></div>
+<div class="line">Cy_PPCA_CNFG_Init(PPCA_CNFG, &amp;PPCA_CNFG_config);</div>
+<div class="line">Cy_PPCA_Enable(PPCA_CNFG);</div>
+<div class="line">Cy_PPCA_AREF_Init(AREF_HW, &amp;afeArefConfig);</div>
+<div class="line">Cy_PPCA_AREF_Enable(AREF_HW);</div>
+<div class="line">Cy_PPCA_AREF_SetAnalogCtrl(AREF_HW, CY_AREF_FORCE_POR_1);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">for</span> (uint32_t elapsedMs = 0U; elapsedMs &lt; arefReadyTimeoutMs; elapsedMs++)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">if</span> (Cy_PPCA_AREF_Get_VDDA_Status(AREF_HW))</div>
+<div class="line">    {</div>
+<div class="line">        arefReady = <span class="keyword">true</span>;</div>
+<div class="line">        <span class="keywordflow">break</span>;</div>
+<div class="line">    }</div>
+<div class="line">    Cy_SysLib_Delay(1U);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (!arefReady)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_define" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a>;</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span></div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Apply a stable external differential on AIN0P/AIN0N within the</span></div>
+<div class="line"><span class="comment">     * configured raw-code window before calling this self-test. */</span></div>
+<div class="line">    status = <a class="code hl_function" href="group__group__atop__afe__functions.html#gabdf6a749c06f2cbd706032acd5e9d370">SelfTest_ATOP_AFE</a>(&amp;afeConfig);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle an invalid AFE configuration. */</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#gaf72a0ee4b35fb7b2423fc3071517ede5">MTB_STL_ERROR_TIMEOUT</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle an ADC conversion timeout. */</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle AREF readiness, stimulus, saturation, or gain failure. */</span></div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* This example owns the AREF and PPCA enable state established above. */</span></div>
+<div class="line">Cy_PPCA_AREF_Disable(AREF_HW);</div>
+<div class="line">Cy_PPCA_Disable(PPCA_CNFG);</div>
+<div class="ttc" id="agroup__group__atop__afe__data__structures_html_gacbbfcae7604d2915ebb6eb0827451321"><div class="ttname"><a href="group__group__atop__afe__data__structures.html#gacbbfcae7604d2915ebb6eb0827451321">ATOP_AFE_CONFIG_GRP0_DEFAULT</a></div><div class="ttdeci">#define ATOP_AFE_CONFIG_GRP0_DEFAULT</div><div class="ttdoc">Ready-made configuration: GROUP0 (AIN0P/AIN0N) with the suggested small positive stimulus window and ...</div><div class="ttdef"><b>Definition</b> SelfTest_ATOP_AFE.h:180</div></div>
+<div class="ttc" id="agroup__group__stl__status_html_gaf72a0ee4b35fb7b2423fc3071517ede5"><div class="ttname"><a href="group__group__stl__status.html#gaf72a0ee4b35fb7b2423fc3071517ede5">MTB_STL_ERROR_TIMEOUT</a></div><div class="ttdeci">#define MTB_STL_ERROR_TIMEOUT</div><div class="ttdoc">Timeout return status - waiting for hardware event exceeded timeout.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:151</div></div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md86"></a>
+ATOP DAC test</h2>
+<p>The ATOP DAC self-test is a test for devices with PPCA ATOP IP. It configures a 12-bit R2R DAC in internal single-ended loopback mode, routes the output through the Group 0 ADC AUX channel 7 path, and checks each ADC result against the programmed DAC code. No external analog wiring or stimulus is required.</p>
+<p><span class="tt"><a class="el" href="group__group__atop__dac__functions.html#gad285df8c399a35c4776ea5f043fa55ad" title="Performs ATOP DAC R2R loopback self-test using PDL functions.">SelfTests_ATOP_DAC(uint32_t adcChannel, uint32_t dacSlice, const uint32_t* dacVals, uint32_t numVals, uint16_t accuracy)</a></span> accepts only <span class="tt">ATOP_ADC_CHANNEL_0</span>, DAC slice 0 or 1, a non-NULL non-empty code array, codes from 0 through 4095, and an accuracy no greater than 2047. In loopback mode, DAC and ADC use the same reference, so the expected ADC code is the DAC code within <span class="tt">accuracy</span>.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md87"></a>
+Device Configurator setup</h3>
+<p>Allocate ADC Group 0 and the DCSG group for every DAC slice under test to the processor running the test, then generate a PPCA configuration alias. The verified M8 reference design uses <span class="tt">PPCA_CNFG</span>, assigns ADC Group 0 and DCSG groups 0 and 1 to CPU0, and leaves PPCA clock shutdown disabled. It tests both slices with codes 0, 2048, and 4095 and an accuracy of 50 codes.</p>
+<p>Slice 0 uses <span class="tt">DCSG_GRP_0</span> and <span class="tt">CY_DAC_R2R0_OUTPUT</span>; slice 1 uses <span class="tt">DCSG_GRP_1</span> and <span class="tt">CY_DAC_R2R1_OUTPUT</span>. Both loop back to ADC Group 0 through its AUX multiplexer. The API configures these internal signal paths directly, so no pin route is needed. Aliases and allocation ownership can differ on another compatible device, but the DAC slice must retain its matching DCSG group and Group 0 ADC loopback path.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md88"></a>
+Resource ownership and API sequence</h3>
+<p>Before calling the API, enable PPCA and reserve ADC Group 0, its AREF, the selected DCSG group, and the selected DAC slice from concurrent application use. The API initializes and restores the AREF, selected DCSG slice, selected DAC, and Group 0 ADC registers used by the loopback test. It does not enable or restore the top-level PPCA control state.</p>
+<p>Run the test once for each allocated DAC slice, check <span class="tt">OK_STATUS</span>, and restore the top-level PPCA state if the application enabled it for this sequence. <span class="tt">ERROR_STATUS</span> reports an out-of-tolerance conversion, <span class="tt">MTB_STL_ERROR_TIMEOUT</span> reports an ADC conversion timeout, and <span class="tt">ERROR_BAD_PARAM</span> reports invalid arguments.</p>
+<p>The following example owns PPCA enablement, tests both verified DAC slices, and releases PPCA afterward. In an application that already owns PPCA, preserve that pre-existing state instead of disabling it unconditionally.</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> uint32_t dacValues[] = { 0U, 2048U, 4095U };</div>
+<div class="line"><span class="keyword">const</span> uint32_t dacValueCount = <span class="keyword">sizeof</span>(dacValues) / <span class="keyword">sizeof</span>(dacValues[0]);</div>
+<div class="line">uint8_t status;</div>
+<div class="line"> </div>
+<div class="line">Cy_PPCA_Enable(PPCA_CNFG);</div>
+<div class="line"> </div>
+<div class="line">status = <a class="code hl_function" href="group__group__atop__dac__functions.html#gad285df8c399a35c4776ea5f043fa55ad">SelfTests_ATOP_DAC</a>(<a class="code hl_define" href="group__group__atop__dac__macros.html#ga248b33ecdcaf37954a36620847dea5a3">ATOP_ADC_CHANNEL_0</a>, <a class="code hl_define" href="group__group__atop__dac__macros.html#ga534eee0e578b7e51ec6fbc278b9e71ba">ATOP_DAC_SLICE_0</a>,</div>
+<div class="line">                            dacValues, dacValueCount, 50U);</div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_function" href="group__group__atop__dac__functions.html#gad285df8c399a35c4776ea5f043fa55ad">SelfTests_ATOP_DAC</a>(<a class="code hl_define" href="group__group__atop__dac__macros.html#ga248b33ecdcaf37954a36620847dea5a3">ATOP_ADC_CHANNEL_0</a>, <a class="code hl_define" href="group__group__atop__dac__macros.html#ga59bdc388f0d1d6952562caae5e1d97c2">ATOP_DAC_SLICE_1</a>,</div>
+<div class="line">                                dacValues, dacValueCount, 50U);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle the DAC self-test failure. */</span></div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* This example owns the PPCA enable state established above. */</span></div>
+<div class="line">Cy_PPCA_Disable(PPCA_CNFG);</div>
+<div class="ttc" id="agroup__group__atop__dac__functions_html_gad285df8c399a35c4776ea5f043fa55ad"><div class="ttname"><a href="group__group__atop__dac__functions.html#gad285df8c399a35c4776ea5f043fa55ad">SelfTests_ATOP_DAC</a></div><div class="ttdeci">uint8_t SelfTests_ATOP_DAC(uint32_t adcChannel, uint32_t dacSlice, const uint32_t *dacVals, uint32_t numVals, uint16_t accuracy)</div><div class="ttdoc">Performs ATOP DAC R2R loopback self-test using PDL functions.</div></div>
+<div class="ttc" id="agroup__group__atop__dac__macros_html_ga248b33ecdcaf37954a36620847dea5a3"><div class="ttname"><a href="group__group__atop__dac__macros.html#ga248b33ecdcaf37954a36620847dea5a3">ATOP_ADC_CHANNEL_0</a></div><div class="ttdeci">#define ATOP_ADC_CHANNEL_0</div><div class="ttdoc">ADC channel 0 (ADC_GRP_0)</div><div class="ttdef"><b>Definition</b> SelfTest_ATOP_DAC.h:73</div></div>
+<div class="ttc" id="agroup__group__atop__dac__macros_html_ga534eee0e578b7e51ec6fbc278b9e71ba"><div class="ttname"><a href="group__group__atop__dac__macros.html#ga534eee0e578b7e51ec6fbc278b9e71ba">ATOP_DAC_SLICE_0</a></div><div class="ttdeci">#define ATOP_DAC_SLICE_0</div><div class="ttdoc">DAC slice 0 (DAC_R2R_0 in DCSG_GRP_0)</div><div class="ttdef"><b>Definition</b> SelfTest_ATOP_DAC.h:67</div></div>
+<div class="ttc" id="agroup__group__atop__dac__macros_html_ga59bdc388f0d1d6952562caae5e1d97c2"><div class="ttname"><a href="group__group__atop__dac__macros.html#ga59bdc388f0d1d6952562caae5e1d97c2">ATOP_DAC_SLICE_1</a></div><div class="ttdeci">#define ATOP_DAC_SLICE_1</div><div class="ttdoc">DAC slice 1 (DAC_R2R_1 in DCSG_GRP_1)</div><div class="ttdef"><b>Definition</b> SelfTest_ATOP_DAC.h:70</div></div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md89"></a>
+ATOP DCMP</h2>
+<p><span class="tt"><a class="el" href="group__group__atop__dcmp__functions.html#ga31cf54db572266873e802cfa7d7ac220" title="Performs ATOP DCMP self-test using ADC test-data injection.">SelfTests_ATOP_DCMP()</a></span> verifies one configured ATOP digital comparator by injecting test data through its ADC. It requires an ADC, DCMP, and routed ADC channel that are already initialized and enabled:</p>
+<div class="fragment"><div class="line">uint8_t <a class="code hl_function" href="group__group__atop__dcmp__functions.html#ga31cf54db572266873e802cfa7d7ac220">SelfTests_ATOP_DCMP</a>(</div>
+<div class="line">    ATOPSS_ADC_TYPE* adcBase,</div>
+<div class="line">    ATOPSS_DCMP_TYPE* dcmpBase);</div>
+<div class="ttc" id="agroup__group__atop__dcmp__functions_html_ga31cf54db572266873e802cfa7d7ac220"><div class="ttname"><a href="group__group__atop__dcmp__functions.html#ga31cf54db572266873e802cfa7d7ac220">SelfTests_ATOP_DCMP</a></div><div class="ttdeci">uint8_t SelfTests_ATOP_DCMP(ATOPSS_ADC_TYPE *adcBase, ATOPSS_DCMP_TYPE *dcmpBase)</div><div class="ttdoc">Performs ATOP DCMP self-test using ADC test-data injection.</div></div>
+</div><!-- fragment --><p>The API writes threshold <span class="tt">0x800</span>, detects a negative threshold representation for a signed channel, and changes that threshold to zero when needed. It injects the three 12-bit ADC values <span class="tt">0xFFF</span>, <span class="tt">0x800</span>, and <span class="tt">0x000</span>; their expected comparator results are true, false, and false.</p>
+<p>The function stops at the first comparator mismatch or conversion timeout. <span class="tt">OK_STATUS</span> means all three comparisons matched, <span class="tt">ERROR_STATUS</span> means a comparator result mismatched, and <span class="tt">MTB_STL_ERROR_TIMEOUT</span> means the ADC remained busy after the bounded wait. The wait uses at most 100 iterations of <span class="tt">Cy_SysLib_DelayUs(1U)</span>, or approximately 100 us for each injected value.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md90"></a>
+Device Configurator setup</h3>
+<p>First add the PPCA/ATOP configuration and allocate the ADC group to the processor that calls the API. Configure an ADC with the channels used by the DCMP instances. Each channel should be single-ended. Configure AREF for that ADC group, and add one DCMP personality for every comparator to test. Set each DCMP comparison mode to <span class="tt">CY_DCMP_MODE_IMMEDIATE_COMPARISON</span> and choose it's source channel. Initialize and enable PPCA, AREF, ADC, and every selected DCMP before testing and disable ADC calibration-gain mode for this injected-value flow.</p>
+<p>The verified M8 reference configuration allocates <span class="tt">adcGrp0</span> to <span class="tt">CY_ALLOCATE_PERIPHERAL_TO_CPU0</span>. It uses <span class="tt">ADC_0_HW</span> on ADC Group 0 with channels 0 and 1, <span class="tt">AREF_HW</span> for the Group 0 AREF, <span class="tt">DCMP_0_HW</span> with source channel 0, and <span class="tt">DCMP_1_HW</span> with source channel 1. The generated configuration objects are <span class="tt">PPCA_CNFG_config</span>, <span class="tt">ADC_0_config</span>, <span class="tt">AREF_config</span>, <span class="tt">DCMP_0_config</span>, and <span class="tt">DCMP_1_config</span>. These aliases are a verified reference configuration, not required names for every design.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md91"></a>
+Ownership, and API sequence</h3>
+<p>Before runnning test, user should disable calibration-gain mode, and run the configured DCMP calls.</p>
+<p><span class="tt"><a class="el" href="group__group__atop__dcmp__functions.html#ga31cf54db572266873e802cfa7d7ac220" title="Performs ATOP DCMP self-test using ADC test-data injection.">SelfTests_ATOP_DCMP()</a></span> does not initialize or enable PPCA, AREF, ADC, or DCMP, and does not save or restore application configuration. It writes the selected DCMP threshold and ADC test data, triggers ADC conversions and the selected DCMP, and does not restore the prior threshold. The application owns initialization, enable state, test-mode and calibration-mode setup, plus teardown and restoration. Reserve the selected ADC, AREF, DCMP, and routed channel exclusively; do not run normal ADC sampling or use the selected comparator concurrently. An application that already uses these resources must save and restore its own state.</p>
+<p>The following example owns and initializes the reference resources, then disables those resources after the test:</p>
+<div class="fragment"><div class="line">uint8_t status;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Initialize and enable the generated resources used by both DCMP paths. */</span></div>
+<div class="line">Cy_PPCA_CNFG_Init(PPCA_CNFG, &amp;PPCA_CNFG_config);</div>
+<div class="line">Cy_PPCA_ADC_Init(ADC_0_HW, &amp;ADC_0_config);</div>
+<div class="line">Cy_PPCA_AREF_Init(AREF_HW, &amp;AREF_config);</div>
+<div class="line">Cy_PPCA_DCMP_Init(DCMP_0_HW, &amp;DCMP_0_config);</div>
+<div class="line">Cy_PPCA_DCMP_Init(DCMP_1_HW, &amp;DCMP_1_config);</div>
+<div class="line">Cy_PPCA_Enable(PPCA_CNFG);</div>
+<div class="line">Cy_PPCA_AREF_Enable(AREF_HW);</div>
+<div class="line">Cy_PPCA_ADC_Enable(ADC_0_HW);</div>
+<div class="line">Cy_PPCA_DCMP_Enable(DCMP_0_HW);</div>
+<div class="line">Cy_PPCA_DCMP_Enable(DCMP_1_HW);</div>
+<div class="line"> </div>
+<div class="line">Cy_PPCA_ADC_Set_Calib_Gain_mode(ADC_0_HW, <span class="keyword">false</span>);</div>
+<div class="line"> </div>
+<div class="line">status = <a class="code hl_function" href="group__group__atop__dcmp__functions.html#ga31cf54db572266873e802cfa7d7ac220">SelfTests_ATOP_DCMP</a>(ADC_0_HW, DCMP_0_HW);</div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_function" href="group__group__atop__dcmp__functions.html#ga31cf54db572266873e802cfa7d7ac220">SelfTests_ATOP_DCMP</a>(ADC_0_HW, DCMP_1_HW);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#gaf72a0ee4b35fb7b2423fc3071517ede5">MTB_STL_ERROR_TIMEOUT</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle the ADC conversion timeout. */</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle the DCMP diagnostic failure. */</span></div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* This example owns the test mode and enabled resources. */</span></div>
+<div class="line">Cy_PPCA_ADC_Set_Test_mode(ADC_0_HW, <span class="keyword">false</span>);</div>
+<div class="line">Cy_PPCA_DCMP_Disable(DCMP_1_HW);</div>
+<div class="line">Cy_PPCA_DCMP_Disable(DCMP_0_HW);</div>
+<div class="line">Cy_PPCA_ADC_Disable(ADC_0_HW);</div>
+<div class="line">Cy_PPCA_AREF_Disable(AREF_HW);</div>
+<div class="line">Cy_PPCA_Disable(PPCA_CNFG);</div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md92"></a>
+ATOP DCSG</h2>
+<p><span class="tt"><a class="el" href="group__group__atop__dcsg__functions.html#gab7bbde9299f37aa0d9a4c7ad9c5e464b" title="Performs ATOP DCSG (Digital Comparator and Slope Generator) self-test.">SelfTests_ATOP_DCSG()</a></span> verifies one DCSG slice and its group DAC R2R through the internal <span class="tt">DAC R2R -&gt; DCSG comparator</span> path. The DCSG slope generator supplies the threshold, so no external pin, route, or analog stimulus is required:</p>
+<div class="fragment"><div class="line">uint8_t <a class="code hl_function" href="group__group__atop__dcsg__functions.html#gab7bbde9299f37aa0d9a4c7ad9c5e464b">SelfTests_ATOP_DCSG</a>(</div>
+<div class="line">    PPCA_ATOPSS_DCSG_GRP_DAC_R2R_Type* dacBase,</div>
+<div class="line">    PPCA_ATOPSS_DCSG_GRP_DCSG_SLICE_Type* dcsgBase);</div>
+<div class="ttc" id="agroup__group__atop__dcsg__functions_html_gab7bbde9299f37aa0d9a4c7ad9c5e464b"><div class="ttname"><a href="group__group__atop__dcsg__functions.html#gab7bbde9299f37aa0d9a4c7ad9c5e464b">SelfTests_ATOP_DCSG</a></div><div class="ttdeci">uint8_t SelfTests_ATOP_DCSG(PPCA_ATOPSS_DCSG_GRP_DAC_R2R_Type *dacBase, PPCA_ATOPSS_DCSG_GRP_DCSG_SLICE_Type *dcsgBase)</div><div class="ttdoc">Performs ATOP DCSG (Digital Comparator and Slope Generator) self-test.</div></div>
+</div><!-- fragment --><p>The first case writes DAC value 4095 with threshold 500 and expects a true comparator flag. The second writes DAC value 0 with threshold 3500 and expects false. The implementation waits 10 ms for DAC settling in each case, so one successful call validates both states for one slice. <span class="tt">OK_STATUS</span> means both states matched; <span class="tt">ERROR_STATUS</span> means a mismatch or a NULL base pointer. The function stops after the first failed comparator state.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md93"></a>
+Topology and reference coverage</h3>
+<p>On PSOC Control C3 M8, DCSG Group 0 has one DAC R2R and six slices, indices 0 through 5; Group 1 has one DAC R2R and three slices, indices 0 through 2. The verified M8 reference configuration allocates <span class="tt">dcsgGrp0</span> and <span class="tt">dcsgGrp1</span> to <span class="tt">CY_ALLOCATE_PERIPHERAL_TO_CPU0</span>. Use <span class="tt">PPCA_ATOPSS_DCSG_GRP0_DAC_R2R</span> with <span class="tt">&amp;PPCA_ATOPSS_DCSG_GRP0_DCSG_SLICE0[sliceIndex]</span> for Group 0, and <span class="tt">PPCA_ATOPSS_DCSG_GRP1_DAC_R2R</span> with <span class="tt">&amp;PPCA_ATOPSS_DCSG_GRP1_DCSG_SLICE0[sliceIndex]</span> for Group 1.</p>
+<p>The concrete slice counts are verified for M8. Check the target device's PDL layout before applying these counts to another compatible device; this API does not provide public slice-count macros.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md94"></a>
+Setup and ownership</h3>
+<p>Initialize the generated system/PPCA configuration and enable the top-level PPCA block before calling the API. The application owns the top-level PPCA enable/disable policy. The API initializes and enables Group 0 AREF, the selected group DAC R2R, and the selected DCSG slice. It saves and restores Group 0 AREF control and analog-control registers; the selected DAC control and configuration registers; and the selected DCSG slice control and configuration registers. It disables the temporary AREF, DAC, and DCSG setup before restoring those registers. It does not manage the top-level PPCA enable state.</p>
+<p>Only the selected slice registers change, but the group DAC is shared by every slice in that DCSG group. Group 0 AREF is also shared with ADC, AFE, DAC, and other ATOP users. Reserve Group 0 AREF, the selected group DAC, and selected DCSG slice exclusively. Do not run this API concurrently with ATOP DAC, AFE, another DCSG slice in the same group, or application use of the shared DAC/AREF resources.</p>
+<p>The following example enables PPCA, tests every verified M8 slice, then disables PPCA because it owns that enable state:</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> uint32_t group0SliceCount = 6U;</div>
+<div class="line"><span class="keyword">static</span> <span class="keyword">const</span> uint32_t group1SliceCount = 3U;</div>
+<div class="line">uint8_t status = <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
+<div class="line">uint32_t sliceIndex;</div>
+<div class="line"> </div>
+<div class="line">Cy_PPCA_CNFG_Init(PPCA_CNFG, &amp;PPCA_CNFG_config);</div>
+<div class="line">Cy_PPCA_Enable(PPCA_CNFG);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">for</span> (sliceIndex = 0U; (sliceIndex &lt; group0SliceCount) &amp;&amp; (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> == status); sliceIndex++)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_function" href="group__group__atop__dcsg__functions.html#gab7bbde9299f37aa0d9a4c7ad9c5e464b">SelfTests_ATOP_DCSG</a>(PPCA_ATOPSS_DCSG_GRP0_DAC_R2R,</div>
+<div class="line">                                 &amp;PPCA_ATOPSS_DCSG_GRP0_DCSG_SLICE0[sliceIndex]);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">for</span> (sliceIndex = 0U; (sliceIndex &lt; group1SliceCount) &amp;&amp; (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> == status); sliceIndex++)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_function" href="group__group__atop__dcsg__functions.html#gab7bbde9299f37aa0d9a4c7ad9c5e464b">SelfTests_ATOP_DCSG</a>(PPCA_ATOPSS_DCSG_GRP1_DAC_R2R,</div>
+<div class="line">                                 &amp;PPCA_ATOPSS_DCSG_GRP1_DCSG_SLICE0[sliceIndex]);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle the DCSG diagnostic failure. */</span></div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* This example owns the PPCA enable state established above. */</span></div>
+<div class="line">Cy_PPCA_Disable(PPCA_CNFG);</div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md95"></a>
 HWFILT3P3Z test</h1>
-<p>The HWFILT3P3Z self-test validates supported mixed-signal filter paths.</p>
-<p>The following example runs the <span class="tt"><a class="el" href="group__group__hwfilt3p3z__functions.html#ga49c1987f556b77492242d08e4a85d272" title="Performs a self-test of one HWFILT3P3Z filter instance inside the HPPASS (High Performance Programmab...">SelfTest_HWFILT3P3Z_HPPASS()</a></span> self-test across all supported HPPASS filter instances for the active hardware family:</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md96"></a>
+HPPASS implementation</h2>
+<p>This implementation applies to devices with the HPASS v3 IP. <span class="tt">SelfTest_HWFILT3P3Z_HPPASS(filtIdx)</span> selects one HPPASS filter instance; its index is not a PPCA stack or channel selection. The API configures the selected filter for a frequency-response check driven through the AHB interface, then restores its configuration and enable state.</p>
+<p>The following example runs the <span class="tt"><a class="el" href="group__group__hwfilt3p3z__functions.html#ga49c1987f556b77492242d08e4a85d272" title="Performs a self-test of one HWFILT3P3Z filter instance inside the HPPASS (High Performance Programmab...">SelfTest_HWFILT3P3Z_HPPASS()</a></span> self-test across all supported HPPASS filter instances:</p>
 <div class="fragment"><div class="line">uint8_t status = <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordflow">for</span> (uint8_t filter = 0U; filter &lt;= <a class="code hl_define" href="group__group__hwfilt3p3z__macros.html#ga5db43cce594377de92f41a3fd2710de4">HWFILT3P3Z_HPPASS_MAX_IDX</a>; filter++)</div>
@@ -443,7 +828,63 @@ HWFILT3P3Z test</h1>
 <div class="line">    }</div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__hwfilt3p3z__functions_html_ga49c1987f556b77492242d08e4a85d272"><div class="ttname"><a href="group__group__hwfilt3p3z__functions.html#ga49c1987f556b77492242d08e4a85d272">SelfTest_HWFILT3P3Z_HPPASS</a></div><div class="ttdeci">uint8_t SelfTest_HWFILT3P3Z_HPPASS(uint8_t filtIdx)</div><div class="ttdoc">Performs a self-test of one HWFILT3P3Z filter instance inside the HPPASS (High Performance Programmab...</div></div>
-<div class="ttc" id="agroup__group__hwfilt3p3z__macros_html_ga5db43cce594377de92f41a3fd2710de4"><div class="ttname"><a href="group__group__hwfilt3p3z__macros.html#ga5db43cce594377de92f41a3fd2710de4">HWFILT3P3Z_HPPASS_MAX_IDX</a></div><div class="ttdeci">#define HWFILT3P3Z_HPPASS_MAX_IDX</div><div class="ttdoc">Maximum HWFILT3P3Z filter instance index for HPPASS (3 instances: 0..2).</div><div class="ttdef"><b>Definition</b> SelfTest_HWFILT3P3Z.h:123</div></div>
+<div class="ttc" id="agroup__group__hwfilt3p3z__macros_html_ga5db43cce594377de92f41a3fd2710de4"><div class="ttname"><a href="group__group__hwfilt3p3z__macros.html#ga5db43cce594377de92f41a3fd2710de4">HWFILT3P3Z_HPPASS_MAX_IDX</a></div><div class="ttdeci">#define HWFILT3P3Z_HPPASS_MAX_IDX</div><div class="ttdoc">Maximum HWFILT3P3Z filter instance index for HPPASS (3 instances: 0..2).</div><div class="ttdef"><b>Definition</b> SelfTest_HWFILT3P3Z.h:250</div></div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md97"></a>
+PPCA implementation</h2>
+<p>This implementation applies to devices with the PPCA IP. <span class="tt">SelfTest_HWFILT3P3Z(base, channel)</span> validates the AHB configuration read/write path, trigger and <span class="tt">FILTER_BUSY</span> handshake, offset-adder path, and 24-bit <span class="tt">DATA_OUT</span> readback for one HWFILT3P3Z channel. It uses zero coefficients, a zero input sample, and a known non-zero output offset, so a passing result confirms the expected offset readback. The test does not exercise multiplier, accumulator carry-chain, saturation, or input/output shifter behavior.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md98"></a>
+Stack and channel selection</h3>
+<p>PPCA provides two independent HWFILT3P3Z stacks:</p>
+<ul>
+<li>SS0 uses <span class="tt">PPCA_HWFILT3P3Z_SS_0</span> and channels 0 through <span class="tt">HWFILT3P3Z_SS0_MAX_CHANNEL_INDEX</span> (0 through 3 on M8).</li>
+<li>SS1 uses <span class="tt">PPCA_HWFILT3P3Z_SS_1</span> and channels 0 through <span class="tt">HWFILT3P3Z_SS1_MAX_CHANNEL_INDEX</span> (0 through 1 on M8).</li>
+</ul>
+<p>Pass the SS0 base directly. SS1 has a distinct generated PDL structure type, so cast its base to <span class="tt">PPCA_HWFILT3P3Z_SS_Type*</span> as shown in the example. The channel limit macros derive from the public PDL structure and must be used instead of assuming that both stacks have the same number of channels. A NULL base, another base address, or a channel outside its stack's range returns <span class="tt">ERROR_BAD_PARAM</span> without hardware access. <span class="tt">OK_STATUS</span> reports a matching 24-bit output and <span class="tt">ERROR_STATUS</span> reports a mismatched result or a <span class="tt">FILTER_BUSY</span> timeout. The API bounds this wait to 1000 one-microsecond iterations.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md99"></a>
+Device Configurator setup and resource ownership</h3>
+<p>Add the PPCA configuration and assign each HWFILT3P3Z stack that the application will test to the processor running the self-test. In the verified reference configuration, <span class="tt">hwfilt3p3zSS0</span> and <span class="tt">hwfilt3p3zSS1</span> are assigned to CPU0. On another compatible device, use the aliases and processor allocation for that device, but retain ownership of the selected stack.</p>
+<p>No generated HWFILT3P3Z configuration object, external stimulus, trigger route, or pin routing is required: the API selects the AHB source and generates the test input internally. The application does not need to initialize or enable the selected stack solely for this API. For the selected channel, the API temporarily replaces the source and trigger selection, <span class="tt">cx0</span> through <span class="tt">cx3</span>, <span class="tt">cy1</span> through <span class="tt">cy3</span>, output offset, output limits, coefficient scales, and input/output gains, as well as its enable state. It saves that configuration and the stack enable state, enables the stack for the test, then restores the saved channel configuration and both enable states before it returns.</p>
+<p>The test changes only the selected channel's filter configuration and enable state, but stack enablement is shared by every channel in that stack. Reserve the selected channel and serialize the call with any application use of the selected stack; do not start a computation on another channel in the same stack while the test temporarily enables or restores the stack. The application remains responsible for PPCA processor allocation, clock and power availability, and restoring any broader application-owned PPCA state it changes outside this API.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md100"></a>
+API sequence</h3>
+<p>After generated system initialization has established the PPCA allocation, call the API for each application-owned channel. Stop on the first non-<span class="tt">OK_STATUS</span> result; handle <span class="tt">ERROR_BAD_PARAM</span> as a configuration or selection error separately from a diagnostic failure. The following example tests every available channel in both M8 stacks. It does not enable PPCA or apply generated filter configuration because neither is consumed by this API.</p>
+<div class="fragment"><div class="line">uint8_t status = <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">for</span> (uint8_t channel = 0U; channel &lt;= <a class="code hl_define" href="group__group__hwfilt3p3z__macros.html#gad411f8348d36b1a5358bcc130b57c890">HWFILT3P3Z_SS0_MAX_CHANNEL_INDEX</a>; channel++)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_function" href="group__group__hwfilt3p3z__functions.html#ga63210797621a56945493d3ef43445556">SelfTest_HWFILT3P3Z</a>(PPCA_HWFILT3P3Z_SS_0, channel);</div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a> == status)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="comment">/* Handle invalid SS0 base or channel configuration */</span></div>
+<div class="line">        <span class="keywordflow">break</span>;</div>
+<div class="line">    }</div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="comment">/* Handle HWFILT3P3Z SS0 channel test failure */</span></div>
+<div class="line">        <span class="keywordflow">break</span>;</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">for</span> (uint8_t channel = 0U;</div>
+<div class="line">     (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> == status) &amp;&amp; (channel &lt;= <a class="code hl_define" href="group__group__hwfilt3p3z__macros.html#ga9f792b06b437b39c39e3bd6701b6db0f">HWFILT3P3Z_SS1_MAX_CHANNEL_INDEX</a>);</div>
+<div class="line">     channel++)</div>
+<div class="line">{</div>
+<div class="line">    status = <a class="code hl_function" href="group__group__hwfilt3p3z__functions.html#ga63210797621a56945493d3ef43445556">SelfTest_HWFILT3P3Z</a>(</div>
+<div class="line">        (PPCA_HWFILT3P3Z_SS_Type*)PPCA_HWFILT3P3Z_SS_1, channel);</div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a> == status)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="comment">/* Handle invalid SS1 base or channel configuration */</span></div>
+<div class="line">        <span class="keywordflow">break</span>;</div>
+<div class="line">    }</div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="comment">/* Handle HWFILT3P3Z SS1 channel test failure */</span></div>
+<div class="line">        <span class="keywordflow">break</span>;</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="ttc" id="agroup__group__hwfilt3p3z__functions_html_ga63210797621a56945493d3ef43445556"><div class="ttname"><a href="group__group__hwfilt3p3z__functions.html#ga63210797621a56945493d3ef43445556">SelfTest_HWFILT3P3Z</a></div><div class="ttdeci">uint8_t SelfTest_HWFILT3P3Z(PPCA_HWFILT3P3Z_SS_Type *base, uint8_t channel)</div><div class="ttdoc">Performs a self-test of a single HWFILT3P3Z filter channel by configuring it as a 2nd-order low-pass ...</div></div>
+<div class="ttc" id="agroup__group__hwfilt3p3z__macros_html_ga9f792b06b437b39c39e3bd6701b6db0f"><div class="ttname"><a href="group__group__hwfilt3p3z__macros.html#ga9f792b06b437b39c39e3bd6701b6db0f">HWFILT3P3Z_SS1_MAX_CHANNEL_INDEX</a></div><div class="ttdeci">#define HWFILT3P3Z_SS1_MAX_CHANNEL_INDEX</div><div class="ttdoc">Maximum HWFILT3P3Z channel index for subsystem SS_1 (2 channels: 0..1).</div><div class="ttdef"><b>Definition</b> SelfTest_HWFILT3P3Z.h:181</div></div>
+<div class="ttc" id="agroup__group__hwfilt3p3z__macros_html_gad411f8348d36b1a5358bcc130b57c890"><div class="ttname"><a href="group__group__hwfilt3p3z__macros.html#gad411f8348d36b1a5358bcc130b57c890">HWFILT3P3Z_SS0_MAX_CHANNEL_INDEX</a></div><div class="ttdeci">#define HWFILT3P3Z_SS0_MAX_CHANNEL_INDEX</div><div class="ttdoc">Maximum HWFILT3P3Z channel index for subsystem SS_0 (4 channels: 0..3).</div><div class="ttdef"><b>Definition</b> SelfTest_HWFILT3P3Z.h:176</div></div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->

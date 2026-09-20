@@ -344,9 +344,18 @@ uint8_t SelfTest_Windowed_MCWDT(MCWDT_STRUCT_Type* base, cy_en_mcwdtctr_t counte
                         }
                     } while (count < ((uint32_t)STL_MCWDT_MATCH_LIMIT + (uint32_t)STL_MCWDT_MATCH_SETTLE));
 
-                    if (1U == stlWwdt_mcwdtIntrOccurred)
+                    if (stallCount >= (uint32_t)STL_MCWDT_STALL_LIMIT)
+                    {
+                        /* Counter stall detected - clock not running */
+                        result = MTB_STL_ERROR_TIMEOUT;
+                    }
+                    else if (1U == stlWwdt_mcwdtIntrOccurred)
                     {
                         result = OK_STATUS;
+                    }
+                    else
+                    {
+                        /* Interrupt did not occur as expected */
                     }
                 }
                 else
@@ -384,6 +393,12 @@ uint8_t SelfTest_Windowed_MCWDT(MCWDT_STRUCT_Type* base, cy_en_mcwdtctr_t counte
                         }
                         #endif /* if (!ERROR_IN_WWDT_LOWER_LIMIT) */
                     } while (count <= (uint32_t)STL_MCWDT_LOWER_LIMIT);
+
+                    if (stallCount >= (uint32_t)STL_MCWDT_STALL_LIMIT)
+                    {
+                        /* Counter stall detected - clock not running */
+                        result = MTB_STL_ERROR_TIMEOUT;
+                    }
                 }
 
                 Cy_MCWDT_Unlock(base);

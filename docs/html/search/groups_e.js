@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['wdt_20stl_20module_0',['WDT (WDT STL module)',['../group__group__wdt.html',1,'']]],
-  ['wdt_20wdt_20stl_20module_1',['WDT (WDT STL module)',['../group__group__wdt.html',1,'']]],
-  ['wwdt_20stl_20module_2',['WWDT (WWDT STL module)',['../group__group__wwdt.html',1,'']]],
-  ['wwdt_20wwdt_20stl_20module_3',['WWDT (WWDT STL module)',['../group__group__wwdt.html',1,'']]]
+  ['uart_20data_20transfer_20stl_20module_0',['UART Data Transfer (UART Data Transfer STL module)',['../group__group__uart__data__tsf.html',1,'']]],
+  ['uart_20data_20transfer_20uart_20data_20transfer_20stl_20module_1',['UART Data Transfer (UART Data Transfer STL module)',['../group__group__uart__data__tsf.html',1,'']]],
+  ['uart_20stl_20module_2',['UART (UART STL module)',['../group__group__uart.html',1,'']]],
+  ['uart_20uart_20stl_20module_3',['UART (UART STL module)',['../group__group__uart.html',1,'']]]
 ];

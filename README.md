@@ -46,8 +46,8 @@ Detailed integration examples are split into dedicated guides:
 - [Memory and storage integrity self-tests](guides/memory-tests.md) - Demonstrates SRAM, stack, Flash integrity, and ECC modules.
 - [Clock, interrupt, timer, and PWM self-tests](guides/clock-and-timing-tests.md) - Demonstrates interrupt, clock, timer/counter, PWM, and PWM GateKill modules.
 - [Communication interface self-tests](guides/serial-and-fieldbus-tests.md) - Demonstrates I2C, SPI, UART, and CAN FD modules.
-- [Analog and mixed-signal self-tests](guides/analog-and-mixed-signal-tests.md) - Demonstrates ADC, DAC, OPAMP, LPCOMP, and HWFILT3P3Z modules.
-- [Advanced hardware block self-tests](guides/advanced-control-and-accelerator-tests.md) - Demonstrates IPC, DMA DW, MOTIF, and CORDIC modules.
+- [Analog and mixed-signal self-tests](guides/analog-and-mixed-signal-tests.md) - Demonstrates ADC, DAC, OPAMP, LPCOMP, HWFILT3P3Z, and ATOP modules.
+- [Advanced hardware block self-tests](guides/advanced-control-and-accelerator-tests.md) - Demonstrates CLB, EPU, IPC, PPCA IPC, DMA DW, MOTIF, and CORDIC modules.
 
 # Industry Standards and Compliance
 

@@ -1,28 +1,4 @@
 var searchData=
 [
-  ['a_20emulator_0',['EMU_PH_A (Phase A emulator)',['../stl_usage_advanced_control_and_accelerator.html#autotoc_md77',1,'']]],
-  ['adc_20example_1',['Generic ADC example',['../stl_usage_analog_and_mixed_signal.html#autotoc_md63',1,'']]],
-  ['adc_20tests_2',['ADC tests',['../stl_usage_analog_and_mixed_signal.html#autotoc_md60',1,'']]],
-  ['adc_20trigin_20test_3',['ADC TrigIn test',['../stl_usage_analog_and_mixed_signal.html#autotoc_md61',1,'']]],
-  ['add_20mtb_20stl_20library_20to_20the_20project_4',['1. Add mtb-stl library to the project',['../index.html#autotoc_md5',1,'']]],
-  ['advanced_20hardware_20block_20self_20tests_5',['Advanced Hardware Block Self-Tests',['../stl_usage_advanced_control_and_accelerator.html',1,'index']]],
-  ['analog_20and_20mixed_20signal_20tests_6',['Analog and Mixed-Signal Tests',['../stl_usage_analog_and_mixed_signal.html',1,'index']]],
-  ['analog_20pins_20of_20ppca_7',['Analog Pins of PPCA',['../group__group__io.html#group_io_analog_pin',1,'']]],
-  ['and_20changelog_8',['Release Notes and Changelog',['../index.html#autotoc_md12',1,'']]],
-  ['and_20compliance_9',['Industry Standards and Compliance',['../index.html#autotoc_md8',1,'']]],
-  ['and_20home_20appliance_20safety_10',['ModusToolbox™ Safety Test Library (mtb-stl) - IEC 60730 Class B Compliance for Industrial and Home Appliance Safety',['../index.html',1,'']]],
-  ['and_20interrupt_20handler_11',['and interrupt handler',['../stl_usage_serial_and_fieldbus.html#autotoc_md48',1,'Application resources and interrupt handler'],['../stl_usage_serial_and_fieldbus.html#autotoc_md58',1,'Application resources and interrupt handler']]],
-  ['and_20interrupt_20handlers_12',['Application resources and interrupt handlers',['../stl_usage_serial_and_fieldbus.html#autotoc_md43',1,'']]],
-  ['and_20margin_5fcount_13',['Deriving ref_count and margin_count',['../stl_usage_advanced_control_and_accelerator.html#autotoc_md82',1,'']]],
-  ['and_20mixed_20signal_20tests_14',['Analog and Mixed-Signal Tests',['../stl_usage_analog_and_mixed_signal.html',1,'index']]],
-  ['and_20pwm_20tests_15',['Clock, Interrupt, Timer, and PWM Tests',['../stl_usage_clock_and_timing.html',1,'index']]],
-  ['and_20storage_20integrity_20tests_16',['Memory and Storage Integrity Tests',['../stl_usage_memory_tests.html',1,'index']]],
-  ['api_17',['API',['../stl_usage_advanced_control_and_accelerator.html#autotoc_md74',1,'Explicit-instance API'],['../stl_usage_advanced_control_and_accelerator.html#autotoc_md73',1,'Wrapper API']]],
-  ['api_20sequence_18',['API sequence',['../stl_usage_analog_and_mixed_signal.html#autotoc_md68',1,'']]],
-  ['appliance_20safety_19',['ModusToolbox™ Safety Test Library (mtb-stl) - IEC 60730 Class B Compliance for Industrial and Home Appliance Safety',['../index.html',1,'']]],
-  ['application_20owned_20resources_20',['Application-owned resources',['../stl_usage_analog_and_mixed_signal.html#autotoc_md67',1,'']]],
-  ['application_20resources_20and_20interrupt_20handler_21',['Application resources and interrupt handler',['../stl_usage_serial_and_fieldbus.html#autotoc_md48',1,'Application resources and interrupt handler'],['../stl_usage_serial_and_fieldbus.html#autotoc_md58',1,'Application resources and interrupt handler']]],
-  ['application_20resources_20and_20interrupt_20handlers_22',['Application resources and interrupt handlers',['../stl_usage_serial_and_fieldbus.html#autotoc_md43',1,'']]],
-  ['application_20side_20enable_20sequence_23',['Application-side enable sequence',['../stl_usage_serial_and_fieldbus.html#autotoc_md52',1,'']]],
-  ['application_20side_20test_20sequence_24',['Application side test sequence',['../stl_usage_serial_and_fieldbus.html#autotoc_md44',1,'Application-side test sequence'],['../stl_usage_serial_and_fieldbus.html#autotoc_md49',1,'Application-side test sequence'],['../stl_usage_serial_and_fieldbus.html#autotoc_md55',1,'Application-side test sequence'],['../stl_usage_serial_and_fieldbus.html#autotoc_md59',1,'Application-side test sequence']]]
+  ['60730_20class_20b_20compliance_20for_20industrial_20and_20home_20appliance_20safety_0',['ModusToolbox™ Safety Test Library (mtb-stl) - IEC 60730 Class B Compliance for Industrial and Home Appliance Safety',['../index.html',1,'']]]
 ];

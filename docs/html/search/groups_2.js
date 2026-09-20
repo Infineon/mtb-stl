@@ -1,10 +1,25 @@
 var searchData=
 [
-  ['data_20structure_0',['Data structure',['../group__group__motif__structure.html',1,'']]],
-  ['data_20transfer_20stl_20module_1',['UART Data Transfer (UART Data Transfer STL module)',['../group__group__uart__data__tsf.html',1,'']]],
-  ['data_20transfer_20uart_20data_20transfer_20stl_20module_2',['UART Data Transfer (UART Data Transfer STL module)',['../group__group__uart__data__tsf.html',1,'']]],
-  ['dma_20dma_20stl_20module_3',['DMA (DMA STL module)',['../group__group__dma.html',1,'']]],
-  ['dma_20stl_20module_4',['DMA (DMA STL module)',['../group__group__dma.html',1,'']]],
-  ['dmac_20dmac_20stl_20module_5',['DMAC (DMAC STL module)',['../group__group__dmac.html',1,'']]],
-  ['dmac_20stl_20module_6',['DMAC (DMAC STL module)',['../group__group__dmac.html',1,'']]]
+  ['can_20can_20stl_20module_0',['CAN (CAN STL module)',['../group__group__can.html',1,'']]],
+  ['can_20fd_20can_20fd_20stl_20module_1',['CAN-FD (CAN-FD STL module)',['../group__group__canfd.html',1,'']]],
+  ['can_20fd_20stl_20module_2',['CAN-FD (CAN-FD STL module)',['../group__group__canfd.html',1,'']]],
+  ['can_20stl_20module_3',['CAN (CAN STL module)',['../group__group__can.html',1,'']]],
+  ['clb_20clb_20stl_20module_4',['CLB (CLB STL module)',['../group__group__clb.html',1,'']]],
+  ['clb_20stl_20module_5',['CLB (CLB STL module)',['../group__group__clb.html',1,'']]],
+  ['clock_20clock_20stl_20module_6',['Clock (Clock STL module)',['../group__group__clock.html',1,'']]],
+  ['clock_20stl_20module_7',['Clock (Clock STL module)',['../group__group__clock.html',1,'']]],
+  ['codes_8',['STL return status codes',['../group__group__stl__status.html',1,'']]],
+  ['comparator_20stl_20module_9',['ATOP DCMP (ATOP Digital Comparator STL module)',['../group__group__atop__dcmp.html',1,'']]],
+  ['cordic_20cordic_20stl_20module_10',['CORDIC (CORDIC STL module)',['../group__group__cordic.html',1,'']]],
+  ['cordic_20stl_20module_11',['CORDIC (CORDIC STL module)',['../group__group__cordic.html',1,'']]],
+  ['core_20atop_20adc_20core_20stl_20module_12',['ATOP ADC Core (ATOP ADC Core STL module)',['../group__group__atop__adc__core.html',1,'']]],
+  ['core_20stl_20module_13',['ATOP ADC Core (ATOP ADC Core STL module)',['../group__group__atop__adc__core.html',1,'']]],
+  ['counter_20stl_20module_14',['Timer/Counter (Timer/Counter STL module)',['../group__group__timer__counter.html',1,'']]],
+  ['counter_20timer_20counter_20stl_20module_15',['Timer/Counter (Timer/Counter STL module)',['../group__group__timer__counter.html',1,'']]],
+  ['cpu_20cpu_20stl_20module_16',['CPU (CPU STL module)',['../group__group__cpu.html',1,'']]],
+  ['cpu_20instructions_20cpu_20instructions_20stl_20module_17',['CPU instructions (CPU Instructions STL module)',['../group__group__cpu__instructions.html',1,'']]],
+  ['cpu_20instructions_20stl_20module_18',['CPU instructions (CPU Instructions STL module)',['../group__group__cpu__instructions.html',1,'']]],
+  ['cpu_20stl_20module_19',['CPU (CPU STL module)',['../group__group__cpu.html',1,'']]],
+  ['crc_20crc_20stl_20module_20',['CRC (CRC STL module)',['../group__group__crc.html',1,'']]],
+  ['crc_20stl_20module_21',['CRC (CRC STL module)',['../group__group__crc.html',1,'']]]
 ];

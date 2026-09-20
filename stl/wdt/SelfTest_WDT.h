@@ -87,7 +87,7 @@
 #define ILO_START_UP_TIME              (2U)
 
 
-#elif (defined (CY_IP_MXS40SRSS) || defined (CY_IP_MXS40SSRSS))
+#elif (defined (CY_IP_MXS40SRSS) || defined (CY_IP_MXS40SSRSS) || defined (CY_IP_MXS22SRSS))
 
 #define WDT_PERIOD                     (32000u)
 
@@ -101,7 +101,7 @@
 #elif (defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 2))
 /* WDT guard interval */
 #define WDT_DATA_TIME                  (2u)
-#elif defined (CY_IP_MXS40SSRSS)
+#elif (defined (CY_IP_MXS40SSRSS) || defined (CY_IP_MXS22SRSS))
 /* WDT guard interval */
 #define WDT_DATA_TIME                  (8u)
 #define MATCH_BITS                     (14U)

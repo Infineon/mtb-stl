@@ -37,6 +37,7 @@
 #include "cy_pdl.h"
 #include "SelfTest_ECC.h"
 
+#if (SELFTEST_ECC_MODE == STL_ECC_MODE_ONE_SHOT)
 #if (defined (CY_IP_MXS40FAULT) || defined (CY_IP_MXFAULT))
 
 #define TIMEOUT_FOR_FAULT 2000UL
@@ -527,4 +528,5 @@ uint8_t SelfTest_ECC_Ram(uint32_t addr, cy_en_ecc_error_mode_t eccErrorMode)
 
 #endif /* if defined(CY_IP_MXFAULT) */
 #endif /* if (defined (CY_IP_MXS40FAULT) || defined (CY_IP_MXFAULT)) */
+#endif /* if (SELFTEST_ECC_MODE == STL_ECC_MODE_ONE_SHOT) */
 /* [] END OF FILE */

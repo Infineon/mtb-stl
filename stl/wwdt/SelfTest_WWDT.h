@@ -149,6 +149,7 @@ uint8_t SelfTest_Windowed_WDT(void);
 * \return
 *  \ref OK_STATUS (0) - Test passed <br>
 *  \ref ERROR_STATUS (1) - Test failed <br>
+*  \ref MTB_STL_ERROR_TIMEOUT (10) - Counter stall detected (clock not running) <br>
 *
 *******************************************************************************/
 uint8_t SelfTest_Windowed_MCWDT(MCWDT_STRUCT_Type* base, cy_en_mcwdtctr_t counter);

@@ -92,10 +92,16 @@ $(function(){initNavTree('group__group__hwfilt3p3z.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">General Description</h2>
-<p>The self-test exercises the HPPASS 3P3Z filter signal path by applying in-band and out-of-band tones and verifying the resulting LPF magnitude response without requiring external analog stimulus routing. </p>
+<p>The HWFILT3P3Z (Hardware 3-Pole / 3-Zero Filter) self-test validates a single HW3P3Z filter channel by verifying its low-pass frequency response. </p>
+<p>The channel is configured as a 2nd-order IIR low-pass filter and driven through the AHB interface with two tones: an in-band low-frequency tone that the filter passes and an out-of-band high-frequency tone that it heavily attenuates.</p>
+<p>Stages exercised: AHB write path (DATA_IN0 trigger), the FILTER_BUSY handshake, AHB read of DATA_OUT, the forward multipliers (cx0..cx3), the feedback multipliers (cy1..cy3), the accumulator, the coefficient scale factors (scaleCX, scaleCY), the output gain (gOut), the output limits (limMax, limMin) and the frequency-selective magnitude response of the IIR section. Because the output swings negative (zero output offset), the 24-bit DATA_OUT payload is masked and sign-extended explicitly by the test.</p>
+<p>On devices that provide CY_IP_MXS40PPSS, PPCA exposes two HWFILT3P3Z subsystem instances:</p><ul>
+<li>HWFILT3P3Z_SS0 with 4 independent filter channels (PPCA_HWFILT3P3Z_SS_0)</li>
+<li>HWFILT3P3Z_SS1 with 2 independent filter channels (PPCA_HWFILT3P3Z_SS_1)</li>
+</ul>
 <h1 class="doxsection"><a class="anchor" id="group_hwfilt3p3z_hppass_theory"></a>
 Filter Theory</h1>
-<p>The the self-test exercises the full IIR signal path by applying two frequency-selective stimulus tones and verifying the LPF magnitude response. The filter under test is a 2nd-order IIR low-pass filter (3P3Z topology, 3rd pole and zero at the origin, cx3 = cy3 = 0) with a double zero at z = -1 (Nyquist) and a conjugate pole pair close to DC.</p>
+<p>The self-test exercises the full IIR signal path by applying two frequency-selective stimulus tones and verifying the LPF magnitude response. The filter under test is a 2nd-order IIR low-pass filter (3P3Z topology, 3rd pole and zero at the origin, cx3 = cy3 = 0) with a double zero at z = -1 (Nyquist) and a conjugate pole pair close to DC.</p>
 <dl class="section user"><dt>Filter Transfer Function</dt><dd>The Z-domain transfer function is: <div class="fragment"><div class="line">        K * (1 + z^-1)^2</div>
 <div class="line">H(z) =  -----------------------</div>
 <div class="line">        1 - b1*z^-1 + b2*z^-^2</div>
@@ -112,7 +118,7 @@ Filter Theory</h1>
 <dl class="section user"><dt>Test Tone Gains</dt><dd><div class="fragment"><div class="line">omega_low  = 2*pi/40   -&gt;  gain ~= -17.2 dB (in-band, passes the LPF)</div>
 <div class="line">omega_high = 2*pi/5    -&gt;  gain ~= -54.6 dB (out-of-band, heavily attenuated)</div>
 <div class="line">attenuation ratio ~= 74:1  (threshold: <a class="code hl_define" href="group__group__hwfilt3p3z__macros.html#ga025863f590e970d1368c4984b314e071">HWFILT3P3Z_ATT_RATIO</a> = 8:1)</div>
-<div class="ttc" id="agroup__group__hwfilt3p3z__macros_html_ga025863f590e970d1368c4984b314e071"><div class="ttname"><a href="group__group__hwfilt3p3z__macros.html#ga025863f590e970d1368c4984b314e071">HWFILT3P3Z_ATT_RATIO</a></div><div class="ttdeci">#define HWFILT3P3Z_ATT_RATIO</div><div class="ttdoc">Required attenuation ratio for the out-of-band sub-test: low_peak must be strictly greater than HWFIL...</div><div class="ttdef"><b>Definition</b> SelfTest_HWFILT3P3Z.h:129</div></div>
+<div class="ttc" id="agroup__group__hwfilt3p3z__macros_html_ga025863f590e970d1368c4984b314e071"><div class="ttname"><a href="group__group__hwfilt3p3z__macros.html#ga025863f590e970d1368c4984b314e071">HWFILT3P3Z_ATT_RATIO</a></div><div class="ttdeci">#define HWFILT3P3Z_ATT_RATIO</div><div class="ttdoc">Required attenuation ratio for the out-of-band sub-test: low_peak must be strictly greater than HWFIL...</div><div class="ttdef"><b>Definition</b> SelfTest_HWFILT3P3Z.h:160</div></div>
 </div><!-- fragment --></dd></dl>
 <dl class="section user"><dt>Compressed Sine Tables</dt><dd>To minimise ROM usage, neither tone is stored as a full 40-sample array: <div class="fragment"><div class="line">Low-frequency  (period  40): 10-entry quarter-period table.</div>
 <div class="line">  Reconstruction: sine symmetry -- Q2 mirrors Q1, Q3/Q4 negate Q1/Q2.</div>
@@ -121,8 +127,25 @@ Filter Theory</h1>
 <div class="line">High-frequency (period   5): 5-entry fundamental-period table.</div>
 <div class="line">  Reconstruction: periodic wrap -- sample[n] = table[n % 5].</div>
 <div class="line">  Storage:  5 * 2 Bytes = 10 Bytes.</div>
-</div><!-- fragment --> </dd></dl>
-<table class="memberdecls">
+</div><!-- fragment --></dd></dl>
+<h1 class="doxsection"><a class="anchor" id="group_hwfilt3p3z_more_information"></a>
+More Information</h1>
+<p>The test procedure for each filter channel: </p><pre class="fragment"> 1) Save the original user configuration of the HWFILT3P3Z.
+ 2) Enable the subsystem peripheral, disable the channel, then
+    program it in CPU accelerator mode (srcSel = AHB, enTrig0 = true)
+    as a 2nd-order low-pass filter (see the coefficient set below);
+    re-enable the channel.
+ 3) Drive the out-of-band high-frequency tone, then the in-band
+    low-frequency tone, each through DATA_IN0 (which supplies the
+    sample and triggers the computation); poll FILTER_BUSY until idle
+    (with a defensive iteration bound) and record the peak absolute
+    DATA_OUT value of each tone.
+ 4) Pass when the in-band peak reaches a minimum threshold and
+    exceeds HWFILT3P3Z_ATT_RATIO times the out-of-band peak. If the
+    ERROR_IN_HWFILT3P3Z error-injection flag is set, the status is
+    flipped so that a fault-free run is reported as ERROR_STATUS.
+ 5) Restore the original filter configuration and return the result.
+</pre> <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-groups" class="groupheader"><a id="groups" name="groups"></a>
 API Reference</h2></td></tr>
 <tr class="memitem:group_5Fhwfilt3p3z_5Fmacros" id="r_group_5Fhwfilt3p3z_5Fmacros"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hwfilt3p3z__macros.html">Macros</a></td></tr>

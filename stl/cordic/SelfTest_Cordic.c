@@ -38,7 +38,7 @@
 #include "SelfTest_Cordic.h"
 #include "math.h"
 
-#if defined (CY_IP_MXCORDIC)
+#if (defined (CY_IP_MXCORDIC) || defined (CY_IP_MXS40PPSS))
 
 /* Multiplier for the Q format conversion */
 #define Q31_MULTIPLIER   (2147483648L)   /* 1<<31 */
@@ -183,6 +183,6 @@ uint8_t SelfTest_Cordic_Ext(MXCORDIC_Type* base)
 }
 
 
-#endif /* defined (CY_IP_MXCORDIC) */
+#endif /* #if (defined (CY_IP_MXCORDIC) || defined (CY_IP_MXS40PPSS)) */
 
 /* [] END OF FILE */

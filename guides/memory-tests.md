@@ -219,6 +219,125 @@ if (OK_STATUS != status)
 }
 ```
 
+### Runtime Flash ECC test
+
+Available when built with `SELFTEST_ECC_MODE=STL_ECC_MODE_RUNTIME`. In this
+mode the application owns the ECC register configuration, SysFault ISR, NVIC,
+and CPU fault hook. STL verifies configuration and decodes captured evidence.
+
+Configure and verify the Flash ECC registers once at startup:
+
+```c
+const stl_ecc_flash_cfg_t cfg =
+{
+    .eccEnable              = true,
+    .rbusErrSilent          = false,
+    .checkFlashMacroEncoder = true
+};
+
+FLASHC_FLASH_CTL |= FLASHC_FLASH_CTL_ECC_EN_Msk;
+FLASHC_FLASH_CTL &= ~FLASHC_FLASH_CTL_RBUS_ERR_SILENT_Msk;
+__DSB();
+__ISB();
+return SelfTest_ECC_Flash_ConfigVerify(&cfg);
+```
+
+Then route both Flash ECC fault sources to your own SysFault ISR:
+
+```c
+static const cy_stc_SysFault_t faultCfg =
+{
+    .ResetEnable   = false,
+    .OutputEnable  = true,
+    .TriggerEnable = false
+};
+static const cy_stc_sysint_t faultIrqCfg =
+{
+    .intrSrc      = cpuss_interrupts_fault_0_IRQn,
+    .intrPriority = 3U
+};
+uint8_t status = stl_example_ecc_flash_app_managed_config();
+
+Cy_SysFault_ClearStatus(FAULT_STRUCT0);
+Cy_SysFault_SetMaskByIdx(FAULT_STRUCT0, CY_ECC_C_FAULT);
+Cy_SysFault_SetMaskByIdx(FAULT_STRUCT0, CY_ECC_NC_FAULT);
+Cy_SysFault_SetInterruptMask(FAULT_STRUCT0);
+(void)Cy_SysFault_Init(FAULT_STRUCT0, &faultCfg);
+(void)Cy_SysInt_Init(&faultIrqCfg, stl_example_ecc_flash_app_managed_isr);
+NVIC_EnableIRQ((IRQn_Type)cpuss_interrupts_fault_0_IRQn);
+```
+
+**This provokes a real non-correctable error and rewrites the reserved row
+(`CY_FLASH_ADDR`, the last Flash row).** It is destructive, one-shot, and
+only used to validate the fault path — call it once, not on every boot:
+
+```c
+/* Destructive: rewrites the reserved row (CY_FLASH_ADDR) and forces a
+ * non-correctable error that Cy_SysLib_ProcessingFault() must catch. */
+ecc_app_managed_armed = true;
+
+if (SelfTest_ECC_Flash_ProvokeNc(CY_FLASH_ADDR) == OK_STATUS)
+{
+    /* Reached only if the fault hook resumed execution instead of
+     * resetting; restore the row and configuration afterwards. */
+    (void)SelfTest_ECC_Flash_RestoreRow(CY_FLASH_ADDR);
+}
+
+ecc_app_managed_armed = false;
+```
+
+A non-correctable Flash read raises a precise BusFault *before* the SysFault
+interrupt is taken, so `Cy_SysLib_ProcessingFault()` — the PDL `__WEAK` CPU
+fault hook — is where non-correctable evidence is actually captured. STL
+never defines this symbol in application-managed mode; your override always
+resolves:
+
+```c
+stl_ecc_flash_snapshot_t snapshot;
+stl_ecc_flash_event_t    event;
+
+(void)SelfTest_ECC_Flash_SnapshotCapture(&snapshot);
+(void)SelfTest_ECC_Flash_Decode(&snapshot, &event); /* store into application evidence, e.g. a CY_NOINIT struct */
+
+if (ecc_app_managed_armed)
+{
+    ecc_app_managed_armed = false;
+
+    /* The bus error is precise, so returning re-executes the faulting load.
+     * ECC off is what makes that retry complete instead of faulting again. */
+    Cy_Flashc_ECCDisable();
+    __DSB();
+    __ISB();
+    return; /* fault record stays latched for the SysFault ISR to drain */
+}
+
+NVIC_SystemReset(); /* any other fault: no safe resume */
+```
+
+Once the fault hook resumes execution, the pending record is drained and
+decoded from the SysFault ISR:
+
+```c
+stl_ecc_flash_snapshot_t snapshot;
+stl_ecc_flash_event_t    event;
+
+/* Cleared first: a record captured during the drain re-raises it and the
+ * handler is entered again, instead of being dropped here. */
+Cy_SysFault_ClearInterrupt(FAULT_STRUCT0);
+
+while (Cy_SysFault_GetErrorSource(FAULT_STRUCT0) != CY_SYSFAULT_NO_FAULT)
+{
+    (void)SelfTest_ECC_Flash_SnapshotCapture(&snapshot);
+    (void)SelfTest_ECC_Flash_Decode(&snapshot, &event);
+    SelfTest_ECC_Flash_Accumulate(&ecc_app_managed_counters, &event); /* application counters/log/policy */
+    Cy_SysFault_ClearStatus(FAULT_STRUCT0);
+}
+```
+
+**Threshold/counter semantics**: `ECCTHRESHOLD = 0` is not supported (reset
+default `0xFF`); `main_c` fires on the (N+1)-th corrected error; `ECC1CNT`
+saturates and only the application may clear it.
+
 ### RAM ECC test
 
 The RAM ECC self-test validates SRAM ECC fault detection on a valid RAM target address.
@@ -234,4 +353,163 @@ if (OK_STATUS != status)
 {
     /* Handle RAM ECC test failure */
 }
+```
+
+### Runtime RAM ECC test
+
+Available when built with `SELFTEST_ECC_MODE=STL_ECC_MODE_RUNTIME`.
+The application owns the RAMC and SysFault configuration, NVIC, ISR,
+fault-record acknowledgement, and monitoring policy. STL verifies RAMC
+configuration, captures and decodes evidence, updates caller-owned counters,
+and provides the destructive stimulus.
+
+Before enabling RAM checking at boot, configure each RAMC with ECC generation
+enabled and checking disabled, then initialize every ECC-protected RAM region
+that the startup code did not write. This includes unused initial stack space;
+do not overwrite frames at or above the current MSP. Enable checking only after
+that initialization is complete. Repeat the startup pattern for each RAMC
+instance used by the application.
+
+For a runtime configuration, first keep checking disabled while initializing
+application-owned RAM ranges that may be read before their first write. This is
+an example for the unused initial stack space; the application must identify
+any other applicable ranges for each RAMC instance. Enable checking only after
+that initialization, then verify the final ECC_CTL state including AUTO_CORRECT:
+
+```c
+const stl_ecc_ram_cfg_t cfgInit =
+{
+    .eccEnable    = true,
+    .autoCorrect  = true,
+    .checkEnable  = false
+};
+const stl_ecc_ram_cfg_t cfgRun =
+{
+    .eccEnable    = true,
+    .autoCorrect  = true,
+    .checkEnable  = true
+};
+uint8_t status = OK_STATUS;
+
+/* Phase 1: enable generation with checking disabled on every RAMC. */
+RAMC0->ECC_CTL = RAMC_ECC_CTL_EN_Msk |
+                 RAMC_ECC_CTL_AUTO_CORRECT_Msk;
+__DSB();
+__ISB();
+if (SelfTest_ECC_Ram_ConfigVerify(RAMC0, &cfgInit) != OK_STATUS)
+{
+    status = ERROR_STATUS;
+}
+#if (CY_IP_MXSRAMC_INSTANCES == 2U)
+RAMC1->ECC_CTL = RAMC_ECC_CTL_EN_Msk |
+                 RAMC_ECC_CTL_AUTO_CORRECT_Msk;
+__DSB();
+__ISB();
+if (SelfTest_ECC_Ram_ConfigVerify(RAMC1, &cfgInit) != OK_STATUS)
+{
+    status = ERROR_STATUS;
+}
+#endif
+
+/* Phase 2: initialize application-owned, uninitialized ranges while CHECK_EN
+ * is off. Startup initializes the BSS/data objects above; this stack write
+ * is an example. The application must initialize any other ranges that may
+ * be read before their first write, including ranges protected by RAMC1. */
+volatile uint32_t* word = (volatile uint32_t*)STL_STACK_LIMIT_ADDR;
+uint32_t stackPointer = __get_MSP();
+while ((uint32_t)word < stackPointer)
+{
+    *word = 0UL;
+    word++;
+}
+__DSB();
+__ISB();
+
+/* Phase 3: enable checking and verify runtime configuration. */
+RAMC0->ECC_CTL = RAMC_ECC_CTL_EN_Msk |
+                 RAMC_ECC_CTL_AUTO_CORRECT_Msk |
+                 RAMC_ECC_CTL_CHECK_EN_Msk;
+__DSB();
+__ISB();
+if (SelfTest_ECC_Ram_ConfigVerify(RAMC0, &cfgRun) != OK_STATUS)
+{
+    status = ERROR_STATUS;
+}
+#if (CY_IP_MXSRAMC_INSTANCES == 2U)
+RAMC1->ECC_CTL = RAMC_ECC_CTL_EN_Msk |
+                 RAMC_ECC_CTL_AUTO_CORRECT_Msk |
+                 RAMC_ECC_CTL_CHECK_EN_Msk;
+__DSB();
+__ISB();
+if (SelfTest_ECC_Ram_ConfigVerify(RAMC1, &cfgRun) != OK_STATUS)
+{
+    status = ERROR_STATUS;
+}
+#endif
+return status;
+```
+
+Then route both correctable and non-correctable sources to an application-owned
+SysFault ISR:
+
+```c
+static cy_stc_SysFault_t faultCfg =
+{
+    .ResetEnable   = false,
+    .OutputEnable  = true,
+    .TriggerEnable = false
+};
+static const cy_stc_sysint_t faultIrqCfg =
+{
+    .intrSrc      = cpuss_interrupts_fault_0_IRQn,
+    .intrPriority = 3U
+};
+uint8_t status = stl_example_ecc_ram_app_managed_config();
+
+Cy_SysFault_ClearStatus(FAULT_STRUCT0);
+Cy_SysFault_SetMaskByIdx(FAULT_STRUCT0, CY_ECC_C_RAM_FAULT);
+Cy_SysFault_SetMaskByIdx(FAULT_STRUCT0, CY_ECC_NC_RAM_FAULT);
+#if (CY_IP_MXSRAMC_INSTANCES == 2U)
+Cy_SysFault_SetMaskByIdx(FAULT_STRUCT0, CY_ECC_C_RAM1_FAULT);
+Cy_SysFault_SetMaskByIdx(FAULT_STRUCT0, CY_ECC_NC_RAM1_FAULT);
+#endif
+Cy_SysFault_SetInterruptMask(FAULT_STRUCT0);
+(void)Cy_SysFault_Init(FAULT_STRUCT0, &faultCfg);
+(void)Cy_SysInt_Init(&faultIrqCfg, stl_example_ecc_ram_app_managed_isr);
+NVIC_EnableIRQ((IRQn_Type)cpuss_interrupts_fault_0_IRQn);
+return status;
+```
+
+The ISR captures, decodes, accounts for, and acknowledges every record. A
+decoded event of kind `STL_ECC_RAM_EVENT_NONE` increments `other`, so this loop
+also safely drains fault sources shared with RAM ECC:
+
+```c
+stl_ecc_ram_snapshot_t snapshot;
+stl_ecc_ram_event_t    event;
+
+Cy_SysFault_ClearInterrupt(FAULT_STRUCT0);
+
+while (Cy_SysFault_GetErrorSource(FAULT_STRUCT0) != CY_SYSFAULT_NO_FAULT)
+{
+    (void)SelfTest_ECC_Ram_SnapshotCapture(&snapshot);
+    (void)SelfTest_ECC_Ram_Decode(&snapshot, &event);
+    SelfTest_ECC_Ram_Accumulate(&ecc_ram_app_managed_counters, &event);
+    Cy_SysFault_ClearStatus(FAULT_STRUCT0);
+}
+```
+
+To validate both fault paths, reserve one application-owned, 32-bit-aligned RAM
+word outside live data and stack storage. `SelfTest_ECC_Ram_Provoke()` overwrites
+that word, triggers the selected error, and restores it with valid ECC data.
+The sequence is destructive and intended only for a controlled diagnostic:
+
+```c
+/* Destructive: use only a dedicated, 32-bit-aligned RAM word. */
+(void)SelfTest_ECC_Ram_Provoke(RAMC0,
+                               (uint32_t)&ecc_ram_app_managed_test_word,
+                               STL_ECC_RAM_INJECT_CORRECTABLE);
+(void)SelfTest_ECC_Ram_Provoke(RAMC0,
+                               (uint32_t)&ecc_ram_app_managed_test_word,
+                               STL_ECC_RAM_INJECT_NON_CORRECTABLE);
 ```

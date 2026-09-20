@@ -220,6 +220,14 @@ void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr);
 #define IO_PORTS                        (14u)
 #endif
 
+#if (defined(CY_DEVICE_SERIES_PSC3M7) || defined(CY_DEVICE_SERIES_PSC3M8) || defined(CY_DEVICE_SERIES_PSC3P7) || \
+    defined(CY_DEVICE_SERIES_PSC3P8))
+/* The number of IO ports: PORT0 - PORT9 */
+#define IO_PORTS                        (10u)
+#endif /* if (defined(CY_DEVICE_SERIES_PSC3M7) || defined(CY_DEVICE_SERIES_PSC3M8) ||
+        * defined(CY_DEVICE_SERIES_PSC3P7) || defined(CY_DEVICE_SERIES_PSC3P8))
+        */
+
 #if (defined(CY_DEVICE_SERIES_XMC5100) || defined(CY_DEVICE_SERIES_XMC5200) || defined(CY_DEVICE_SERIES_XMC5300))
 /* The number of IO ports: PORT0 - PORT23 */
 #define IO_PORTS                        (24u)
@@ -257,6 +265,10 @@ void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr);
     #define DELAY_DRIVE_MODE_SETUP          (500u)
 
 #elif defined(CY_DEVICE_SERIES_PSC3M6) || defined(CY_DEVICE_SERIES_PSC3P6)
+    #define DELAY_DRIVE_MODE_SETUP          (500u)
+
+#elif (defined(CY_DEVICE_SERIES_PSC3M7) || defined(CY_DEVICE_SERIES_PSC3M8) || defined(CY_DEVICE_SERIES_PSC3P7) || \
+    defined(CY_DEVICE_SERIES_PSC3P8))
     #define DELAY_DRIVE_MODE_SETUP          (500u)
 
 /** \endcond */

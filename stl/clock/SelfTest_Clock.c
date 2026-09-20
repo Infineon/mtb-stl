@@ -109,7 +109,7 @@ uint8_t SelfTest_Clock(TCPWM_Type* base, uint32_t cntNum)
     uint32_t CLOCK_TEST_TIME_TIMER_PERIOD =
         ((Cy_SysClk_ClkPeriGetFrequency() / 1000000U) * (CLOCK_TEST_TIME));
     #endif
-    #if defined(CY_IP_MXS40SSRSS)
+    #if (defined(CY_IP_MXS40SSRSS) || defined(CY_IP_MXS22SRSS))
     uint32_t CLOCK_TEST_TIME_TIMER_PERIOD =
         ((uint32_t)(((uint64_t)Cy_SysClk_ClkHfGetFrequency(STL_CLOCK_SOURCE_HFCLOCK) / 1000000U) * CLOCK_TEST_TIME));
     #endif

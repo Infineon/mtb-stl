@@ -61,6 +61,8 @@
 
 #if (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) || \
     defined(CY_DEVICE_SERIES_PSC3P2) || defined(CY_DEVICE_SERIES_PSC3P5) || \
+    defined(CY_DEVICE_SERIES_PSC3M8) || defined(CY_DEVICE_SERIES_PSC3P8) || \
+    defined(CY_DEVICE_SERIES_PSC3M7) || defined(CY_DEVICE_SERIES_PSC3P7) || \
     defined(CY_DEVICE_SERIES_PSC3M6) || defined(CY_DEVICE_SERIES_PSC3P6))
 #define SELFTEST_PSC3_FAMILY 1
 #endif
@@ -144,6 +146,9 @@
 
 /** A bad input parameter was passed to a self-test API. */
 #define ERROR_BAD_PARAM                 (9u)
+
+/** Timeout return status - waiting for hardware event exceeded timeout */
+#define MTB_STL_ERROR_TIMEOUT                   (10u)
 
 /** Startup Configuration Registers self-test (CRC mode): the CRC baseline was
  *  just stored on the first run.

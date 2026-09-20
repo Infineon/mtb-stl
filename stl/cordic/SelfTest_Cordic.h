@@ -57,7 +57,8 @@
 #include "SelfTest_ErrorInjection.h"
 
 
-#if (defined (CY_IP_MXCORDIC) || defined (CY_DOXYGEN))
+#if (defined (CY_IP_MXCORDIC) || defined (CY_IP_MXS40PPSS) \
+    || defined (CY_DOXYGEN))
 
 /***************************************
 * Function Prototypes
@@ -85,6 +86,7 @@
 *******************************************************************************/
 
 uint8_t SelfTest_Cordic_Ext(MXCORDIC_Type* base);
+#ifndef CY_IP_MXS40PPSS
 /*******************************************************************************
 * Function Name: SelfTest_Cordic
 ****************************************************************************//**
@@ -97,6 +99,7 @@ uint8_t SelfTest_Cordic_Ext(MXCORDIC_Type* base);
 *
 *******************************************************************************/
 #define SelfTest_Cordic(void) SelfTest_Cordic_Ext(MXCORDIC)
+#endif /* ifndef CY_IP_MXS40PPSS */
 
 /** \} group_cordic_functions */
 

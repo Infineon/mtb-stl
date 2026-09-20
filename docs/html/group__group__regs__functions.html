@@ -143,10 +143,10 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>This function stores the configuration registers to nonvolatile storage. </p>
-<dl class="section note"><dt>Note</dt><dd>Used only if STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE. <br  />
- This function must be called once after the initial PSOC power up and initialization before entering the main program. Do not call it periodically or after runtime configuration changes that should be detected by the startup-register self-test, because it overwrites the nonvolatile baseline used by <a class="el" href="#ga2a9a8a3ccf0d8a14a625f7b4d9b1918f">SelfTests_StartUp_ConfigReg</a>.</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>CY_FLASH_DRV_SUCCESS - Writing to Flash is successful. <br  />
- Other cy_en_flashdrv_status_t values - Writing to Flash is not successful. Refer to the Flash Driver PDL documentation for error codes. </dd></dl>
+<p>Used only if STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE. <br  />
+ This function must be called once after the initial PSOC power up and initialization before entering the main program. Do not call it periodically or after runtime configuration changes that should be detected by the startup-register self-test, because it overwrites the nonvolatile baseline used by <a class="el" href="#ga2a9a8a3ccf0d8a14a625f7b4d9b1918f">SelfTests_StartUp_ConfigReg</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>Flash backend: CY_FLASH_DRV_SUCCESS - Writing to Flash is successful. <br  />
+ Flash backend: Other cy_en_flashdrv_status_t values - Writing to Flash is not successful. Refer to the Flash Driver PDL documentation for error codes. </dd></dl>
 
 </div>
 </div>

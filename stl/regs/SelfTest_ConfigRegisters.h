@@ -218,6 +218,7 @@ void SelfTests_Init_StartUp_ConfigReg(void);
  * \{
  */
 #if (STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE)
+#if (STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE)
 /*******************************************************************************
 * Function Name: SelfTests_Save_StartUp_ConfigReg
 ****************************************************************************//**
@@ -225,7 +226,6 @@ void SelfTests_Init_StartUp_ConfigReg(void);
 *
 *  This function stores the configuration registers to nonvolatile storage.
 *
-* \note
 * Used only if STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE. <br>
 * This function must be called once after the initial PSOC power up and initialization before
 * entering the main program.
@@ -234,13 +234,14 @@ void SelfTests_Init_StartUp_ConfigReg(void);
 * nonvolatile baseline used by \ref SelfTests_StartUp_ConfigReg.
 *
 * \return
-*  CY_FLASH_DRV_SUCCESS - Writing to Flash is successful. <br>
-*  Other cy_en_flashdrv_status_t values - Writing to Flash is not successful. Refer
+*  Flash backend: CY_FLASH_DRV_SUCCESS - Writing to Flash is successful. <br>
+*  Flash backend: Other cy_en_flashdrv_status_t values - Writing to Flash is not successful. Refer
 *  to the Flash Driver PDL documentation for error codes.
 *
 *
 *******************************************************************************/
 cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void);
+#endif /* (STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE) */
 #endif /* (STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE) */
 /** \} group_regs_functions */
 

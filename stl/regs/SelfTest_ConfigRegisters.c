@@ -546,7 +546,7 @@ static volatile uint32_t* stlRegs_regs32ToTest[] =
     &(GPIO_PRT13->CFG),
 };
 
-#else /* Other PSC3 variants (PSC3M5, PSC3M6, etc.) */
+#else /* Other PSC3 variants (PSC3M5, PSC3M8, etc.) */
 static volatile uint32_t* stlRegs_regs32ToTest[] =
 {
     /* SRSS_CLK_PATH_SELECT */
@@ -784,8 +784,8 @@ static uint8_t SelfTests_Check_StartUp_Cfg_CRC(uint32_t Current_CRC);
  *
  * Return:
  *  CY_FLASH_DRV_SUCCESS - Writing to Flash is successful. <br>
- *  Other cy_en_flashdrv_status_t values - Writing to nonvolatile storage is
- *  not successful. Refer to the Flash Driver PDL documentation for error codes.
+ *  Other cy_en_flashdrv_status_t values - Writing to Flash is not successful.
+ *  Refer to the Flash Driver PDL documentation for error codes.
  *
  ******************************************************************************/
 cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)

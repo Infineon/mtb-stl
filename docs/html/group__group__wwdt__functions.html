@@ -160,6 +160,7 @@ Functions</h2></td></tr>
 <dl class="section note"><dt>Note</dt><dd>Applicable for PSOC Control Device Family. Only CY_MCWDT_COUNTER0 and CY_MCWDT_COUNTER1 support the lower-limit windowed mode. This test reconfigures the selected MCWDT sub-counter, its lower-limit reset behavior, and its interrupt routing. Do not share the selected sub-counter with application watchdog supervision during the test.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Test passed <br  />
  <a class="el" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a> (1) - Test failed <br  />
+ <a class="el" href="group__group__stl__status.html#gaf72a0ee4b35fb7b2423fc3071517ede5">MTB_STL_ERROR_TIMEOUT</a> (10) - Counter stall detected (clock not running) <br  />
  </dd></dl>
 
 </div>

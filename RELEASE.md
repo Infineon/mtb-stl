@@ -1,23 +1,27 @@
-# ModusToolbox™ Safety Test Library 3.5.0
-
+# ModusToolbox™ Safety Test Library 3.6.0
 
 Refer to the [README.md](./README.md) for a complete description of the ModusToolbox™ Safety Test Library.
 
 ## What is Included?
 
-### PSOC™ Control C3 M6
+### PSOC™ Control C3 M8
 
 * Compilers Supported: GCC_ARM, ARM, IAR
 
 * List of Self-Tests supported:
     | Group              | Module |
     | ------             | ------ |
-    | System platform    | Interrupt, Clock, IPC, Startup Configuration Registers, DMA/DW, WDT, WWDT|
+    | System platform    | Interrupt, Clock, IPC, Startup Configuration Registers, DMA/DW, WDT |
     | CPU                | CPU Registers, CPU Instructions, Program Counter, Program Flow, FPU Registers |
     | Memory             | Flash, RAM, Stack |
-    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, ADC, DAC, OPAMP, HWFILT3P3Z, Comparator, Timer Counter, PWM, PWM Gatekill, CANFD, MOTIF, CORDIC, ECC |
+    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, ADC, ADC Filters, DAC, DCMP, DCSG, AFE, CLB, EPU, HWFILT3P3Z, Timer Counter, PWM, PWM Gatekill, CANFD, MOTIF, CORDIC, ECC |
 
 ## What Changed?
+
+### v3.6.0
+* Added support for the PSOC™ Control C3 M8 device family.
+* Updated user documentation.
+* Added support of runtime ECC self-tests for PSOC™ Control C3 devices.
 
 ### v3.5.0
 * Added support for the PSOC™ Control C3 M6 device family.

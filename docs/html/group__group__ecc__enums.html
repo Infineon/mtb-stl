@@ -98,6 +98,31 @@ Enumerations</h2></td></tr>
 <tr class="memitem:ga110785fcd11cb40d50cc90ef773f054d" id="r_ga110785fcd11cb40d50cc90ef773f054d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga110785fcd11cb40d50cc90ef773f054d">cy_en_ecc_error_mode_t</a> { <a class="el" href="#gga110785fcd11cb40d50cc90ef773f054da1a6e60e013ac26460d61768446115c17">CY_ECC_NC_ERROR</a> = 1
  }</td></tr>
 <tr class="memdesc:ga110785fcd11cb40d50cc90ef773f054d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error injection mode.  <a href="#ga110785fcd11cb40d50cc90ef773f054d">More...</a><br /></td></tr>
+<tr class="memitem:ga981dafe0cbadb03e6f762cf72fed2622" id="r_ga981dafe0cbadb03e6f762cf72fed2622"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga981dafe0cbadb03e6f762cf72fed2622">stl_ecc_flash_event_kind_t</a> { <br />
+&#160;&#160;<a class="el" href="#gga981dafe0cbadb03e6f762cf72fed2622a7f08c89b50b41e492530ea4dd5449765">STL_ECC_FLASH_EVENT_NONE</a> = 0
+, <br />
+&#160;&#160;<a class="el" href="#gga981dafe0cbadb03e6f762cf72fed2622aab1e7405c1c4036dfebe8d6b70421e80">STL_ECC_FLASH_EVENT_CORRECTABLE</a> = 1
+, <br />
+&#160;&#160;<a class="el" href="#gga981dafe0cbadb03e6f762cf72fed2622a4dc226b9008ced674592b5fc77e49257">STL_ECC_FLASH_EVENT_NON_CORRECTABLE</a> = 2
+<br />
+ }</td></tr>
+<tr class="memdesc:ga981dafe0cbadb03e6f762cf72fed2622"><td class="mdescLeft">&#160;</td><td class="mdescRight">Classification of a decoded Flash ECC fault record.  <a href="#ga981dafe0cbadb03e6f762cf72fed2622">More...</a><br /></td></tr>
+<tr class="memitem:ga96dcee858537a2125e4e61c203139faa" id="r_ga96dcee858537a2125e4e61c203139faa"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga96dcee858537a2125e4e61c203139faa">stl_ecc_ram_event_kind_t</a> { <br />
+&#160;&#160;<a class="el" href="#gga96dcee858537a2125e4e61c203139faaabc61ce2f313ae15af7bb94d5cd4b59d5">STL_ECC_RAM_EVENT_NONE</a> = 0
+, <br />
+&#160;&#160;<a class="el" href="#gga96dcee858537a2125e4e61c203139faaa6939f947b0937d05f7dee47078ddb204">STL_ECC_RAM_EVENT_CORRECTABLE</a> = 1
+, <br />
+&#160;&#160;<a class="el" href="#gga96dcee858537a2125e4e61c203139faaac961edce162fd55cb64e08b74583270e">STL_ECC_RAM_EVENT_NON_CORRECTABLE</a> = 2
+<br />
+ }</td></tr>
+<tr class="memdesc:ga96dcee858537a2125e4e61c203139faa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Classification of a decoded RAM ECC fault record.  <a href="#ga96dcee858537a2125e4e61c203139faa">More...</a><br /></td></tr>
+<tr class="memitem:ga0823fb5f310600fe9dbc21eaf06d2924" id="r_ga0823fb5f310600fe9dbc21eaf06d2924"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga0823fb5f310600fe9dbc21eaf06d2924">stl_ecc_ram_inject_mode_t</a> { <br />
+&#160;&#160;<a class="el" href="#gga0823fb5f310600fe9dbc21eaf06d2924a69ea16fe9fe409df1fcd64f13e8299ec">STL_ECC_RAM_INJECT_CORRECTABLE</a> = 0
+, <br />
+&#160;&#160;<a class="el" href="#gga0823fb5f310600fe9dbc21eaf06d2924a484ddb5d7ddf1314dbe5ece4119cee1a">STL_ECC_RAM_INJECT_NON_CORRECTABLE</a> = 1
+<br />
+ }</td></tr>
+<tr class="memdesc:ga0823fb5f310600fe9dbc21eaf06d2924"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error class requested from the destructive RAM ECC provoke API.  <a href="#ga0823fb5f310600fe9dbc21eaf06d2924">More...</a><br /></td></tr>
 </table>
 <a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">Enumeration Type Documentation</h2>
 <a id="ga110785fcd11cb40d50cc90ef773f054d" name="ga110785fcd11cb40d50cc90ef773f054d"></a>
@@ -115,6 +140,76 @@ Enumerations</h2></td></tr>
 <p>Error injection mode. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga110785fcd11cb40d50cc90ef773f054da1a6e60e013ac26460d61768446115c17" name="gga110785fcd11cb40d50cc90ef773f054da1a6e60e013ac26460d61768446115c17"></a>CY_ECC_NC_ERROR&#160;</td><td class="fielddoc"><p>Non correctable error injection. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="ga981dafe0cbadb03e6f762cf72fed2622" name="ga981dafe0cbadb03e6f762cf72fed2622"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga981dafe0cbadb03e6f762cf72fed2622">&#9670;&#160;</a></span>stl_ecc_flash_event_kind_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#ga981dafe0cbadb03e6f762cf72fed2622">stl_ecc_flash_event_kind_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Classification of a decoded Flash ECC fault record. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga981dafe0cbadb03e6f762cf72fed2622a7f08c89b50b41e492530ea4dd5449765" name="gga981dafe0cbadb03e6f762cf72fed2622a7f08c89b50b41e492530ea4dd5449765"></a>STL_ECC_FLASH_EVENT_NONE&#160;</td><td class="fielddoc"><p>Not a Flash ECC source, or the record is not valid. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga981dafe0cbadb03e6f762cf72fed2622aab1e7405c1c4036dfebe8d6b70421e80" name="gga981dafe0cbadb03e6f762cf72fed2622aab1e7405c1c4036dfebe8d6b70421e80"></a>STL_ECC_FLASH_EVENT_CORRECTABLE&#160;</td><td class="fielddoc"><p>FLASHC main_c: correctable-error threshold crossing. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga981dafe0cbadb03e6f762cf72fed2622a4dc226b9008ced674592b5fc77e49257" name="gga981dafe0cbadb03e6f762cf72fed2622a4dc226b9008ced674592b5fc77e49257"></a>STL_ECC_FLASH_EVENT_NON_CORRECTABLE&#160;</td><td class="fielddoc"><p>FLASHC main_nc: non-correctable Flash ECC error. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="ga96dcee858537a2125e4e61c203139faa" name="ga96dcee858537a2125e4e61c203139faa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga96dcee858537a2125e4e61c203139faa">&#9670;&#160;</a></span>stl_ecc_ram_event_kind_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#ga96dcee858537a2125e4e61c203139faa">stl_ecc_ram_event_kind_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Classification of a decoded RAM ECC fault record. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga96dcee858537a2125e4e61c203139faaabc61ce2f313ae15af7bb94d5cd4b59d5" name="gga96dcee858537a2125e4e61c203139faaabc61ce2f313ae15af7bb94d5cd4b59d5"></a>STL_ECC_RAM_EVENT_NONE&#160;</td><td class="fielddoc"><p>Not a RAM ECC source, or the record is not valid. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga96dcee858537a2125e4e61c203139faaa6939f947b0937d05f7dee47078ddb204" name="gga96dcee858537a2125e4e61c203139faaa6939f947b0937d05f7dee47078ddb204"></a>STL_ECC_RAM_EVENT_CORRECTABLE&#160;</td><td class="fielddoc"><p>RAMCn_C_ECC: correctable RAM ECC error. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga96dcee858537a2125e4e61c203139faaac961edce162fd55cb64e08b74583270e" name="gga96dcee858537a2125e4e61c203139faaac961edce162fd55cb64e08b74583270e"></a>STL_ECC_RAM_EVENT_NON_CORRECTABLE&#160;</td><td class="fielddoc"><p>RAMCn_NC_ECC: non-correctable RAM ECC error. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="ga0823fb5f310600fe9dbc21eaf06d2924" name="ga0823fb5f310600fe9dbc21eaf06d2924"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0823fb5f310600fe9dbc21eaf06d2924">&#9670;&#160;</a></span>stl_ecc_ram_inject_mode_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#ga0823fb5f310600fe9dbc21eaf06d2924">stl_ecc_ram_inject_mode_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Error class requested from the destructive RAM ECC provoke API. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga0823fb5f310600fe9dbc21eaf06d2924a69ea16fe9fe409df1fcd64f13e8299ec" name="gga0823fb5f310600fe9dbc21eaf06d2924a69ea16fe9fe409df1fcd64f13e8299ec"></a>STL_ECC_RAM_INJECT_CORRECTABLE&#160;</td><td class="fielddoc"><p>One data-bit mismatch. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga0823fb5f310600fe9dbc21eaf06d2924a484ddb5d7ddf1314dbe5ece4119cee1a" name="gga0823fb5f310600fe9dbc21eaf06d2924a484ddb5d7ddf1314dbe5ece4119cee1a"></a>STL_ECC_RAM_INJECT_NON_CORRECTABLE&#160;</td><td class="fielddoc"><p>Two data-bit mismatch. </p>
 </td></tr>
 </table>
 

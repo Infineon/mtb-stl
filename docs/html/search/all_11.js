@@ -1,25 +1,7 @@
 var searchData=
 [
-  ['packet_5fsize_0',['PACKET_SIZE',['../group__group__i2c__macros.html#gaebdc7d8ca8e25ed8efc90bb88ef7ef5b',1,'SelfTest_I2C_SCB.h']]],
-  ['pass_5fcomplete_5fstatus_1',['PASS_COMPLETE_STATUS',['../group__group__stl__status.html#gab6d6cd34a6d13569d04fe1a3c999a24e',1,'SelfTest_common.h']]],
-  ['pass_5fstill_5ftesting_5fstatus_2',['PASS_STILL_TESTING_STATUS',['../group__group__stl__status.html#gadc3a54eab88ff012fd5469e09afce4d7',1,'SelfTest_common.h']]],
-  ['pattern_3',['pattern',['../stl_usage_serial_and_fieldbus.html#autotoc_md47',1,'Smart I/O routing pattern'],['../stl_usage_serial_and_fieldbus.html#autotoc_md51',1,'Smart I/O routing pattern']]],
-  ['period_20capture_20counter_4',['Tick_Time (Q-CLK period capture counter)',['../stl_usage_advanced_control_and_accelerator.html#autotoc_md80',1,'']]],
-  ['peripheral_20clock_20divider_5',['MOTIF0_CLK (shared peripheral clock divider)',['../stl_usage_advanced_control_and_accelerator.html#autotoc_md76',1,'']]],
-  ['phase_20a_20emulator_6',['EMU_PH_A (Phase A emulator)',['../stl_usage_advanced_control_and_accelerator.html#autotoc_md77',1,'']]],
-  ['phase_20b_20emulator_7',['EMU_PH_B (Phase B emulator)',['../stl_usage_advanced_control_and_accelerator.html#autotoc_md78',1,'']]],
-  ['pins_20of_20ppca_8',['Analog Pins of PPCA',['../group__group__io.html#group_io_analog_pin',1,'']]],
-  ['ppca_9',['Analog Pins of PPCA',['../group__group__io.html#group_io_analog_pin',1,'']]],
-  ['project_10',['1. Add mtb-stl library to the project',['../index.html#autotoc_md5',1,'']]],
-  ['project_20deviations_11',['Project deviations',['../index.html#autotoc_md11',1,'']]],
-  ['pwm_20gatekill_20pwm_20gatekill_20stl_20module_12',['PWM GateKill (PWM GateKill STL module)',['../group__group__pwm__gatekill.html',1,'']]],
-  ['pwm_20gatekill_20stl_20module_13',['PWM GateKill (PWM GateKill STL module)',['../group__group__pwm__gatekill.html',1,'']]],
-  ['pwm_20gatekill_20test_14',['PWM GateKill test',['../stl_usage_clock_and_timing.html#autotoc_md40',1,'']]],
-  ['pwm_20pwm_20stl_20module_15',['PWM (PWM STL module)',['../group__group__pwm.html',1,'']]],
-  ['pwm_20stl_20module_16',['PWM (PWM STL module)',['../group__group__pwm.html',1,'']]],
-  ['pwm_20test_17',['PWM test',['../stl_usage_clock_and_timing.html#autotoc_md39',1,'']]],
-  ['pwm_20tests_18',['Clock, Interrupt, Timer, and PWM Tests',['../stl_usage_clock_and_timing.html',1,'index']]],
-  ['pwm_5finit_5ferror_5fstatus_19',['PWM_INIT_ERROR_STATUS',['../group__group__stl__status.html#ga6cb4f4c6c11529310bd9bc3f0642a8c2',1,'SelfTest_common.h']]],
-  ['pwm_5ftime_20',['PWM_TIME',['../group__group__pwm__macros.html#gae7f45e69caa4837d99f16b7619b29f45',1,'SelfTest_PWM.h']]],
-  ['pwm_5ftime_5ftimeout_21',['PWM_TIME_TIMEOUT',['../group__group__pwm__macros.html#ga90cffe1900cf8118b7f1484eb773e7b2',1,'SelfTest_PWM.h']]]
+  ['noncorrectable_0',['nonCorrectable',['../group__group__ecc__data__structures.html#aa4d994ba71cef6e576858f615f983f6f',1,'stl_ecc_flash_counters_t::nonCorrectable'],['../group__group__ecc__data__structures.html#a5e02266b534c6e5b8db09305bbe54d7d',1,'stl_ecc_ram_counters_t::nonCorrectable']]],
+  ['notes_20and_20changelog_1',['Release Notes and Changelog',['../index.html#autotoc_md12',1,'']]],
+  ['number_5fof_5ftimer_5fticks_5fhi_2',['NUMBER_OF_TIMER_TICKS_HI',['../group__group__intr__macros.html#gad627ee4a3895acc9909ed7372f3bbf2b',1,'SelfTest_Interrupt.h']]],
+  ['number_5fof_5ftimer_5fticks_5flo_3',['NUMBER_OF_TIMER_TICKS_LO',['../group__group__intr__macros.html#ga1ee4152386f856c176257a6fcde64aa3',1,'SelfTest_Interrupt.h']]]
 ];

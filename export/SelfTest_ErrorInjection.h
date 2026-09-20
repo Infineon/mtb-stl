@@ -70,8 +70,31 @@
 #define ERROR_IN_SRAM_MARCH                                 0u
 #define ERROR_IN_SRAM_GALPAT                                0u
 #define ERROR_IN_SRAM_MARCH_STACKFREE                       0u
-#define ERROR_IN_HWFILT3P3Z                                 0u
 #define ERROR_IN_MOTIF                                      0u
 #define ERROR_IN_CORDIC                                     0u
+#define ERROR_IN_EPU                                        0u
 #define ERROR_IN_ECC                                        0u
+#define ERROR_IN_ATOP_ADC                                   0u
+#define ERROR_IN_HWFILT3P3Z                                 0u
+#define ERROR_IN_ATOP_DAC                                   0u
+#define ERROR_IN_ATOP_DCSG                                  0u
+#define ERROR_IN_ATOP_AFE                                   0u
+#define ERROR_IN_ATOP_ADC_FILTER                            0u
+#define ERROR_IN_CLB_SAFE_STATE                             0u
+#define ERROR_IN_CLB_INTR                                   0u
+#define ERROR_IN_CLB_DICO_PATH                              0u
+#define ERROR_IN_CLB_DICO_IL                                0u
+#define ERROR_IN_CLB_DICO_LIMIT                             0u
+#define ERROR_IN_CLB_MACO_SEQ                               0u
+
+#define ERROR_IN_IPC_PPCA_DATA                              0u  /* Flip a bit in DATA read-back to simulate register
+                                                                   corruption     */
+#define ERROR_IN_IPC_PPCA_NOTIFY                            0u  /* Force PpcaWaitIsr() to always time out (ISR never
+                                                                   fires)       */
+#define ERROR_IN_IPC_PPCA_CLEAR                             0u  /* Fake a sticky INTR bit (falsify intrAfterClear)
+                                                                   without skipping the real clear */
+#define ERROR_IN_IPC_PPCA_MASK                              0u  /* Pretend ISR fired while interrupt was masked */
+#define ERROR_IN_IPC_PPCA_RELEASE                           0u  /* Erase the release-bit observation in the ISR context
+                                                                 */
+#define ERROR_IN_IPC_PPCA_SILENT                            0u  /* Simulate a spurious ISR firing on silent release */
 #endif /* SELFTESTERRORINJECTION_H */

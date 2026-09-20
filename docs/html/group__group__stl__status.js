@@ -18,6 +18,7 @@ var group__group__stl__status =
     [ "SHORT_TO_GND", "group__group__stl__status.html#ga8b5c2f6c53e81ea85cdf4b6e8015dbc5", null ],
     [ "ERROR_INCORRECT_USAGE_STATUS", "group__group__stl__status.html#gad572d09e4bc26cb5ac723e35a2ebca90", null ],
     [ "ERROR_BAD_PARAM", "group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379", null ],
+    [ "MTB_STL_ERROR_TIMEOUT", "group__group__stl__status.html#gaf72a0ee4b35fb7b2423fc3071517ede5", null ],
     [ "CRC_SAVED_STATUS", "group__group__stl__status.html#gadf50bb789cd8557db20effed474a6251", null ],
     [ "PASS_STILL_TESTING_STATUS", "group__group__stl__status.html#gadc3a54eab88ff012fd5469e09afce4d7", null ],
     [ "PASS_COMPLETE_STATUS", "group__group__stl__status.html#gab6d6cd34a6d13569d04fe1a3c999a24e", null ]

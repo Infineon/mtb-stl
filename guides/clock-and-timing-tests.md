@@ -249,10 +249,10 @@ DEFINES+=STL_PWM_SOURCE_HFCLOCK=0u
 
 How the output is sampled differs by device family, which changes whether you need to wire a pin:
 
-- **PSOC™ Control C3, XMC7000, and XMC5000** (TCPWM v2 and later): the test reads the PWM line-out status
-  register directly, so the pin arguments to `SelfTest_PWM()` are ignored and no external pin wiring is
-  required. The example still passes the generated `PWM_IN_PIN` alias so the same code compiles on devices
-  that need it.
+- **PSOC™ Control C3, XMC7000, and XMC5000** (TCPWM v2 and later): the test reads the PWM
+  line-out status register directly, so the pin arguments to `SelfTest_PWM()` are ignored and no external pin
+  wiring is required. The example still passes the generated `PWM_IN_PIN` alias so the same code compiles on
+  devices that need it.
 - **PSOC™ 4** (M0S8 TCPWM): the test reads a physical GPIO with `Cy_GPIO_Read()`, so you must pass the port
   and pin that carry the PWM output, and that pin must be routed to the PWM line in the configurator.
 

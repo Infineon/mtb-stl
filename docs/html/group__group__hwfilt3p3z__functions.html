@@ -95,10 +95,58 @@ $(function(){initNavTree('group__group__hwfilt3p3z__functions.html','',''); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ga63210797621a56945493d3ef43445556" id="r_ga63210797621a56945493d3ef43445556"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga63210797621a56945493d3ef43445556">SelfTest_HWFILT3P3Z</a> (PPCA_HWFILT3P3Z_SS_Type *base, uint8_t channel)</td></tr>
+<tr class="memdesc:ga63210797621a56945493d3ef43445556"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs a self-test of a single HWFILT3P3Z filter channel by configuring it as a 2nd-order low-pass filter and verifying its frequency response: an in-band low-frequency tone must pass while an out-of-band high-frequency tone must be heavily attenuated.  <br /></td></tr>
 <tr class="memitem:ga49c1987f556b77492242d08e4a85d272" id="r_ga49c1987f556b77492242d08e4a85d272"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga49c1987f556b77492242d08e4a85d272">SelfTest_HWFILT3P3Z_HPPASS</a> (uint8_t filtIdx)</td></tr>
 <tr class="memdesc:ga49c1987f556b77492242d08e4a85d272"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs a self-test of one HWFILT3P3Z filter instance inside the HPPASS (High Performance Programmable Analog Sub-System) on devices that provide CY_IP_MXS40MCPASS v3.  <br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a id="ga63210797621a56945493d3ef43445556" name="ga63210797621a56945493d3ef43445556"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga63210797621a56945493d3ef43445556">&#9670;&#160;</a></span>SelfTest_HWFILT3P3Z()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_HWFILT3P3Z </td>
+          <td>(</td>
+          <td class="paramtype">PPCA_HWFILT3P3Z_SS_Type *</td>          <td class="paramname"><span class="paramname"><em>base</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t</td>          <td class="paramname"><span class="paramname"><em>channel</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Performs a self-test of a single HWFILT3P3Z filter channel by configuring it as a 2nd-order low-pass filter and verifying its frequency response: an in-band low-frequency tone must pass while an out-of-band high-frequency tone must be heavily attenuated. </p>
+<p>This is the same method used by <a class="el" href="#ga49c1987f556b77492242d08e4a85d272">SelfTest_HWFILT3P3Z_HPPASS</a> on the PSOC Control C3 M6 HPPASS variant.</p>
+<p>Stages exercised: the AHB write path (DATA_IN0 trigger), the trigger / FILTER_BUSY logic, the AHB read of DATA_OUT, the forward and feedback multipliers, the accumulator, the coefficient scale factors, the output gain and limits, and the frequency-selective magnitude response of the IIR section. The original filter configuration is preserved and restored on return so that the test can be safely interleaved with application use of other channels in the same subsystem.</p>
+<dl class="section note"><dt>Note</dt><dd>The application is responsible for any system-level allocation of the HWFILT3P3Z subsystem to a CPU (PPSS_CNFG.CNFG0). The self-test enables the subsystem peripheral block and the selected filter instance through the standard PDL APIs and restores their previous enable state on return.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">base</td><td>HWFILT3P3Z subsystem instance: PPCA_HWFILT3P3Z_SS_0 (4 channels) or PPCA_HWFILT3P3Z_SS_1 (2 channels). Both share the register layout type <code>PPCA_HWFILT3P3Z_SS_Type</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>PPCA_HWFILT3P3Z_SS_1 has a distinct PDL type and must be cast at the call site: SelfTest_HWFILT3P3Z((PPCA_HWFILT3P3Z_SS_Type*)PPCA_HWFILT3P3Z_SS_1, ch).</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channel</td><td>Filter channel index within the subsystem. Valid range:<ul>
+<li>SS_0: 0..<a class="el" href="group__group__hwfilt3p3z__macros.html#gad411f8348d36b1a5358bcc130b57c890">HWFILT3P3Z_SS0_MAX_CHANNEL_INDEX</a> (i.e. 0..3)</li>
+<li>SS_1: 0..<a class="el" href="group__group__hwfilt3p3z__macros.html#ga9f792b06b437b39c39e3bd6701b6db0f">HWFILT3P3Z_SS1_MAX_CHANNEL_INDEX</a> (i.e. 0..1)</li>
+</ul>
+</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Test passed <br  />
+ <a class="el" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a> (1) - HW self-test failed <br  />
+ <a class="el" href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a> (9) - Invalid input parameters (no HW access performed) </dd></dl>
+
+</div>
+</div>
 <a id="ga49c1987f556b77492242d08e4a85d272" name="ga49c1987f556b77492242d08e4a85d272"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga49c1987f556b77492242d08e4a85d272">&#9670;&#160;</a></span>SelfTest_HWFILT3P3Z_HPPASS()</h2>
 
@@ -117,7 +165,7 @@ Functions</h2></td></tr>
 <p>Performs a self-test of one HWFILT3P3Z filter instance inside the HPPASS (High Performance Programmable Analog Sub-System) on devices that provide CY_IP_MXS40MCPASS v3. </p>
 <p>The test validates the LPF frequency-response of the selected 3P3Z filter instance using two sub-tests driven entirely through the AHB interface:</p>
 <ol type="1">
-<li>Low-frequency sub-test (omega = 2pi/40 rad/sample, amplitude = 2048). The waveform is stored as a 10-entry quarter-period table and reconstructed on-the-fly using sine symmetry (first quarter ascending, second quarter mirrored descending, second half negated first half). The LPF passes this in-band signal; the measured DATA_OUT peak must be &gt;= HWFILT3P3Z_HPPASS_INBAND_MIN.</li>
+<li>Low-frequency sub-test (omega = 2pi/40 rad/sample, amplitude = 2048). The waveform is stored as a 10-entry quarter-period table and reconstructed on-the-fly using sine symmetry (first quarter ascending, second quarter mirrored descending, second half negated first half). The LPF passes this in-band signal; the measured DATA_OUT peak must reach a minimum in-band threshold.</li>
 <li>High-frequency sub-test (omega = 2pi/5 rad/sample, same amplitude). The waveform is stored as a 5-entry fundamental-period table and reconstructed by periodic wrap (sample[n] = table[n % 5]). The LPF heavily attenuates this out-of-band signal; the measured peak must satisfy HWFILT3P3Z_ATT_RATIO * high_peak &lt; low_peak.</li>
 </ol>
 <p>Stages exercised: AHB write path (DATA_IN0 trigger), FILTER_BUSY handshake, AHB read of DATA_OUT, forward multipliers (cx0..cx3), feedback multipliers (cy1..cy3), 44-bit accumulator, coefficient scale factors (scaleCX, scaleCY), output gain (gOut), output limits (limMax, limMin) and the frequency-selective magnitude response of the IIR section. No DAC, ADC or Autonomous Controller hardware is required.</p>

@@ -113,10 +113,13 @@ void SelfTest_Clock_ISR_TIMER(void);
 /** \addtogroup group_clock_macros
  * \{
  */
-#if (!defined(STL_CLOCK_SOURCE_HFCLOCK)) && ((defined(CY_IP_MXS40SSRSS)) || (defined(CY_DOXYGEN)))
+#if (!defined(STL_CLOCK_SOURCE_HFCLOCK)) && ((defined(CY_IP_MXS40SSRSS)) || (defined(CY_IP_MXS22SRSS)) || \
+    (defined(CY_DOXYGEN)))
 /** High-frequency clock source selection used by the Clock self-test timer on PSOC Control C3 devices. */
 #define STL_CLOCK_SOURCE_HFCLOCK (3u)
-#endif /* (!defined(STL_CLOCK_SOURCE_HFCLOCK)) && ((defined(CY_IP_MXS40SSRSS)) || (defined(CY_DOXYGEN))) */
+#endif \
+    /* (!defined(STL_CLOCK_SOURCE_HFCLOCK)) && ((defined(CY_IP_MXS40SSRSS)) || (defined(CY_IP_MXS22SRSS)) ||
+       (defined(CY_DOXYGEN))) */
 
 #if defined(SELFTEST_PSOC4_FAMILY) || defined(CY_DOXYGEN)
 /** Lower possible clock count for WDT depending on the accuracy of oscillator.
@@ -168,7 +171,8 @@ void SelfTest_Clock_ISR_TIMER(void);
 #define IGNORE_BITS_CLK_TEST                (0U)
 /** \endcond */
 
-#elif (defined(SELFTEST_PSOC6_FAMILY) || defined(SELFTEST_XMC7X_FAMILY) || defined(SELFTEST_PSC3_FAMILY))
+#elif (defined(SELFTEST_PSOC6_FAMILY) || defined(SELFTEST_XMC7X_FAMILY) || \
+    defined(SELFTEST_PSC3_FAMILY))
 
 /** Lower possible clock count for PSOC 61 Programmable Line, PSOC 62
  * Performance Line, PSOC Control C3, and XMC7000 devices.

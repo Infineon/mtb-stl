@@ -259,10 +259,9 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type* pinbase, uint32_t pinNum)
             break;
     }
 
-    #if defined(CY_IP_MXS40SSRSS)
+    #if (defined(CY_IP_MXS40SSRSS) || defined(CY_IP_MXS22SRSS))
     uint32_t PWM_PERIOD =
         (((Cy_SysClk_ClkHfGetFrequency(STL_PWM_SOURCE_HFCLOCK) / 1000000U) / clk_divide) * (PWM_TIME));
-
     #elif defined (CY_IP_MXS40SRSS)
     uint32_t PWM_PERIOD =
         (((Cy_SysClk_ClkPeriGetFrequency() / 1000000U) / clk_divide) * (PWM_TIME));

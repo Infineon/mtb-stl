@@ -101,6 +101,28 @@ Functions</h2></td></tr>
 <tr class="memdesc:gaf52bf5477e3c67809545b40a02ae470d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs ECC hardware self-test for Flash memory on PSOC Control devices.  <br /></td></tr>
 <tr class="memitem:gac1dbb00ad9ea284e92ecd81a04f45ca1" id="r_gac1dbb00ad9ea284e92ecd81a04f45ca1"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gac1dbb00ad9ea284e92ecd81a04f45ca1">SelfTest_ECC_Ram</a> (uint32_t addr, <a class="el" href="group__group__ecc__enums.html#ga110785fcd11cb40d50cc90ef773f054d">cy_en_ecc_error_mode_t</a> eccErrorMode)</td></tr>
 <tr class="memdesc:gac1dbb00ad9ea284e92ecd81a04f45ca1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs ECC hardware self-test for RAM memory on PSOC Control devices.  <br /></td></tr>
+<tr class="memitem:gac616bedb378d198d6a36df5b12abe01b" id="r_gac616bedb378d198d6a36df5b12abe01b"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gac616bedb378d198d6a36df5b12abe01b">SelfTest_ECC_Flash_ConfigVerify</a> (const <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__cfg__t">stl_ecc_flash_cfg_t</a> *expected)</td></tr>
+<tr class="memdesc:gac616bedb378d198d6a36df5b12abe01b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifies that the Flash ECC configuration still matches the expected contract.  <br /></td></tr>
+<tr class="memitem:gabf69816225fbf734a46a26a2862794b6" id="r_gabf69816225fbf734a46a26a2862794b6"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gabf69816225fbf734a46a26a2862794b6">SelfTest_ECC_Flash_SnapshotCapture</a> (<a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__snapshot__t">stl_ecc_flash_snapshot_t</a> *snapshot)</td></tr>
+<tr class="memdesc:gabf69816225fbf734a46a26a2862794b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Captures the fault record and Flash ECC register evidence for one event.  <br /></td></tr>
+<tr class="memitem:ga67be6bdfc7fce9a699a92ed26597530e" id="r_ga67be6bdfc7fce9a699a92ed26597530e"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga67be6bdfc7fce9a699a92ed26597530e">SelfTest_ECC_Flash_Decode</a> (const <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__snapshot__t">stl_ecc_flash_snapshot_t</a> *snapshot, <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__event__t">stl_ecc_flash_event_t</a> *event)</td></tr>
+<tr class="memdesc:ga67be6bdfc7fce9a699a92ed26597530e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decodes a captured fault record into a Flash ECC event.  <br /></td></tr>
+<tr class="memitem:gafe997bd2c08c079694a1d999c5076869" id="r_gafe997bd2c08c079694a1d999c5076869"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gafe997bd2c08c079694a1d999c5076869">SelfTest_ECC_Flash_Accumulate</a> (<a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__counters__t">stl_ecc_flash_counters_t</a> *counters, const <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__event__t">stl_ecc_flash_event_t</a> *event)</td></tr>
+<tr class="memdesc:gafe997bd2c08c079694a1d999c5076869"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds one decoded event to a set of application-owned counters.  <br /></td></tr>
+<tr class="memitem:gad474e6b64bf7aa6b6b499448cf7124b3" id="r_gad474e6b64bf7aa6b6b499448cf7124b3"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gad474e6b64bf7aa6b6b499448cf7124b3">SelfTest_ECC_Flash_ProvokeNc</a> (uint32_t addr)</td></tr>
+<tr class="memdesc:gad474e6b64bf7aa6b6b499448cf7124b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provokes a real non-correctable Flash ECC error in one reserved row.  <br /></td></tr>
+<tr class="memitem:gad955f3e7bb3b29a514047c0933eb07b4" id="r_gad955f3e7bb3b29a514047c0933eb07b4"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gad955f3e7bb3b29a514047c0933eb07b4">SelfTest_ECC_Flash_RestoreRow</a> (uint32_t addr)</td></tr>
+<tr class="memdesc:gad955f3e7bb3b29a514047c0933eb07b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Erases the reserved row and programs it with consistent data and parity.  <br /></td></tr>
+<tr class="memitem:gab3a9b25c8470112986d99139e5f6bc96" id="r_gab3a9b25c8470112986d99139e5f6bc96"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gab3a9b25c8470112986d99139e5f6bc96">SelfTest_ECC_Ram_ConfigVerify</a> (RAMC_Type *ramc, const <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__ram__cfg__t">stl_ecc_ram_cfg_t</a> *expected)</td></tr>
+<tr class="memdesc:gab3a9b25c8470112986d99139e5f6bc96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifies the RAM ECC runtime configuration for one RAMC instance without writing any hardware register.  <br /></td></tr>
+<tr class="memitem:gaaeaa9025aed29562ebb13ce085536839" id="r_gaaeaa9025aed29562ebb13ce085536839"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gaaeaa9025aed29562ebb13ce085536839">SelfTest_ECC_Ram_SnapshotCapture</a> (<a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__ram__snapshot__t">stl_ecc_ram_snapshot_t</a> *snapshot)</td></tr>
+<tr class="memdesc:gaaeaa9025aed29562ebb13ce085536839"><td class="mdescLeft">&#160;</td><td class="mdescRight">Captures one FAULT_STRUCT0 record and RAM ECC register evidence.  <br /></td></tr>
+<tr class="memitem:ga0454d103d6e0f6a91fd19a331e86112a" id="r_ga0454d103d6e0f6a91fd19a331e86112a"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga0454d103d6e0f6a91fd19a331e86112a">SelfTest_ECC_Ram_Decode</a> (const <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__ram__snapshot__t">stl_ecc_ram_snapshot_t</a> *snapshot, <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__ram__event__t">stl_ecc_ram_event_t</a> *event)</td></tr>
+<tr class="memdesc:ga0454d103d6e0f6a91fd19a331e86112a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decodes captured RAM ECC evidence.  <br /></td></tr>
+<tr class="memitem:gaa0932c700a07d76cad55660435b2bab2" id="r_gaa0932c700a07d76cad55660435b2bab2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gaa0932c700a07d76cad55660435b2bab2">SelfTest_ECC_Ram_Accumulate</a> (<a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__ram__counters__t">stl_ecc_ram_counters_t</a> *counters, const <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__ram__event__t">stl_ecc_ram_event_t</a> *event)</td></tr>
+<tr class="memdesc:gaa0932c700a07d76cad55660435b2bab2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a decoded RAM ECC event to caller-owned saturating counters.  <br /></td></tr>
+<tr class="memitem:gaf2610d9c03a67fda67df9e8e609e0436" id="r_gaf2610d9c03a67fda67df9e8e609e0436"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gaf2610d9c03a67fda67df9e8e609e0436">SelfTest_ECC_Ram_Provoke</a> (RAMC_Type *ramc, uint32_t wordAddr, <a class="el" href="group__group__ecc__enums.html#ga0823fb5f310600fe9dbc21eaf06d2924">stl_ecc_ram_inject_mode_t</a> mode)</td></tr>
+<tr class="memdesc:gaf2610d9c03a67fda67df9e8e609e0436"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructively provokes a RAM ECC event in an application-owned sacrificial word, then repairs the word and restores the RAMC configuration.  <br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="gaf5328d9150b06cca4077abacdacbe888" name="gaf5328d9150b06cca4077abacdacbe888"></a>
@@ -212,6 +234,382 @@ This API is applicable only to PSOC Control devices. </dd></dl>
 This API assumes that RAM address range is continuous and does not have gaps between address ranges of different RAM controllers</dd>
 <dd>
 This API is applicable only to devices that have RAM ECC. </dd></dl>
+
+</div>
+</div>
+<a id="gac616bedb378d198d6a36df5b12abe01b" name="gac616bedb378d198d6a36df5b12abe01b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac616bedb378d198d6a36df5b12abe01b">&#9670;&#160;</a></span>SelfTest_ECC_Flash_ConfigVerify()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_ECC_Flash_ConfigVerify </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__cfg__t">stl_ecc_flash_cfg_t</a> *</td>          <td class="paramname"><span class="paramname"><em>expected</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Verifies that the Flash ECC configuration still matches the expected contract. </p>
+<p>Checks that FLASH_CTL.ECC_EN is set, FLASH_CTL.RBUS_ERR_SILENT is cleared, and that ECC error injection is neither enabled nor latched. When <a class="el" href="group__group__ecc__data__structures.html#a05b4ea5797d5769c45a70da8df6e9d26">stl_ecc_flash_cfg_t::checkFlashMacroEncoder</a> is true, the Flash Macro encoder disable bit is additionally verified to be cleared.</p>
+<p>This API performs no register write, so it is intended for periodic runtime invocation as a configuration integrity diagnostic. It does not read ECC_LOGIR: threshold and counter state are application-owned monitoring policy, not a configuration invariant.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">expected</td><td>Expected configuration. ECC must be enabled and RBUS error silence must be disabled.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Configuration matches <br  />
+ <a class="el" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a> (1) - Configuration does not match <br  />
+ <a class="el" href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a> (9) - Invalid or unsupported request <br  />
+</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Reading the Flash Macro register block requires the Secure Main CM33 context. Pass <a class="el" href="group__group__ecc__data__structures.html#a05b4ea5797d5769c45a70da8df6e9d26">stl_ecc_flash_cfg_t::checkFlashMacroEncoder</a> as false from any image that does not have that access.</dd>
+<dd>
+This API is applicable only to PSOC Control C3 devices. </dd></dl>
+
+</div>
+</div>
+<a id="gabf69816225fbf734a46a26a2862794b6" name="gabf69816225fbf734a46a26a2862794b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gabf69816225fbf734a46a26a2862794b6">&#9670;&#160;</a></span>SelfTest_ECC_Flash_SnapshotCapture()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_ECC_Flash_SnapshotCapture </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__snapshot__t">stl_ecc_flash_snapshot_t</a> *</td>          <td class="paramname"><span class="paramname"><em>snapshot</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Captures the fault record and Flash ECC register evidence for one event. </p>
+<p>Intended to be called from the application fault handler before the record is acknowledged. The API is read-only: it performs no register write, does not clear the fault status or interrupt, does not touch the NVIC, and keeps no internal state. Applications with their own fault framework may fill <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__snapshot__t">stl_ecc_flash_snapshot_t</a> directly instead of calling this function.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">snapshot</td><td>Destination for the captured evidence.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Snapshot captured <br  />
+ <a class="el" href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a> (9) - snapshot is NULL <br  />
+</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This API is applicable only to PSOC Control C3 devices. </dd></dl>
+
+</div>
+</div>
+<a id="ga67be6bdfc7fce9a699a92ed26597530e" name="ga67be6bdfc7fce9a699a92ed26597530e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga67be6bdfc7fce9a699a92ed26597530e">&#9670;&#160;</a></span>SelfTest_ECC_Flash_Decode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_ECC_Flash_Decode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__snapshot__t">stl_ecc_flash_snapshot_t</a> *</td>          <td class="paramname"><span class="paramname"><em>snapshot</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__event__t">stl_ecc_flash_event_t</a> *</td>          <td class="paramname"><span class="paramname"><em>event</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Decodes a captured fault record into a Flash ECC event. </p>
+<p>This is a pure function: it reads and writes no register, performs no acknowledgement, keeps no internal state, and never blocks. It is reentrant and can be called from any context.</p>
+<p>A record that belongs to another fault source, or that is not valid, is a successfully decoded result reported as <a class="el" href="group__group__ecc__enums.html#gga981dafe0cbadb03e6f762cf72fed2622a7f08c89b50b41e492530ea4dd5449765">STL_ECC_FLASH_EVENT_NONE</a>, so the application drain loop needs no error handling for foreign sources.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">snapshot</td><td>Evidence captured for one fault record.</td></tr>
+    <tr><td class="paramname">event</td><td>Destination for the decoded event. Always fully written on success.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Snapshot decoded <br  />
+ <a class="el" href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a> (9) - snapshot or event is NULL <br  />
+</dd></dl>
+<dl class="section note"><dt>Note</dt><dd><a class="el" href="group__group__ecc__data__structures.html#ace4903f0fb4d261730518d9656abb115">stl_ecc_flash_event_t::ecc1Cnt</a> and <a class="el" href="group__group__ecc__data__structures.html#a7d6f7b2a2d7c04dab6f8c39e5049b138">stl_ecc_flash_event_t::eccThreshold</a> are reported as evidence only. The hardware counter saturates at the threshold, so it is not a lifetime count of corrected errors.</dd>
+<dd>
+This API is applicable only to PSOC Control C3 devices. </dd></dl>
+
+</div>
+</div>
+<a id="gafe997bd2c08c079694a1d999c5076869" name="gafe997bd2c08c079694a1d999c5076869"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafe997bd2c08c079694a1d999c5076869">&#9670;&#160;</a></span>SelfTest_ECC_Flash_Accumulate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SelfTest_ECC_Flash_Accumulate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__counters__t">stl_ecc_flash_counters_t</a> *</td>          <td class="paramname"><span class="paramname"><em>counters</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__flash__event__t">stl_ecc_flash_event_t</a> *</td>          <td class="paramname"><span class="paramname"><em>event</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adds one decoded event to a set of application-owned counters. </p>
+<p>This is the runtime monitoring accumulator. It reads and writes no register, keeps no internal state, and never blocks. All storage belongs to the caller, so an application can keep several independent counter sets, reset them at will, and place them in memory that survives a reset.</p>
+<p>An event of kind <a class="el" href="group__group__ecc__enums.html#gga981dafe0cbadb03e6f762cf72fed2622a7f08c89b50b41e492530ea4dd5449765">STL_ECC_FLASH_EVENT_NONE</a> increments <a class="el" href="group__group__ecc__data__structures.html#a59c9bbc9861f2e1da022be7eadcf1d26">stl_ecc_flash_counters_t::other</a> and leaves <a class="el" href="group__group__ecc__data__structures.html#a9960f6ea7d65b034ae8fb2256fa4b8ef">stl_ecc_flash_counters_t::last</a> untouched, so a drain loop can pass every record it sees without filtering foreign fault sources first.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">counters</td><td>Counter set to update. Ignored when NULL.</td></tr>
+    <tr><td class="paramname">event</td><td>Decoded event to account for. Ignored when NULL.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>The counters saturate at their maximum value instead of wrapping, so a long-running system never reports fewer events than it observed.</dd>
+<dd>
+The caller owns concurrency. A counter set updated from an interrupt handler must not be updated concurrently from another context.</dd>
+<dd>
+This API is applicable only to PSOC Control C3 devices. </dd></dl>
+
+</div>
+</div>
+<a id="gad474e6b64bf7aa6b6b499448cf7124b3" name="gad474e6b64bf7aa6b6b499448cf7124b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad474e6b64bf7aa6b6b499448cf7124b3">&#9670;&#160;</a></span>SelfTest_ECC_Flash_ProvokeNc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_ECC_Flash_ProvokeNc </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>addr</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Provokes a real non-correctable Flash ECC error in one reserved row. </p>
+<p>This is the destructive stimulus of the application-managed self test. It disables Flash ECC, erases the row, programs a first pattern, programs a second pattern into the same row without an intervening erase, re-enables Flash ECC and reads the row. The stored data no longer matches the stored parity, so the read reports a non-correctable event.</p>
+<p>The row content is destroyed. The caller must supply a row that is reserved for this purpose and that holds no code or data of the application, and must call <a class="el" href="#gad955f3e7bb3b29a514047c0933eb07b4">SelfTest_ECC_Flash_RestoreRow</a> afterwards.</p>
+<p>With the baseline configuration of this module the resulting bus error is precise and escalates to a CPU exception, so this function does not return to its caller unless the application fault handler resumes execution. The application owns that policy; the STL installs no handler, configures no fault structure, touches no NVIC state and provides no recovery. Cleanup of the row is therefore a separate entry point that stays reachable after a reset.</p>
+<p>A normal return means either that the application fault handler resumed execution, or that no error was reported at all. The two cases are distinguished by the evidence the application captured with <a class="el" href="#gabf69816225fbf734a46a26a2862794b6">SelfTest_ECC_Flash_SnapshotCapture</a>, not by this return value.</p>
+<p>Flash ECC is enabled on return. The rest of the configuration verified by <a class="el" href="#gac616bedb378d198d6a36df5b12abe01b">SelfTest_ECC_Flash_ConfigVerify</a> is not restored by this function.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">addr</td><td>Row-aligned address of the reserved row.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Stimulus applied and the row was read <br  />
+ <a class="el" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a> (1) - Flash initialization, erase or first program failed <br  />
+</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Requires write access to the Flash macro. On a device with a protected Secure Main region this means the Secure Main CM33 image.</dd>
+<dd>
+There is no correctable counterpart. Storing a single-bit mismatch needs a Flash macro page-latch parity sequence that the PDL does not expose.</dd>
+<dd>
+This API is applicable only to PSOC Control C3 devices. </dd></dl>
+
+</div>
+</div>
+<a id="gad955f3e7bb3b29a514047c0933eb07b4" name="gad955f3e7bb3b29a514047c0933eb07b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad955f3e7bb3b29a514047c0933eb07b4">&#9670;&#160;</a></span>SelfTest_ECC_Flash_RestoreRow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_ECC_Flash_RestoreRow </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>addr</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Erases the reserved row and programs it with consistent data and parity. </p>
+<p>Removes the mismatch stored by <a class="el" href="#gad474e6b64bf7aa6b6b499448cf7124b3">SelfTest_ECC_Flash_ProvokeNc</a> so that the row can be read again with ECC enabled. Separate from the stimulus because the stimulus does not return on a device that escalates the bus error, so cleanup has to be reachable from the next boot.</p>
+<p>Flash ECC is left in the state the caller had; the application should restore its runtime configuration and call <a class="el" href="#gac616bedb378d198d6a36df5b12abe01b">SelfTest_ECC_Flash_ConfigVerify</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">addr</td><td>Row-aligned address of the reserved row.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Row restored <br  />
+ <a class="el" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a> (1) - Flash initialization, erase or program failed <br  />
+</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This API is applicable only to PSOC Control C3 devices. </dd></dl>
+
+</div>
+</div>
+<a id="gab3a9b25c8470112986d99139e5f6bc96" name="gab3a9b25c8470112986d99139e5f6bc96"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab3a9b25c8470112986d99139e5f6bc96">&#9670;&#160;</a></span>SelfTest_ECC_Ram_ConfigVerify()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_ECC_Ram_ConfigVerify </td>
+          <td>(</td>
+          <td class="paramtype">RAMC_Type *</td>          <td class="paramname"><span class="paramname"><em>ramc</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__ram__cfg__t">stl_ecc_ram_cfg_t</a> *</td>          <td class="paramname"><span class="paramname"><em>expected</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Verifies the RAM ECC runtime configuration for one RAMC instance without writing any hardware register. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ramc</td><td>RAMC controller to verify. The pointer must identify a supported main-SRAM RAMC instance.</td></tr>
+    <tr><td class="paramname">expected</td><td>Expected configuration. ECC and automatic correction must be enabled.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Configuration matches <br  />
+ <a class="el" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a> (1) - Configuration does not match <br  />
+ <a class="el" href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a> (9) - Invalid request <br  />
+ </dd></dl>
+
+</div>
+</div>
+<a id="gaaeaa9025aed29562ebb13ce085536839" name="gaaeaa9025aed29562ebb13ce085536839"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaaeaa9025aed29562ebb13ce085536839">&#9670;&#160;</a></span>SelfTest_ECC_Ram_SnapshotCapture()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_ECC_Ram_SnapshotCapture </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__ram__snapshot__t">stl_ecc_ram_snapshot_t</a> *</td>          <td class="paramname"><span class="paramname"><em>snapshot</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Captures one FAULT_STRUCT0 record and RAM ECC register evidence. </p>
+<p>This API is read-only; acknowledgement and fault handling remain application-owned.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">snapshot</td><td>Destination for the captured evidence.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Snapshot captured <br  />
+ <a class="el" href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a> (9) - snapshot is NULL <br  />
+ </dd></dl>
+
+</div>
+</div>
+<a id="ga0454d103d6e0f6a91fd19a331e86112a" name="ga0454d103d6e0f6a91fd19a331e86112a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0454d103d6e0f6a91fd19a331e86112a">&#9670;&#160;</a></span>SelfTest_ECC_Ram_Decode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_ECC_Ram_Decode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__ram__snapshot__t">stl_ecc_ram_snapshot_t</a> *</td>          <td class="paramname"><span class="paramname"><em>snapshot</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__ram__event__t">stl_ecc_ram_event_t</a> *</td>          <td class="paramname"><span class="paramname"><em>event</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Decodes captured RAM ECC evidence. </p>
+<p>This is a pure function and reports unrelated fault sources as <a class="el" href="group__group__ecc__enums.html#gga96dcee858537a2125e4e61c203139faaabc61ce2f313ae15af7bb94d5cd4b59d5">STL_ECC_RAM_EVENT_NONE</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">snapshot</td><td>Captured fault and RAMC evidence.</td></tr>
+    <tr><td class="paramname">event</td><td>Destination for the decoded RAM ECC event.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Snapshot decoded <br  />
+ <a class="el" href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a> (9) - snapshot or event is NULL <br  />
+ </dd></dl>
+
+</div>
+</div>
+<a id="gaa0932c700a07d76cad55660435b2bab2" name="gaa0932c700a07d76cad55660435b2bab2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa0932c700a07d76cad55660435b2bab2">&#9670;&#160;</a></span>SelfTest_ECC_Ram_Accumulate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SelfTest_ECC_Ram_Accumulate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__ram__counters__t">stl_ecc_ram_counters_t</a> *</td>          <td class="paramname"><span class="paramname"><em>counters</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__group__ecc__data__structures.html#structstl__ecc__ram__event__t">stl_ecc_ram_event_t</a> *</td>          <td class="paramname"><span class="paramname"><em>event</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adds a decoded RAM ECC event to caller-owned saturating counters. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">counters</td><td>Counter set to update. Ignored when NULL.</td></tr>
+    <tr><td class="paramname">event</td><td>Decoded event to account for. Ignored when NULL. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="gaf2610d9c03a67fda67df9e8e609e0436" name="gaf2610d9c03a67fda67df9e8e609e0436"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf2610d9c03a67fda67df9e8e609e0436">&#9670;&#160;</a></span>SelfTest_ECC_Ram_Provoke()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_ECC_Ram_Provoke </td>
+          <td>(</td>
+          <td class="paramtype">RAMC_Type *</td>          <td class="paramname"><span class="paramname"><em>ramc</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>wordAddr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__group__ecc__enums.html#ga0823fb5f310600fe9dbc21eaf06d2924">stl_ecc_ram_inject_mode_t</a></td>          <td class="paramname"><span class="paramname"><em>mode</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Destructively provokes a RAM ECC event in an application-owned sacrificial word, then repairs the word and restores the RAMC configuration. </p>
+<p>The caller supplies the RAMC controller and must ensure the address belongs to it.</p>
+<p>The library does not claim the memory is protected while ECC_CTL is 0. The caller must prevent DMA and other bus masters from storing to that RAMC while the generation-off window is active.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ramc</td><td>RAMC controller that owns <code class="param">wordAddr</code>. The pointer must identify a supported main-SRAM RAMC instance.</td></tr>
+    <tr><td class="paramname">wordAddr</td><td>32-bit-aligned address of the application-owned sacrificial word.</td></tr>
+    <tr><td class="paramname">mode</td><td>Requested correctable or non-correctable ECC error class.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Stimulus applied and word repaired <br  />
+ <a class="el" href="group__group__stl__status.html#ga63a823f81897c011cdae5d765a12f379">ERROR_BAD_PARAM</a> (9) - Invalid RAMC pointer, address, or mode <br  />
+ </dd></dl>
 
 </div>
 </div>
