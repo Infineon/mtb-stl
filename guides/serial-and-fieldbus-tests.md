@@ -47,12 +47,20 @@ uint8_t status = OK_STATUS;
 
 const cy_stc_sysint_t masterIrqCfg =
 {
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+    .intrSrc      = (IRQn_Type)((NvicMux3_IRQn << 16) | CYBSP_DUT_I2C_MASTER_IRQ),
+#else
     .intrSrc      = CYBSP_DUT_I2C_MASTER_IRQ,
+#endif
     .intrPriority = 3U
 };
 const cy_stc_sysint_t slaveIrqCfg =
 {
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+    .intrSrc      = (IRQn_Type)((NvicMux4_IRQn << 16) | CYBSP_DUT_I2C_SLAVE_IRQ),
+#else
     .intrSrc      = CYBSP_DUT_I2C_SLAVE_IRQ,
+#endif
     .intrPriority = 3U
 };
 
@@ -64,7 +72,13 @@ if (CY_SCB_I2C_SUCCESS != Cy_SCB_I2C_Init(CYBSP_DUT_I2C_MASTER_HW,
     status = ERROR_STATUS;
 }
 (void)Cy_SysInt_Init(&masterIrqCfg, &I2C_Master_Isr);
+
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);
+#else
 NVIC_EnableIRQ((IRQn_Type)masterIrqCfg.intrSrc);
+#endif
+
 Cy_SCB_I2C_Enable(CYBSP_DUT_I2C_MASTER_HW);
 
 /* Initialize the I2C slave, configure its read/write buffers, hook interrupt. */
@@ -79,7 +93,13 @@ Cy_SCB_I2C_SlaveConfigReadBuf(CYBSP_DUT_I2C_SLAVE_HW, i2cSlaveReadBuffer,
 Cy_SCB_I2C_SlaveConfigWriteBuf(CYBSP_DUT_I2C_SLAVE_HW, i2cSlaveWriteBuffer,
                                PACKET_SIZE, &i2cSlaveContext);
 (void)Cy_SysInt_Init(&slaveIrqCfg, &I2C_Slave_Isr);
+
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+NVIC_EnableIRQ((IRQn_Type)NvicMux4_IRQn);
+#else
 NVIC_EnableIRQ((IRQn_Type)slaveIrqCfg.intrSrc);
+#endif
+
 Cy_SCB_I2C_Enable(CYBSP_DUT_I2C_SLAVE_HW);
 
 __enable_irq();
@@ -165,7 +185,11 @@ uint8_t status = OK_STATUS;
 
 const cy_stc_sysint_t spiIrqCfg =
 {
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+    .intrSrc      = (IRQn_Type)((NvicMux3_IRQn << 16) | CYBSP_DUT_SPI_IRQ),
+#else
     .intrSrc      = CYBSP_DUT_SPI_IRQ,
+#endif
     .intrPriority = 0U
 };
 
@@ -179,7 +203,13 @@ Cy_SCB_SPI_SetActiveSlaveSelect(CYBSP_DUT_SPI_HW, CY_SCB_SPI_SLAVE_SELECT0);
 
 /* Hook the SPI interrupt to the PDL handler and enable the block. */
 (void)Cy_SysInt_Init(&spiIrqCfg, &SPI_Isr);
+
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);
+#else
 NVIC_EnableIRQ((IRQn_Type)spiIrqCfg.intrSrc);
+#endif
+
 Cy_SCB_SPI_Enable(CYBSP_DUT_SPI_HW);
 
 /* Route MOSI back to MISO through Smart I/O to form the internal loopback.
@@ -338,26 +368,45 @@ The example installs the three interrupt handlers, initialises the guard timer a
  * (UartMesSlave_Msg_ISR). */
 const cy_stc_sysint_t timerIntrCfg =
 {
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+    .intrSrc      = (IRQn_Type)((NvicMux3_IRQn << 16) | CYBSP_TIMER_UART_MASTER_IRQ),
+#else
     .intrSrc      = CYBSP_TIMER_UART_MASTER_IRQ,
+#endif
     .intrPriority = 3UL,
 };
 const cy_stc_sysint_t masterIntrCfg =
 {
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+    .intrSrc      = (IRQn_Type)((NvicMux4_IRQn << 16) | CYBSP_DUT_UART_MASTER_IRQ),
+#else
     .intrSrc      = CYBSP_DUT_UART_MASTER_IRQ,
+#endif
     .intrPriority = 3UL,
 };
 const cy_stc_sysint_t slaveIntrCfg =
 {
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+    .intrSrc      = (IRQn_Type)((NvicMux5_IRQn << 16) | CYBSP_DUT_UART_SLAVE_IRQ),
+#else
     .intrSrc      = CYBSP_DUT_UART_SLAVE_IRQ,
+#endif
     .intrPriority = 3UL,
 };
 
 Cy_SysInt_Init(&timerIntrCfg, UartMesMaster_Timeout_ISR);
 Cy_SysInt_Init(&masterIntrCfg, UartMesMaster_Msg_ISR);
 Cy_SysInt_Init(&slaveIntrCfg, UartMesSlave_Msg_ISR);
+
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);
+NVIC_EnableIRQ((IRQn_Type)NvicMux4_IRQn);
+NVIC_EnableIRQ((IRQn_Type)NvicMux5_IRQn);
+#else
 NVIC_EnableIRQ((IRQn_Type)CYBSP_TIMER_UART_MASTER_IRQ);
 NVIC_EnableIRQ((IRQn_Type)CYBSP_DUT_UART_MASTER_IRQ);
 NVIC_EnableIRQ((IRQn_Type)CYBSP_DUT_UART_SLAVE_IRQ);
+#endif
 
 Cy_TCPWM_Counter_Init(CYBSP_TIMER_UART_MASTER_HW, CYBSP_TIMER_UART_MASTER_NUM,
                       &CYBSP_TIMER_UART_MASTER_config);
@@ -407,9 +456,16 @@ if (OK_STATUS != status)
     /* Handle UART data transfer self-test failure */
 }
 
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+NVIC_DisableIRQ((IRQn_Type)NvicMux3_IRQn);
+NVIC_DisableIRQ((IRQn_Type)NvicMux4_IRQn);
+NVIC_DisableIRQ((IRQn_Type)NvicMux5_IRQn);
+#else
 NVIC_DisableIRQ((IRQn_Type)CYBSP_TIMER_UART_MASTER_IRQ);
 NVIC_DisableIRQ((IRQn_Type)CYBSP_DUT_UART_MASTER_IRQ);
 NVIC_DisableIRQ((IRQn_Type)CYBSP_DUT_UART_SLAVE_IRQ);
+#endif
+
 Cy_TCPWM_Counter_Disable(CYBSP_TIMER_UART_MASTER_HW, CYBSP_TIMER_UART_MASTER_NUM);
 Cy_SCB_UART_Disable(CYBSP_DUT_UART_MASTER_HW, NULL);
 Cy_SCB_UART_DeInit(CYBSP_DUT_UART_MASTER_HW);
@@ -457,7 +513,11 @@ uint8_t status = OK_STATUS;
 
 const cy_stc_sysint_t canfdIrqCfg =
 {
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+    .intrSrc      = (IRQn_Type)((NvicMux3_IRQn << 16) | canfd_0_interrupts0_0_IRQn),
+#else
     .intrSrc      = canfd_0_interrupts0_0_IRQn,
+#endif
     .intrPriority = 2U
 };
 
@@ -472,7 +532,12 @@ if (CY_CANFD_SUCCESS != Cy_CANFD_Init(CANFD_HW, STL_CANFD_CHANNEL,
 
 /* Hook the CAN FD interrupt to the PDL handler and enable it. */
 (void)Cy_SysInt_Init(&canfdIrqCfg, &CANFD_Isr);
+
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);
+#else
 NVIC_EnableIRQ((IRQn_Type)canfdIrqCfg.intrSrc);
+#endif
 
 __enable_irq();
 

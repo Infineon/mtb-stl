@@ -64,6 +64,10 @@
 /* ADC timeout in milliseconds */
 #define ADC_TIMEOUT_MS                  50U
 
+/* Time (microseconds) allowed for one AUX scan to complete after the conversion is triggered,
+ * before the busy status is polled. Same value as in the ADC Core and AFE tests. */
+#define ADC_CONV_SETTLE_US              1000U
+
 /* ADC trigger mask for AUX slot (channel 7) */
 #define ADC_AUX_SLOT_TRIGGER_MASK       0x80U
 
@@ -340,6 +344,10 @@ static uint8_t ATOP_DAC_TestValue(PPCA_ATOPSS_DCSG_GRP_DAC_R2R_Type* dacBase,
 
         /* Trigger ADC conversion (AUX slot only - channel 7) */
         Cy_PPCA_ADC_Trigger(PPCA_ATOPSS_ADC_GRP0_SLICE0_ADC, ADC_AUX_SLOT_TRIGGER_MASK);
+
+        /* Let the scan complete before the busy status is polled, as the ADC Core and AFE tests
+         * do: the busy status can lag the trigger, and the poll would then be skipped. */
+        Cy_SysLib_DelayUs(ADC_CONV_SETTLE_US);
 
         /* Wait for ADC conversion with timeout */
         timeout = ADC_TIMEOUT_MS;

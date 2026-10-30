@@ -66,6 +66,95 @@ if (OK_STATUS == status)
 }
 ```
 
+### ADC configuration protection
+
+The ADC configuration protection test detects unintended changes to the static SAR ADC configuration, such as corruption by a soft error, a stray pointer, or an unauthorized driver call. The application captures a CRC-protected snapshot of the configuration registers once after initialization and then periodically compares the live registers against that snapshot.
+
+The module provides two Save/Verify pairs:
+
+| API pair | Scope | Registers captured |
+|---|---|---|
+| `SelfTest_ADC_Config_Save()` / `SelfTest_ADC_Config_Verify()` | One SAR ADC instance (`PASS_SAR_Type*`, for example `PASS0_SAR0`) | `CTL`, `DIAG_CTL`, `PRECOND_CTL`, `ANA_CAL`, `DIG_CAL`, `ANA_CAL_ALT`, `DIG_CAL_ALT`, and per channel `TR_CTL`, `SAMPLE_CTL`, `POST_CTL`, `RANGE_CTL`, `INTR_MASK`, `ENABLE` |
+| `SelfTest_ADC_MMIO_Config_Save()` / `SelfTest_ADC_MMIO_Config_Verify()` | PASS-level registers shared by all SAR instances (`PASS0_EPASS_MMIO`) | `PASS_CTL`, `SAR_TR_IN_SEL[4]`, `SAR_TR_OUT_SEL[4]` |
+
+Use one instance snapshot for every SAR ADC instance the application uses and one MMIO snapshot for the whole PASS block. Result, status, interrupt-request, and command registers are never captured. The run-time enable bits `CTL.ENABLED`, `DIAG_CTL.DIAG_EN`, `CH.ENABLE.CHAN_EN`, and `PASS_CTL.DBG_FREEZE_EN` are always masked internally, so enabling or disabling the ADC, its channels, or debug freeze does not cause a mismatch.
+
+#### Application masks
+
+Fields that the application legitimately changes at run time must be excluded through a mask passed to Save. The mask is copied into the snapshot and covered by its CRC, so Verify always uses the same mask that Save used. An all-zero mask compares every captured field.
+
+`stl_adc_config_mask_t` controls the instance snapshot:
+
+- `channelSkipMask`: bit N set excludes channel N completely. Use it for channels that are unused or fully re-initialized at run time.
+- `skipAnaCal`, `skipDigCal`, `skipAnaCalAlt`, `skipDigCalAlt`: exclude a calibration register when the application recalibrates at run time.
+- `chSampleCtlMask[]`, `chTrCtlMask[]`, `chPostCtlMask[]`, `chIntrMaskMask[]`: per-channel bit masks of excluded bits. Keep the masks as narrow as possible. Do not mask channel routing (`SAMPLE_CTL.PIN_ADDR`, `PORT_ADDR`) or the trigger and post-processing structure (`TR_CTL.PRIO`, `PREEMPT_TYPE`, `GROUP_END`, `DONE_LEVEL`, `POST_CTL.POST_PROC`, `LEFT_ALIGN`, `SIGN_EXT`, `RANGE_MODE`). Typical masked fields are `SAMPLE_CTL.ALT_CAL`, `TR_CTL.SEL`, and `POST_CTL.AVG_CNT`/`SHIFT_R`.
+- `chSkipRangeCtl[]`: excludes a channel's `RANGE_CTL` when range thresholds are updated at run time.
+
+`stl_adc_mmio_config_mask_t` controls the MMIO snapshot:
+
+- `passCtlMask`: excluded `PASS_CTL` bits, typically `PASS_EPASS_MMIO_PASS_CTL_REFBUF_MODE_Msk` when the reference buffer mode is changed at run time.
+- `sarTrInSelMask[]`, `sarTrOutSelMask[]`: excluded bits of the generic trigger input and output selectors when the application re-routes triggers at run time.
+
+#### Resource ownership and API sequence
+
+The application owns the snapshot storage. Allocate each snapshot with static storage duration, because it must remain valid from Save through every later Verify. The test functions only read the ADC and PASS registers; they never modify or restore them.
+
+1. Initialize the ADC completely: `Cy_SAR2_Init()`, any later `Cy_SAR2_Channel_Init()`, `Cy_SAR2_Diag_Init()`, calibration setter, `Cy_SAR2_SetGenericTriggerInput()`, `Cy_SAR2_SetGenericTriggerOutput()`, or `Cy_SAR2_SetReferenceBufferMode()` calls. Because the enable bits are masked, Save can run before or after `Cy_SAR2_Enable()`.
+2. Call `SelfTest_ADC_Config_Save()` for each SAR instance and `SelfTest_ADC_MMIO_Config_Save()` once. Both return `OK_STATUS`, or `ERROR_BAD_PARAM` for a NULL argument.
+3. Periodically call `SelfTest_ADC_Config_Verify()` with the same instance base and `SelfTest_ADC_MMIO_Config_Verify()`.
+
+Verify first checks the snapshot CRC and then compares the masked live registers:
+
+- `OK_STATUS`: the live configuration matches the snapshot.
+- `ERROR_STATUS`: a masked register differs from the snapshot; the ADC configuration was changed or corrupted.
+- `ERROR_ADC_CONFIG_SNAPSHOT_INVALID`: the snapshot failed its own CRC check, so no register comparison was made. Treat this as a failure; do not silently take a new snapshot from possibly corrupted hardware.
+- `ERROR_BAD_PARAM`: `base`/`mmioBase` or `snapshot` is NULL.
+
+If the application deliberately reconfigures a protected field outside the masks, take a new snapshot immediately after the intended reconfiguration.
+
+The following example demonstrates following scenario:  SAR0 channel 0 is the safety-relevant channel, and channel 1, which the application re-initializes at run time, is excluded through `channelSkipMask`. The snapshots are captured once after ADC initialization:
+
+```c
+static stl_adc_config_snapshot_t adc_config_snapshot;
+static stl_adc_mmio_config_snapshot_t adc_mmio_config_snapshot;
+
+static uint8_t stl_example_adc_config_save(void)
+{
+    /* Call after Cy_SAR2_Init() and any further ADC/PASS configuration */
+    stl_adc_config_mask_t mask = { 0 };
+    stl_adc_mmio_config_mask_t mmioMask = { 0 };
+    uint8_t status;
+
+    /* Exclude channel 1, which the application re-initializes at run time */
+    mask.channelSkipMask = (1UL << SAR_ADC_channel_1_IDX);
+
+    status = SelfTest_ADC_Config_Save(SAR_ADC_HW, &mask, &adc_config_snapshot);
+    if (OK_STATUS == status)
+    {
+        status = SelfTest_ADC_MMIO_Config_Save(PASS0_EPASS_MMIO, &mmioMask,
+                                               &adc_mmio_config_snapshot);
+    }
+
+    return status;
+}
+```
+
+Both snapshots are then verified periodically in the self-test schedule:
+
+```c
+/* Periodically, in the self-test schedule */
+status = SelfTest_ADC_Config_Verify(SAR_ADC_HW, &adc_config_snapshot);
+if (OK_STATUS == status)
+{
+    status = SelfTest_ADC_MMIO_Config_Verify(PASS0_EPASS_MMIO,
+                                             &adc_mmio_config_snapshot);
+}
+if (OK_STATUS != status)
+{
+    /* ADC configuration changed or snapshot corrupted - enter safe state */
+}
+```
+
 ## DAC test
 
 The DAC self-test sets the R2R DAC output to a known code and verifies the SAR ADC readback is within the acceptance window. The function starts the SAR conversion internally via the DAC's built-in trigger; no external settling delay is required in application code.

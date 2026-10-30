@@ -303,11 +303,12 @@ uint8_t SelfTest_PWM(GPIO_PRT_Type* pinbase, uint32_t pinNum)
             stlPwm_lCnt++;
         }
         #else
-        if (0U != Cy_GPIO_Read(pinbase, pinNum))
+        volatile uint32_t pinVal = Cy_GPIO_Read(pinbase, pinNum);
+        if (0U != pinVal)
         {
             stlPwm_hCnt++;
         }
-        else
+        if (0U == pinVal)
         {
             stlPwm_lCnt++;
         }

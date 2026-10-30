@@ -137,7 +137,7 @@ Macros</h2></td></tr>
 <tr class="memdesc:ga8b5c2f6c53e81ea85cdf4b6e8015dbc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Digital I/O self-test: the tested pin is shorted to ground.  <br /></td></tr>
 <tr class="memitem:gad572d09e4bc26cb5ac723e35a2ebca90" id="r_gad572d09e4bc26cb5ac723e35a2ebca90"><td class="memItemLeft" align="right" valign="top"><a id="gad572d09e4bc26cb5ac723e35a2ebca90" name="gad572d09e4bc26cb5ac723e35a2ebca90"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>ERROR_INCORRECT_USAGE_STATUS</b>&#160;&#160;&#160;(4u)</td></tr>
-<tr class="memdesc:gad572d09e4bc26cb5ac723e35a2ebca90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clock self-test: the API was called in an incorrect sequence or state. <br /></td></tr>
+<tr class="memdesc:gad572d09e4bc26cb5ac723e35a2ebca90"><td class="mdescLeft">&#160;</td><td class="mdescRight">An API was called in an incorrect sequence, state, or execution context. <br /></td></tr>
 <tr class="memitem:ga63a823f81897c011cdae5d765a12f379" id="r_ga63a823f81897c011cdae5d765a12f379"><td class="memItemLeft" align="right" valign="top"><a id="ga63a823f81897c011cdae5d765a12f379" name="ga63a823f81897c011cdae5d765a12f379"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>ERROR_BAD_PARAM</b>&#160;&#160;&#160;(9u)</td></tr>
 <tr class="memdesc:ga63a823f81897c011cdae5d765a12f379"><td class="mdescLeft">&#160;</td><td class="mdescRight">A bad input parameter was passed to a self-test API. <br /></td></tr>
@@ -151,6 +151,8 @@ Macros</h2></td></tr>
 <tr class="memitem:gab6d6cd34a6d13569d04fe1a3c999a24e" id="r_gab6d6cd34a6d13569d04fe1a3c999a24e"><td class="memItemLeft" align="right" valign="top"><a id="gab6d6cd34a6d13569d04fe1a3c999a24e" name="gab6d6cd34a6d13569d04fe1a3c999a24e"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>PASS_COMPLETE_STATUS</b>&#160;&#160;&#160;(3u)</td></tr>
 <tr class="memdesc:gab6d6cd34a6d13569d04fe1a3c999a24e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multi-call self-test: the test completed and the final result is available. <br /></td></tr>
+<tr class="memitem:ga0979d72c5341426efd3574319cb99c0d" id="r_ga0979d72c5341426efd3574319cb99c0d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga0979d72c5341426efd3574319cb99c0d">ERROR_ADC_CONFIG_SNAPSHOT_INVALID</a>&#160;&#160;&#160;(7u)</td></tr>
+<tr class="memdesc:ga0979d72c5341426efd3574319cb99c0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">ADC Configuration Protection self-test: the stored snapshot failed its own CRC integrity check.  <br /></td></tr>
 </table>
 <a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
 <a id="ga1a8b70f2787072be26b2aa39523f09d6" name="ga1a8b70f2787072be26b2aa39523f09d6"></a>
@@ -354,6 +356,23 @@ Macros</h2></td></tr>
 
 <p>Multi-call self-test (Flash, Clock, Configuration Registers, I2C, UART, SPI): the test is still running and has not yet produced a final result. </p>
 <p>Module-scoped: shares the value 2 with <a class="el" href="#gae2438a88b3f5542e89b54cefd0f18d3a">ERROR_STACK_UNDERFLOW</a>, <a class="el" href="#ga8b5c2f6c53e81ea85cdf4b6e8015dbc5">SHORT_TO_GND</a> and <a class="el" href="#gadf50bb789cd8557db20effed474a6251">CRC_SAVED_STATUS</a>. </p>
+
+</div>
+</div>
+<a id="ga0979d72c5341426efd3574319cb99c0d" name="ga0979d72c5341426efd3574319cb99c0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0979d72c5341426efd3574319cb99c0d">&#9670;&#160;</a></span>ERROR_ADC_CONFIG_SNAPSHOT_INVALID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ERROR_ADC_CONFIG_SNAPSHOT_INVALID&#160;&#160;&#160;(7u)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>ADC Configuration Protection self-test: the stored snapshot failed its own CRC integrity check. </p>
+<p>The snapshot itself is untrustworthy, so no register comparison was performed. </p>
 
 </div>
 </div>

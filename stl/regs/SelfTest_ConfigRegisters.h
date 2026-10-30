@@ -156,6 +156,14 @@
 #endif /* defined(SELFTEST_XMC7X_FAMILY) */
 #endif /* (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE) */
 
+#if defined(SELFTEST_XMC7X_FAMILY) || defined(SELFTEST_XMC5X_FAMILY)
+/** The size of a small Code Flash sector, the smallest erasable unit: 8 KB per the XMC7000 and XMC5000 TRMs. */
+    #define CONF_REG_FLASH_SECTOR_SIZE  (0x2000u)
+/** The base address of the small sector that holds the stored startup configuration register data. */
+    #define CONF_REG_FLASH_SECTOR_ADDR  \
+    ((CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE + CONF_REG_FLASH_SMALL_SECTOR_SIZE) - CONF_REG_FLASH_SECTOR_SIZE)
+#endif /* defined(SELFTEST_XMC7X_FAMILY) || defined(SELFTEST_XMC5X_FAMILY) */
+
 /** \} group_regs_macros */
 
 

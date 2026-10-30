@@ -93,10 +93,10 @@ $(function(){initNavTree('stl_usage_serial_and_fieldbus.html','',''); });
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_output_2libs_2mtb-stl_2guides_2serial-and-fieldbus-tests"></a></p>
 <p>This guide covers serial SCB self-tests, the UART Data Transfer message protocol, and fieldbus communication checks.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md43"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md58"></a>
 I2C SCB test</h1>
 <p>The I2C SCB self-test validates a master/slave communication path using a dedicated pair of I2C instances that are wired together externally. The master periodically sends a byte to the slave; the slave returns its 1's complement, and the master verifies the value read back. A mismatch or a stalled transfer is reported as an error.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md44"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md59"></a>
 Configuration</h2>
 <p>In the Device Configurator, enable two I2C SCB instances and wire them together:</p>
 <ul>
@@ -105,7 +105,7 @@ Configuration</h2>
 <li>The data rate is not constrained by the self-test; use any standard I2C rate. The master drives the bus, and each transfer is a single byte that must complete within the internal guard time.</li>
 <li>Wire the two instances together externally: connect SDA to SDA and SCL to SCL, and add pull-up resistors on both lines.</li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md45"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md60"></a>
 Application resources and interrupt handlers</h2>
 <p>Declare these application-scope resources and interrupt handlers before the application initialization or test function:</p>
 <div class="fragment"><div class="line"><span class="comment">/* Test resources: I2C master/slave contexts and the slave read/write buffers. */</span></div>
@@ -125,19 +125,27 @@ Application resources and interrupt handlers</h2>
 <div class="line">    Cy_SCB_I2C_Interrupt(CYBSP_DUT_I2C_SLAVE_HW, &amp;i2cSlaveContext);</div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__i2c__macros_html_gaebdc7d8ca8e25ed8efc90bb88ef7ef5b"><div class="ttname"><a href="group__group__i2c__macros.html#gaebdc7d8ca8e25ed8efc90bb88ef7ef5b">PACKET_SIZE</a></div><div class="ttdeci">#define PACKET_SIZE</div><div class="ttdoc">No data byte to send.</div><div class="ttdef"><b>Definition</b> SelfTest_I2C_SCB.h:133</div></div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md46"></a>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md61"></a>
 Application-side test sequence</h2>
 <p>The example initializes both instances, installs the shared interrupt handlers, and then calls <span class="tt"><a class="el" href="group__group__i2c__functions.html#gaba4f2020b2a24b277135ee7a69d26963" title="I2C master under test sends data to I2C slave for self test.">SelfTest_I2C_SCB()</a></span> repeatedly until it reports completion:</p>
 <div class="fragment"><div class="line">uint8_t status = <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">const</span> cy_stc_sysint_t masterIrqCfg =</div>
 <div class="line">{</div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">    .intrSrc      = (IRQn_Type)((NvicMux3_IRQn &lt;&lt; 16) | CYBSP_DUT_I2C_MASTER_IRQ),</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">    .intrSrc      = CYBSP_DUT_I2C_MASTER_IRQ,</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    .intrPriority = 3U</div>
 <div class="line">};</div>
 <div class="line"><span class="keyword">const</span> cy_stc_sysint_t slaveIrqCfg =</div>
 <div class="line">{</div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">    .intrSrc      = (IRQn_Type)((NvicMux4_IRQn &lt;&lt; 16) | CYBSP_DUT_I2C_SLAVE_IRQ),</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">    .intrSrc      = CYBSP_DUT_I2C_SLAVE_IRQ,</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    .intrPriority = 3U</div>
 <div class="line">};</div>
 <div class="line"> </div>
@@ -149,7 +157,13 @@ Application-side test sequence</h2>
 <div class="line">    status = <a class="code hl_define" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a>;</div>
 <div class="line">}</div>
 <div class="line">(void)Cy_SysInt_Init(&amp;masterIrqCfg, &amp;I2C_Master_Isr);</div>
+<div class="line"> </div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">NVIC_EnableIRQ((IRQn_Type)masterIrqCfg.intrSrc);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line"> </div>
 <div class="line">Cy_SCB_I2C_Enable(CYBSP_DUT_I2C_MASTER_HW);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Initialize the I2C slave, configure its read/write buffers, hook interrupt. */</span></div>
@@ -164,7 +178,13 @@ Application-side test sequence</h2>
 <div class="line">Cy_SCB_I2C_SlaveConfigWriteBuf(CYBSP_DUT_I2C_SLAVE_HW, i2cSlaveWriteBuffer,</div>
 <div class="line">                               <a class="code hl_define" href="group__group__i2c__macros.html#gaebdc7d8ca8e25ed8efc90bb88ef7ef5b">PACKET_SIZE</a>, &amp;i2cSlaveContext);</div>
 <div class="line">(void)Cy_SysInt_Init(&amp;slaveIrqCfg, &amp;I2C_Slave_Isr);</div>
+<div class="line"> </div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">NVIC_EnableIRQ((IRQn_Type)NvicMux4_IRQn);</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">NVIC_EnableIRQ((IRQn_Type)slaveIrqCfg.intrSrc);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line"> </div>
 <div class="line">Cy_SCB_I2C_Enable(CYBSP_DUT_I2C_SLAVE_HW);</div>
 <div class="line"> </div>
 <div class="line">__enable_irq();</div>
@@ -196,10 +216,10 @@ Application-side test sequence</h2>
 <div class="ttc" id="agroup__group__stl__status_html_gab6d6cd34a6d13569d04fe1a3c999a24e"><div class="ttname"><a href="group__group__stl__status.html#gab6d6cd34a6d13569d04fe1a3c999a24e">PASS_COMPLETE_STATUS</a></div><div class="ttdeci">#define PASS_COMPLETE_STATUS</div><div class="ttdoc">Multi-call self-test: the test completed and the final result is available.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:165</div></div>
 <div class="ttc" id="agroup__group__stl__status_html_gadc3a54eab88ff012fd5469e09afce4d7"><div class="ttname"><a href="group__group__stl__status.html#gadc3a54eab88ff012fd5469e09afce4d7">PASS_STILL_TESTING_STATUS</a></div><div class="ttdeci">#define PASS_STILL_TESTING_STATUS</div><div class="ttdoc">Multi-call self-test (Flash, Clock, Configuration Registers, I2C, UART, SPI): the test is still runni...</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:163</div></div>
 <div class="ttc" id="agroup__group__stl__status_html_gaf5d0a0130e8b0fc1fe309e6d8b308249"><div class="ttname"><a href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a></div><div class="ttdeci">#define ERROR_STATUS</div><div class="ttdoc">Test failed or a generic error occurred.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:95</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md47"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md62"></a>
 SPI SCB test</h1>
 <p>The SPI SCB self-test writes a byte and expects to read the same byte back over an internal loopback, stepping through all values from <span class="tt">0x00</span> to <span class="tt">0xFF</span>. A mismatch, a transmit-FIFO that never empties, or a receive-FIFO that stays empty is reported as an error.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md48"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md63"></a>
 Configuration</h2>
 <ul>
 <li>Configure one SPI SCB instance in master mode, so it generates the clock and slave-select. Give it an alias of your choice; the application code must reference the same name. This guide uses <span class="tt">CYBSP_DUT_SPI</span> as an example.</li>
@@ -207,7 +227,7 @@ Configuration</h2>
 <li>Choose a bit rate high enough that one byte transfers within the self-test guard time (<span class="tt">SPI_TXRX_DATA_TIME</span> in <span class="tt">SelfTest_SPI_SCB.h</span>); otherwise the test reports a timeout.</li>
 </ul>
 <p>Do not run other SPI traffic on the same instance while the self-test executes: it clears the RX and TX FIFOs and temporarily masks the SPI interrupts for each byte.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md49"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md64"></a>
 Smart I/O routing pattern</h2>
 <p>One possible configuration is:</p>
 <ul>
@@ -228,7 +248,7 @@ Smart I/O routing pattern</h2>
 <li>LUT3 (MISO pass-through): <span class="tt">TR0 = TR1 = TR2 = Chip 2</span>, Combinational LUT mode (<span class="tt">COMB</span> / <span class="tt">CY_SMARTIO_LUTOPC_COMB</span>), value <span class="tt">0x80</span></li>
 </ul>
 <p>On other PSOC™ Control C3 boards, or when you choose a different SPI SCB or Smart I/O block, the chip and I/O indices can change. Reuse the same routing pattern and LUT values, but do not assume the same channel numbers.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md50"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md65"></a>
 Application resources and interrupt handler</h2>
 <p>Declare this application-scope SPI context and interrupt handler before the application initialization or test function:</p>
 <div class="fragment"><div class="line"><span class="comment">/* SPI context and interrupt handler for the instance under test. */</span></div>
@@ -238,14 +258,18 @@ Application resources and interrupt handler</h2>
 <div class="line">{</div>
 <div class="line">    Cy_SCB_SPI_Interrupt(CYBSP_DUT_SPI_HW, &amp;spiContext);</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md51"></a>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md66"></a>
 Application-side test sequence</h2>
 <p>The example initializes the SPI master, activates the Smart I/O loopback, and then calls <span class="tt"><a class="el" href="group__group__spi__functions.html#gac8aeb4e0d88fb0a5d1e1e51a8d63170e" title="This function tests an internal loopback of SPI (transmitted byte must be equal to received).">SelfTest_SPI_SCB()</a></span> repeatedly until it reports completion:</p>
 <div class="fragment"><div class="line">uint8_t status = <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">const</span> cy_stc_sysint_t spiIrqCfg =</div>
 <div class="line">{</div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">    .intrSrc      = (IRQn_Type)((NvicMux3_IRQn &lt;&lt; 16) | CYBSP_DUT_SPI_IRQ),</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">    .intrSrc      = CYBSP_DUT_SPI_IRQ,</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    .intrPriority = 0U</div>
 <div class="line">};</div>
 <div class="line"> </div>
@@ -259,7 +283,13 @@ Application-side test sequence</h2>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Hook the SPI interrupt to the PDL handler and enable the block. */</span></div>
 <div class="line">(void)Cy_SysInt_Init(&amp;spiIrqCfg, &amp;SPI_Isr);</div>
+<div class="line"> </div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">NVIC_EnableIRQ((IRQn_Type)spiIrqCfg.intrSrc);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line"> </div>
 <div class="line">Cy_SCB_SPI_Enable(CYBSP_DUT_SPI_HW);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Route MOSI back to MISO through Smart I/O to form the internal loopback.</span></div>
@@ -300,10 +330,10 @@ Application-side test sequence</h2>
 <div class="line">    }</div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__spi__functions_html_gac8aeb4e0d88fb0a5d1e1e51a8d63170e"><div class="ttname"><a href="group__group__spi__functions.html#gac8aeb4e0d88fb0a5d1e1e51a8d63170e">SelfTest_SPI_SCB</a></div><div class="ttdeci">uint8_t SelfTest_SPI_SCB(CySCB_Type *base)</div><div class="ttdoc">This function tests an internal loopback of SPI (transmitted byte must be equal to received).</div><div class="ttdef"><b>Definition</b> SelfTest_SPI_SCB.c:140</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md52"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md67"></a>
 UART SCB test</h1>
 <p>Devices that have Smart I/O can use it for the UART self-test by connecting TX and RX through the same Smart I/O block.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md53"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md68"></a>
 Smart I/O routing pattern</h2>
 <p>One possible configuration is:</p>
 <ul>
@@ -327,7 +357,7 @@ Smart I/O routing pattern</h2>
 <li>LUT3: <span class="tt">TR0 = TR1 = TR2 = Chip 3</span>, combinational LUT mode (<span class="tt">COMB</span> / <span class="tt">CY_SMARTIO_LUTOPC_COMB</span>), value <span class="tt">0xFF</span></li>
 </ul>
 <p>On other PSOC™ Control C3 boards, or when you choose a different UART SCB or Smart I/O block, the chip and I/O indices can change. Reuse the same routing pattern and LUT values, but do not assume the same channel numbers.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md54"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md69"></a>
 Application-side enable sequence</h2>
 <p>Run this code to enable loopback before the UART self-test starts:</p>
 <div class="fragment"><div class="line">uint8_t status = <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
@@ -383,10 +413,10 @@ Application-side enable sequence</h2>
 <div class="line">    }</div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__uart__functions_html_ga5f439856934a8fb2433d96f1310a088f"><div class="ttname"><a href="group__group__uart__functions.html#ga5f439856934a8fb2433d96f1310a088f">SelfTest_UART_SCB</a></div><div class="ttdeci">uint8_t SelfTest_UART_SCB(CySCB_Type *base)</div><div class="ttdoc">This function tests a loopback of UART (transmitted byte must be equal to received).</div><div class="ttdef"><b>Definition</b> SelfTest_UART_SCB.c:166</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md55"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md70"></a>
 UART data transfer tests</h1>
 <p>The UART transport helper APIs validate framed message exchange between a UART master and UART slave path.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md56"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md71"></a>
 Configuration</h2>
 <p>In the Device Configurator, enable three peripherals:</p>
 <ul>
@@ -397,7 +427,7 @@ Configuration</h2>
 <p>Wire the two UART instances together externally: connect master TX to slave RX, and slave TX to master RX.</p>
 <p>The slave address passed to <span class="tt"><a class="el" href="group__group__uart__data__tsf__functions__slave.html#gad917eb4cef3fda2351ac65e10d6082dd" title="Initializes the UART slave protocol unit.">UartMesSlave_Init()</a></span> must match the address passed to <span class="tt"><a class="el" href="group__group__uart__data__tsf__functions__master.html#ga137a3f98d1c5d0712697642486fa38c4" title="Starts the background process of the packet&#39;s transmission.">UartMesMaster_DataProc()</a></span>. The example uses address <span class="tt">2</span>.</p>
 <p>Do not share either UART instance with other application traffic while the test runs: the protocol takes full ownership of the TX/RX FIFOs and interrupt masks for the duration of the exchange.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md57"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md72"></a>
 Application-side test sequence</h2>
 <p>The example installs the three interrupt handlers, initialises the guard timer and both UART instances, and then polls master and slave states until the exchange completes:</p>
 <div class="fragment"><div class="line"><span class="comment">/* Register interrupt handlers required by the master/slave message protocol.</span></div>
@@ -406,26 +436,45 @@ Application-side test sequence</h2>
 <div class="line"><span class="comment"> * (UartMesSlave_Msg_ISR). */</span></div>
 <div class="line"><span class="keyword">const</span> cy_stc_sysint_t timerIntrCfg =</div>
 <div class="line">{</div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">    .intrSrc      = (IRQn_Type)((NvicMux3_IRQn &lt;&lt; 16) | CYBSP_TIMER_UART_MASTER_IRQ),</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">    .intrSrc      = CYBSP_TIMER_UART_MASTER_IRQ,</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    .intrPriority = 3UL,</div>
 <div class="line">};</div>
 <div class="line"><span class="keyword">const</span> cy_stc_sysint_t masterIntrCfg =</div>
 <div class="line">{</div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">    .intrSrc      = (IRQn_Type)((NvicMux4_IRQn &lt;&lt; 16) | CYBSP_DUT_UART_MASTER_IRQ),</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">    .intrSrc      = CYBSP_DUT_UART_MASTER_IRQ,</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    .intrPriority = 3UL,</div>
 <div class="line">};</div>
 <div class="line"><span class="keyword">const</span> cy_stc_sysint_t slaveIntrCfg =</div>
 <div class="line">{</div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">    .intrSrc      = (IRQn_Type)((NvicMux5_IRQn &lt;&lt; 16) | CYBSP_DUT_UART_SLAVE_IRQ),</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">    .intrSrc      = CYBSP_DUT_UART_SLAVE_IRQ,</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    .intrPriority = 3UL,</div>
 <div class="line">};</div>
 <div class="line"> </div>
 <div class="line">Cy_SysInt_Init(&amp;timerIntrCfg, <a class="code hl_function" href="group__group__uart__data__tsf__functions__master.html#gaf8d102cf05c8cf9705cbbe645ffbbcc7">UartMesMaster_Timeout_ISR</a>);</div>
 <div class="line">Cy_SysInt_Init(&amp;masterIntrCfg, <a class="code hl_function" href="group__group__uart__data__tsf__functions__master.html#ga263e9b5eef2234c47d61a2a74d2244e6">UartMesMaster_Msg_ISR</a>);</div>
 <div class="line">Cy_SysInt_Init(&amp;slaveIntrCfg, <a class="code hl_function" href="group__group__uart__data__tsf__functions__slave.html#ga1da52f72b80233fb01a5f4c6c4db27e5">UartMesSlave_Msg_ISR</a>);</div>
+<div class="line"> </div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);</div>
+<div class="line">NVIC_EnableIRQ((IRQn_Type)NvicMux4_IRQn);</div>
+<div class="line">NVIC_EnableIRQ((IRQn_Type)NvicMux5_IRQn);</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">NVIC_EnableIRQ((IRQn_Type)CYBSP_TIMER_UART_MASTER_IRQ);</div>
 <div class="line">NVIC_EnableIRQ((IRQn_Type)CYBSP_DUT_UART_MASTER_IRQ);</div>
 <div class="line">NVIC_EnableIRQ((IRQn_Type)CYBSP_DUT_UART_SLAVE_IRQ);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"> </div>
 <div class="line">Cy_TCPWM_Counter_Init(CYBSP_TIMER_UART_MASTER_HW, CYBSP_TIMER_UART_MASTER_NUM,</div>
 <div class="line">                      &amp;CYBSP_TIMER_UART_MASTER_config);</div>
@@ -475,9 +524,16 @@ Application-side test sequence</h2>
 <div class="line">    <span class="comment">/* Handle UART data transfer self-test failure */</span></div>
 <div class="line">}</div>
 <div class="line"> </div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">NVIC_DisableIRQ((IRQn_Type)NvicMux3_IRQn);</div>
+<div class="line">NVIC_DisableIRQ((IRQn_Type)NvicMux4_IRQn);</div>
+<div class="line">NVIC_DisableIRQ((IRQn_Type)NvicMux5_IRQn);</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">NVIC_DisableIRQ((IRQn_Type)CYBSP_TIMER_UART_MASTER_IRQ);</div>
 <div class="line">NVIC_DisableIRQ((IRQn_Type)CYBSP_DUT_UART_MASTER_IRQ);</div>
 <div class="line">NVIC_DisableIRQ((IRQn_Type)CYBSP_DUT_UART_SLAVE_IRQ);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line"> </div>
 <div class="line">Cy_TCPWM_Counter_Disable(CYBSP_TIMER_UART_MASTER_HW, CYBSP_TIMER_UART_MASTER_NUM);</div>
 <div class="line">Cy_SCB_UART_Disable(CYBSP_DUT_UART_MASTER_HW, NULL);</div>
 <div class="line">Cy_SCB_UART_DeInit(CYBSP_DUT_UART_MASTER_HW);</div>
@@ -498,10 +554,10 @@ Application-side test sequence</h2>
 <div class="ttc" id="agroup__group__uart__data__tsf__functions__slave_html_gaab602720fa88b2e04674c788a414eadb"><div class="ttname"><a href="group__group__uart__data__tsf__functions__slave.html#gaab602720fa88b2e04674c788a414eadb">UartMesSlave_GetDataSize</a></div><div class="ttdeci">uint8_t UartMesSlave_GetDataSize(void)</div><div class="ttdoc">Returns the received data size.</div><div class="ttdef"><b>Definition</b> SelfTest_UART_slave_message.c:674</div></div>
 <div class="ttc" id="agroup__group__uart__data__tsf__functions__slave_html_gad917eb4cef3fda2351ac65e10d6082dd"><div class="ttname"><a href="group__group__uart__data__tsf__functions__slave.html#gad917eb4cef3fda2351ac65e10d6082dd">UartMesSlave_Init</a></div><div class="ttdeci">void UartMesSlave_Init(CySCB_Type *uart_base, uint8_t address)</div><div class="ttdoc">Initializes the UART slave protocol unit.</div><div class="ttdef"><b>Definition</b> SelfTest_UART_slave_message.c:575</div></div>
 <div class="ttc" id="agroup__group__uart__data__tsf__functions__slave_html_gaf846328bfc17388be6b51f4d3b1b2435"><div class="ttname"><a href="group__group__uart__data__tsf__functions__slave.html#gaf846328bfc17388be6b51f4d3b1b2435">UartMesSlave_Respond</a></div><div class="ttdeci">uint8_t UartMesSlave_Respond(uint8_t *txd, uint8_t tlen)</div><div class="ttdoc">Starts the background sending of the respond.</div><div class="ttdef"><b>Definition</b> SelfTest_UART_slave_message.c:704</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md58"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md73"></a>
 CAN FD test</h1>
 <p>The CAN FD self-test runs the channel in internal loopback. It transmits one frame with a rejected message ID and one frame with an accepted message ID, then confirms that only the accepted frame reaches the receive FIFO. The call returns <span class="tt">OK_STATUS</span> (0) on success and <span class="tt">ERROR_STATUS</span> (1) on failure.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md59"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md74"></a>
 Configuration</h2>
 <ul>
 <li>Enable one CAN FD channel. Give it an alias of your choice; the application code must reference the same name. This guide uses <span class="tt">CANFD</span> as an example. The application passes the channel base, channel number, configuration structure, and a context structure to the self-test.</li>
@@ -509,7 +565,7 @@ Configuration</h2>
 <li>The self-test uses internal loopback test mode (<span class="tt">CY_CANFD_TEST_MODE_INTERNAL_LOOP_BACK</span>), so it needs no transceiver or external bus. External test mode also drives the external CAN FD pins.</li>
 </ul>
 <p>Do not call the self-test while the channel is carrying application bus traffic: it temporarily changes the global filter and the receive callback for the duration of the test and then restores them. The call blocks for about two seconds while it waits for the loopback frames.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md60"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md75"></a>
 Application resources and interrupt handler</h2>
 <p>Declare this application-scope CAN FD channel constant, context, and interrupt handler before the application initialization or test function:</p>
 <div class="fragment"><div class="line"><span class="comment">/* CAN FD channel index that matches the configured instance. */</span></div>
@@ -522,14 +578,18 @@ Application resources and interrupt handler</h2>
 <div class="line">{</div>
 <div class="line">    Cy_CANFD_IrqHandler(CANFD_HW, STL_CANFD_CHANNEL, &amp;canfdContext);</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md61"></a>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md76"></a>
 Application-side test sequence</h2>
 <p>The example enables the channel Message RAM, initializes the channel, installs the interrupt handler, and then calls <span class="tt"><a class="el" href="group__group__canfd__functions.html#ga258021a0af1287a0cb357844a7e6db91" title="This function configure the CANFD channel in an internal loopback and then it is configure to accept ...">SelfTest_CANFD()</a></span> once in internal-loopback mode:</p>
 <div class="fragment"><div class="line">uint8_t status = <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">const</span> cy_stc_sysint_t canfdIrqCfg =</div>
 <div class="line">{</div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">    .intrSrc      = (IRQn_Type)((NvicMux3_IRQn &lt;&lt; 16) | canfd_0_interrupts0_0_IRQn),</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">    .intrSrc      = canfd_0_interrupts0_0_IRQn,</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    .intrPriority = 2U</div>
 <div class="line">};</div>
 <div class="line"> </div>
@@ -544,7 +604,12 @@ Application-side test sequence</h2>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Hook the CAN FD interrupt to the PDL handler and enable it. */</span></div>
 <div class="line">(void)Cy_SysInt_Init(&amp;canfdIrqCfg, &amp;CANFD_Isr);</div>
+<div class="line"> </div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">NVIC_EnableIRQ((IRQn_Type)canfdIrqCfg.intrSrc);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"> </div>
 <div class="line">__enable_irq();</div>
 <div class="line"> </div>

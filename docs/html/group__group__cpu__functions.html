@@ -99,6 +99,8 @@ Functions</h2></td></tr>
 <tr class="memdesc:ga34d7d4b4a5f70eeadfb5ae1732d3f2d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs the test of the PC register.  <br /></td></tr>
 <tr class="memitem:gaf9794ed35baff6feb7f1c8cffee33a21" id="r_gaf9794ed35baff6feb7f1c8cffee33a21"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gaf9794ed35baff6feb7f1c8cffee33a21">SelfTest_CPU_Registers</a> (void)</td></tr>
 <tr class="memdesc:gaf9794ed35baff6feb7f1c8cffee33a21"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function performs the checkerboard test for all CPU registers except the PC register.  <br /></td></tr>
+<tr class="memitem:ga8b7cea87ddf73865b6f513d65186ecd2" id="r_ga8b7cea87ddf73865b6f513d65186ecd2"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga8b7cea87ddf73865b6f513d65186ecd2">SelfTest_CPU_Registers_Fast</a> (uint8_t *lastTestedStep)</td></tr>
+<tr class="memdesc:ga8b7cea87ddf73865b6f513d65186ecd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks one register per call (SP, R8-R12, LR, R0-R7), using both checkerboard patterns.  <br /></td></tr>
 <tr class="memitem:ga55418c75ccf2833d23c15e1b4f730b57" id="r_ga55418c75ccf2833d23c15e1b4f730b57"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga55418c75ccf2833d23c15e1b4f730b57">SelfTest_PROGRAM_FLOW</a> (void)</td></tr>
 <tr class="memdesc:ga55418c75ccf2833d23c15e1b4f730b57"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function tests the program flow.  <br /></td></tr>
 </table>
@@ -145,6 +147,38 @@ Functions</h2></td></tr>
 <p>This function performs the checkerboard test for all CPU registers except the PC register. </p>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Test passed <br  />
  <a class="el" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a> (1) - Test failed <br  />
+ </dd></dl>
+
+</div>
+</div>
+<a id="ga8b7cea87ddf73865b6f513d65186ecd2" name="ga8b7cea87ddf73865b6f513d65186ecd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8b7cea87ddf73865b6f513d65186ecd2">&#9670;&#160;</a></span>SelfTest_CPU_Registers_Fast()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t SelfTest_CPU_Registers_Fast </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *</td>          <td class="paramname"><span class="paramname"><em>lastTestedStep</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks one register per call (SP, R8-R12, LR, R0-R7), using both checkerboard patterns. </p>
+<p>It then checks PRIMASK and CONTROL.SPSEL; with DSP, APSR is last. Initialize *lastTestedStep to 0xFFu before the first call. Each phase stores its step (0-17 with DSP, 0-16 otherwise) on PASS or FAIL. After a FAIL, stop testing and enter a safe state; another call would advance to the next step. NULL pointers and invalid step values return FAIL without changing the state. The PRIMASK test briefly enables maskable interrupts. Supported by GCC_ARM, ARM and IAR. Each phase's unique success signature is checked before reporting PASS. For targets whose linker copies .cy_ramfunc to RAM, define STL_CPU_FAST_RUN_FROM_RAM in the assembler build to run this test from RAM. For a target whose linker copies .cy_itcm to ITCM, define STL_CPU_FAST_RUN_FROM_ITCM instead. These options are mutually exclusive.</p>
+<dl class="section note"><dt>Note</dt><dd>Call this function only from privileged Thread mode. In unprivileged Thread mode, the PRIMASK step fails; in Handler mode, the CONTROL step fails. Both return <a class="el" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a>, the same value as a detected register fault.</dd>
+<dd>
+The CONTROL step sets CONTROL.SPSEL = 1 for a short time, so the process stack pointer (PSP) becomes the active stack pointer. Before the first call, set PSP (for example, with __set_PSP()) to the top of a writable, 8-byte aligned RAM area that the application doesn't use for other data. If PSP is 0, the CONTROL step returns <a class="el" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a>. A non-zero PSP isn't checked further. The test itself doesn't write to this area, but an NMI or HardFault in this window stacks its exception frame below PSP: 32 bytes, or 104 bytes with an active FP context. On Armv8-M Mainline cores, PSPLIM must also allow this frame. The test doesn't change PSP or PSPLIM.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">lastTestedStep</td><td>Pointer to the caller-owned last attempted step. Must refer to writable storage and initially contain 0xFFu.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> (0) - Current register passed <br  />
+ <a class="el" href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a> (1) - Test failed or invalid step <br  />
  </dd></dl>
 
 </div>

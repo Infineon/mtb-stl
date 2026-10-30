@@ -255,7 +255,13 @@ void SelfTest_IO_SetPinMask(const uint8_t* pinMaskArr);
 /** \cond INTERNAL */
 
 #elif (defined(CY_DEVICE_SERIES_XMC7100) || defined(CY_DEVICE_SERIES_XMC7200))
-    #define DELAY_DRIVE_MODE_SETUP          (500u)
+
+/*
+ * Estimate with a 100 kOhm pull-up/pull-down and 20 pF pin/board capacitance:
+ * Transition time (10% -> 90% threshold): 2.2RC = 4.4 us, or about
+ * 1540 cycles at 350 MHz. Use 2000 cycles for margin.
+ */
+    #define DELAY_DRIVE_MODE_SETUP          (2000u * CY_SYSLIB_DELAY_CALIBRATION_FACTOR)
 
 #elif (defined(CY_DEVICE_SERIES_PSC3M3) || defined(CY_DEVICE_SERIES_PSC3M5) || defined(CY_DEVICE_SERIES_PSC3P2) || \
     defined(CY_DEVICE_SERIES_PSC3P5))

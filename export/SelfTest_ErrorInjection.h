@@ -5,6 +5,12 @@
 *  This file provides defines to force artificial errors and to
 *  provoke detection of defects by self tests.
 *
+* Note:
+*  After changing a define used by an assembly test (core register tests,
+*  SRAM March stack-free), clean the project and rebuild it. A build may not
+*  rebuild assembly files when a header changes, so the change would not get
+*  into the build.
+*
 *******************************************************************************
 * (c) 2023-2026, Infineon Technologies AG, or an affiliate of Infineon
 * Technologies AG. All rights reserved.
@@ -43,6 +49,13 @@
 #define ERROR_IN_COMPARATOR                                 0u
 #define ERROR_IN_CLOCK                                      0u
 #define ERROR_IN_PROGRAM_COUNTER                            0u
+#define ERROR_IN_CONTROL_REGISTER                           0u  /* CONTROL read-back is corrupted: the test returns
+                                                                   ERROR_STATUS, CONTROL and stacks are restored */
+#define ERROR_IN_CONTROL_RESTORE                            0u  /* CONTROL restore check is corrupted: the test never
+                                                                   returns, stays in a safe-state loop (needs WDT) */
+#define ERROR_IN_APSR_REGISTER                              0u
+#define ERROR_IN_PRIMASK_REGISTER                           0u  /* PRIMASK PM is forced to 1 after the PM = 0 write: the
+                                                                   test returns ERROR_STATUS, PRIMASK is restored */
 #define ERROR_IN_PROGRAM_FLOW                               0u
 #define ERROR_IN_FLASH                                      0u
 #define ERROR_IN_INTERRUPT_HANDLING                         0u
@@ -86,6 +99,7 @@
 #define ERROR_IN_CLB_DICO_IL                                0u
 #define ERROR_IN_CLB_DICO_LIMIT                             0u
 #define ERROR_IN_CLB_MACO_SEQ                               0u
+#define ERROR_IN_CSV                                        0u
 
 #define ERROR_IN_IPC_PPCA_DATA                              0u  /* Flip a bit in DATA read-back to simulate register
                                                                    corruption     */

@@ -93,6 +93,18 @@ $(function(){initNavTree('group__group__clock__macros.html','',''); });
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">General Description</h2>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-groups" class="groupheader"><a id="groups" name="groups"></a>
+API Reference</h2></td></tr>
+<tr class="memitem:group_5Fclock_5Fcsv" id="r_group_5Fclock_5Fcsv"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__clock__csv.html">CSV Clock Supervisor</a></td></tr>
+<tr class="memdesc:group__group__clock__csv"><td class="mdescLeft">&#160;</td><td class="mdescRight">Functional self-test for the CLK_HF CSV (Clock Supervisor) comparators. <br /></td></tr>
+<tr class="memitem:group_5Fclock_5Ffunctions" id="r_group_5Fclock_5Ffunctions"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__clock__functions.html">Functions</a></td></tr>
+<tr class="memdesc:group__group__clock__functions"><td class="mdescLeft">&#160;</td><td class="mdescRight"><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:stl_5Fclock_5Fcsv_5Fentry_5Ft_5Fstructstl_5F_5Fclock_5F_5Fcsv_5F_5Fentry_5F_5Ft" id="r_stl_5Fclock_5Fcsv_5Fentry_5Ft_5Fstructstl_5F_5Fclock_5F_5Fcsv_5F_5Fentry_5F_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#structstl__clock__csv__entry__t">stl_clock_csv_entry_t</a></td></tr>
+<tr class="memdesc:structstl__clock__csv__entry__t"><td class="mdescLeft">&#160;</td><td class="mdescRight">CSV self-test entry.  <a href="#structstl__clock__csv__entry__t">More...</a><br /></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:ga8b2f42c848992bf7901a88487f907e8e" id="r_ga8b2f42c848992bf7901a88487f907e8e"><td class="memItemLeft" align="right" valign="top"><a id="ga8b2f42c848992bf7901a88487f907e8e" name="ga8b2f42c848992bf7901a88487f907e8e"></a>
@@ -108,6 +120,49 @@ Macros</h2></td></tr>
 <tr class="memitem:ga0cec84360b672d830b9f06c69f2ebcaa" id="r_ga0cec84360b672d830b9f06c69f2ebcaa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga0cec84360b672d830b9f06c69f2ebcaa">CLOCK_TEST_TIME_TIMER_PERIOD</a>&#160;&#160;&#160;    (((CY_CFG_SYSCLK_IMO_FREQ_HZ/(1000000uL)) * (<a class="el" href="#gacc19d88ce54382f40e18df64baf2b379">CLOCK_TEST_TIME</a>)) / CLOCK_TEST_TIMER_CLK_DIV)</td></tr>
 <tr class="memdesc:ga0cec84360b672d830b9f06c69f2ebcaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of timer/source-clock cycles corresponding to CLOCK_TEST_TIME.  <br /></td></tr>
 </table>
+<hr/><h2 id="header-inline_5Fclasses" class="groupheader">Data Structure Documentation</h2>
+<a name="structstl__clock__csv__entry__t" id="structstl__clock__csv__entry__t"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#structstl__clock__csv__entry__t">&#9670;&#160;</a></span>stl_clock_csv_entry_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct stl_clock_csv_entry_t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="3">Data Fields</th></tr>
+<tr><td class="fieldtype">
+<a id="a2085debc7dc6abf3d82735e183210da0" name="a2085debc7dc6abf3d82735e183210da0"></a>uint32_t</td>
+<td class="fieldname">
+clkHf</td>
+<td class="fielddoc">
+CLK_HF index (1..N; CLK_HF0 unsupported since it requires RESET fault action). </td></tr>
+<tr><td class="fieldtype">
+<a id="a38cc9981be4cb8744c889d947656a31f" name="a38cc9981be4cb8744c889d947656a31f"></a>cy_en_clkhf_csv_ref_clk_t</td>
+<td class="fieldname">
+refClk</td>
+<td class="fielddoc">
+CSV reference clock. <p>Written by the test to SRSS_CSV_REF_SEL, which is shared by all CLK_HF CSVs. </p>
+</td></tr>
+<tr><td class="fieldtype">
+<a id="ac19f4738e037f93c3f22b1cf4a3144fb" name="ac19f4738e037f93c3f22b1cf4a3144fb"></a>FAULT_STRUCT_Type *</td>
+<td class="fieldname">
+faultStruct</td>
+<td class="fielddoc">
+App's fault structure receiving CY_SYSFAULT_SRSS_CSV. </td></tr>
+<tr><td class="fieldtype">
+<a id="ace399d6d18ddd4682dfa68219e0b8654" name="ace399d6d18ddd4682dfa68219e0b8654"></a>IRQn_Type</td>
+<td class="fieldname">
+nvicMux</td>
+<td class="fielddoc">
+NvicMuxN_IRQn the app routed the fault-struct interrupt to. </td></tr>
+</table>
+
+</div>
+</div>
 <a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
 <a id="gaf36e75cbcb2bdfbc8d19ce2ddd3b68cb" name="gaf36e75cbcb2bdfbc8d19ce2ddd3b68cb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaf36e75cbcb2bdfbc8d19ce2ddd3b68cb">&#9670;&#160;</a></span>CLOCK_TICKS_LO</h2>

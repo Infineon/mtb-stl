@@ -93,7 +93,7 @@ $(function(){initNavTree('stl_usage_clock_and_timing.html','',''); });
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_output_2libs_2mtb-stl_2guides_2clock-and-timing-tests"></a></p>
 <p>This guide covers clock-frequency verification, timer-based interrupt checks, timer/counter validation, and PWM-oriented self-tests.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md38"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md52"></a>
 Interrupt test</h1>
 <p>The interrupt self-test verifies that a timer-driven interrupt source can trigger and be observed by the corresponding interrupt-service path. Use it to confirm that the NVIC routing, interrupt enable, and terminal-count event of a dedicated timer are working end to end.</p>
 <p>Configure the interrupt source in the Device Configurator:</p>
@@ -117,7 +117,11 @@ Interrupt test</h1>
 <div class="line"><span class="comment"> * be routed to the STL handler SelfTest_Interrupt_ISR_TIMER. */</span></div>
 <div class="line">cy_stc_sysint_t intrCfg =</div>
 <div class="line">{</div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">    .intrSrc      = (IRQn_Type)((NvicMux3_IRQn &lt;&lt; 16) | CYBSP_TIMER_INTR_TEST_IRQ),</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">    .intrSrc      = CYBSP_TIMER_INTR_TEST_IRQ,</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    .intrPriority = 3UL</div>
 <div class="line">};</div>
 <div class="line"> </div>
@@ -126,10 +130,21 @@ Interrupt test</h1>
 <div class="line">Cy_SysInt_Init(&amp;intrCfg, &amp;<a class="code hl_function" href="group__group__intr__functions.html#ga92f952a4f65bdb88d9edf4d95ff19e2b">SelfTest_Interrupt_ISR_TIMER</a>);</div>
 <div class="line"> </div>
 <div class="line">__enable_irq();</div>
+<div class="line"> </div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">NVIC_ClearPendingIRQ((IRQn_Type)NvicMux3_IRQn);</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">NVIC_ClearPendingIRQ(intrCfg.intrSrc);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line"> </div>
 <div class="line">Cy_TCPWM_ClearInterrupt(CYBSP_TIMER_INTR_TEST_HW, CYBSP_TIMER_INTR_TEST_NUM,</div>
 <div class="line">                        CY_TCPWM_INT_ON_TC);</div>
+<div class="line"> </div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">NVIC_EnableIRQ(intrCfg.intrSrc);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Enable the timer and its terminal-count interrupt */</span></div>
 <div class="line">Cy_TCPWM_Counter_Enable(CYBSP_TIMER_INTR_TEST_HW, CYBSP_TIMER_INTR_TEST_NUM);</div>
@@ -144,12 +159,17 @@ Interrupt test</h1>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Release the interrupt and counter after the test */</span></div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">NVIC_DisableIRQ((IRQn_Type)NvicMux3_IRQn);</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">NVIC_DisableIRQ((IRQn_Type)CYBSP_TIMER_INTR_TEST_IRQ);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line"> </div>
 <div class="line">Cy_TCPWM_Counter_Disable(CYBSP_TIMER_INTR_TEST_HW, CYBSP_TIMER_INTR_TEST_NUM);</div>
 <div class="ttc" id="agroup__group__intr__functions_html_ga92f952a4f65bdb88d9edf4d95ff19e2b"><div class="ttname"><a href="group__group__intr__functions.html#ga92f952a4f65bdb88d9edf4d95ff19e2b">SelfTest_Interrupt_ISR_TIMER</a></div><div class="ttdeci">void SelfTest_Interrupt_ISR_TIMER(void)</div><div class="ttdoc">Handle Interrupt Service Routine.</div><div class="ttdef"><b>Definition</b> SelfTest_Interrupt.c:55</div></div>
 <div class="ttc" id="agroup__group__intr__functions_html_gad1e23a72fbdb20fb79eecf18773ef5b3"><div class="ttname"><a href="group__group__intr__functions.html#gad1e23a72fbdb20fb79eecf18773ef5b3">SelfTest_Interrupt</a></div><div class="ttdeci">uint8_t SelfTest_Interrupt(TCPWM_Type *base, uint32_t cntNum)</div><div class="ttdoc">This function performs the interrupt execution self test.</div><div class="ttdef"><b>Definition</b> SelfTest_Interrupt.c:82</div></div>
 <div class="ttc" id="agroup__group__stl__status_html_ga1a8b70f2787072be26b2aa39523f09d6"><div class="ttname"><a href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a></div><div class="ttdeci">#define OK_STATUS</div><div class="ttdoc">Test passed / operation completed successfully.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:93</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md39"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md53"></a>
 Clock test</h1>
 <p>The clock test verifies system clock frequency by comparing two independent clocks:</p>
 <ul>
@@ -185,12 +205,27 @@ Clock test</h1>
 <div class="fragment"><div class="line">DEFINES+=STL_CLOCK_SOURCE_HFCLOCK=0u</div>
 </div><!-- fragment --><p>The test returns <span class="tt">PASS_COMPLETE_STATUS</span> when measurement is complete.</p>
 <p>The following is an example of a self-test on the Clock block:</p>
-<div class="fragment"><div class="line"><span class="comment">/* Initialize WDT as reference clock */</span></div>
+<div class="fragment"><div class="line"><span class="comment">/* Initialize the free-running WDT as the clock self-test reference */</span></div>
+<div class="line"><span class="preprocessor">#if (defined(CY_IP_MXS40SRSS) &amp;&amp; (CY_IP_MXS40SRSS_VERSION &gt;= 2))</span></div>
+<div class="line"><span class="comment">/* SRSS v2 (XMC7000/XMC5000): the match/ignore-bits API is replaced by the</span></div>
+<div class="line"><span class="comment"> * upper-limit API. Disable all limit actions so the counter free-runs. */</span></div>
+<div class="line">Cy_WDT_Unlock();</div>
+<div class="line">Cy_WDT_Disable();</div>
+<div class="line">Cy_WDT_ClearInterrupt();</div>
+<div class="line">Cy_WDT_ResetCounter();</div>
+<div class="line">Cy_WDT_SetUpperLimit(0xFFFFU);</div>
+<div class="line">Cy_WDT_SetUpperAction(CY_WDT_LOW_UPPER_LIMIT_ACTION_NONE);</div>
+<div class="line">Cy_WDT_SetLowerAction(CY_WDT_LOW_UPPER_LIMIT_ACTION_NONE);</div>
+<div class="line">Cy_WDT_SetWarnAction(CY_WDT_WARN_ACTION_NONE);</div>
+<div class="line">Cy_WDT_Enable();</div>
+<div class="line">Cy_WDT_Lock();</div>
+<div class="line"><span class="preprocessor">#else </span><span class="comment">/* if (defined(CY_IP_MXS40SRSS) &amp;&amp; (CY_IP_MXS40SRSS_VERSION &gt;= 2)) */</span><span class="preprocessor"></span></div>
 <div class="line">Cy_WDT_Unlock();</div>
 <div class="line">Cy_WDT_SetIgnoreBits(IGNORE_BITS_CLK_TEST);  <span class="comment">/* Use all 16 bits */</span></div>
 <div class="line">Cy_WDT_ClearInterrupt();</div>
 <div class="line">Cy_WDT_Enable();</div>
 <div class="line">Cy_WDT_Lock();</div>
+<div class="line"><span class="preprocessor">#endif </span><span class="comment">/* if (defined(CY_IP_MXS40SRSS) &amp;&amp; (CY_IP_MXS40SRSS_VERSION &gt;= 2)) */</span><span class="preprocessor"></span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Initialize TCPWM timer (configured in Device Configurator as CYBSP_CLOCK_TEST_TIMER)</span></div>
 <div class="line"><span class="comment"> * driven by system/peripheral clock */</span></div>
@@ -201,11 +236,20 @@ Clock test</h1>
 <div class="line"><span class="comment">/* Initialize interrupt for TCPWM */</span></div>
 <div class="line">cy_stc_sysint_t intrCfg =</div>
 <div class="line">{</div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">    .intrSrc      = (IRQn_Type)((NvicMux3_IRQn &lt;&lt; 16) | CYBSP_CLOCK_TEST_TIMER_IRQ),</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">    .intrSrc      = CYBSP_CLOCK_TEST_TIMER_IRQ,</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    .intrPriority = 3UL</div>
 <div class="line">};</div>
 <div class="line">Cy_SysInt_Init(&amp;intrCfg, <a class="code hl_function" href="group__group__clock__functions.html#gadeaf17cdeafa049bd16547d4f769ae0c">SelfTest_Clock_ISR_TIMER</a>);</div>
+<div class="line"> </div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">NVIC_EnableIRQ(intrCfg.intrSrc);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Enable timer and interrupt */</span></div>
 <div class="line">Cy_TCPWM_Counter_Enable(CYBSP_CLOCK_TEST_TIMER_HW, CYBSP_CLOCK_TEST_TIMER_NUM);</div>
@@ -217,11 +261,153 @@ Clock test</h1>
 <div class="line">{</div>
 <div class="line">    <span class="comment">/* Handle clock frequency test failure */</span></div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__group__clock__functions_html_gab7f003a851aa247f4601b9ed02a6e2ad"><div class="ttname"><a href="group__group__clock__functions.html#gab7f003a851aa247f4601b9ed02a6e2ad">SelfTest_Clock</a></div><div class="ttdeci">uint8_t SelfTest_Clock(TCPWM_Type *base, uint32_t cntNum)</div><div class="ttdoc">Performs Clock test and verifies if the measured clock frequency is in the accuracy range.</div><div class="ttdef"><b>Definition</b> SelfTest_Clock.c:100</div></div>
-<div class="ttc" id="agroup__group__clock__functions_html_gadeaf17cdeafa049bd16547d4f769ae0c"><div class="ttname"><a href="group__group__clock__functions.html#gadeaf17cdeafa049bd16547d4f769ae0c">SelfTest_Clock_ISR_TIMER</a></div><div class="ttdeci">void SelfTest_Clock_ISR_TIMER(void)</div><div class="ttdoc">Handle Interrupt Service Routine.</div><div class="ttdef"><b>Definition</b> SelfTest_Clock.c:57</div></div>
+<div class="ttc" id="agroup__group__clock__functions_html_gab7f003a851aa247f4601b9ed02a6e2ad"><div class="ttname"><a href="group__group__clock__functions.html#gab7f003a851aa247f4601b9ed02a6e2ad">SelfTest_Clock</a></div><div class="ttdeci">uint8_t SelfTest_Clock(TCPWM_Type *base, uint32_t cntNum)</div><div class="ttdoc">Performs Clock test and verifies if the measured clock frequency is in the accuracy range.</div><div class="ttdef"><b>Definition</b> SelfTest_Clock.c:117</div></div>
+<div class="ttc" id="agroup__group__clock__functions_html_gadeaf17cdeafa049bd16547d4f769ae0c"><div class="ttname"><a href="group__group__clock__functions.html#gadeaf17cdeafa049bd16547d4f769ae0c">SelfTest_Clock_ISR_TIMER</a></div><div class="ttdeci">void SelfTest_Clock_ISR_TIMER(void)</div><div class="ttdoc">Handle Interrupt Service Routine.</div><div class="ttdef"><b>Definition</b> SelfTest_Clock.c:74</div></div>
 <div class="ttc" id="agroup__group__stl__status_html_gab6d6cd34a6d13569d04fe1a3c999a24e"><div class="ttname"><a href="group__group__stl__status.html#gab6d6cd34a6d13569d04fe1a3c999a24e">PASS_COMPLETE_STATUS</a></div><div class="ttdeci">#define PASS_COMPLETE_STATUS</div><div class="ttdoc">Multi-call self-test: the test completed and the final result is available.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:165</div></div>
 <div class="ttc" id="agroup__group__stl__status_html_gadc3a54eab88ff012fd5469e09afce4d7"><div class="ttname"><a href="group__group__stl__status.html#gadc3a54eab88ff012fd5469e09afce4d7">PASS_STILL_TESTING_STATUS</a></div><div class="ttdeci">#define PASS_STILL_TESTING_STATUS</div><div class="ttdoc">Multi-call self-test (Flash, Clock, Configuration Registers, I2C, UART, SPI): the test is still runni...</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:163</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md40"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md54"></a>
+Clock supervisor (CSV) test</h1>
+<p>The CSV self-test verifies that the hardware clock supervisor (CSV) of a <span class="tt">CLK_HF</span> clock is able to detect a frequency fault and report it all the way to the application's interrupt handler. It is available on devices that provide the <span class="tt">CLK_HF</span> CSV comparators (SRSS version 3 or later with the <span class="tt">SRSS_CSV_HF_CSV_*</span> registers, for example XMC7000). Unlike the clock test above, it does not measure a frequency; it proves that the supervisor and its notification path work, so that the runtime supervision you arm afterwards can be trusted.</p>
+<p>How the test works (<span class="tt"><a class="el" href="group__group__clock__functions.html#gaa9881661fa7aa7999d178c119d65a6d1" title="Summary: Runs the CSV functional self-test for the selected CLK_HF instance: triggers induced CSV fau...">SelfTest_Clock_CSV()</a></span> in <span class="tt">stl/clock/SelfTest_Clock.c</span>):</p>
+<ol type="1">
+<li>It reinitializes the application's fault structure, unmasks <span class="tt">CY_SYSFAULT_SRSS_CSV</span>, and clears any pending status and interrupt.</li>
+<li>It programs an impossible supervision window on the selected <span class="tt">CLK_HF</span> (period of 1 monitored cycle, lower limit 199 and upper limit 201 reference cycles). Any <span class="tt">CLK_HF</span> frequency other than about <span class="tt">refFreq / 200</span> violates this window, so a CSV fault is forced immediately.</li>
+<li>It polls for up to <span class="tt">CSV_TEST_TIMEOUT_US</span> (100 us) for the fault to arrive through the fault structure at <span class="tt"><a class="el" href="group__group__clock__functions.html#ga740f14d91fbfda36ce0e2977c64a7130" title="Summary: ISR handler for SelfTest_Clock_CSV.">SelfTest_Clock_CSV_ISR()</a></span>, which clears the status and interrupt and disables the NVIC mux line.</li>
+<li>It disables CSV, clears the fault-structure interrupt mask and any residual pending edge, and returns.</li>
+</ol>
+<p>The test returns <span class="tt">OK_STATUS</span> when the induced fault is observed from <span class="tt">CY_SYSFAULT_SRSS_CSV</span>, <span class="tt">ERROR_STATUS</span> when it is not observed within the timeout or another fault source is recorded, and <span class="tt">ERROR_BAD_PARAM</span> when the entry is invalid (NULL entry or fault structure, <span class="tt">clkHf</span> equal to 0, a reference clock with 0 Hz frequency, or a window rejected by <span class="tt">Cy_SysClk_ClkHfCsvManualConfigure()</span>).</p>
+<p>Prepare the following before calling the test:</p>
+<ul>
+<li>Choose the supervised <span class="tt">CLK_HF</span> index. <span class="tt">CLK_HF0</span> is not supported because its CSV requires a reset action.</li>
+<li>Choose the CSV reference clock (<span class="tt">refClk</span>). The test writes it to <span class="tt">SRSS_CSV_REF_SEL</span>, which is shared by all <span class="tt">CLK_HF</span> CSVs, so use the same reference clock that you use for runtime supervision. The reference clock must be running; for example, an unconfigured ECO gives a 0 Hz reference and the test returns <span class="tt">ERROR_BAD_PARAM</span>.</li>
+<li>Choose a fault structure and the NVIC mux line it is routed to, and fill <span class="tt"><a class="el" href="group__group__clock__macros.html#structstl__clock__csv__entry__t" title="CSV self-test entry.">stl_clock_csv_entry_t</a></span>.</li>
+<li>Enable global interrupts with <span class="tt">__enable_irq()</span>. The result is detected in the ISR.</li>
+<li>Route the fault-structure interrupt to <span class="tt"><a class="el" href="group__group__clock__functions.html#ga740f14d91fbfda36ce0e2977c64a7130" title="Summary: ISR handler for SelfTest_Clock_CSV.">SelfTest_Clock_CSV_ISR()</a></span> with <span class="tt">Cy_SysInt_Init()</span>, clear the pending state, and enable the NVIC mux line before the call.</li>
+</ul>
+<p>The following settings are fore reference only and must be adapted to your project:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#define APP_CSV_FAULT_STRUCT   (FAULT_STRUCT1)</span></div>
+<div class="line"><span class="preprocessor">#define APP_CSV_FAULT_IRQ      (cpuss_interrupts_fault_1_IRQn)</span></div>
+<div class="line"><span class="preprocessor">#define APP_CSV_NVIC_MUX       (NvicMux3_IRQn)</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Supervised clock. CLK_HF0 is rejected by the STL (reset action required). */</span></div>
+<div class="line"><span class="preprocessor">#define APP_CSV_CLKHF          (3u)</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Percent-scaled accuracy 1..100. 99 gives the widest window and is safe for</span></div>
+<div class="line"><span class="comment"> * bring-up. Tighten it to the CLK_HF plus reference-clock tolerance sum. */</span></div>
+<div class="line"><span class="preprocessor">#define APP_CSV_ACCURACY       (99u)</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Entry supervised by SelfTest_Clock_CSV. refClk must match the reference</span></div>
+<div class="line"><span class="comment"> * clock used for runtime supervision. */</span></div>
+<div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <a class="code hl_struct" href="group__group__clock__macros.html#structstl__clock__csv__entry__t">stl_clock_csv_entry_t</a> app_csv_entry =</div>
+<div class="line">{</div>
+<div class="line">    .clkHf       = APP_CSV_CLKHF,</div>
+<div class="line">    .refClk      = CY_SYSCLK_CLKHF_CSV_REF_IMO,</div>
+<div class="line">    .faultStruct = APP_CSV_FAULT_STRUCT,</div>
+<div class="line">    .nvicMux     = APP_CSV_NVIC_MUX,</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Production CSV window kept armed after the self-test. */</span></div>
+<div class="line"><span class="keyword">static</span> <span class="keyword">const</span> cy_stc_clkhf_csv_hf_config_t app_csv_nominal =</div>
+<div class="line">{</div>
+<div class="line">    .clkHf  = APP_CSV_CLKHF,</div>
+<div class="line">    .refClk = CY_SYSCLK_CLKHF_CSV_REF_IMO,</div>
+<div class="line">};</div>
+<div class="ttc" id="agroup__group__clock__macros_html_structstl__clock__csv__entry__t"><div class="ttname"><a href="group__group__clock__macros.html#structstl__clock__csv__entry__t">stl_clock_csv_entry_t</a></div><div class="ttdoc">CSV self-test entry.</div><div class="ttdef"><b>Definition</b> SelfTest_Clock.h:282</div></div>
+</div><!-- fragment --><p>Route the fault-structure interrupt to the STL handler before running the test:</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> app_install_csv_bist_isr(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> cy_stc_sysint_t irq_cfg =</div>
+<div class="line">    {</div>
+<div class="line">        .intrSrc      = ((APP_CSV_NVIC_MUX &lt;&lt; CY_SYSINT_INTRSRC_MUXIRQ_SHIFT) |</div>
+<div class="line">                         APP_CSV_FAULT_IRQ),</div>
+<div class="line">        .intrPriority = 2UL,</div>
+<div class="line">    };</div>
+<div class="line">    (void)Cy_SysInt_Init(&amp;irq_cfg, &amp;<a class="code hl_function" href="group__group__clock__functions.html#ga740f14d91fbfda36ce0e2977c64a7130">SelfTest_Clock_CSV_ISR</a>);</div>
+<div class="line">    NVIC_ClearPendingIRQ(APP_CSV_NVIC_MUX);</div>
+<div class="line">    NVIC_EnableIRQ(APP_CSV_NVIC_MUX);</div>
+<div class="line">}</div>
+<div class="ttc" id="agroup__group__clock__functions_html_ga740f14d91fbfda36ce0e2977c64a7130"><div class="ttname"><a href="group__group__clock__functions.html#ga740f14d91fbfda36ce0e2977c64a7130">SelfTest_Clock_CSV_ISR</a></div><div class="ttdeci">void SelfTest_Clock_CSV_ISR(void)</div><div class="ttdoc">Summary: ISR handler for SelfTest_Clock_CSV.</div></div>
+</div><!-- fragment --><p>Run the test once at startup, before the application arms operational CSV supervision:</p>
+<div class="fragment"><div class="line">__enable_irq();</div>
+<div class="line"> </div>
+<div class="line">app_install_csv_bist_isr();</div>
+<div class="line"> </div>
+<div class="line">uint8_t status = <a class="code hl_function" href="group__group__clock__functions.html#gaa9881661fa7aa7999d178c119d65a6d1">SelfTest_Clock_CSV</a>(&amp;app_csv_entry);</div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* The comparator or its notification path cannot be trusted: do not arm</span></div>
+<div class="line"><span class="comment">     * a supervisor that just failed its test. Enter the safe state / halt. */</span></div>
+<div class="line">}</div>
+<div class="ttc" id="agroup__group__clock__functions_html_gaa9881661fa7aa7999d178c119d65a6d1"><div class="ttname"><a href="group__group__clock__functions.html#gaa9881661fa7aa7999d178c119d65a6d1">SelfTest_Clock_CSV</a></div><div class="ttdeci">uint8_t SelfTest_Clock_CSV(const stl_clock_csv_entry_t *entry)</div><div class="ttdoc">Summary: Runs the CSV functional self-test for the selected CLK_HF instance: triggers induced CSV fau...</div></div>
+</div><!-- fragment --><p>On <span class="tt">OK_STATUS</span> the test leaves the system in a defined state that the application must take over:</p>
+<ul>
+<li>CSV on the tested <span class="tt">CLK_HF</span> is disabled, and any CSV window you programmed earlier for it was overwritten.</li>
+<li>The fault-structure interrupt mask is cleared and the NVIC mux line is disabled. The fault-structure vector still points at <span class="tt"><a class="el" href="group__group__clock__functions.html#ga740f14d91fbfda36ce0e2977c64a7130" title="Summary: ISR handler for SelfTest_Clock_CSV.">SelfTest_Clock_CSV_ISR()</a></span>.</li>
+<li>Any previous configuration of the fault structure was overwritten.</li>
+</ul>
+<p>Therefore, arm the runtime supervision after the test. Program the nominal window and enable CSV first, then clear the status that can latch while the CSV state machine settles, and only then install the runtime handler and enable the interrupt. Reversing this order can raise a false fault:</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> app_configure_csv_for_runtime(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    Cy_SysClk_ClkHfCsvDisable(APP_CSV_CLKHF);</div>
+<div class="line">    Cy_SysClk_ClkHfCsvAction(APP_CSV_CLKHF, CY_SYSCLK_CLKHF_CSV_ACTION_FAULT);</div>
+<div class="line">    (void)Cy_SysClk_ClkHfCsvConfigure(&amp;app_csv_nominal, APP_CSV_ACCURACY);</div>
+<div class="line">    Cy_SysClk_ClkHfCsvEnable(APP_CSV_CLKHF);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> app_clear_csv_fault_status(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Clear STATUS until no fault source is reported, then clear INTR */</span></div>
+<div class="line">    <span class="keywordflow">for</span> (uint32_t i = 0u; i &lt; 16u; i++)</div>
+<div class="line">    {</div>
+<div class="line">        Cy_SysFault_ClearStatus(APP_CSV_FAULT_STRUCT);</div>
+<div class="line">        <span class="keywordflow">if</span> (Cy_SysFault_GetErrorSource(APP_CSV_FAULT_STRUCT) ==</div>
+<div class="line">            (cy_en_SysFault_source_t)CY_SYSFAULT_NO_FAULT)</div>
+<div class="line">        {</div>
+<div class="line">            <span class="keywordflow">break</span>;</div>
+<div class="line">        }</div>
+<div class="line">    }</div>
+<div class="line">    Cy_SysFault_ClearInterrupt(APP_CSV_FAULT_STRUCT);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> app_install_csv_runtime_isr(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> cy_stc_sysint_t irq_cfg =</div>
+<div class="line">    {</div>
+<div class="line">        .intrSrc      = ((APP_CSV_NVIC_MUX &lt;&lt; CY_SYSINT_INTRSRC_MUXIRQ_SHIFT) |</div>
+<div class="line">                         APP_CSV_FAULT_IRQ),</div>
+<div class="line">        .intrPriority = 2UL,</div>
+<div class="line">    };</div>
+<div class="line">    (void)Cy_SysInt_Init(&amp;irq_cfg, &amp;app_csv_fault_isr);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">/* The self-test cleared the interrupt mask: re-enable INTR propagation,</span></div>
+<div class="line"><span class="comment">     * otherwise a real fault latches STATUS but never raises the IRQ. */</span></div>
+<div class="line">    Cy_SysFault_SetInterruptMask(APP_CSV_FAULT_STRUCT);</div>
+<div class="line">    NVIC_ClearPendingIRQ(APP_CSV_NVIC_MUX);</div>
+<div class="line">    NVIC_EnableIRQ(APP_CSV_NVIC_MUX);</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>Call them in this order after a successful self-test:</p>
+<div class="fragment"><div class="line">app_configure_csv_for_runtime();</div>
+<div class="line">app_clear_csv_fault_status();</div>
+<div class="line">app_install_csv_runtime_isr();</div>
+</div><!-- fragment --><p>The runtime handler <span class="tt">app_csv_fault_isr()</span> is application code. A minimal version stops CSV, clears the fault structure, and records the event:</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">volatile</span> uint32_t app_real_fault_count;</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> app_csv_fault_isr(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    app_real_fault_count++;</div>
+<div class="line"> </div>
+<div class="line">    Cy_SysClk_ClkHfCsvDisable(APP_CSV_CLKHF);</div>
+<div class="line">    app_clear_csv_fault_status();</div>
+<div class="line">    NVIC_ClearPendingIRQ(APP_CSV_NVIC_MUX);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">/* Product-specific reaction goes here */</span></div>
+<div class="line">}</div>
+</div><!-- fragment --><p>Notes on using the test:</p>
+<ul>
+<li>Call <span class="tt"><a class="el" href="group__group__clock__functions.html#gaa9881661fa7aa7999d178c119d65a6d1" title="Summary: Runs the CSV functional self-test for the selected CLK_HF instance: triggers induced CSV fau...">SelfTest_Clock_CSV()</a></span> once at startup, before operational CSV supervision is armed. It blocks for up to <span class="tt">CSV_TEST_TIMEOUT_US</span> and is not reentrant.</li>
+<li>The test reinitializes the provided fault structure and overwrites its configuration. Use a fault structure whose existing configuration you can restore, or reconfigure it after the test (as the runtime arming above does for the CSV source).</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md55"></a>
 Counter/timer test</h1>
 <p>The counter/timer self-test validates a dedicated TCPWM timer/counter instance by confirming that its count advances by the expected number of clock cycles within a fixed measurement window. Use it to detect a stalled, mis-clocked, or non-incrementing timer block.</p>
 <p>Configure the counter in the Device Configurator:</p>
@@ -252,11 +438,16 @@ Counter/timer test</h1>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Release the interrupt and counter after the test */</span></div>
+<div class="line"><span class="preprocessor">#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)</span></div>
+<div class="line">NVIC_DisableIRQ((IRQn_Type)NvicMux3_IRQn);</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">NVIC_DisableIRQ((IRQn_Type)CYBSP_TIMER_COUNTER_TEST_IRQ);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line"> </div>
 <div class="line">Cy_TCPWM_Counter_Disable(CYBSP_TIMER_COUNTER_TEST_HW, CYBSP_TIMER_COUNTER_TEST_NUM);</div>
 <div class="ttc" id="agroup__group__timer__counter__functions_html_ga15c1ef02a5b7f26688931d1ed33e5561"><div class="ttname"><a href="group__group__timer__counter__functions.html#ga15c1ef02a5b7f26688931d1ed33e5561">SelfTest_Counter_Timer</a></div><div class="ttdeci">uint8_t SelfTest_Counter_Timer(void)</div><div class="ttdoc">Performs Timer Counter test by checking that the counter is incrementing.</div></div>
 <div class="ttc" id="agroup__group__timer__counter__functions_html_ga6cb4fc6dcbdeaa12158c841b5f8564b0"><div class="ttname"><a href="group__group__timer__counter__functions.html#ga6cb4fc6dcbdeaa12158c841b5f8564b0">SelfTest_Timer_Counter_init</a></div><div class="ttdeci">void SelfTest_Timer_Counter_init(TCPWM_Type *base, uint32_t cntNum, cy_stc_tcpwm_counter_config_t const *config, IRQn_Type intsrc)</div><div class="ttdoc">Initialize the counter and initialize the timer interrupt for the Self test.</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md41"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md56"></a>
 PWM test</h1>
 <p>The PWM self-test validates that a PWM output actually produces the duty cycle it is programmed to. The library drives a dedicated PWM at a fixed 33% duty cycle with a 1000 us period (<span class="tt">PWM_TIME</span>), samples the output level in a polling loop across about five periods, and passes when the measured off-to-on time ratio is near 2:1. Use it to detect a PWM block that is stuck, mis-clocked, or generating the wrong duty cycle.</p>
 <p>Configure the PWM in the Device Configurator:</p>
@@ -298,7 +489,7 @@ PWM test</h1>
 <div class="ttc" id="agroup__group__pwm__functions_html_gaa75c9b5fed959145e2e8a62ab486db94"><div class="ttname"><a href="group__group__pwm__functions.html#gaa75c9b5fed959145e2e8a62ab486db94">SelfTest_PWM</a></div><div class="ttdeci">uint8_t SelfTest_PWM(GPIO_PRT_Type *pinbase, uint32_t pinNum)</div><div class="ttdoc">This function performs the PWM test and verifies that the duty cycle set is actually achieved in the ...</div></div>
 <div class="ttc" id="agroup__group__pwm__functions_html_gab6be3c63d114912639027896f26fc39b"><div class="ttname"><a href="group__group__pwm__functions.html#gab6be3c63d114912639027896f26fc39b">SelfTest_PWM_DeInit</a></div><div class="ttdeci">void SelfTest_PWM_DeInit(IRQn_Type intr_src)</div><div class="ttdoc">De-initialize the PWM self test, disabling the peripheral and its interrupt.</div></div>
 <div class="ttc" id="agroup__group__stl__status_html_ga6cb4f4c6c11529310bd9bc3f0642a8c2"><div class="ttname"><a href="group__group__stl__status.html#ga6cb4f4c6c11529310bd9bc3f0642a8c2">PWM_INIT_ERROR_STATUS</a></div><div class="ttdeci">#define PWM_INIT_ERROR_STATUS</div><div class="ttdoc">PWM init: initialization failed before the self-test could run.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:98</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md42"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md57"></a>
 PWM GateKill test</h1>
 <p>The PWM GateKill self-test confirms that a PWM counter has actually stopped after its kill (fault) input was asserted. On motor-control and power-conversion designs the kill signal must shut the PWM drivers down quickly; this test gives you a software check that the kill took effect on the counter.</p>
 <p>How the test decides pass/fail (<span class="tt"><a class="el" href="group__group__pwm__gatekill__functions.html#ga9f69214fa6c80a477e74752e05c4c87e" title="The TCPWM base and CntNum is passed to check whether the counter is stopped or not.">SelfTest_PWM_GateKill()</a></span> in <span class="tt">stl/pwm_gatekill/SelfTest_PWM_GateKill.c</span>): it reads the TCPWM counter, waits 10 ms, then reads it again. If the two reads are equal, the counter is not advancing and the test returns <span class="tt">OK_STATUS</span>; if they differ, the counter is still running and it returns <span class="tt">ERROR_STATUS</span>. There are no configurable thresholds and no timeout macro; the only fixed value is the 10 ms delay between the two reads, hardcoded in that source file.</p>

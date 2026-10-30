@@ -40,6 +40,7 @@
 #include "SelfTest_ConfigRegisters.h"
 #include "SelfTest_CRC_calc.h"
 #include "SelfTest_Flash.h"
+#include "SelfTest_eFuse.h"
 #include "SelfTest_RAM.h"
 #include "SelfTest_WDT.h"
 #include "SelfTest_DMAC.h"
@@ -70,6 +71,11 @@
 #include "SelfTest_CPU.h"
 #include "SelfTest_CPU_Regs.h"
 #include "SelfTest_CPU_Instructions.h"
+#include "SelfTest_MPU.h"
+#include "SelfTest_SMPU.h"
+#include "SelfTest_CONTROL.h"
+#include "SelfTest_APSR.h"
+#include "SelfTest_PRIMASK.h"
 #include "SelfTest_Clock.h"
 #include "SelfTest_IO.h"
 #include "SelfTest_SPI_SCB.h"
@@ -78,5 +84,7 @@
 #include "SelfTest_UART_master_message.h"
 #include "SelfTest_UART_slave_message.h"
 #include "SelfTest_CANFD.h"
+#include "SelfTest_ADC_Config.h"
+#include "SelfTest_PPU.h"
 #endif /* if !defined(SELFTEST_H) */
 /* [] END OF FILE */

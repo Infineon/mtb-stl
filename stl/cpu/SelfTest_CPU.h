@@ -129,6 +129,55 @@ uint8_t SelfTest_PC(void);
 uint8_t SelfTest_CPU_Registers(void);
 
 /*******************************************************************************
+* Function Name: SelfTest_CPU_Registers_Fast
+****************************************************************************//**
+*
+*  Checks one register per call (SP, R8-R12, LR, R0-R7), using both checkerboard
+*  patterns. It then checks PRIMASK and CONTROL.SPSEL; with DSP, APSR is last.
+*  Initialize *lastTestedStep to 0xFFu before the first call. Each phase stores
+*  its step (0-17 with DSP, 0-16 otherwise) on PASS or FAIL. After a FAIL, stop
+*  testing and enter a safe state; another call would advance to the next step.
+*  NULL pointers and invalid step values return FAIL without changing the state.
+*  The PRIMASK test briefly enables maskable interrupts.
+*  Supported by GCC_ARM, ARM and IAR.
+*  Each phase's unique success signature is checked before reporting PASS.
+*  For targets whose linker copies .cy_ramfunc to RAM, define
+*  STL_CPU_FAST_RUN_FROM_RAM in the assembler build to run this test from RAM.
+*  For a target whose linker copies .cy_itcm to ITCM, define
+*  STL_CPU_FAST_RUN_FROM_ITCM instead. These options are mutually exclusive.
+*
+* \note
+*  Call this function only from privileged Thread mode. In unprivileged Thread
+*  mode, the PRIMASK step fails; in Handler mode, the CONTROL step fails. Both
+*  return \ref ERROR_STATUS, the same value as a detected register fault.
+*
+* \note
+*  The CONTROL step sets CONTROL.SPSEL = 1 for a short time, so the process stack
+*  pointer (PSP) becomes the active stack pointer. Before the first call, set
+*  PSP (for example, with __set_PSP()) to the top of a writable, 8-byte aligned
+*  RAM area that the application doesn't use for other data.
+*  If PSP is 0, the CONTROL step returns \ref ERROR_STATUS.
+*  A non-zero PSP isn't checked further. The test itself
+*  doesn't write to this area, but an NMI or HardFault in this window stacks its
+*  exception frame below PSP: 32 bytes, or 104 bytes with an active FP context.
+*  On Armv8-M Mainline cores, PSPLIM must also allow this frame. The test
+*  doesn't change PSP or PSPLIM.
+*
+* \param lastTestedStep
+*  Pointer to the caller-owned last attempted step. Must refer to
+*  writable storage and initially contain 0xFFu.
+*
+* \return
+*  \ref OK_STATUS (0) - Current register passed <br>
+*  \ref ERROR_STATUS (1) - Test failed or invalid step <br>
+*
+*******************************************************************************/
+#if defined(CY_DOXYGEN) || defined(__ICCARM__) || defined(__ARMCC_VERSION) || \
+    (defined(__GNUC__) && !defined(__clang__))
+uint8_t SelfTest_CPU_Registers_Fast(uint8_t* lastTestedStep);
+#endif
+
+/*******************************************************************************
 * Function Name: SelfTest_PROGRAM_FLOW
 ****************************************************************************//**
 *

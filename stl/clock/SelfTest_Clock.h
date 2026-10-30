@@ -225,6 +225,163 @@ void SelfTest_Clock_ISR_TIMER(void);
 /** \} group_clock_macros */
 /** \} group_clock */
 
+#if ((defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 3)) && defined(SRSS_CSV_HF_CSV_REF_CTL)) || \
+    defined(CY_DOXYGEN)
+
+/**
+ * \addtogroup group_clock_macros
+ * \{
+ */
+
+/** \defgroup group_clock_csv CSV Clock Supervisor
+ * \{
+ * Functional self-test for the CLK_HF CSV (Clock Supervisor) comparators.
+ *
+ * The CSV hardware monitors a target CLK_HF against a reference clock and raises
+ * a SRSS fault (CY_SYSFAULT_SRSS_CSV) when the target frequency falls outside a
+ * configured supervision window.
+ *
+ * The self-test verifies end-to-end CSV functionality by temporarily programming
+ * an impossible supervision window (period=1 monitored cycle, lower=199,
+ * upper=201 reference cycles). Any CLK_HF frequency other than about
+ * refFreq/200 violates it: a running clock arrives before the lower limit and a
+ * stopped clock misses the upper limit, forcing an immediate
+ * CY_SYSFAULT_SRSS_CSV fault. The test then polls for the fault to reach
+ * SelfTest_Clock_CSV_ISR through the fault structure for up to
+ * CSV_TEST_TIMEOUT_US 1-us poll iterations.
+ *
+ * \par Usage
+ * -# Route the fault-structure interrupt to SelfTest_Clock_CSV_ISR via
+ *    Cy_SysInt_Init and enable the NVIC mux line. The fault structure itself
+ *    is configured by the test.
+ * -# Fill an \ref stl_clock_csv_entry_t with the target CLK_HF index, the
+ *    CSV reference clock (the test writes it to SRSS_CSV_REF_SEL, which is
+ *    shared by all CLK_HF CSVs), the fault-structure pointer, and the
+ *    NvicMuxN_IRQn the fault interrupt is routed to.
+ * -# Call \ref SelfTest_Clock_CSV.  On success (\ref OK_STATUS) the CSV
+ *    comparator is left disabled; the application must re-arm CSV and restore
+ *    its own fault handler before enabling operational supervision.
+ *
+ * \}
+ */
+
+/** \addtogroup group_clock_csv
+ * \{
+ */
+
+/**
+ * Timeout for the SelfTest_Clock_CSV.
+ */
+#define CSV_TEST_TIMEOUT_US   (100u)
+
+/** \} group_clock_macros */
+
+/**
+ * CSV self-test entry */
+typedef struct
+{
+    uint32_t clkHf;                     /**< CLK_HF index
+                                         * (1..N; CLK_HF0 unsupported since it requires RESET fault action). */
+    cy_en_clkhf_csv_ref_clk_t refClk;   /**< CSV reference clock. Written by the test to SRSS_CSV_REF_SEL,
+                                         * which is shared by all CLK_HF CSVs. */
+    FAULT_STRUCT_Type* faultStruct;     /**< App's fault structure receiving CY_SYSFAULT_SRSS_CSV. */
+    IRQn_Type nvicMux;                  /**< NvicMuxN_IRQn the app routed the fault-struct interrupt to. */
+} stl_clock_csv_entry_t;
+
+/**
+ * \addtogroup group_clock_functions
+ * \{
+ */
+
+/*******************************************************************************
+* Function Name: SelfTest_Clock_CSV_ISR
+****************************************************************************//**
+*
+* Summary:
+*  ISR handler for SelfTest_Clock_CSV. The application routes the
+*  fault-struct interrupt to this handler with Cy_SysInt_Init and enables
+*  the mux line before calling SelfTest_Clock_CSV.
+*
+*  The NVIC mux line is disabled by this function so the ISR doesn't re-enter
+*  while the impossible CSV window is still armed. SelfTest_Clock_CSV clears the
+*  interrupt mask and any residual pending edge during teardown.
+*
+*******************************************************************************/
+void SelfTest_Clock_CSV_ISR(void);
+
+/*******************************************************************************
+* Function Name: SelfTest_Clock_CSV
+****************************************************************************//**
+*
+* Summary:
+*  Runs the CSV functional self-test for the selected CLK_HF instance:
+*  triggers induced CSV fault by setting impossible supervision window,
+*  waits for the induced fault to propagate and register by
+*  \ref SelfTest_Clock_CSV_ISR.
+*
+* \param entry
+*  Pointer to \ref stl_clock_csv_entry_t describing the CLK_HF under
+*  test, the app-provided fault structure, and the NVIC mux the
+*  fault-struct interrupt is routed to.
+*
+* \return
+*  \ref OK_STATUS        - CSV self test pass
+*  \ref ERROR_STATUS     - Induced CSV fault was not observed within
+*                          \ref CSV_TEST_TIMEOUT_US poll iterations, or
+*                          \ref SelfTest_Clock_CSV_ISR recorded a fault source
+*                          other than \c CY_SYSFAULT_SRSS_CSV.
+*  \ref ERROR_BAD_PARAM  - \p entry is NULL, \c clkHf is 0, \c faultStruct is
+*                          NULL, the \c refClk frequency is 0 (e.g. ECO/EXT not
+*                          configured), or \c Cy_SysClk_ClkHfCsvManualConfigure()
+*                          rejected the configuration.
+*
+* \note
+*  Before calling this function the application MUST:
+*  -# Enable global interrupts (e.g. \c __enable_irq()). The self-test checks
+*     induced CSV fault using \ref SelfTest_Clock_CSV_ISR interrupt handler.
+*  -# Route the fault-struct interrupt (e.g. \c cpuss_interrupts_fault_N_IRQn)
+*     to \ref SelfTest_Clock_CSV_ISR using \c Cy_SysInt_Init with
+*     \c NVIC_ClearPendingIRQ and \c NVIC_EnableIRQ on \ref stl_clock_csv_entry_t::nvicMux.
+*  -# Provide a valid \ref stl_clock_csv_entry_t::faultStruct.
+*
+* \note
+*  Side effects on entry:
+*   - The function reinitializes the provided fault structure, sets the
+*     \c CY_SYSFAULT_SRSS_CSV mask, and clears STATUS/INTR. Any prior
+*     application configuration of that fault structure is overwritten.
+*   - The CSV comparator on \ref stl_clock_csv_entry_t::clkHf is disabled and
+*     temporarily reprogrammed with an impossible supervision window
+*     to force an immediate fault. Any previously programmed operational CSV
+*     window for specified CLK_HF is overwritten.
+* \note
+*  Side effects on exit:
+*   - CSV on \ref stl_clock_csv_entry_t::clkHf is left disabled — the app
+*     must call \c Cy_SysClk_ClkHfCsvConfigure() and \c Cy_SysClk_ClkHfCsvEnable()
+*     with its expected accuracy window.
+*   - The fault-struct interrupt mask is cleared. On \ref OK_STATUS the NVIC
+*     mux is also disabled (by \ref SelfTest_Clock_CSV_ISR), otherwise it is
+*     left as the app configured it. The app must setup its own interrupt
+*     handler to handle operational CSV faults.
+*   - After the app re-arms its expected accuracy window, enabling CSV can
+*     latch \c STATUS.VALID while the CSV state machine settles. Clear STATUS
+*     (loop until \c Cy_SysFault_GetErrorSource() returns \c CY_SYSFAULT_NO_FAULT)
+*     and clear INTR before enabling the fault-struct interrupt mask and the
+*     NVIC mux to avoid false faults.
+* \note
+*  This function is intended to be called ONCE at startup, before operational
+*  CSV supervision is armed.
+* \note
+*  This function is blocking (polls up to \ref CSV_TEST_TIMEOUT_US microseconds)
+*  and is not reentrant.
+*
+*******************************************************************************/
+uint8_t SelfTest_Clock_CSV(const stl_clock_csv_entry_t* entry);
+
+/** \} group_clock_functions */
+/** \} group_clock_csv */
+
+#endif /* (defined (CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 3)) && defined(SRSS_CSV_HF_CSV_REF_CTL) */
+
 #endif /* End SELFTEST_CLOCK_H */
 
 /* [] END OF FILE */

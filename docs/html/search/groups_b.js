@@ -4,5 +4,6 @@ var searchData=
   ['ram_20stl_20module_1',['RAM (RAM STL module)',['../group__group__ram.html',1,'']]],
   ['register_20startup_20register_20stl_20module_2',['Startup Register (Startup Register STL module)',['../group__group__regs.html',1,'']]],
   ['register_20stl_20module_3',['Startup Register (Startup Register STL module)',['../group__group__regs.html',1,'']]],
-  ['return_20status_20codes_4',['STL return status codes',['../group__group__stl__status.html',1,'']]]
+  ['register_20stl_20module_4',['register STL module',['../group__group__apsr.html',1,'APSR (APSR register STL module)'],['../group__group__control.html',1,'CONTROL (CONTROL register STL module)'],['../group__group__primask.html',1,'PRIMASK (PRIMASK register STL module)']]],
+  ['return_20status_20codes_5',['STL return status codes',['../group__group__stl__status.html',1,'']]]
 ];

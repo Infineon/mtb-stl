@@ -92,7 +92,7 @@ $(function(){initNavTree('stl_usage_getting_started.html','',''); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_output_2libs_2mtb-stl_2guides_2getting-started"></a></p>
-<p>This guide covers CPU, startup configuration register, FPU register, watchdog, and Digital I/O self-tests.</p>
+<p>This guide covers CPU, CONTROL register, APSR register, startup configuration register, FPU register, watchdog, and Digital I/O self-tests.</p>
 <h1 class="doxsection"><a class="anchor" id="autotoc_md16"></a>
 CPU tests</h1>
 <p>The following is an example of a self-test for CPU tests (program counter, program flow, and register checkerboard):</p>
@@ -140,6 +140,64 @@ Linker script requirement for <span class="tt">SelfTest_PC</span></h2>
 <div class="line">} &gt;flash = ORIGIN(flash)</div>
 </div><!-- fragment --><p>The exact addresses and section names are device-specific. Refer to the device reference manual for the correct values for your target.</p>
 <h1 class="doxsection"><a class="anchor" id="autotoc_md18"></a>
+Fast CPU register test</h1>
+<p>The fast CPU register self-test <span class="tt"><a class="el" href="group__group__cpu__functions.html#ga8b7cea87ddf73865b6f513d65186ecd2" title="Checks one register per call (SP, R8-R12, LR, R0-R7), using both checkerboard patterns.">SelfTest_CPU_Registers_Fast()</a></span> splits the CPU register check into short steps, so it can run periodically with a short execution time per call. Each call tests one step. The general-purpose register steps write the checkerboard patterns <span class="tt">0xAAAAAAAA</span> and <span class="tt">0x55555555</span>, read them back, and restore the register. The PRIMASK, CONTROL, and APSR steps write and check the tested bits. Each step must also return its unique signature before the test reports a pass.</p>
+<p>The steps are tested in this order:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Step  </th><th class="markdownTableHeadNone">Tested register  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">SP (bits [31:2], patterns <span class="tt">0xAAAAAAA8</span> and <span class="tt">0x55555554</span>)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">1 to 5  </td><td class="markdownTableBodyNone">R8 to R12  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">6  </td><td class="markdownTableBodyNone">LR  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">7 to 14  </td><td class="markdownTableBodyNone">R0 to R7  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">15  </td><td class="markdownTableBodyNone">PRIMASK  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">16  </td><td class="markdownTableBodyNone">CONTROL (SPSEL)  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">17  </td><td class="markdownTableBodyNone">APSR (N, Z, C, V, Q, and GE[3:0])  </td></tr>
+</table>
+<p>After the last step, the next call starts again with step 0.</p>
+<p>Usage requirements:</p>
+<ul>
+<li>Call <span class="tt"><a class="el" href="group__group__cpu__functions.html#ga8b7cea87ddf73865b6f513d65186ecd2" title="Checks one register per call (SP, R8-R12, LR, R0-R7), using both checkerboard patterns.">SelfTest_CPU_Registers_Fast()</a></span> only from privileged Thread mode, not from an interrupt handler. In unprivileged Thread mode, the PRIMASK step fails. In Handler mode, the CONTROL step fails. Both cases return <span class="tt">ERROR_STATUS</span>, the same value as a detected register fault.</li>
+<li>Before the first call, set PSP (for example, with <span class="tt">__set_PSP()</span>) to the top of a writable, 8-byte aligned RAM area that the application doesn't use for other data. The startup code doesn't initialize PSP. The CONTROL step selects PSP for a short time. If PSP is 0, this step returns <span class="tt">ERROR_STATUS</span>. A non-zero PSP isn't checked further. The test itself doesn't write to this area, but an NMI or HardFault in this window stacks its exception frame below PSP: 32 bytes, or 104 bytes with an active FP context. On Armv8-M Mainline cores, PSPLIM must also allow this frame. The test doesn't change PSP or PSPLIM.</li>
+<li>Initialize the step variable to <span class="tt">0xFF</span> before the first call and pass the same variable to every call. The test stores the attempted step in it on pass and on fail. If the pointer is <span class="tt">NULL</span> or the stored step is invalid, the test returns <span class="tt">ERROR_STATUS</span> without changing it.</li>
+<li>If the test returns <span class="tt">ERROR_STATUS</span>, stop calling it and enter a safe state. Another call would continue with the next step.</li>
+<li>The test masks interrupts while it runs and restores the caller's PRIMASK value before it returns. The PRIMASK step enables maskable interrupts for a short time, also when they were disabled by the caller.</li>
+<li>The test is available for the GCC_ARM, ARM, and IAR toolchains.</li>
+<li>To run the test from RAM, define <span class="tt">STL_CPU_FAST_RUN_FROM_RAM</span> in the assembler build. The test is then placed in the <span class="tt">.cy_ramfunc</span> section. On cores with ITCM, define <span class="tt">STL_CPU_FAST_RUN_FROM_ITCM</span> instead to place it in the <span class="tt">.cy_itcm</span> section. Don't define both. Check that the linker script copies the selected section to RAM or ITCM; otherwise the test runs from Flash.</li>
+<li>The PRIMASK, CONTROL, and APSR steps are separate from the <span class="tt"><a class="el" href="group__group__primask__functions.html#ga35a4b4820bf05910dd6ffc79560bd7ed" title="This function tests the PM bit of the PRIMASK register with the values 0 and 1, and attempts to resto...">SelfTest_PRIMASK()</a></span>, <span class="tt"><a class="el" href="group__group__control__functions.html#ga3407c8f65ccf7ba323467e0ce6667fda" title="This function tests the CONTROL register bits that are implemented and writable (SPSEL; also FPCA in ...">SelfTest_CONTROL()</a></span>, and <span class="tt"><a class="el" href="group__group__apsr__functions.html#ga57bc6e0e79328f9401ac960422d5acf5" title="This function tests the APSR bits that are implemented and writable on the core, with a pattern and i...">SelfTest_APSR()</a></span> tests. <span class="tt"><a class="el" href="group__group__control__functions.html#ga3407c8f65ccf7ba323467e0ce6667fda" title="This function tests the CONTROL register bits that are implemented and writable (SPSEL; also FPCA in ...">SelfTest_CONTROL()</a></span> also checks that SPSEL really switches the active stack pointer, and uses its own test stack.</li>
+</ul>
+<p>The following is an example of a fast CPU register self-test. Call it periodically, for example, from the main loop:</p>
+<div class="fragment"><div class="line"><span class="comment">/* Process stack for the CONTROL step. 128 bytes hold one exception frame</span></div>
+<div class="line"><span class="comment"> * (NMI or HardFault), also the 104-byte frame with an active FP context. */</span></div>
+<div class="line"><span class="keyword">static</span> uint64_t cpuFastPspStack[16u];</div>
+<div class="line"><span class="comment">/* Last attempted step: 0xFF before the first call */</span></div>
+<div class="line"><span class="keyword">static</span> uint8_t lastTestedStep = 0xFFu;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (0xFFu == lastTestedStep)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Bare-metal application that doesn&#39;t use PSP: set PSP once,</span></div>
+<div class="line"><span class="comment">     * without switching the running code away from MSP */</span></div>
+<div class="line">    __set_PSP((uint32_t)(uintptr_t)&amp;cpuFastPspStack[16u]);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Call from privileged Thread mode, not from an interrupt handler.</span></div>
+<div class="line"><span class="comment"> * Each call tests the next step. */</span></div>
+<div class="line">uint8_t status = <a class="code hl_function" href="group__group__cpu__functions.html#ga8b7cea87ddf73865b6f513d65186ecd2">SelfTest_CPU_Registers_Fast</a>(&amp;lastTestedStep);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle CPU register test failure: lastTestedStep holds the failed</span></div>
+<div class="line"><span class="comment">     * step. Don&#39;t call the test again, enter a safe state. */</span></div>
+<div class="line">}</div>
+<div class="ttc" id="agroup__group__cpu__functions_html_ga8b7cea87ddf73865b6f513d65186ecd2"><div class="ttname"><a href="group__group__cpu__functions.html#ga8b7cea87ddf73865b6f513d65186ecd2">SelfTest_CPU_Registers_Fast</a></div><div class="ttdeci">uint8_t SelfTest_CPU_Registers_Fast(uint8_t *lastTestedStep)</div><div class="ttdoc">Checks one register per call (SP, R8-R12, LR, R0-R7), using both checkerboard patterns.</div></div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md19"></a>
 CPU instruction test</h1>
 <p>The CPU instruction self-test validates execution of selected instruction sequences used by the library to detect CPU datapath faults.</p>
 <p>The following is an example of a self-test for CPU instructions:</p>
@@ -150,13 +208,92 @@ CPU instruction test</h1>
 <div class="line">    <span class="comment">/* Handle CPU instruction test failure */</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__cpu__instructions__functions_html_ga29b8ea5202235d8ccf1fcf5cc9738890"><div class="ttname"><a href="group__group__cpu__instructions__functions.html#ga29b8ea5202235d8ccf1fcf5cc9738890">SelfTest_CPU_Instructions</a></div><div class="ttdeci">uint8_t SelfTest_CPU_Instructions(void)</div><div class="ttdoc">This function performs the checkerboard test for all CPU instructions.</div><div class="ttdef"><b>Definition</b> SelfTest_CPU_Instructions.c:55</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md19"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md20"></a>
+CONTROL register test</h1>
+<p>The CONTROL register self-test detects stuck-at faults in the stack pointer selection bit (SPSEL) and, in FPU builds, in the floating-point bits (FPCA, SFPA). It writes each tested bit to 0 and 1, reads CONTROL back, and checks that the active stack pointer really switches between MSP and a dedicated test stack inside the library. CONTROL, the stack pointers, and the caller's interrupt mask are restored and checked before the test returns.</p>
+<p>The test is available on all Cortex-M cores. SPSEL is always tested. On cores where the image is compiled with FPU code generation (<span class="tt">__ARM_FP</span>), the floating-point bit FPCA is tested too, and in a Secure image (<span class="tt">__ARM_FEATURE_CMSE == 3</span>) also SFPA. The nPRIV bit is never tested and keeps its original value. On Armv8-M Mainline cores (for example, Cortex-M33 and Cortex-M55), the test also sets PSPLIM for the test stack and restores it.</p>
+<p>Usage requirements:</p>
+<ul>
+<li>Call <span class="tt"><a class="el" href="group__group__control__functions.html#ga3407c8f65ccf7ba323467e0ce6667fda" title="This function tests the CONTROL register bits that are implemented and writable (SPSEL; also FPCA in ...">SelfTest_CONTROL()</a></span> from privileged Thread mode. From an interrupt handler or from unprivileged code, it returns <span class="tt">ERROR_INCORRECT_USAGE_STATUS</span> without changing CONTROL.</li>
+<li>The test masks interrupts while it runs. NMI and HardFault can't be masked; if one of them occurs while PSP is selected, its exception frame is stacked on the library's test stack.</li>
+<li>Keep a watchdog running. If the test can't confirm that CONTROL and the stack pointers were restored, it stays in an endless loop with interrupts disabled instead of returning.</li>
+<li>In FPU builds, FPCA is cleared for a short time during the test. If an NMI or HardFault occurs then while the application has live FP registers, those registers aren't stacked, and a handler that uses the FPU corrupts them. If the device safety argument doesn't require FPCA and SFPA to be tested, or this risk isn't acceptable, define <span class="tt">SELFTEST_CONTROL_SKIP_FP_BITS=1</span> (for example, in the application Makefile <span class="tt">DEFINES</span>). The test then tests SPSEL only and never writes FPCA and SFPA. The size of the test stack doesn't change.</li>
+</ul>
+<p>The following is an example of a self-test for the CONTROL register:</p>
+<div class="fragment"><div class="line"><span class="comment">/* Call from privileged Thread mode. A watchdog must be running: if the</span></div>
+<div class="line"><span class="comment"> * test can&#39;t confirm that CONTROL and the stack pointers were restored,</span></div>
+<div class="line"><span class="comment"> * it doesn&#39;t return. */</span></div>
+<div class="line">uint8_t status = <a class="code hl_function" href="group__group__control__functions.html#ga3407c8f65ccf7ba323467e0ce6667fda">SelfTest_CONTROL</a>();</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#gad572d09e4bc26cb5ac723e35a2ebca90">ERROR_INCORRECT_USAGE_STATUS</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle incorrect usage: called from an interrupt handler or from</span></div>
+<div class="line"><span class="comment">     * unprivileged code */</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle CONTROL register test failure */</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span></div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Test passed */</span></div>
+<div class="line">}</div>
+<div class="ttc" id="agroup__group__control__functions_html_ga3407c8f65ccf7ba323467e0ce6667fda"><div class="ttname"><a href="group__group__control__functions.html#ga3407c8f65ccf7ba323467e0ce6667fda">SelfTest_CONTROL</a></div><div class="ttdeci">uint8_t SelfTest_CONTROL(void)</div><div class="ttdoc">This function tests the CONTROL register bits that are implemented and writable (SPSEL; also FPCA in ...</div><div class="ttdef"><b>Definition</b> SelfTest_CONTROL.c:111</div></div>
+<div class="ttc" id="agroup__group__stl__status_html_gad572d09e4bc26cb5ac723e35a2ebca90"><div class="ttname"><a href="group__group__stl__status.html#gad572d09e4bc26cb5ac723e35a2ebca90">ERROR_INCORRECT_USAGE_STATUS</a></div><div class="ttdeci">#define ERROR_INCORRECT_USAGE_STATUS</div><div class="ttdoc">An API was called in an incorrect sequence, state, or execution context.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:145</div></div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md21"></a>
+APSR register test</h1>
+<p>The APSR register self-test detects stuck-at faults in the Application Program Status Register (APSR) bits that are implemented and writable on the core. It writes a known pattern to these bits, checks the N, Z, C, and V flags with conditional branches, reads APSR back, masks the result to the implemented bits, and compares it with the pattern. It then repeats the check with the complementary pattern, so that every tested bit is checked at 0 and at 1. APSR is restored to its original value and the restored value is checked.</p>
+<p>The tested bits depend on the core and are selected at compile time: N, Z, C, and V on Armv6-M and Armv8-M Baseline cores (for example, Cortex-M0+ and Cortex-M23), N, Z, C, V, and Q on Armv7-M cores (Cortex-M3), and N, Z, C, V, Q, and GE[3:0] on cores with the DSP extension (for example, Cortex-M4, Cortex-M7, and Cortex-M33).</p>
+<p>Usage requirements:</p>
+<ul>
+<li>The test doesn't need privileged access and doesn't mask interrupts: the APSR value is saved and restored on every exception entry and return.</li>
+<li>On return, Q and GE (where implemented) hold their original values. N, Z, C, and V aren't preserved, because the Procedure Call Standard for the Arm Architecture doesn't require a called function to preserve them.</li>
+<li>The test returns <span class="tt">ERROR_STATUS</span> if a pattern comparison fails, or if the original APSR value isn't restored.</li>
+<li>This test is separate from the APSR step of <span class="tt">SelfTest_CPU_Registers_Fast</span>.</li>
+</ul>
+<p>The following is an example of a self-test for the APSR register:</p>
+<div class="fragment"><div class="line">uint8_t status = <a class="code hl_function" href="group__group__apsr__functions.html#ga57bc6e0e79328f9401ac960422d5acf5">SelfTest_APSR</a>();</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle APSR register test failure */</span></div>
+<div class="line">}</div>
+<div class="ttc" id="agroup__group__apsr__functions_html_ga57bc6e0e79328f9401ac960422d5acf5"><div class="ttname"><a href="group__group__apsr__functions.html#ga57bc6e0e79328f9401ac960422d5acf5">SelfTest_APSR</a></div><div class="ttdeci">uint8_t SelfTest_APSR(void)</div><div class="ttdoc">This function tests the APSR bits that are implemented and writable on the core, with a pattern and i...</div><div class="ttdef"><b>Definition</b> SelfTest_APSR.c:72</div></div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md22"></a>
+PRIMASK register test</h1>
+<p>The PRIMASK register self-test detects stuck-at faults in the PM bit (bit 0) of the PRIMASK register, which masks all exceptions with configurable priority. PM is the only implemented bit of PRIMASK, so the test checks both of its legal values: it writes PM = 0 and PM = 1, reads PRIMASK back after each write, and checks the value. The original PRIMASK value is written back and checked.</p>
+<p>The test is available on all Cortex-M cores.</p>
+<p>Usage requirements:</p>
+<ul>
+<li>Call <span class="tt"><a class="el" href="group__group__primask__functions.html#ga35a4b4820bf05910dd6ffc79560bd7ed" title="This function tests the PM bit of the PRIMASK register with the values 0 and 1, and attempts to resto...">SelfTest_PRIMASK()</a></span> from Handler mode or from privileged Thread mode. A write to PRIMASK from unprivileged Thread mode is ignored, so in this case the test returns <span class="tt">ERROR_INCORRECT_USAGE_STATUS</span> without changing PRIMASK.</li>
+<li>The test changes the interrupt mask while it runs. Maskable interrupts are enabled between the PM = 0 write and the next PM = 1 write. If PRIMASK was 1 when the function was called, an interrupt can occur in this window. If PRIMASK was 0, interrupts are masked between the PM = 1 write and the restore, so their latency can increase. NMI and HardFault aren't affected by PRIMASK.</li>
+<li>The test writes the original PRIMASK value back also when a check fails, and checks it. It returns <span class="tt">ERROR_STATUS</span> if any check fails, including when a stuck PM prevents the original value from being restored.</li>
+<li>This test is separate from the PRIMASK step of <span class="tt">SelfTest_CPU_Registers_Fast</span>.</li>
+</ul>
+<p>The following is an example of a self-test for the PRIMASK register:</p>
+<div class="fragment"><div class="line"><span class="comment">/* Call from Handler mode or privileged Thread mode */</span></div>
+<div class="line">uint8_t status = <a class="code hl_function" href="group__group__primask__functions.html#ga35a4b4820bf05910dd6ffc79560bd7ed">SelfTest_PRIMASK</a>();</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#gad572d09e4bc26cb5ac723e35a2ebca90">ERROR_INCORRECT_USAGE_STATUS</a> == status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle incorrect usage: called from unprivileged code */</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a> != status)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Handle PRIMASK register test failure */</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span></div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Test passed */</span></div>
+<div class="line">}</div>
+<div class="ttc" id="agroup__group__primask__functions_html_ga35a4b4820bf05910dd6ffc79560bd7ed"><div class="ttname"><a href="group__group__primask__functions.html#ga35a4b4820bf05910dd6ffc79560bd7ed">SelfTest_PRIMASK</a></div><div class="ttdeci">uint8_t SelfTest_PRIMASK(void)</div><div class="ttdoc">This function tests the PM bit of the PRIMASK register with the values 0 and 1, and attempts to resto...</div><div class="ttdef"><b>Definition</b> SelfTest_PRIMASK.c:59</div></div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md23"></a>
 Startup Configuration Registers test</h1>
 <p>This test checks critical startup configuration registers against values saved in nonvolatile memory.</p>
 <p>The test supports two modes controlled by <span class="tt">STARTUP_CFG_REGS_MODE</span> in <span class="tt">SelfTest_ConfigRegisters.h</span>. By default, the library uses <span class="tt">CFG_REGS_TO_FLASH_MODE</span>.</p>
 <p>To switch modes from build settings, define <span class="tt">STARTUP_CFG_REGS_MODE</span> in your project Makefile defines:</p>
 <div class="fragment"><div class="line">DEFINES+=STARTUP_CFG_REGS_MODE=CFG_REGS_CRC_MODE</div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md20"></a>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md24"></a>
 Mode 1: <span class="tt">CFG_REGS_TO_FLASH_MODE</span> (default)</h2>
 <p>Store register copies once, then compare on later checks.</p>
 <p>For PSOC™ 6 devices, call <span class="tt">SelfTests_Init_StartUp_ConfigReg()</span> once before running startup-register checks.</p>
@@ -164,6 +301,7 @@ Mode 1: <span class="tt">CFG_REGS_TO_FLASH_MODE</span> (default)</h2>
 <div class="fragment"><div class="line"><span class="comment">/* Initialize Startup Configuration Register self-test */</span></div>
 <div class="line">SelfTests_Init_StartUp_ConfigReg();</div>
 </div><!-- fragment --><p>Call <span class="tt"><a class="el" href="group__group__regs__functions.html#gaec89bb4971f81060db430a538539ec64" title="This function stores the configuration registers to nonvolatile storage.">SelfTests_Save_StartUp_ConfigReg()</a></span> once after startup initialization, then call <span class="tt"><a class="el" href="group__group__regs__functions.html#ga2a9a8a3ccf0d8a14a625f7b4d9b1918f" title="This function call checks the configuration registers by comparing the value stored in nonvolatile st...">SelfTests_StartUp_ConfigReg()</a></span> at startup checkpoints or periodically.</p>
+<p>On XMC7000 and XMC5000 devices, the register copies are stored in the last two 512-byte rows of Code Flash. Because this Flash cannot erase a single row, <span class="tt"><a class="el" href="group__group__regs__functions.html#gaec89bb4971f81060db430a538539ec64" title="This function stores the configuration registers to nonvolatile storage.">SelfTests_Save_StartUp_ConfigReg()</a></span> erases the entire last 8 KB small sector of Code Flash, starting at <span class="tt">CY_FLASH_SM_SBM_BASE + CY_FLASH_SM_SBM_SIZE - 0x2000</span>, on every call. The function preserves only the <span class="tt">.flash_checksum</span> area at the end of the sector. Reserve the whole sector in the linker script and do not place code, constants, or other nonvolatile data in it.</p>
 <div class="fragment"><div class="line">uint8_t status = <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Save startup register baseline once */</span></div>
@@ -183,15 +321,16 @@ Mode 1: <span class="tt">CFG_REGS_TO_FLASH_MODE</span> (default)</h2>
 <div class="line">        <span class="comment">/* Handle startup register integrity failure */</span></div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__group__regs__functions_html_ga2a9a8a3ccf0d8a14a625f7b4d9b1918f"><div class="ttname"><a href="group__group__regs__functions.html#ga2a9a8a3ccf0d8a14a625f7b4d9b1918f">SelfTests_StartUp_ConfigReg</a></div><div class="ttdeci">uint8_t SelfTests_StartUp_ConfigReg(void)</div><div class="ttdoc">This function call checks the configuration registers by comparing the value stored in nonvolatile st...</div><div class="ttdef"><b>Definition</b> SelfTest_ConfigRegisters.c:988</div></div>
-<div class="ttc" id="agroup__group__regs__functions_html_gaec89bb4971f81060db430a538539ec64"><div class="ttname"><a href="group__group__regs__functions.html#gaec89bb4971f81060db430a538539ec64">SelfTests_Save_StartUp_ConfigReg</a></div><div class="ttdeci">cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)</div><div class="ttdoc">This function stores the configuration registers to nonvolatile storage.</div><div class="ttdef"><b>Definition</b> SelfTest_ConfigRegisters.c:791</div></div>
+<div class="ttc" id="agroup__group__regs__functions_html_ga2a9a8a3ccf0d8a14a625f7b4d9b1918f"><div class="ttname"><a href="group__group__regs__functions.html#ga2a9a8a3ccf0d8a14a625f7b4d9b1918f">SelfTests_StartUp_ConfigReg</a></div><div class="ttdeci">uint8_t SelfTests_StartUp_ConfigReg(void)</div><div class="ttdoc">This function call checks the configuration registers by comparing the value stored in nonvolatile st...</div><div class="ttdef"><b>Definition</b> SelfTest_ConfigRegisters.c:992</div></div>
+<div class="ttc" id="agroup__group__regs__functions_html_gaec89bb4971f81060db430a538539ec64"><div class="ttname"><a href="group__group__regs__functions.html#gaec89bb4971f81060db430a538539ec64">SelfTests_Save_StartUp_ConfigReg</a></div><div class="ttdeci">cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)</div><div class="ttdoc">This function stores the configuration registers to nonvolatile storage.</div><div class="ttdef"><b>Definition</b> SelfTest_ConfigRegisters.c:790</div></div>
 <div class="ttc" id="agroup__group__stl__status_html_gaf5d0a0130e8b0fc1fe309e6d8b308249"><div class="ttname"><a href="group__group__stl__status.html#gaf5d0a0130e8b0fc1fe309e6d8b308249">ERROR_STATUS</a></div><div class="ttdeci">#define ERROR_STATUS</div><div class="ttdoc">Test failed or a generic error occurred.</div><div class="ttdef"><b>Definition</b> SelfTest_common.h:95</div></div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md21"></a>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md25"></a>
 Mode 2: <span class="tt">CFG_REGS_CRC_MODE</span></h2>
 <p>For PSOC™ 6 devices, call <span class="tt">SelfTests_Init_StartUp_ConfigReg()</span> once before running startup-register checks.</p>
 <div class="fragment"><div class="line"><span class="comment">/* Initialize Startup Configuration Register self-test */</span></div>
 <div class="line">SelfTests_Init_StartUp_ConfigReg();</div>
 </div><!-- fragment --><p>In CRC mode, do not call <span class="tt"><a class="el" href="group__group__regs__functions.html#gaec89bb4971f81060db430a538539ec64" title="This function stores the configuration registers to nonvolatile storage.">SelfTests_Save_StartUp_ConfigReg()</a></span>. The first call to <span class="tt"><a class="el" href="group__group__regs__functions.html#ga2a9a8a3ccf0d8a14a625f7b4d9b1918f" title="This function call checks the configuration registers by comparing the value stored in nonvolatile st...">SelfTests_StartUp_ConfigReg()</a></span> calculates CRC, stores it to nonvolatile memory, and sets the CRC semaphore. Subsequent calls recalculate CRC and compare it with the stored value.</p>
+<p>On XMC7000 and XMC5000, the CRC is stored in the last row of Code Flash. When the CRC is stored, the entire last 8 KB small sector of Code Flash is erased, the same as in Mode 1. Reserve that whole sector.</p>
 <p>The following is an example of a self-test for Startup Configuration Registers in CRC mode:</p>
 <div class="fragment"><div class="line">uint8_t status = <a class="code hl_define" href="group__group__stl__status.html#ga1a8b70f2787072be26b2aa39523f09d6">OK_STATUS</a>;</div>
 <div class="line">uint8_t startupCfgStatus = <a class="code hl_function" href="group__group__regs__functions.html#ga2a9a8a3ccf0d8a14a625f7b4d9b1918f">SelfTests_StartUp_ConfigReg</a>();</div>
@@ -227,7 +366,7 @@ Mode 2: <span class="tt">CFG_REGS_CRC_MODE</span></h2>
 <li><span class="tt">PASS_COMPLETE_STATUS</span> when the calculated CRC matches stored CRC</li>
 <li><span class="tt">ERROR_STATUS</span> if check or storage access fails</li>
 </ul>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md22"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md26"></a>
 FPU register test</h1>
 <p>The floating-point register self-test validates that the FPU register file can be written and read back correctly.</p>
 <p>The following is an example of a self-test for FPU registers:</p>
@@ -238,9 +377,9 @@ FPU register test</h1>
 <div class="line">    <span class="comment">/* Handle FPU register test failure */</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__fpu__functions_html_ga34079667b59ae855c83e3f2eefa0672c"><div class="ttname"><a href="group__group__fpu__functions.html#ga34079667b59ae855c83e3f2eefa0672c">SelfTest_FPU_Registers</a></div><div class="ttdeci">uint8_t SelfTest_FPU_Registers(void)</div><div class="ttdoc">This function performs the checkerboard test for all FPU registers (S0-S31).</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md23"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md27"></a>
 Watchdog supervision tests</h1>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md24"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md28"></a>
 WDT test</h2>
 <p>The watchdog self-test verifies reset-driven supervision behavior using the hardware watchdog.</p>
 <p>The STL API handles the required internal watchdog-test flow. Depending on the current phase of the test, the function can trigger a reset before later returning <span class="tt">OK_STATUS</span>.</p>
@@ -252,7 +391,7 @@ WDT test</h2>
 <div class="line">    <span class="comment">/* Handle watchdog self-test failure */</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__wdt__functions_html_ga3153a227843f510582d88756dfba945e"><div class="ttname"><a href="group__group__wdt__functions.html#ga3153a227843f510582d88756dfba945e">SelfTest_WDT</a></div><div class="ttdeci">uint8_t SelfTest_WDT(void)</div><div class="ttdoc">This function performs the Watchdog test.</div></div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md25"></a>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md29"></a>
 Windowed MCWDT test</h2>
 <p>The windowed watchdog self-test verifies that the application services the watchdog only inside the allowed service window.</p>
 <p>The STL API handles the internal phase management of the windowed watchdog self-test.</p>
@@ -264,7 +403,7 @@ Windowed MCWDT test</h2>
 <div class="line">    <span class="comment">/* Handle windowed MCWDT self-test failure */</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__group__wwdt__functions_html_gac590008e254219ff88361d9a5112c2da"><div class="ttname"><a href="group__group__wwdt__functions.html#gac590008e254219ff88361d9a5112c2da">SelfTest_Windowed_MCWDT</a></div><div class="ttdeci">uint8_t SelfTest_Windowed_MCWDT(MCWDT_STRUCT_Type *base, cy_en_mcwdtctr_t counter)</div><div class="ttdoc">Verifies the windowed WDT behaviour of the specified MCWDT sub-counter.</div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md26"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md30"></a>
 Digital I/O test</h1>
 <p>The Digital I/O test detects pin shorts to ground or VCC using internal pull-up and pull-down resistors. Before calling the test, configure which pins to test using a pin mask.</p>
 <p>Do not test pins that are actively driven by external circuits, connected to special functions such as USB, debug port, or crystal oscillator, or tied directly to power rails, as these will cause false failures.</p>

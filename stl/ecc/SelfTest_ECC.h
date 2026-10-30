@@ -112,16 +112,24 @@
 /** \cond INTERNAL */
 #define CY_FLASH_SIZE_ROW          512U
 #if defined(CY_IP_M7CPUSS)
-#define CY_FLASH_ADDR              ((CY_FLASH_SM_SBM_BASE + CY_FLASH_SM_SBM_SIZE) - CY_FLASH_SIZE_ROW)
+/* Small Code Flash sector erase size, 8 KB per the XMC7000 TRM. */
+#define CY_FLASH_SM_SECTOR_SIZE    0x2000U
+/* Last row of the second-to-last small sector; the last sector holds the startup config registers. */
+#define CY_FLASH_ADDR              \
+    ((CY_FLASH_SM_SBM_BASE + CY_FLASH_SM_SBM_SIZE) - CY_FLASH_SM_SECTOR_SIZE - CY_FLASH_SIZE_ROW)
 #define CY_ECC_NC_ERROR_PARITY     0x14
 #define CY_ECC_C_ERROR_PARITY      0x5D
 #define CY_MEMORY_DATA             0x5A5A5A5A
 #define CY_ECC_C_FAULT             CY_SYSFAULT_FLASHC_MAIN_C_ECC
 #define CY_ECC_NC_FAULT            CY_SYSFAULT_FLASHC_MAIN_NC_ECC
-#endif
+#endif /* if defined(CY_IP_M7CPUSS) */
 
 #if defined(CY_IP_M4CPUSS) && defined(CY_IP_MXFLASHC_VERSION_ECT)
-#define CY_FLASH_ADDR              ((CY_FLASH_SM_SBM_BASE + CY_FLASH_SM_SBM_SIZE) - CY_FLASH_SIZE_ROW)
+/* Small Code Flash sector erase size, 8 KB per the XMC5000 TRM. */
+#define CY_FLASH_SM_SECTOR_SIZE    0x2000U
+/* Last row of the second-to-last small sector; the last sector holds the startup config registers. */
+#define CY_FLASH_ADDR              \
+    ((CY_FLASH_SM_SBM_BASE + CY_FLASH_SM_SBM_SIZE) - CY_FLASH_SM_SECTOR_SIZE - CY_FLASH_SIZE_ROW)
 #define CY_ECC_NC_ERROR_PARITY     0x14
 #define CY_ECC_C_ERROR_PARITY      0x5D
 #define CY_MEMORY_DATA             0x5A5A5A5A

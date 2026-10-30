@@ -141,7 +141,7 @@
  */
 #define SHORT_TO_GND                    (2u)
 
-/** Clock self-test: the API was called in an incorrect sequence or state. */
+/** An API was called in an incorrect sequence, state, or execution context. */
 #define ERROR_INCORRECT_USAGE_STATUS    (4u)
 
 /** A bad input parameter was passed to a self-test API. */
@@ -163,6 +163,11 @@
 #define PASS_STILL_TESTING_STATUS       (2u)
 /** Multi-call self-test: the test completed and the final result is available. */
 #define PASS_COMPLETE_STATUS            (3u)
+
+/** ADC Configuration Protection self-test: the stored snapshot failed its own
+ *  CRC integrity check. The snapshot itself is untrustworthy, so no register
+ *  comparison was performed. */
+#define ERROR_ADC_CONFIG_SNAPSHOT_INVALID (7u)
 
 /** \} group_stl_status */
 

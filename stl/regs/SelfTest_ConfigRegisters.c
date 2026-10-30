@@ -769,7 +769,6 @@ void SelfTests_Init_StartUp_ConfigReg(void)
 static uint8_t SelfTests_Check_StartUp_Cfg_CRC(uint32_t Current_CRC);
 #endif /* End (STARTUP_CFG_REGS_MODE == CFG_REGS_CRC_MODE) */
 
-
 #if (STARTUP_CFG_REGS_MODE == CFG_REGS_TO_FLASH_MODE)
 
 /*******************************************************************************
@@ -818,40 +817,36 @@ cy_en_flashdrv_status_t SelfTests_Save_StartUp_ConfigReg(void)
     }
     return Cy_Flash_WriteRow(CONF_REG_FIRST_ROW_ADDR, flashRowData);
     #else
-    uint16_t guardCnt = 0u;
     cy_en_flashdrv_status_t ret;
+    const uint32_t* sectorTail = (const uint32_t*)(CONF_REG_FIRST_ROW_ADDR +
+                                                   (CONF_REG_NUMBER_OF_ROWS * CY_FLASH_SIZEOF_ROW) -
+                                                   FLASH_RESERVED_CHECKSUM_SIZE);
+    uint32_t tailWords = FLASH_RESERVED_CHECKSUM_SIZE / sizeof(flashRowData[0]);
+
+    /* The sector erase also wipes the application's .flash_checksum at the sector end: carry it over. */
+    for (uint32_t i = 0u; i < tailWords; i++)
+    {
+        flashRowData[(sizeof(flashRowData) / sizeof(flashRowData[0])) - tailWords + i] = sectorTail[i];
+    }
+
     Cy_Flashc_MainWriteEnable();
-    ret = Cy_Flash_EraseSector(CONF_REG_FLASH_SMALL_SECTOR_ADDR_BASE);
-    while ((Cy_Flash_IsOperationComplete() != CY_FLASH_DRV_SUCCESS) && (guardCnt < 1000U))
-    {
-        guardCnt++;
-        Cy_SysLib_DelayUs(1u);
-    }
-    if (guardCnt >= 1000U)
-    {
-        return ret;
-    }
-    uint32_t regsToTestSize = (uint32_t)CONF_REG_STARTUP_REG_SIZE_BYTES;
-    if (regsToTestSize > CY_FLASH_SIZEOF_ROW)
-    {
-        uint32_t addr_to_write = (uint32_t)(CONF_REG_FIRST_ROW_ADDR);
-        uint32_t* data_to_write = flashRowData;
-        for (uint32_t i = 0; i < 2U; i++)
-        {
-            ret = Cy_Flash_ProgramRow(addr_to_write, data_to_write);
-            if (ret != CY_FLASH_DRV_SUCCESS)
-            {
-                return ret;
-            }
-            addr_to_write = addr_to_write + CY_FLASH_SIZEOF_ROW;
-            data_to_write = &flashRowData[(i+1U)*(CY_FLASH_SIZEOF_ROW/sizeof(uint32_t))];
-        }
-    }
-    else
+    /* No row erase on this flash: erase the whole small sector that holds the stored rows. */
+    ret = Cy_Flash_EraseSector(CONF_REG_FLASH_SECTOR_ADDR);
+    if (ret == CY_FLASH_DRV_SUCCESS)
     {
         ret = Cy_Flash_ProgramRow(CONF_REG_FIRST_ROW_ADDR, flashRowData);
     }
+    if (ret == CY_FLASH_DRV_SUCCESS)
+    {
+        ret = Cy_Flash_ProgramRow((uint32_t)(CONF_REG_FIRST_ROW_ADDR + CY_FLASH_SIZEOF_ROW),
+                                  &flashRowData[CY_FLASH_SIZEOF_ROW / sizeof(uint32_t)]);
+    }
     Cy_Flashc_MainWriteDisable();
+    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    /* The flash driver invalidates only the FLASHC cache, not the CPU data cache. */
+    SCB_InvalidateDCache_by_Addr((uint32_t*)CONF_REG_FIRST_ROW_ADDR,
+                                 (int32_t)(CONF_REG_NUMBER_OF_ROWS * CY_FLASH_SIZEOF_ROW));
+    #endif
     return ret;
     #endif /* !defined(CY_IP_MXFLASHC_VERSION_ECT) */
 }
@@ -949,9 +944,18 @@ static uint8_t SelfTests_Check_StartUp_Cfg_CRC(uint32_t Current_CRC)
         status = Cy_Flash_WriteRow(LAST_ROW_IN_FLASH_ADDR, flashRowData);
         #else
         Cy_Flashc_MainWriteEnable();
-        status = Cy_Flash_ProgramRow(LAST_ROW_IN_FLASH_ADDR, flashRowData);
+        /* No row erase on this flash: the row was read above, so erase its sector before rewriting it. */
+        status = Cy_Flash_EraseSector(CONF_REG_FLASH_SECTOR_ADDR);
+        if (CY_FLASH_DRV_SUCCESS == status)
+        {
+            status = Cy_Flash_ProgramRow(LAST_ROW_IN_FLASH_ADDR, flashRowData);
+        }
         Cy_Flashc_MainWriteDisable();
+        #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+        /* The flash driver invalidates only the FLASHC cache, not the CPU data cache. */
+        SCB_InvalidateDCache_by_Addr((uint32_t*)LAST_ROW_IN_FLASH_ADDR, (int32_t)CY_FLASH_SIZEOF_ROW);
         #endif
+        #endif /* if !defined(CY_IP_MXFLASHC_VERSION_ECT) */
         if (CY_FLASH_DRV_SUCCESS == status)
         {
             /* Return the status that CRC is already stored */

@@ -21,5 +21,6 @@ var group__group__stl__status =
     [ "MTB_STL_ERROR_TIMEOUT", "group__group__stl__status.html#gaf72a0ee4b35fb7b2423fc3071517ede5", null ],
     [ "CRC_SAVED_STATUS", "group__group__stl__status.html#gadf50bb789cd8557db20effed474a6251", null ],
     [ "PASS_STILL_TESTING_STATUS", "group__group__stl__status.html#gadc3a54eab88ff012fd5469e09afce4d7", null ],
-    [ "PASS_COMPLETE_STATUS", "group__group__stl__status.html#gab6d6cd34a6d13569d04fe1a3c999a24e", null ]
+    [ "PASS_COMPLETE_STATUS", "group__group__stl__status.html#gab6d6cd34a6d13569d04fe1a3c999a24e", null ],
+    [ "ERROR_ADC_CONFIG_SNAPSHOT_INVALID", "group__group__stl__status.html#ga0979d72c5341426efd3574319cb99c0d", null ]
 ];

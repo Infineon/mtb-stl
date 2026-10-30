@@ -1,22 +1,38 @@
-# ModusToolbox™ Safety Test Library 3.6.0
+# ModusToolbox™ Safety Test Library 3.7.0
 
 Refer to the [README.md](./README.md) for a complete description of the ModusToolbox™ Safety Test Library.
 
 ## What is Included?
 
-### PSOC™ Control C3 M8
+### XMC7000
 
 * Compilers Supported: GCC_ARM, ARM, IAR
 
-* List of Self-Tests supported:
+* List of new Self-Tests:
     | Group              | Module |
     | ------             | ------ |
-    | System platform    | Interrupt, Clock, IPC, Startup Configuration Registers, DMA/DW, WDT |
-    | CPU                | CPU Registers, CPU Instructions, Program Counter, Program Flow, FPU Registers |
-    | Memory             | Flash, RAM, Stack |
-    | Peripheral         | Digital I/O, UART, I2C, SPI, UART Data Transfer, ADC, ADC Filters, DAC, DCMP, DCSG, AFE, CLB, EPU, HWFILT3P3Z, Timer Counter, PWM, PWM Gatekill, CANFD, MOTIF, CORDIC, ECC |
+    | System platform    | CSV |
+    | CPU                | CPU_Fast |
+    | Memory             | MPU, SMPU |
+    | Peripheral         | PPU, eFuse, ADC_Config |
+
+### PSOC™ 4
+
+* Compilers Supported: GCC_ARM, ARM, IAR
+
+* List of new Self-Tests:
+    | Group              | Module |
+    | ------             | ------ |
+    | CPU                | APSR, CONTROL, PRIMASK |
 
 ## What Changed?
+
+### v3.7.0
+* Added new tests for XMC7000 devices: CSV, MPU, SMPU, PPU, eFuse, ADC_Config, CPU_Fast.
+* Added new CPU tests for PSOC™ 4 devices: APSR, CONTROL and PRIMASK.
+* Updated user documentation.
+* Fixed issue with FLASH access in ECC and ConfigRegisters tests on XMC7000 devices.
+* Fixed issue with missing settle time for ATOP DAC test on PSOC™ Control C3 M8 devices.
 
 ### v3.6.0
 * Added support for the PSOC™ Control C3 M8 device family.

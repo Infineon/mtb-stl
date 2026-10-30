@@ -1,6 +1,6 @@
 # Core Self-Tests
 
-This guide covers CPU, startup configuration register, FPU register, watchdog, and Digital I/O self-tests.
+This guide covers CPU, CONTROL register, APSR register, startup configuration register, FPU register, watchdog, and Digital I/O self-tests.
 
 ## CPU tests
 
@@ -53,6 +53,62 @@ NV_CONFIG3 0x1201AAA8 :
 
 The exact addresses and section names are device-specific. Refer to the device reference manual for the correct values for your target.
 
+## Fast CPU register test
+
+The fast CPU register self-test `SelfTest_CPU_Registers_Fast()` splits the CPU register check into short steps, so it can run periodically with a short execution time per call. Each call tests one step. The general-purpose register steps write the checkerboard patterns `0xAAAAAAAA` and `0x55555555`, read them back, and restore the register. The PRIMASK, CONTROL, and APSR steps write and check the tested bits. Each step must also return its unique signature before the test reports a pass.
+
+The steps are tested in this order:
+
+| Step | Tested register |
+|------|-----------------|
+| 0 | SP (bits [31:2], patterns `0xAAAAAAA8` and `0x55555554`) |
+| 1 to 5 | R8 to R12 |
+| 6 | LR |
+| 7 to 14 | R0 to R7 |
+| 15 | PRIMASK |
+| 16 | CONTROL (SPSEL) |
+| 17 | APSR (N, Z, C, V, Q, and GE[3:0]) |
+
+After the last step, the next call starts again with step 0.
+
+Usage requirements:
+
+* Call `SelfTest_CPU_Registers_Fast()` only from privileged Thread mode, not from an interrupt handler. In unprivileged Thread mode, the PRIMASK step fails. In Handler mode, the CONTROL step fails. Both cases return `ERROR_STATUS`, the same value as a detected register fault.
+* Before the first call, set PSP (for example, with `__set_PSP()`) to the top of a writable, 8-byte aligned RAM area that the application doesn't use for other data. The startup code doesn't initialize PSP. The CONTROL step selects PSP for a short time. If PSP is 0, this step returns `ERROR_STATUS`. A non-zero PSP isn't checked further. The test itself doesn't write to this area, but an NMI or HardFault in this window stacks its exception frame below PSP: 32 bytes, or 104 bytes with an active FP context. On Armv8-M Mainline cores, PSPLIM must also allow this frame. The test doesn't change PSP or PSPLIM.
+* Initialize the step variable to `0xFF` before the first call and pass the same variable to every call. The test stores the attempted step in it on pass and on fail. If the pointer is `NULL` or the stored step is invalid, the test returns `ERROR_STATUS` without changing it.
+* If the test returns `ERROR_STATUS`, stop calling it and enter a safe state. Another call would continue with the next step.
+* The test masks interrupts while it runs and restores the caller's PRIMASK value before it returns. The PRIMASK step enables maskable interrupts for a short time, also when they were disabled by the caller.
+* The test is available for the GCC_ARM, ARM, and IAR toolchains.
+* To run the test from RAM, define `STL_CPU_FAST_RUN_FROM_RAM` in the assembler build. The test is then placed in the `.cy_ramfunc` section. On cores with ITCM, define `STL_CPU_FAST_RUN_FROM_ITCM` instead to place it in the `.cy_itcm` section. Don't define both. Check that the linker script copies the selected section to RAM or ITCM; otherwise the test runs from Flash.
+* The PRIMASK, CONTROL, and APSR steps are separate from the `SelfTest_PRIMASK()`, `SelfTest_CONTROL()`, and `SelfTest_APSR()` tests. `SelfTest_CONTROL()` also checks that SPSEL really switches the active stack pointer, and uses its own test stack.
+
+The following is an example of a fast CPU register self-test. Call it periodically, for example, from the main loop:
+
+```c
+/* Process stack for the CONTROL step. 128 bytes hold one exception frame
+ * (NMI or HardFault), also the 104-byte frame with an active FP context. */
+static uint64_t cpuFastPspStack[16u];
+/* Last attempted step: 0xFF before the first call */
+static uint8_t lastTestedStep = 0xFFu;
+
+if (0xFFu == lastTestedStep)
+{
+    /* Bare-metal application that doesn't use PSP: set PSP once,
+     * without switching the running code away from MSP */
+    __set_PSP((uint32_t)(uintptr_t)&cpuFastPspStack[16u]);
+}
+
+/* Call from privileged Thread mode, not from an interrupt handler.
+ * Each call tests the next step. */
+uint8_t status = SelfTest_CPU_Registers_Fast(&lastTestedStep);
+
+if (OK_STATUS != status)
+{
+    /* Handle CPU register test failure: lastTestedStep holds the failed
+     * step. Don't call the test again, enter a safe state. */
+}
+```
+
 ## CPU instruction test
 
 The CPU instruction self-test validates execution of selected instruction sequences used by the library to detect CPU datapath faults.
@@ -65,6 +121,99 @@ uint8_t status = SelfTest_CPU_Instructions();
 if (OK_STATUS != status)
 {
     /* Handle CPU instruction test failure */
+}
+```
+
+## CONTROL register test
+
+The CONTROL register self-test detects stuck-at faults in the stack pointer selection bit (SPSEL) and, in FPU builds, in the floating-point bits (FPCA, SFPA). It writes each tested bit to 0 and 1, reads CONTROL back, and checks that the active stack pointer really switches between MSP and a dedicated test stack inside the library. CONTROL, the stack pointers, and the caller's interrupt mask are restored and checked before the test returns.
+
+The test is available on all Cortex-M cores. SPSEL is always tested. On cores where the image is compiled with FPU code generation (`__ARM_FP`), the floating-point bit FPCA is tested too, and in a Secure image (`__ARM_FEATURE_CMSE == 3`) also SFPA. The nPRIV bit is never tested and keeps its original value. On Armv8-M Mainline cores (for example, Cortex-M33 and Cortex-M55), the test also sets PSPLIM for the test stack and restores it.
+
+Usage requirements:
+
+* Call `SelfTest_CONTROL()` from privileged Thread mode. From an interrupt handler or from unprivileged code, it returns `ERROR_INCORRECT_USAGE_STATUS` without changing CONTROL.
+* The test masks interrupts while it runs. NMI and HardFault can't be masked; if one of them occurs while PSP is selected, its exception frame is stacked on the library's test stack.
+* Keep a watchdog running. If the test can't confirm that CONTROL and the stack pointers were restored, it stays in an endless loop with interrupts disabled instead of returning.
+* In FPU builds, FPCA is cleared for a short time during the test. If an NMI or HardFault occurs then while the application has live FP registers, those registers aren't stacked, and a handler that uses the FPU corrupts them. If the device safety argument doesn't require FPCA and SFPA to be tested, or this risk isn't acceptable, define `SELFTEST_CONTROL_SKIP_FP_BITS=1` (for example, in the application Makefile `DEFINES`). The test then tests SPSEL only and never writes FPCA and SFPA. The size of the test stack doesn't change.
+
+The following is an example of a self-test for the CONTROL register:
+
+```c
+/* Call from privileged Thread mode. A watchdog must be running: if the
+ * test can't confirm that CONTROL and the stack pointers were restored,
+ * it doesn't return. */
+uint8_t status = SelfTest_CONTROL();
+
+if (ERROR_INCORRECT_USAGE_STATUS == status)
+{
+    /* Handle incorrect usage: called from an interrupt handler or from
+     * unprivileged code */
+}
+else if (OK_STATUS != status)
+{
+    /* Handle CONTROL register test failure */
+}
+else
+{
+    /* Test passed */
+}
+```
+
+## APSR register test
+
+The APSR register self-test detects stuck-at faults in the Application Program Status Register (APSR) bits that are implemented and writable on the core. It writes a known pattern to these bits, checks the N, Z, C, and V flags with conditional branches, reads APSR back, masks the result to the implemented bits, and compares it with the pattern. It then repeats the check with the complementary pattern, so that every tested bit is checked at 0 and at 1. APSR is restored to its original value and the restored value is checked.
+
+The tested bits depend on the core and are selected at compile time: N, Z, C, and V on Armv6-M and Armv8-M Baseline cores (for example, Cortex-M0+ and Cortex-M23), N, Z, C, V, and Q on Armv7-M cores (Cortex-M3), and N, Z, C, V, Q, and GE[3:0] on cores with the DSP extension (for example, Cortex-M4, Cortex-M7, and Cortex-M33).
+
+Usage requirements:
+
+* The test doesn't need privileged access and doesn't mask interrupts: the APSR value is saved and restored on every exception entry and return.
+* On return, Q and GE (where implemented) hold their original values. N, Z, C, and V aren't preserved, because the Procedure Call Standard for the Arm Architecture doesn't require a called function to preserve them.
+* The test returns `ERROR_STATUS` if a pattern comparison fails, or if the original APSR value isn't restored.
+* This test is separate from the APSR step of `SelfTest_CPU_Registers_Fast`.
+
+The following is an example of a self-test for the APSR register:
+
+```c
+uint8_t status = SelfTest_APSR();
+
+if (OK_STATUS != status)
+{
+    /* Handle APSR register test failure */
+}
+```
+
+## PRIMASK register test
+
+The PRIMASK register self-test detects stuck-at faults in the PM bit (bit 0) of the PRIMASK register, which masks all exceptions with configurable priority. PM is the only implemented bit of PRIMASK, so the test checks both of its legal values: it writes PM = 0 and PM = 1, reads PRIMASK back after each write, and checks the value. The original PRIMASK value is written back and checked.
+
+The test is available on all Cortex-M cores.
+
+Usage requirements:
+
+* Call `SelfTest_PRIMASK()` from Handler mode or from privileged Thread mode. A write to PRIMASK from unprivileged Thread mode is ignored, so in this case the test returns `ERROR_INCORRECT_USAGE_STATUS` without changing PRIMASK.
+* The test changes the interrupt mask while it runs. Maskable interrupts are enabled between the PM = 0 write and the next PM = 1 write. If PRIMASK was 1 when the function was called, an interrupt can occur in this window. If PRIMASK was 0, interrupts are masked between the PM = 1 write and the restore, so their latency can increase. NMI and HardFault aren't affected by PRIMASK.
+* The test writes the original PRIMASK value back also when a check fails, and checks it. It returns `ERROR_STATUS` if any check fails, including when a stuck PM prevents the original value from being restored.
+* This test is separate from the PRIMASK step of `SelfTest_CPU_Registers_Fast`.
+
+The following is an example of a self-test for the PRIMASK register:
+
+```c
+/* Call from Handler mode or privileged Thread mode */
+uint8_t status = SelfTest_PRIMASK();
+
+if (ERROR_INCORRECT_USAGE_STATUS == status)
+{
+    /* Handle incorrect usage: called from unprivileged code */
+}
+else if (OK_STATUS != status)
+{
+    /* Handle PRIMASK register test failure */
+}
+else
+{
+    /* Test passed */
 }
 ```
 
@@ -94,6 +243,8 @@ SelfTests_Init_StartUp_ConfigReg();
 ```
 
 Call `SelfTests_Save_StartUp_ConfigReg()` once after startup initialization, then call `SelfTests_StartUp_ConfigReg()` at startup checkpoints or periodically.
+
+On XMC7000 and XMC5000 devices, the register copies are stored in the last two 512-byte rows of Code Flash. Because this Flash cannot erase a single row, `SelfTests_Save_StartUp_ConfigReg()` erases the entire last 8 KB small sector of Code Flash, starting at `CY_FLASH_SM_SBM_BASE + CY_FLASH_SM_SBM_SIZE - 0x2000`, on every call. The function preserves only the `.flash_checksum` area at the end of the sector. Reserve the whole sector in the linker script and do not place code, constants, or other nonvolatile data in it.
 
 ```c
 uint8_t status = OK_STATUS;
@@ -127,6 +278,8 @@ SelfTests_Init_StartUp_ConfigReg();
 ```
 
 In CRC mode, do not call `SelfTests_Save_StartUp_ConfigReg()`. The first call to `SelfTests_StartUp_ConfigReg()` calculates CRC, stores it to nonvolatile memory, and sets the CRC semaphore. Subsequent calls recalculate CRC and compare it with the stored value.
+
+On XMC7000 and XMC5000, the CRC is stored in the last row of Code Flash. When the CRC is stored, the entire last 8 KB small sector of Code Flash is erased, the same as in Mode 1. Reserve that whole sector.
 
 The following is an example of a self-test for Startup Configuration Registers in CRC mode:
 

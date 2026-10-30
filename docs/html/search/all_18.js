@@ -1,9 +1,9 @@
 var searchData=
 [
   ['uart_20data_20transfer_20stl_20module_0',['UART Data Transfer (UART Data Transfer STL module)',['../group__group__uart__data__tsf.html',1,'']]],
-  ['uart_20data_20transfer_20tests_1',['UART data transfer tests',['../stl_usage_serial_and_fieldbus.html#autotoc_md55',1,'']]],
+  ['uart_20data_20transfer_20tests_1',['UART data transfer tests',['../stl_usage_serial_and_fieldbus.html#autotoc_md70',1,'']]],
   ['uart_20data_20transfer_20uart_20data_20transfer_20stl_20module_2',['UART Data Transfer (UART Data Transfer STL module)',['../group__group__uart__data__tsf.html',1,'']]],
-  ['uart_20scb_20test_3',['UART SCB test',['../stl_usage_serial_and_fieldbus.html#autotoc_md52',1,'']]],
+  ['uart_20scb_20test_3',['UART SCB test',['../stl_usage_serial_and_fieldbus.html#autotoc_md67',1,'']]],
   ['uart_20stl_20module_4',['UART (UART STL module)',['../group__group__uart.html',1,'']]],
   ['uart_20uart_20stl_20module_5',['UART (UART STL module)',['../group__group__uart.html',1,'']]],
   ['uart_5fmaster_5fmessage_5fnot_5fstarted_5fstatus_6',['UART_MASTER_MESSAGE_NOT_STARTED_STATUS',['../group__group__stl__status.html#gac7ce8d197ea77a471f17572077b7ea10',1,'SelfTest_common.h']]],
@@ -24,6 +24,8 @@ var searchData=
   ['uartmesslave_5fmsg_5fisr_21',['UartMesSlave_Msg_ISR',['../group__group__uart__data__tsf__functions__slave.html#ga1da52f72b80233fb01a5f4c6c4db27e5',1,'UartMesSlave_Msg_ISR(void):&#160;SelfTest_UART_slave_message.c'],['../group__group__uart__data__tsf__functions__slave.html#ga1da52f72b80233fb01a5f4c6c4db27e5',1,'UartMesSlave_Msg_ISR(void):&#160;SelfTest_UART_slave_message.c']]],
   ['uartmesslave_5frespond_22',['UartMesSlave_Respond',['../group__group__uart__data__tsf__functions__slave.html#gaf846328bfc17388be6b51f4d3b1b2435',1,'UartMesSlave_Respond(uint8_t *txd, uint8_t tlen):&#160;SelfTest_UART_slave_message.c'],['../group__group__uart__data__tsf__functions__slave.html#gaf846328bfc17388be6b51f4d3b1b2435',1,'UartMesSlave_Respond(uint8_t *txd, uint8_t tlen):&#160;SelfTest_UART_slave_message.c']]],
   ['uartmesslave_5fstate_23',['UartMesSlave_State',['../group__group__uart__data__tsf__functions__slave.html#ga200a6621ac55a5433715ce11c9e8c6af',1,'UartMesSlave_State(void):&#160;SelfTest_UART_slave_message.c'],['../group__group__uart__data__tsf__functions__slave.html#ga200a6621ac55a5433715ce11c9e8c6af',1,'UartMesSlave_State(void):&#160;SelfTest_UART_slave_message.c']]],
-  ['unknown_5ferror_24',['UNKNOWN_ERROR',['../group__group__stl__status.html#ga13b7b9ceea0c8133053f90fef1dd7cd7',1,'SelfTest_common.h']]],
-  ['use_25',['use',['../index.html#autotoc_md4',1,'How to use'],['../index.html#autotoc_md3',1,'When to use']]]
+  ['unit_20stl_20module_24',['PPU (Peripheral Protection Unit STL module)',['../group__group__ppu.html',1,'']]],
+  ['unknown_5ferror_25',['UNKNOWN_ERROR',['../group__group__stl__status.html#ga13b7b9ceea0c8133053f90fef1dd7cd7',1,'SelfTest_common.h']]],
+  ['use_26',['use',['../index.html#autotoc_md4',1,'How to use'],['../index.html#autotoc_md3',1,'When to use']]],
+  ['usermask_27',['userMask',['../group__group__adc__config__data__structures.html#a7c7b50b1ce4f260986c132d8f3b240c6',1,'stl_adc_config_snapshot_t::userMask'],['../group__group__adc__config__data__structures.html#a8bdea5cd0bb464a23252b10df53af6fd',1,'stl_adc_mmio_config_snapshot_t::userMask']]]
 ];

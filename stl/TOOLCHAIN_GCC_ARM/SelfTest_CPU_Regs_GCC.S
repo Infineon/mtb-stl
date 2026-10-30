@@ -303,6 +303,7 @@ test_asm_fail:
     POP   {R1-R7, PC}
 
 .endfunc
+.ltorg
 
 .end
 

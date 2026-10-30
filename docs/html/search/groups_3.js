@@ -3,7 +3,7 @@ var searchData=
   ['dac_20atop_20dac_20stl_20module_0',['ATOP DAC (ATOP DAC STL module)',['../group__group__atop__dac.html',1,'']]],
   ['dac_20stl_20module_1',['ATOP DAC (ATOP DAC STL module)',['../group__group__atop__dac.html',1,'']]],
   ['data_20structure_2',['Data structure',['../group__group__motif__structure.html',1,'']]],
-  ['data_20structures_3',['Data Structures',['../group__group__atop__adc__core__data__structures.html',1,'Data Structures'],['../group__group__atop__afe__data__structures.html',1,'Data Structures'],['../group__group__ecc__data__structures.html',1,'Data Structures']]],
+  ['data_20structures_3',['Data Structures',['../group__group__adc__config__data__structures.html',1,'Data Structures'],['../group__group__atop__adc__core__data__structures.html',1,'Data Structures'],['../group__group__atop__afe__data__structures.html',1,'Data Structures'],['../group__group__ecc__data__structures.html',1,'Data Structures'],['../group__group__mpu__data__structures.html',1,'Data Structures'],['../group__group__ppu__data__structures.html',1,'Data Structures'],['../group__group__smpu__data__structures.html',1,'Data Structures']]],
   ['data_20transfer_20stl_20module_4',['UART Data Transfer (UART Data Transfer STL module)',['../group__group__uart__data__tsf.html',1,'']]],
   ['data_20transfer_20uart_20data_20transfer_20stl_20module_5',['UART Data Transfer (UART Data Transfer STL module)',['../group__group__uart__data__tsf.html',1,'']]],
   ['dcmp_20atop_20digital_20comparator_20stl_20module_6',['ATOP DCMP (ATOP Digital Comparator STL module)',['../group__group__atop__dcmp.html',1,'']]],

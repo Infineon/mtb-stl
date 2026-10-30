@@ -2,7 +2,23 @@ var searchData=
 [
   ['cfg_0',['cfg',['../group__group__motif__structure.html#ac35611e14aa92245da61fb0f67590ebd',1,'stl_motif_tcpwm_cfg_t::cfg'],['../group__group__motif__structure.html#ad4ef686ea5167dd6299527c05a491e51',1,'stl_motif_tcpwm_counter_cfg_t::cfg']]],
   ['channel_1',['channel',['../group__group__atop__adc__core__data__structures.html#a1db0132f5270c241cacadbae5eaacee8',1,'stl_atop_adc_core_config_t']]],
-  ['checkenable_2',['checkEnable',['../group__group__ecc__data__structures.html#a5232146c76f9a20f7f08bf599c50f8f1',1,'stl_ecc_ram_cfg_t']]],
-  ['checkflashmacroencoder_3',['checkFlashMacroEncoder',['../group__group__ecc__data__structures.html#a05b4ea5797d5769c45a70da8df6e9d26',1,'stl_ecc_flash_cfg_t']]],
-  ['correctable_4',['correctable',['../group__group__ecc__data__structures.html#a0109e22db70ee7146edec7dc87766b98',1,'stl_ecc_flash_counters_t::correctable'],['../group__group__ecc__data__structures.html#a24333c14ec70551075e93cfd0ee6635c',1,'stl_ecc_ram_counters_t::correctable']]]
+  ['channelskipmask_2',['channelSkipMask',['../group__group__adc__config__data__structures.html#ae47a8bf7b2d1e88a01b17fcf31af0e46',1,'stl_adc_config_mask_t']]],
+  ['checkenable_3',['checkEnable',['../group__group__ecc__data__structures.html#a5232146c76f9a20f7f08bf599c50f8f1',1,'stl_ecc_ram_cfg_t']]],
+  ['checkflashmacroencoder_4',['checkFlashMacroEncoder',['../group__group__ecc__data__structures.html#a05b4ea5797d5769c45a70da8df6e9d26',1,'stl_ecc_flash_cfg_t']]],
+  ['checkintegrity_5',['checkIntegrity',['../group__group__ppu__data__structures.html#a2b00b311489308983d68339aa45a27d7',1,'stl_ppu_entry_t']]],
+  ['chenable_6',['chEnable',['../group__group__adc__config__data__structures.html#a0364cccb989da9621405727697569913',1,'stl_adc_config_snapshot_t']]],
+  ['chintrmask_7',['chIntrMask',['../group__group__adc__config__data__structures.html#ae21916fd598948408b457ced177f1f42',1,'stl_adc_config_snapshot_t']]],
+  ['chintrmaskmask_8',['chIntrMaskMask',['../group__group__adc__config__data__structures.html#a8fdb473a4384c53108baf3b5a256a186',1,'stl_adc_config_mask_t']]],
+  ['chpostctl_9',['chPostCtl',['../group__group__adc__config__data__structures.html#a0e6e2948d2046c90ca9673020cb78c1e',1,'stl_adc_config_snapshot_t']]],
+  ['chpostctlmask_10',['chPostCtlMask',['../group__group__adc__config__data__structures.html#a63e15ce6862b8288f1a33629248bec15',1,'stl_adc_config_mask_t']]],
+  ['chrangectl_11',['chRangeCtl',['../group__group__adc__config__data__structures.html#a653723ee1762f53b2702925a9f59e2d2',1,'stl_adc_config_snapshot_t']]],
+  ['chsamplectl_12',['chSampleCtl',['../group__group__adc__config__data__structures.html#ab3d1bd1feed266be21822eff2f6ac718',1,'stl_adc_config_snapshot_t']]],
+  ['chsamplectlmask_13',['chSampleCtlMask',['../group__group__adc__config__data__structures.html#acbfdebe2f69287a8d377d50a16ff421a',1,'stl_adc_config_mask_t']]],
+  ['chskiprangectl_14',['chSkipRangeCtl',['../group__group__adc__config__data__structures.html#ac2b0d350bd837c296fd8f3f0696d215d',1,'stl_adc_config_mask_t']]],
+  ['chtrctl_15',['chTrCtl',['../group__group__adc__config__data__structures.html#a99de37dd6bbf7eddb2f495907139bc1a',1,'stl_adc_config_snapshot_t']]],
+  ['chtrctlmask_16',['chTrCtlMask',['../group__group__adc__config__data__structures.html#ae31d1424b34e16893ae8ee045e15f57d',1,'stl_adc_config_mask_t']]],
+  ['clkhf_17',['clkHf',['../group__group__clock__macros.html#a2085debc7dc6abf3d82735e183210da0',1,'stl_clock_csv_entry_t']]],
+  ['correctable_18',['correctable',['../group__group__ecc__data__structures.html#a0109e22db70ee7146edec7dc87766b98',1,'stl_ecc_flash_counters_t::correctable'],['../group__group__ecc__data__structures.html#a24333c14ec70551075e93cfd0ee6635c',1,'stl_ecc_ram_counters_t::correctable']]],
+  ['crc_19',['crc',['../group__group__adc__config__data__structures.html#a464058252e15799cd47d2a87b12dd2f7',1,'stl_adc_config_snapshot_t::crc'],['../group__group__adc__config__data__structures.html#ae1b5fa987b1f86efd10a0f4c495e629e',1,'stl_adc_mmio_config_snapshot_t::crc']]],
+  ['ctl_20',['ctl',['../group__group__adc__config__data__structures.html#a797c8c3b454482a50298a78160d4a730',1,'stl_adc_config_snapshot_t']]]
 ];

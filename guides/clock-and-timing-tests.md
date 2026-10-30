@@ -48,7 +48,11 @@ The following is an example of a self-test on the timer interrupt path:
  * be routed to the STL handler SelfTest_Interrupt_ISR_TIMER. */
 cy_stc_sysint_t intrCfg =
 {
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+    .intrSrc      = (IRQn_Type)((NvicMux3_IRQn << 16) | CYBSP_TIMER_INTR_TEST_IRQ),
+#else
     .intrSrc      = CYBSP_TIMER_INTR_TEST_IRQ,
+#endif
     .intrPriority = 3UL
 };
 
@@ -57,10 +61,21 @@ Cy_TCPWM_Counter_Init(CYBSP_TIMER_INTR_TEST_HW, CYBSP_TIMER_INTR_TEST_NUM,
 Cy_SysInt_Init(&intrCfg, &SelfTest_Interrupt_ISR_TIMER);
 
 __enable_irq();
+
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+NVIC_ClearPendingIRQ((IRQn_Type)NvicMux3_IRQn);
+#else
 NVIC_ClearPendingIRQ(intrCfg.intrSrc);
+#endif
+
 Cy_TCPWM_ClearInterrupt(CYBSP_TIMER_INTR_TEST_HW, CYBSP_TIMER_INTR_TEST_NUM,
                         CY_TCPWM_INT_ON_TC);
+
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);
+#else
 NVIC_EnableIRQ(intrCfg.intrSrc);
+#endif
 
 /* Enable the timer and its terminal-count interrupt */
 Cy_TCPWM_Counter_Enable(CYBSP_TIMER_INTR_TEST_HW, CYBSP_TIMER_INTR_TEST_NUM);
@@ -75,7 +90,12 @@ if (OK_STATUS != status)
 }
 
 /* Release the interrupt and counter after the test */
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+NVIC_DisableIRQ((IRQn_Type)NvicMux3_IRQn);
+#else
 NVIC_DisableIRQ((IRQn_Type)CYBSP_TIMER_INTR_TEST_IRQ);
+#endif
+
 Cy_TCPWM_Counter_Disable(CYBSP_TIMER_INTR_TEST_HW, CYBSP_TIMER_INTR_TEST_NUM);
 ```
 
@@ -126,12 +146,27 @@ The test returns `PASS_COMPLETE_STATUS` when measurement is complete.
 The following is an example of a self-test on the Clock block:
 
 ```c
-/* Initialize WDT as reference clock */
+/* Initialize the free-running WDT as the clock self-test reference */
+#if (defined(CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 2))
+/* SRSS v2 (XMC7000/XMC5000): the match/ignore-bits API is replaced by the
+ * upper-limit API. Disable all limit actions so the counter free-runs. */
+Cy_WDT_Unlock();
+Cy_WDT_Disable();
+Cy_WDT_ClearInterrupt();
+Cy_WDT_ResetCounter();
+Cy_WDT_SetUpperLimit(0xFFFFU);
+Cy_WDT_SetUpperAction(CY_WDT_LOW_UPPER_LIMIT_ACTION_NONE);
+Cy_WDT_SetLowerAction(CY_WDT_LOW_UPPER_LIMIT_ACTION_NONE);
+Cy_WDT_SetWarnAction(CY_WDT_WARN_ACTION_NONE);
+Cy_WDT_Enable();
+Cy_WDT_Lock();
+#else /* if (defined(CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 2)) */
 Cy_WDT_Unlock();
 Cy_WDT_SetIgnoreBits(IGNORE_BITS_CLK_TEST);  /* Use all 16 bits */
 Cy_WDT_ClearInterrupt();
 Cy_WDT_Enable();
 Cy_WDT_Lock();
+#endif /* if (defined(CY_IP_MXS40SRSS) && (CY_IP_MXS40SRSS_VERSION >= 2)) */
 
 /* Initialize TCPWM timer (configured in Device Configurator as CYBSP_CLOCK_TEST_TIMER)
  * driven by system/peripheral clock */
@@ -142,11 +177,20 @@ Cy_TCPWM_Counter_SetCounter(CYBSP_CLOCK_TEST_TIMER_HW, CYBSP_CLOCK_TEST_TIMER_NU
 /* Initialize interrupt for TCPWM */
 cy_stc_sysint_t intrCfg =
 {
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+    .intrSrc      = (IRQn_Type)((NvicMux3_IRQn << 16) | CYBSP_CLOCK_TEST_TIMER_IRQ),
+#else
     .intrSrc      = CYBSP_CLOCK_TEST_TIMER_IRQ,
+#endif
     .intrPriority = 3UL
 };
 Cy_SysInt_Init(&intrCfg, SelfTest_Clock_ISR_TIMER);
+
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+NVIC_EnableIRQ((IRQn_Type)NvicMux3_IRQn);
+#else
 NVIC_EnableIRQ(intrCfg.intrSrc);
+#endif
 
 /* Enable timer and interrupt */
 Cy_TCPWM_Counter_Enable(CYBSP_CLOCK_TEST_TIMER_HW, CYBSP_CLOCK_TEST_TIMER_NUM);
@@ -159,6 +203,192 @@ if ((PASS_COMPLETE_STATUS != status) && (PASS_STILL_TESTING_STATUS != status))
     /* Handle clock frequency test failure */
 }
 ```
+
+## Clock supervisor (CSV) test
+
+The CSV self-test verifies that the hardware clock supervisor (CSV) of a `CLK_HF` clock is able to detect a
+frequency fault and report it all the way to the application's interrupt handler. It is available on devices
+that provide the `CLK_HF` CSV comparators (SRSS version 3 or later with the `SRSS_CSV_HF_CSV_*` registers,
+for example XMC7000). Unlike the clock test above, it does not measure a frequency; it proves that the
+supervisor and its notification path work, so that the runtime supervision you arm afterwards can be trusted.
+
+How the test works (`SelfTest_Clock_CSV()` in `stl/clock/SelfTest_Clock.c`):
+
+1. It reinitializes the application's fault structure, unmasks `CY_SYSFAULT_SRSS_CSV`, and clears any pending
+   status and interrupt.
+2. It programs an impossible supervision window on the selected `CLK_HF` (period of 1 monitored cycle, lower
+   limit 199 and upper limit 201 reference cycles). Any `CLK_HF` frequency other than about `refFreq / 200`
+   violates this window, so a CSV fault is forced immediately.
+3. It polls for up to `CSV_TEST_TIMEOUT_US` (100 us) for the fault to arrive through the fault structure at
+   `SelfTest_Clock_CSV_ISR()`, which clears the status and interrupt and disables the NVIC mux line.
+4. It disables CSV, clears the fault-structure interrupt mask and any residual pending edge, and returns.
+
+The test returns `OK_STATUS` when the induced fault is observed from `CY_SYSFAULT_SRSS_CSV`, `ERROR_STATUS`
+when it is not observed within the timeout or another fault source is recorded, and `ERROR_BAD_PARAM` when the
+entry is invalid (NULL entry or fault structure, `clkHf` equal to 0, a reference clock with 0 Hz frequency, or
+a window rejected by `Cy_SysClk_ClkHfCsvManualConfigure()`).
+
+Prepare the following before calling the test:
+
+- Choose the supervised `CLK_HF` index. `CLK_HF0` is not supported because its CSV requires a reset action.
+- Choose the CSV reference clock (`refClk`). The test writes it to `SRSS_CSV_REF_SEL`, which is shared by all
+  `CLK_HF` CSVs, so use the same reference clock that you use for runtime supervision. The reference clock must
+  be running; for example, an unconfigured ECO gives a 0 Hz reference and the test returns `ERROR_BAD_PARAM`.
+- Choose a fault structure and the NVIC mux line it is routed to, and fill `stl_clock_csv_entry_t`.
+- Enable global interrupts with `__enable_irq()`. The result is detected in the ISR.
+- Route the fault-structure interrupt to `SelfTest_Clock_CSV_ISR()` with `Cy_SysInt_Init()`, clear the pending
+  state, and enable the NVIC mux line before the call.
+
+The following settings are fore reference only and must be adapted to your project:
+
+```c
+#define APP_CSV_FAULT_STRUCT   (FAULT_STRUCT1)
+#define APP_CSV_FAULT_IRQ      (cpuss_interrupts_fault_1_IRQn)
+#define APP_CSV_NVIC_MUX       (NvicMux3_IRQn)
+
+/* Supervised clock. CLK_HF0 is rejected by the STL (reset action required). */
+#define APP_CSV_CLKHF          (3u)
+
+/* Percent-scaled accuracy 1..100. 99 gives the widest window and is safe for
+ * bring-up. Tighten it to the CLK_HF plus reference-clock tolerance sum. */
+#define APP_CSV_ACCURACY       (99u)
+
+/* Entry supervised by SelfTest_Clock_CSV. refClk must match the reference
+ * clock used for runtime supervision. */
+static const stl_clock_csv_entry_t app_csv_entry =
+{
+    .clkHf       = APP_CSV_CLKHF,
+    .refClk      = CY_SYSCLK_CLKHF_CSV_REF_IMO,
+    .faultStruct = APP_CSV_FAULT_STRUCT,
+    .nvicMux     = APP_CSV_NVIC_MUX,
+};
+
+/* Production CSV window kept armed after the self-test. */
+static const cy_stc_clkhf_csv_hf_config_t app_csv_nominal =
+{
+    .clkHf  = APP_CSV_CLKHF,
+    .refClk = CY_SYSCLK_CLKHF_CSV_REF_IMO,
+};
+```
+
+Route the fault-structure interrupt to the STL handler before running the test:
+
+```c
+static void app_install_csv_bist_isr(void)
+{
+    static const cy_stc_sysint_t irq_cfg =
+    {
+        .intrSrc      = ((APP_CSV_NVIC_MUX << CY_SYSINT_INTRSRC_MUXIRQ_SHIFT) |
+                         APP_CSV_FAULT_IRQ),
+        .intrPriority = 2UL,
+    };
+    (void)Cy_SysInt_Init(&irq_cfg, &SelfTest_Clock_CSV_ISR);
+    NVIC_ClearPendingIRQ(APP_CSV_NVIC_MUX);
+    NVIC_EnableIRQ(APP_CSV_NVIC_MUX);
+}
+```
+
+Run the test once at startup, before the application arms operational CSV supervision:
+
+```c
+__enable_irq();
+
+app_install_csv_bist_isr();
+
+uint8_t status = SelfTest_Clock_CSV(&app_csv_entry);
+if (OK_STATUS != status)
+{
+    /* The comparator or its notification path cannot be trusted: do not arm
+     * a supervisor that just failed its test. Enter the safe state / halt. */
+}
+```
+
+On `OK_STATUS` the test leaves the system in a defined state that the application must take over:
+
+- CSV on the tested `CLK_HF` is disabled, and any CSV window you programmed earlier for it was overwritten.
+- The fault-structure interrupt mask is cleared and the NVIC mux line is disabled. The fault-structure vector
+  still points at `SelfTest_Clock_CSV_ISR()`.
+- Any previous configuration of the fault structure was overwritten.
+
+Therefore, arm the runtime supervision after the test. Program the nominal window and enable CSV first, then
+clear the status that can latch while the CSV state machine settles, and only then install the runtime handler
+and enable the interrupt. Reversing this order can raise a false fault:
+
+```c
+static void app_configure_csv_for_runtime(void)
+{
+    Cy_SysClk_ClkHfCsvDisable(APP_CSV_CLKHF);
+    Cy_SysClk_ClkHfCsvAction(APP_CSV_CLKHF, CY_SYSCLK_CLKHF_CSV_ACTION_FAULT);
+    (void)Cy_SysClk_ClkHfCsvConfigure(&app_csv_nominal, APP_CSV_ACCURACY);
+    Cy_SysClk_ClkHfCsvEnable(APP_CSV_CLKHF);
+}
+
+static void app_clear_csv_fault_status(void)
+{
+    /* Clear STATUS until no fault source is reported, then clear INTR */
+    for (uint32_t i = 0u; i < 16u; i++)
+    {
+        Cy_SysFault_ClearStatus(APP_CSV_FAULT_STRUCT);
+        if (Cy_SysFault_GetErrorSource(APP_CSV_FAULT_STRUCT) ==
+            (cy_en_SysFault_source_t)CY_SYSFAULT_NO_FAULT)
+        {
+            break;
+        }
+    }
+    Cy_SysFault_ClearInterrupt(APP_CSV_FAULT_STRUCT);
+}
+
+static void app_install_csv_runtime_isr(void)
+{
+    static const cy_stc_sysint_t irq_cfg =
+    {
+        .intrSrc      = ((APP_CSV_NVIC_MUX << CY_SYSINT_INTRSRC_MUXIRQ_SHIFT) |
+                         APP_CSV_FAULT_IRQ),
+        .intrPriority = 2UL,
+    };
+    (void)Cy_SysInt_Init(&irq_cfg, &app_csv_fault_isr);
+
+    /* The self-test cleared the interrupt mask: re-enable INTR propagation,
+     * otherwise a real fault latches STATUS but never raises the IRQ. */
+    Cy_SysFault_SetInterruptMask(APP_CSV_FAULT_STRUCT);
+    NVIC_ClearPendingIRQ(APP_CSV_NVIC_MUX);
+    NVIC_EnableIRQ(APP_CSV_NVIC_MUX);
+}
+```
+
+Call them in this order after a successful self-test:
+
+```c
+app_configure_csv_for_runtime();
+app_clear_csv_fault_status();
+app_install_csv_runtime_isr();
+```
+
+The runtime handler `app_csv_fault_isr()` is application code. A minimal version stops CSV, clears the fault
+structure, and records the event:
+
+```c
+static volatile uint32_t app_real_fault_count;
+
+static void app_csv_fault_isr(void)
+{
+    app_real_fault_count++;
+
+    Cy_SysClk_ClkHfCsvDisable(APP_CSV_CLKHF);
+    app_clear_csv_fault_status();
+    NVIC_ClearPendingIRQ(APP_CSV_NVIC_MUX);
+
+    /* Product-specific reaction goes here */
+}
+```
+
+Notes on using the test:
+
+- Call `SelfTest_Clock_CSV()` once at startup, before operational CSV supervision is armed. It blocks for up to
+  `CSV_TEST_TIMEOUT_US` and is not reentrant.
+- The test reinitializes the provided fault structure and overwrites its configuration. Use a fault structure
+  whose existing configuration you can restore, or reconfigure it after the test (as the runtime arming above
+  does for the CSV source).
 
 ## Counter/timer test
 
@@ -212,7 +442,12 @@ if (OK_STATUS != status)
 }
 
 /* Release the interrupt and counter after the test */
+#if defined(CY_IP_M7CPUSS) || defined(CY_M4CPUSS_V2_IRQ_MUXING)
+NVIC_DisableIRQ((IRQn_Type)NvicMux3_IRQn);
+#else
 NVIC_DisableIRQ((IRQn_Type)CYBSP_TIMER_COUNTER_TEST_IRQ);
+#endif
+
 Cy_TCPWM_Counter_Disable(CYBSP_TIMER_COUNTER_TEST_HW, CYBSP_TIMER_COUNTER_TEST_NUM);
 ```
 
